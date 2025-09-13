@@ -377,7 +377,7 @@ export default function PlanForm() {
                 <CardContent>
                   <div className="space-y-4">
                     {procedures.map((procedure, procIndex) => (
-                      <div key={procIndex} className="grid grid-cols-1 md:grid-cols-3 gap-3 p-4 border rounded-lg items-center">
+                      <div key={procIndex} className="grid grid-cols-1 md:grid-cols-3 gap-3 p-4 border rounded-lg">
                         <div>
                           <label className="text-sm font-medium text-foreground mb-2 block">
                             Nome do Procedimento
@@ -404,7 +404,7 @@ export default function PlanForm() {
                           />
                         </div>
 
-                        <div className="flex items-center justify-center space-x-4">
+                        <div className="flex items-end space-x-2">
                           <div className="flex items-center space-x-2">
                             <Switch
                               checked={procedure.isIncluded}
