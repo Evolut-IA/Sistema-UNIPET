@@ -205,29 +205,6 @@ export default function ContactSubmissions() {
         </CardContent>
       </Card>
 
-      {/* Statistics */}
-      {filteredSubmissions && filteredSubmissions.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card>
-            <CardContent className="p-4 text-center">
-              <p className="text-2xl font-bold text-foreground">{filteredSubmissions.length}</p>
-              <p className="text-sm text-muted-foreground">Total de Formulários</p>
-            </CardContent>
-          </Card>
-          
-          {["Básico", "Confort", "Premium"].map(plan => {
-            const count = filteredSubmissions.filter((s: any) => s.planInterest === plan).length;
-            return (
-              <Card key={plan}>
-                <CardContent className="p-4 text-center">
-                  <p className="text-2xl font-bold text-foreground">{count}</p>
-                  <p className="text-sm text-muted-foreground">Interesse em {plan}</p>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-      )}
 
       {/* Details Dialog */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>

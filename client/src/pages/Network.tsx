@@ -245,34 +245,6 @@ export default function Network() {
         )}
       </div>
 
-      {/* Summary */}
-      {filteredUnits && filteredUnits.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-foreground">Resumo da Rede</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="text-center">
-                <p className="text-2xl font-bold text-foreground">{filteredUnits.length}</p>
-                <p className="text-sm text-muted-foreground">Total de Unidades</p>
-              </div>
-              <div className="text-center">
-                <p className="text-2xl font-bold text-green-600">
-                  {filteredUnits.filter((u: any) => u.isActive).length}
-                </p>
-                <p className="text-sm text-muted-foreground">Unidades Ativas</p>
-              </div>
-              <div className="text-center">
-                <p className="text-2xl font-bold text-red-600">
-                  {filteredUnits.filter((u: any) => !u.isActive).length}
-                </p>
-                <p className="text-sm text-muted-foreground">Unidades Inativas</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 }

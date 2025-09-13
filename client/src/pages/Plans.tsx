@@ -239,34 +239,6 @@ export default function Plans() {
         )}
       </div>
 
-      {/* Summary Card */}
-      {filteredPlans && filteredPlans.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-foreground">Resumo</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="text-center">
-                <p className="text-2xl font-bold text-foreground">{filteredPlans.length}</p>
-                <p className="text-sm text-muted-foreground">Total de Planos</p>
-              </div>
-              <div className="text-center">
-                <p className="text-2xl font-bold text-green-600">
-                  {filteredPlans.filter((p: any) => p.isActive).length}
-                </p>
-                <p className="text-sm text-muted-foreground">Planos Ativos</p>
-              </div>
-              <div className="text-center">
-                <p className="text-2xl font-bold text-red-600">
-                  {filteredPlans.filter((p: any) => !p.isActive).length}
-                </p>
-                <p className="text-sm text-muted-foreground">Planos Inativos</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 }

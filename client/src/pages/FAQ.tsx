@@ -373,34 +373,6 @@ export default function FAQ() {
         </Card>
       </div>
 
-      {/* Statistics */}
-      {filteredItems && filteredItems.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-foreground">Estatísticas</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="text-center">
-                <p className="text-2xl font-bold text-foreground">{filteredItems.length}</p>
-                <p className="text-sm text-muted-foreground">Total de Itens</p>
-              </div>
-              <div className="text-center">
-                <p className="text-2xl font-bold text-green-600">
-                  {filteredItems.filter((item: any) => item.isActive).length}
-                </p>
-                <p className="text-sm text-muted-foreground">Itens Ativos</p>
-              </div>
-              <div className="text-center">
-                <p className="text-2xl font-bold text-red-600">
-                  {filteredItems.filter((item: any) => !item.isActive).length}
-                </p>
-                <p className="text-sm text-muted-foreground">Itens Inativos</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 }
