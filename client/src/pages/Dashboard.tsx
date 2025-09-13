@@ -172,8 +172,8 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      {/* Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Resumos das Páginas */}
+      <div className="space-y-6">
         {/* Resumo de Formulários */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
@@ -190,26 +190,26 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             {submissionsLoading ? (
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {[...Array(4)].map((_, i) => (
-                  <div key={i} className="text-center">
-                    <Skeleton className="h-8 w-16 mx-auto mb-2" />
-                    <Skeleton className="h-4 w-24 mx-auto" />
+                  <div key={i} className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-6 w-12" />
                   </div>
                 ))}
               </div>
             ) : contactSubmissions?.length ? (
-              <div className="grid grid-cols-2 gap-4">
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-foreground">{contactSubmissions.length}</p>
-                  <p className="text-sm text-muted-foreground">Total de Formulários</p>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                  <span className="text-sm text-muted-foreground">Total de Formulários</span>
+                  <span className="text-xl font-bold text-foreground">{contactSubmissions.length}</span>
                 </div>
                 {["Básico", "Confort", "Premium"].map(plan => {
                   const count = contactSubmissions.filter((s: any) => s.planInterest === plan).length;
                   return (
-                    <div key={plan} className="text-center">
-                      <p className="text-2xl font-bold text-foreground">{count}</p>
-                      <p className="text-sm text-muted-foreground">Interesse em {plan}</p>
+                    <div key={plan} className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                      <span className="text-sm text-muted-foreground">Interesse em {plan}</span>
+                      <span className="text-xl font-bold text-foreground">{count}</span>
                     </div>
                   );
                 })}
@@ -236,31 +236,27 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             {statsLoading ? (
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {[...Array(3)].map((_, i) => (
-                  <div key={i} className="text-center">
-                    <Skeleton className="h-8 w-16 mx-auto mb-2" />
-                    <Skeleton className="h-4 w-24 mx-auto" />
+                  <div key={i} className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-6 w-12" />
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="grid grid-cols-1 gap-4">
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-foreground">{stats?.totalPlans || 0}</p>
-                  <p className="text-sm text-muted-foreground">Total de Planos</p>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                  <span className="text-sm text-muted-foreground">Total de Planos</span>
+                  <span className="text-xl font-bold text-foreground">{stats?.totalPlans || 0}</span>
                 </div>
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-primary">
-                    {stats?.activePlans || 0}
-                  </p>
-                  <p className="text-sm text-muted-foreground">Planos Ativos</p>
+                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                  <span className="text-sm text-muted-foreground">Planos Ativos</span>
+                  <span className="text-xl font-bold text-primary">{stats?.activePlans || 0}</span>
                 </div>
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-destructive">
-                    {stats?.inactivePlans || 0}
-                  </p>
-                  <p className="text-sm text-muted-foreground">Planos Inativos</p>
+                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                  <span className="text-sm text-muted-foreground">Planos Inativos</span>
+                  <span className="text-xl font-bold text-destructive">{stats?.inactivePlans || 0}</span>
                 </div>
               </div>
             )}
@@ -268,8 +264,8 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      {/* Data Tables */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Resumos das Páginas - Continuação */}
+      <div className="space-y-6">
         {/* Resumo da Rede */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
@@ -286,31 +282,31 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             {networkLoading ? (
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {[...Array(3)].map((_, i) => (
-                  <div key={i} className="text-center">
-                    <Skeleton className="h-8 w-16 mx-auto mb-2" />
-                    <Skeleton className="h-4 w-24 mx-auto" />
+                  <div key={i} className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-6 w-12" />
                   </div>
                 ))}
               </div>
             ) : networkUnits?.length ? (
-              <div className="grid grid-cols-1 gap-4">
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-foreground">{networkUnits.length}</p>
-                  <p className="text-sm text-muted-foreground">Total de Unidades</p>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                  <span className="text-sm text-muted-foreground">Total de Unidades</span>
+                  <span className="text-xl font-bold text-foreground">{networkUnits.length}</span>
                 </div>
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-primary">
+                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                  <span className="text-sm text-muted-foreground">Unidades Ativas</span>
+                  <span className="text-xl font-bold text-primary">
                     {networkUnits.filter((u: any) => u.isActive).length}
-                  </p>
-                  <p className="text-sm text-muted-foreground">Unidades Ativas</p>
+                  </span>
                 </div>
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-destructive">
+                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                  <span className="text-sm text-muted-foreground">Unidades Inativas</span>
+                  <span className="text-xl font-bold text-destructive">
                     {networkUnits.filter((u: any) => !u.isActive).length}
-                  </p>
-                  <p className="text-sm text-muted-foreground">Unidades Inativas</p>
+                  </span>
                 </div>
               </div>
             ) : (
@@ -335,31 +331,31 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             {clientsLoading ? (
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {[...Array(3)].map((_, i) => (
-                  <div key={i} className="text-center">
-                    <Skeleton className="h-8 w-16 mx-auto mb-2" />
-                    <Skeleton className="h-4 w-24 mx-auto" />
+                  <div key={i} className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-6 w-12" />
                   </div>
                 ))}
               </div>
             ) : clients?.length ? (
-              <div className="grid grid-cols-1 gap-4">
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-foreground">{clients.length}</p>
-                  <p className="text-sm text-muted-foreground">Total de Clientes</p>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                  <span className="text-sm text-muted-foreground">Total de Clientes</span>
+                  <span className="text-xl font-bold text-foreground">{clients.length}</span>
                 </div>
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-primary">
+                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                  <span className="text-sm text-muted-foreground">Clientes Ativos</span>
+                  <span className="text-xl font-bold text-primary">
                     {clients.filter((c: any) => c.isActive !== false).length}
-                  </p>
-                  <p className="text-sm text-muted-foreground">Clientes Ativos</p>
+                  </span>
                 </div>
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-muted-foreground">
+                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                  <span className="text-sm text-muted-foreground">Com Pets Cadastrados</span>
+                  <span className="text-xl font-bold text-muted-foreground">
                     {clients.filter((c: any) => c.pets && c.pets.length > 0).length}
-                  </p>
-                  <p className="text-sm text-muted-foreground">Com Pets Cadastrados</p>
+                  </span>
                 </div>
               </div>
             ) : (
