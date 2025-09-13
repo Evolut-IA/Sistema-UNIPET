@@ -419,6 +419,12 @@ export class DatabaseStorage implements IStorage {
       console.log("Fetching site settings from database...");
       const result = await db.select().from(schema.siteSettings).limit(1);
       console.log("Site settings query result:", result);
+      
+      if (result[0]) {
+        console.log("First result keys:", Object.keys(result[0]));
+        console.log("First result values:", result[0]);
+      }
+      
       return result[0];
     } catch (error) {
       console.error("Error in getSiteSettings:", error);

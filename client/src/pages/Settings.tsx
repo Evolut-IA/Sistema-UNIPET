@@ -36,6 +36,29 @@ export default function Settings() {
     hasData: !!siteSettings,
     dataKeys: siteSettings ? Object.keys(siteSettings) : []
   });
+  
+  // Log dos valores específicos
+  if (siteSettings) {
+    console.log("Site settings values:", {
+      whatsapp: (siteSettings as any).whatsapp,
+      email: (siteSettings as any).email,
+      phone: (siteSettings as any).phone,
+      instagramUrl: (siteSettings as any).instagramUrl,
+      facebookUrl: (siteSettings as any).facebookUrl,
+      linkedinUrl: (siteSettings as any).linkedinUrl,
+      youtubeUrl: (siteSettings as any).youtubeUrl,
+      cnpj: (siteSettings as any).cnpj,
+      businessHours: (siteSettings as any).businessHours,
+      ourStory: (siteSettings as any).ourStory,
+      privacyPolicy: (siteSettings as any).privacyPolicy,
+      termsOfUse: (siteSettings as any).termsOfUse,
+      address: (siteSettings as any).address,
+      mainImage: (siteSettings as any).mainImage,
+      networkImage: (siteSettings as any).networkImage,
+      aboutImage: (siteSettings as any).aboutImage,
+      cores: (siteSettings as any).cores
+    });
+  }
 
 
   const siteForm = useForm({
@@ -90,6 +113,7 @@ export default function Settings() {
     
     if (siteSettings && typeof siteSettings === 'object' && !siteLoading) {
       console.log("Processing site settings for form reset...");
+      console.log("Raw siteSettings object:", siteSettings);
       
       // Merge with default values to ensure all fields are present
       const mergedSettings = {
@@ -118,6 +142,10 @@ export default function Settings() {
       try {
         siteForm.reset(mergedSettings);
         console.log("Form reset completed successfully");
+        
+        // Verificar se o reset funcionou
+        const currentValues = siteForm.getValues();
+        console.log("Current form values after reset:", currentValues);
       } catch (error) {
         console.error("Error resetting form:", error);
       }
