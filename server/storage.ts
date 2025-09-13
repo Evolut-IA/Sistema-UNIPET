@@ -12,6 +12,7 @@ import type {
   ContactSubmission, InsertContactSubmission,
   SiteSettings, InsertSiteSettings,
   ChatSettings, InsertChatSettings,
+  ThemeSettings, InsertThemeSettings,
   Guide, InsertGuide
 } from "@shared/schema";
 
@@ -87,6 +88,10 @@ export interface IStorage {
   // Chat settings methods
   getChatSettings(): Promise<ChatSettings | undefined>;
   updateChatSettings(settings: InsertChatSettings): Promise<ChatSettings>;
+
+  // Theme settings methods
+  getThemeSettings(): Promise<ThemeSettings | undefined>;
+  updateThemeSettings(settings: InsertThemeSettings): Promise<ThemeSettings>;
 
   // Guide methods
   getGuide(id: string): Promise<Guide | undefined>;
@@ -354,6 +359,23 @@ export class DatabaseStorage implements IStorage {
       return result[0];
     } else {
       const result = await db.insert(schema.chatSettings).values(settings).returning();
+      return result[0];
+    }
+  }
+
+  // Theme settings methods
+  async getThemeSettings(): Promise<ThemeSettings | undefined> {
+    const result = await db.select().from(schema.themeSettings).limit(1);
+    return result[0];
+  }
+
+  async updateThemeSettings(settings: InsertThemeSettings): Promise<ThemeSettings> {
+    const existing = await this.getThemeSettings();
+    if (existing) {
+      const result = await db.update(schema.themeSettings).set(settings).where(eq(schema.themeSettings.id, existing.id)).returning();
+      return result[0];
+    } else {
+      const result = await db.insert(schema.themeSettings).values(settings).returning();
       return result[0];
     }
   }

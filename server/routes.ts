@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertClientSchema, insertPetSchema, insertPlanSchema, insertNetworkUnitSchema, insertFaqItemSchema, insertContactSubmissionSchema, insertSiteSettingsSchema, insertChatSettingsSchema, insertGuideSchema } from "@shared/schema";
+import { insertClientSchema, insertPetSchema, insertPlanSchema, insertNetworkUnitSchema, insertFaqItemSchema, insertContactSubmissionSchema, insertSiteSettingsSchema, insertChatSettingsSchema, insertThemeSettingsSchema, insertGuideSchema } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
@@ -467,6 +467,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(settings);
     } catch (error) {
       res.status(400).json({ message: "Invalid chat settings data" });
+    }
+  });
+
+  // Theme settings routes
+  app.get("/api/settings/theme", async (req, res) => {
+    try {
+      const settings = await storage.getThemeSettings();
+      res.json(settings || {});
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch theme settings" });
+    }
+  });
+
+  app.put("/api/settings/theme", async (req, res) => {
+    try {
+      const settingsData = insertThemeSettingsSchema.parse(req.body);
+      const settings = await storage.updateThemeSettings(settingsData);
+      res.json(settings);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid theme settings data" });
     }
   });
 

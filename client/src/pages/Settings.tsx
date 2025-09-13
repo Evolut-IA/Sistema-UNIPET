@@ -13,7 +13,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { insertSiteSettingsSchema, insertChatSettingsSchema } from "@shared/schema";
-import { Settings as SettingsIcon, MessageCircle, Globe, Save } from "lucide-react";
+import { Settings as SettingsIcon, MessageCircle, Globe, Palette, Save } from "lucide-react";
+import ThemeEditor from "@/components/ThemeEditor";
 
 export default function Settings() {
   const { toast } = useToast();
@@ -137,7 +138,7 @@ export default function Settings() {
       </div>
 
       <Tabs defaultValue="site" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="site" className="flex items-center space-x-2">
             <Globe className="h-4 w-4" />
             <span>Site</span>
@@ -145,6 +146,10 @@ export default function Settings() {
           <TabsTrigger value="chat" className="flex items-center space-x-2">
             <MessageCircle className="h-4 w-4" />
             <span>Chat IA</span>
+          </TabsTrigger>
+          <TabsTrigger value="theme" className="flex items-center space-x-2">
+            <Palette className="h-4 w-4" />
+            <span>Tema</span>
           </TabsTrigger>
         </TabsList>
 
@@ -632,6 +637,11 @@ export default function Settings() {
               </form>
             </Form>
           )}
+        </TabsContent>
+
+        {/* Theme Settings */}
+        <TabsContent value="theme" className="space-y-6" data-testid="tab-content-theme">
+          <ThemeEditor />
         </TabsContent>
       </Tabs>
     </div>
