@@ -4,7 +4,7 @@
   --container-bg: hsl(0, 0%, 100%);
 
   /* ESTILO 1 - BOTÕES */
-  --btn-bg: hsl(0, 100%, 50%);
+  --btn-bg: hsl(181, 48%, 31%);
   --btn-text: hsl(0, 0%, 100%);
   --btn-icon: hsl(0, 0%, 100%);
 
@@ -14,5 +14,5 @@
   --texto-principal: hsl(0, 0%, 2%);
 
   /* ESTILO 1 - ÍCONES */
-  --icon-color: hsl(0, 98%, 81%);
+  --icon-color: hsl(181, 48%, 31%);
 }

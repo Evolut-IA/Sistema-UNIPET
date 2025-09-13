@@ -1,0 +1,39 @@
+[vite] connecting...
+[vite] connected.
+Warning: validateDOMNesting(...): <a> cannot appear as a descendant of &lt;a&gt;.
+    at a
+    at a
+    at https://a72fc0d3-4641-4c6e-b5f8-5730fbf4360e-00-1ifuyv38b8la.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=cb12398c:337:18
+    at div
+    at div
+    at nav
+    at div
+    at Sidebar (https://a72fc0d3-4641-4c6e-b5f8-5730fbf4360e-00-1ifuyv38b8la.riker.replit.dev/src/components/Sidebar.tsx:67:22)
+    at div
+    at div
+    at Layout (https://a72fc0d3-4641-4c6e-b5f8-5730fbf4360e-00-1ifuyv38b8la.riker.replit.dev/src/components/Layout.tsx:22:34)
+    at Router
+    at Provider (https://a72fc0d3-4641-4c6e-b5f8-5730fbf4360e-00-1ifuyv38b8la.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-7SUNRGEF.js?v=cb12398c:38:15)
+    at TooltipProvider (https://a72fc0d3-4641-4c6e-b5f8-5730fbf4360e-00-1ifuyv38b8la.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=cb12398c:59:5)
+    at QueryClientProvider (https://a72fc0d3-4641-4c6e-b5f8-5730fbf4360e-00-1ifuyv38b8la.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=cb12398c:2805:3)
+    at App
+at a
+at a
+at https://a72fc0d3-4641-4c6e-b5f8-5730fbf4360e-00-1ifuyv38b8la.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=cb12398c:337:18
+at div
+at div
+at nav
+at div
+at Sidebar (https://a72fc0d3-4641-4c6e-b5f8-5730fbf4360e-00-1ifuyv38b8la.riker.replit.dev/src/components/Sidebar.tsx:67:22)
+at div
+at div
+at Layout (https://a72fc0d3-4641-4c6e-b5f8-5730fbf4360e-00-1ifuyv38b8la.riker.replit.dev/src/components/Layout.tsx:22:34)
+at Router
+at Provider (https://a72fc0d3-4641-4c6e-b5f8-5730fbf4360e-00-1ifuyv38b8la.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-7SUNRGEF.js?v=cb12398c:38:15)
+at TooltipProvider (https://a72fc0d3-4641-4c6e-b5f8-5730fbf4360e-00-1ifuyv38b8la.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=cb12398c:59:5)
+at QueryClientProvider (https://a72fc0d3-4641-4c6e-b5f8-5730fbf4360e-00-1ifuyv38b8la.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=cb12398c:2805:3)
+at App
+at t.value (https://a72fc0d3-4641-4c6e-b5f8-5730fbf4360e-00-1ifuyv38b8la.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://a72fc0d3-4641-4c6e-b5f8-5730fbf4360e-00-1ifuyv38b8la.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://a72fc0d3-4641-4c6e-b5f8-5730fbf4360e-00-1ifuyv38b8la.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://a72fc0d3-4641-4c6e-b5f8-5730fbf4360e-00-1ifuyv38b8la.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
