@@ -377,7 +377,7 @@ export default function PlanForm() {
                 <CardContent>
                   <div className="space-y-4">
                     {procedures.map((procedure, procIndex) => (
-                      <div key={procIndex} className="grid grid-cols-1 md:grid-cols-4 gap-3 p-4 border rounded-lg">
+                      <div key={procIndex} className="grid grid-cols-1 md:grid-cols-3 gap-3 p-4 border rounded-lg items-center">
                         <div>
                           <label className="text-sm font-medium text-foreground mb-2 block">
                             Nome do Procedimento
@@ -387,18 +387,6 @@ export default function PlanForm() {
                             onChange={(e) => updateProcedureInBenefit(benefitName, procIndex, "procedureName", e.target.value)}
                             placeholder="Ex: Consulta Clínica"
                             data-testid={`input-procedure-name-${index}-${procIndex}`}
-                          />
-                        </div>
-
-                        <div>
-                          <label className="text-sm font-medium text-foreground mb-2 block">
-                            Descrição
-                          </label>
-                          <Input
-                            value={procedure.description}
-                            onChange={(e) => updateProcedureInBenefit(benefitName, procIndex, "description", e.target.value)}
-                            placeholder="Descrição opcional"
-                            data-testid={`input-procedure-description-${index}-${procIndex}`}
                           />
                         </div>
 
@@ -416,7 +404,7 @@ export default function PlanForm() {
                           />
                         </div>
 
-                        <div className="flex items-end space-x-2">
+                        <div className="flex items-center justify-center space-x-4">
                           <div className="flex items-center space-x-2">
                             <Switch
                               checked={procedure.isIncluded}
