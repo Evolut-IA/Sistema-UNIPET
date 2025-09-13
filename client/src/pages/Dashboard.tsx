@@ -43,6 +43,10 @@ export default function Dashboard() {
     queryKey: ["/api/contact-submissions"],
   });
 
+  const { data: plans = [], isLoading: plansLoading, isError: plansError } = useQuery({
+    queryKey: ["/api/plans"],
+  });
+
   const recentClients = clients.slice(0, 3);
   const recentSubmissions = contactSubmissions.slice(0, 3);
 
@@ -189,14 +193,20 @@ export default function Dashboard() {
             </Button>
           </CardHeader>
           <CardContent>
-            {submissionsLoading ? (
+            {submissionsLoading || plansLoading ? (
               <div className="space-y-3">
-                {[...Array(4)].map((_, i) => (
-                  <div key={i} className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                    <Skeleton className="h-4 w-32" />
-                    <Skeleton className="h-6 w-12" />
-                  </div>
-                ))}
+                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-6 w-12" />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {[...Array(4)].map((_, i) => (
+                    <div key={i} className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                      <Skeleton className="h-4 w-24" />
+                      <Skeleton className="h-6 w-8" />
+                    </div>
+                  ))}
+                </div>
               </div>
             ) : contactSubmissions?.length ? (
               <div className="space-y-3">
@@ -204,15 +214,19 @@ export default function Dashboard() {
                   <span className="text-sm text-muted-foreground">Total de Formulários</span>
                   <span className="text-xl font-bold text-foreground">{contactSubmissions.length}</span>
                 </div>
-                {["Básico", "Confort", "Premium"].map(plan => {
-                  const count = contactSubmissions.filter((s: any) => s.planInterest === plan).length;
-                  return (
-                    <div key={plan} className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                      <span className="text-sm text-muted-foreground">Interesse em {plan}</span>
-                      <span className="text-xl font-bold text-foreground">{count}</span>
-                    </div>
-                  );
-                })}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {plans.map((plan: any) => {
+                    const count = contactSubmissions.filter((s: any) => 
+                      s.planInterest?.toLowerCase() === plan.name?.toLowerCase()
+                    ).length;
+                    return (
+                      <div key={plan.id} className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                        <span className="text-sm text-muted-foreground">Interesse no plano {plan.name}</span>
+                        <span className="text-xl font-bold text-primary">{count}</span>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             ) : (
               <p className="text-muted-foreground text-center py-8">Nenhum formulário encontrado</p>
