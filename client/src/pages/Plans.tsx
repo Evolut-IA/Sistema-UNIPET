@@ -168,7 +168,7 @@ export default function Plans() {
               <CardContent className="pt-0">
                 <div className="mb-4">
                   <p className="text-3xl font-bold text-foreground">
-                    R$ {parseFloat(plan.price || 0).toFixed(2)}
+                    R$ {parseFloat(plan.price || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     <span className="text-lg font-normal text-muted-foreground">/mês</span>
                   </p>
                 </div>
