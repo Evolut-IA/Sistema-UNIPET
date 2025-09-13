@@ -241,7 +241,7 @@ export default function ThemeEditor() {
       <CardHeader>
         <CardTitle className="text-titulo flex items-center space-x-2">
           <Palette className="h-5 w-5" />
-          <span>Editor de Tema</span>
+          <span>Personalizar Aparência</span>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -253,7 +253,10 @@ export default function ThemeEditor() {
               <AccordionItem value="foundation" data-testid="accordion-foundation">
                 <AccordionTrigger className="flex items-center space-x-2">
                   <Layout className="h-4 w-4" />
-                  <span>Foundation</span>
+                  <div>
+                    <span>🎨 Cores Básicas</span>
+                    <p className="text-sm text-muted-foreground mt-1">Configure as cores principais do sistema</p>
+                  </div>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -265,7 +268,7 @@ export default function ThemeEditor() {
                           <ColorInput
                             value={field.value || "#faf9f7"}
                             onChange={field.onChange}
-                            label="Background color"
+                            label="🌅 Cor do Fundo Principal - Esta é a cor que aparece atrás de todo o conteúdo"
                             testId="color-background"
                           />
                           <FormMessage />
@@ -281,7 +284,7 @@ export default function ThemeEditor() {
                           <ColorInput
                             value={field.value || "#1a1a1a"}
                             onChange={field.onChange}
-                            label="Text color"
+                            label="✏️ Cor dos Textos Principais - Cor dos títulos e textos importantes"
                             testId="color-text"
                           />
                           <FormMessage />
@@ -297,7 +300,7 @@ export default function ThemeEditor() {
                           <ColorInput
                             value={field.value || "#e0e0e0"}
                             onChange={field.onChange}
-                            label="Muted background color"
+                            label="🔅 Cor de Fundo Secundário - Cor de áreas menos destacadas, como cards e seções"
                             testId="color-muted-bg"
                           />
                           <FormMessage />
@@ -313,7 +316,7 @@ export default function ThemeEditor() {
                           <ColorInput
                             value={field.value || "#1a1a1a"}
                             onChange={field.onChange}
-                            label="Muted text color"
+                            label="📝 Cor dos Textos Secundários - Cor de subtítulos e descrições"
                             testId="color-muted-text"
                           />
                           <FormMessage />
@@ -328,7 +331,10 @@ export default function ThemeEditor() {
               <AccordionItem value="typography" data-testid="accordion-typography">
                 <AccordionTrigger className="flex items-center space-x-2">
                   <Type className="h-4 w-4" />
-                  <span>Typography</span>
+                  <div>
+                    <span>🔤 Tipografia e Fontes</span>
+                    <p className="text-sm text-muted-foreground mt-1">Escolha as fontes que aparecerão em todo o sistema</p>
+                  </div>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-6">
                   <div className="space-y-6">
@@ -337,7 +343,7 @@ export default function ThemeEditor() {
                       name="sansSerifFont"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Sans-serif font</FormLabel>
+                          <FormLabel>📖 Fonte Principal - Usada em títulos, botões e textos importantes</FormLabel>
                           <FormControl>
                             <Select onValueChange={field.onChange} value={field.value} data-testid="select-sans-serif">
                               <SelectTrigger>
@@ -362,7 +368,7 @@ export default function ThemeEditor() {
                       name="serifFont"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Serif font</FormLabel>
+                          <FormLabel>📚 Fonte Elegante - Usada em textos longos e conteúdo especial</FormLabel>
                           <FormControl>
                             <Select onValueChange={field.onChange} value={field.value} data-testid="select-serif">
                               <SelectTrigger>
@@ -387,7 +393,7 @@ export default function ThemeEditor() {
                       name="monospaceFont"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Monospace font</FormLabel>
+                          <FormLabel>💻 Fonte de Código - Usada para números, códigos e dados técnicos</FormLabel>
                           <FormControl>
                             <Select onValueChange={field.onChange} value={field.value} data-testid="select-monospace">
                               <SelectTrigger>
@@ -414,7 +420,10 @@ export default function ThemeEditor() {
               <AccordionItem value="spacing" data-testid="accordion-spacing">
                 <AccordionTrigger className="flex items-center space-x-2">
                   <Layout className="h-4 w-4" />
-                  <span>Shape & Spacing</span>
+                  <div>
+                    <span>📐 Formato e Espaçamento</span>
+                    <p className="text-sm text-muted-foreground mt-1">Configure o arredondamento dos cantos dos elementos</p>
+                  </div>
                 </AccordionTrigger>
                 <AccordionContent>
                   <FormField
@@ -422,7 +431,7 @@ export default function ThemeEditor() {
                     name="borderRadius"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Border radius</FormLabel>
+                        <FormLabel>🔲 Arredondamento dos Cantos - Quanto mais alto, mais arredondados ficam os botões e cards</FormLabel>
                         <div className="flex items-center space-x-2">
                           <FormControl>
                             <Input
@@ -447,7 +456,10 @@ export default function ThemeEditor() {
               <AccordionItem value="actions" data-testid="accordion-actions">
                 <AccordionTrigger className="flex items-center space-x-2">
                   <MousePointer className="h-4 w-4" />
-                  <span>Actions</span>
+                  <div>
+                    <span>🎯 Botões e Ações</span>
+                    <p className="text-sm text-muted-foreground mt-1">Cores dos botões, links e elementos clicáveis</p>
+                  </div>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -460,7 +472,7 @@ export default function ThemeEditor() {
                           <ColorInput
                             value={field.value || "#277677"}
                             onChange={field.onChange}
-                            label="Primary background"
+                            label="🔵 Botão Principal (Fundo) - Cor dos botões mais importantes como 'Salvar'"
                             testId="color-primary-bg"
                           />
                           <FormMessage />
@@ -476,7 +488,7 @@ export default function ThemeEditor() {
                           <ColorInput
                             value={field.value || "#ffffff"}
                             onChange={field.onChange}
-                            label="Primary text"
+                            label="🔵 Botão Principal (Texto) - Cor do texto dentro dos botões principais"
                             testId="color-primary-text"
                           />
                           <FormMessage />
@@ -493,7 +505,7 @@ export default function ThemeEditor() {
                           <ColorInput
                             value={field.value || "#0f1419"}
                             onChange={field.onChange}
-                            label="Secondary background"
+                            label="⚫ Botão Secundário (Fundo) - Cor dos botões menos importantes"
                             testId="color-secondary-bg"
                           />
                           <FormMessage />
@@ -509,7 +521,7 @@ export default function ThemeEditor() {
                           <ColorInput
                             value={field.value || "#ffffff"}
                             onChange={field.onChange}
-                            label="Secondary text"
+                            label="⚫ Botão Secundário (Texto) - Cor do texto dos botões secundários"
                             testId="color-secondary-text"
                           />
                           <FormMessage />
@@ -526,7 +538,7 @@ export default function ThemeEditor() {
                           <ColorInput
                             value={field.value || "#e3ecf6"}
                             onChange={field.onChange}
-                            label="Accent background"
+                            label="⭐ Destaque (Fundo) - Cor de elementos em destaque como links e selecionados"
                             testId="color-accent-bg"
                           />
                           <FormMessage />
@@ -542,7 +554,7 @@ export default function ThemeEditor() {
                           <ColorInput
                             value={field.value || "#277677"}
                             onChange={field.onChange}
-                            label="Accent text"
+                            label="⭐ Destaque (Texto) - Cor do texto dos elementos em destaque"
                             testId="color-accent-text"
                           />
                           <FormMessage />
@@ -559,7 +571,7 @@ export default function ThemeEditor() {
                           <ColorInput
                             value={field.value || "#277677"}
                             onChange={field.onChange}
-                            label="Destructive background"
+                            label="🚫 Botão de Perigo (Fundo) - Cor dos botões perigosos como 'Excluir'"
                             testId="color-destructive-bg"
                           />
                           <FormMessage />
@@ -575,7 +587,7 @@ export default function ThemeEditor() {
                           <ColorInput
                             value={field.value || "#ffffff"}
                             onChange={field.onChange}
-                            label="Destructive text"
+                            label="🚫 Botão de Perigo (Texto) - Cor do texto dos botões perigosos"
                             testId="color-destructive-text"
                           />
                           <FormMessage />
@@ -590,7 +602,10 @@ export default function ThemeEditor() {
               <AccordionItem value="forms" data-testid="accordion-forms">
                 <AccordionTrigger className="flex items-center space-x-2">
                   <FormInput className="h-4 w-4" />
-                  <span>Forms</span>
+                  <div>
+                    <span>📝 Campos e Formulários</span>
+                    <p className="text-sm text-muted-foreground mt-1">Cores dos campos de texto, caixas de seleção e bordas</p>
+                  </div>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -602,7 +617,7 @@ export default function ThemeEditor() {
                           <ColorInput
                             value={field.value || "#f7f9fa"}
                             onChange={field.onChange}
-                            label="Input background"
+                            label="📋 Fundo dos Campos - Cor de fundo das caixas de texto e seleção"
                             testId="color-input-bg"
                           />
                           <FormMessage />
@@ -618,7 +633,7 @@ export default function ThemeEditor() {
                           <ColorInput
                             value={field.value || "#e1eaef"}
                             onChange={field.onChange}
-                            label="Input border"
+                            label="🔲 Borda dos Campos - Cor da borda ao redor dos campos de texto"
                             testId="color-input-border"
                           />
                           <FormMessage />
@@ -634,7 +649,7 @@ export default function ThemeEditor() {
                           <ColorInput
                             value={field.value || "#277677"}
                             onChange={field.onChange}
-                            label="Focus border"
+                            label="🎯 Borda Ativa - Cor da borda quando você clica em um campo"
                             testId="color-focus-border"
                           />
                           <FormMessage />
@@ -649,7 +664,10 @@ export default function ThemeEditor() {
               <AccordionItem value="containers" data-testid="accordion-containers">
                 <AccordionTrigger className="flex items-center space-x-2">
                   <Package className="h-4 w-4" />
-                  <span>Containers</span>
+                  <div>
+                    <span>📦 Cards e Janelas</span>
+                    <p className="text-sm text-muted-foreground mt-1">Cores dos cartões, janelas e caixas de conteúdo</p>
+                  </div>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -661,7 +679,7 @@ export default function ThemeEditor() {
                           <ColorInput
                             value={field.value || "#ffffff"}
                             onChange={field.onChange}
-                            label="Card background"
+                            label="🗃️ Fundo dos Cards - Cor de fundo dos cartões e caixas de informação"
                             testId="color-card-bg"
                           />
                           <FormMessage />
@@ -677,7 +695,7 @@ export default function ThemeEditor() {
                           <ColorInput
                             value={field.value || "#1a1a1a"}
                             onChange={field.onChange}
-                            label="Card text"
+                            label="🗃️ Texto dos Cards - Cor do texto dentro dos cards"
                             testId="color-card-text"
                           />
                           <FormMessage />
@@ -693,7 +711,7 @@ export default function ThemeEditor() {
                           <ColorInput
                             value={field.value || "#ffffff"}
                             onChange={field.onChange}
-                            label="Popover background"
+                            label="💬 Fundo das Janelas - Cor das janelas que aparecem sobre o conteúdo"
                             testId="color-popover-bg"
                           />
                           <FormMessage />
@@ -709,7 +727,7 @@ export default function ThemeEditor() {
                           <ColorInput
                             value={field.value || "#1a1a1a"}
                             onChange={field.onChange}
-                            label="Popover text"
+                            label="💬 Texto das Janelas - Cor do texto das janelas flutuantes"
                             testId="color-popover-text"
                           />
                           <FormMessage />
@@ -724,7 +742,10 @@ export default function ThemeEditor() {
               <AccordionItem value="charts" data-testid="accordion-charts">
                 <AccordionTrigger className="flex items-center space-x-2">
                   <BarChart3 className="h-4 w-4" />
-                  <span>Charts</span>
+                  <div>
+                    <span>📊 Gráficos e Estatísticas</span>
+                    <p className="text-sm text-muted-foreground mt-1">Cores das barras, linhas e elementos dos gráficos</p>
+                  </div>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -736,7 +757,7 @@ export default function ThemeEditor() {
                           <ColorInput
                             value={field.value || "#277677"}
                             onChange={field.onChange}
-                            label="Chart 1"
+                            label="📈 Gráfico Cor 1 - Primeira cor usada em gráficos e estatísticas"
                             testId="color-chart-1"
                           />
                           <FormMessage />
@@ -752,7 +773,7 @@ export default function ThemeEditor() {
                           <ColorInput
                             value={field.value || "#277677"}
                             onChange={field.onChange}
-                            label="Chart 2"
+                            label="📈 Gráfico Cor 2 - Segunda cor usada em gráficos"
                             testId="color-chart-2"
                           />
                           <FormMessage />
@@ -768,7 +789,7 @@ export default function ThemeEditor() {
                           <ColorInput
                             value={field.value || "#277677"}
                             onChange={field.onChange}
-                            label="Chart 3"
+                            label="📈 Gráfico Cor 3 - Terceira cor usada em gráficos"
                             testId="color-chart-3"
                           />
                           <FormMessage />
@@ -784,7 +805,7 @@ export default function ThemeEditor() {
                           <ColorInput
                             value={field.value || "#277677"}
                             onChange={field.onChange}
-                            label="Chart 4"
+                            label="📈 Gráfico Cor 4 - Quarta cor usada em gráficos"
                             testId="color-chart-4"
                           />
                           <FormMessage />
@@ -800,7 +821,7 @@ export default function ThemeEditor() {
                           <ColorInput
                             value={field.value || "#277677"}
                             onChange={field.onChange}
-                            label="Chart 5"
+                            label="📈 Gráfico Cor 5 - Quinta cor usada em gráficos"
                             testId="color-chart-5"
                           />
                           <FormMessage />
@@ -820,7 +841,7 @@ export default function ThemeEditor() {
                 data-testid="button-save-theme"
               >
                 <Save className="h-4 w-4" />
-                <span>{saveThemeMutation.isPending ? "Salvando..." : "Salvar Tema"}</span>
+                <span>{saveThemeMutation.isPending ? "Salvando Alterações..." : "💾 Aplicar Tema"}</span>
               </Button>
             </div>
           </form>
