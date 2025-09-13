@@ -328,14 +328,14 @@ export default function ContactSubmissions() {
                       >
                         <Eye className="h-4 w-4" />
                       </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
+                      <button
                         onClick={() => handleWhatsApp(submission)}
                         data-testid={`button-whatsapp-${submission.id}`}
+                        className="p-1 hover:bg-gray-100 rounded transition-colors"
+                        title="Enviar mensagem no WhatsApp"
                       >
-                        <WhatsAppIcon className="h-4 w-4" />
-                      </Button>
+                        <WhatsAppIcon className="h-5 w-5" />
+                      </button>
                       <Button
                         variant="outline"
                         size="sm"
