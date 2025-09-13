@@ -233,7 +233,12 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getPlans(): Promise<Plan[]> {
-    return await db.select().from(schema.plans).orderBy(desc(schema.plans.createdAt));
+    try {
+      return await db.select().from(schema.plans);
+    } catch (error) {
+      console.error("Error in getPlans():", error);
+      throw error;
+    }
   }
 
   // Network unit methods

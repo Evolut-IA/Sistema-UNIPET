@@ -1,7 +1,10 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, timestamp, integer, boolean, decimal, json } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, timestamp, integer, boolean, decimal, json, pgEnum } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+
+// Enums
+export const planTypeEnum = pgEnum("plan_type_enum", ["with_waiting_period", "without_waiting_period"]);
 
 // Users table for authentication and administration
 export const users = pgTable("users", {
@@ -72,7 +75,7 @@ export const plans = pgTable("plans", {
   buttonText: text("button_text").notNull().default("Contratar Plano"),
   displayOrder: integer("display_order").notNull().default(0),
   price: integer("price").notNull().default(0),
-  planType: text("plan_type").notNull().default("with_waiting_period"),
+  planType: planTypeEnum("plan_type").notNull().default("with_waiting_period"),
 });
 
 // Network Units table
@@ -82,7 +85,7 @@ export const networkUnits = pgTable("network_units", {
   address: text("address").notNull(),
   phone: text("phone").notNull(),
   services: text("services").array().default([]),
-  imageUrl: text("image_url"),
+  imageUrl: text("image_url").notNull(),
   isActive: boolean("is_active").default(true),
   whatsapp: text("whatsapp"),
   googleMapsUrl: text("google_maps_url"),
@@ -95,6 +98,7 @@ export const faqItems = pgTable("faq_items", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   question: text("question").notNull(),
   answer: text("answer").notNull(),
+  displayOrder: integer("display_order").notNull(),
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
 });
