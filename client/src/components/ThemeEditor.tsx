@@ -8,10 +8,11 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { insertThemeSettingsSchema } from "@shared/schema";
-import { Palette, Type, Layout, MousePointer, FormInput, Package, BarChart3, Save } from "lucide-react";
+import { Palette, Type, Layout, MousePointer, FormInput, Package, BarChart3, Save, Pipette } from "lucide-react";
 
 // Predefined font options
 const fontOptions = [
@@ -43,27 +44,109 @@ const monospaceFontOptions = [
   { value: "Source Code Pro", label: "Source Code Pro" },
 ];
 
-// Color input component with picker
+// Color input component with clean picker
 const ColorInput = ({ value, onChange, label, testId }: {
   value: string;
   onChange: (value: string) => void;
   label: string;
   testId: string;
 }) => {
+  const [open, setOpen] = useState(false);
+  const [hexInput, setHexInput] = useState(value);
+
+  useEffect(() => {
+    setHexInput(value);
+  }, [value]);
+
+  const handleHexChange = (newHex: string) => {
+    // Ensure the hex starts with # and is valid
+    let formattedHex = newHex;
+    if (!formattedHex.startsWith('#')) {
+      formattedHex = '#' + formattedHex;
+    }
+    
+    // Validate hex color
+    if (/^#[0-9A-F]{6}$/i.test(formattedHex)) {
+      setHexInput(formattedHex);
+      onChange(formattedHex);
+    } else if (formattedHex.length <= 7) {
+      setHexInput(formattedHex);
+    }
+  };
+
+  const handleColorPickerChange = (newColor: string) => {
+    setHexInput(newColor);
+    onChange(newColor);
+  };
+
   return (
     <div className="flex items-center space-x-3">
-      <div 
-        className="w-10 h-10 rounded border cursor-pointer flex-shrink-0"
-        style={{ backgroundColor: value }}
-      >
-        <input
-          type="color"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          className="w-full h-full opacity-0 cursor-pointer"
-          data-testid={testId}
-        />
-      </div>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <div 
+            className="w-10 h-10 rounded-lg border-2 border-muted cursor-pointer flex-shrink-0 transition-all duration-200 hover:scale-105 hover:shadow-md"
+            style={{ backgroundColor: value }}
+            data-testid={testId}
+          />
+        </PopoverTrigger>
+        <PopoverContent className="w-80 p-4" align="start">
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <Pipette className="h-4 w-4 text-muted-foreground" />
+              <h4 className="font-medium text-sm">Escolher Cor</h4>
+            </div>
+            
+            <div className="space-y-3">
+              <div>
+                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                  Código HEX
+                </label>
+                <Input
+                  value={hexInput}
+                  onChange={(e) => handleHexChange(e.target.value)}
+                  placeholder="#000000"
+                  className="mt-1 font-mono text-sm"
+                  maxLength={7}
+                />
+              </div>
+              
+              <div>
+                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                  Seletor Visual
+                </label>
+                <div className="mt-2 relative">
+                  <input
+                    type="color"
+                    value={value}
+                    onChange={(e) => handleColorPickerChange(e.target.value)}
+                    className="w-full h-12 rounded-md border border-input cursor-pointer"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-2 border-t">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <div 
+                      className="w-6 h-6 rounded border"
+                      style={{ backgroundColor: value }}
+                    />
+                    <span className="text-sm font-mono text-muted-foreground">{value}</span>
+                  </div>
+                  <Button 
+                    size="sm" 
+                    onClick={() => setOpen(false)}
+                    className="text-xs px-3 py-1 h-7"
+                  >
+                    Pronto
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </PopoverContent>
+      </Popover>
+      
       <div className="flex-1">
         <label className="text-sm font-medium text-foreground">{label}</label>
       </div>
