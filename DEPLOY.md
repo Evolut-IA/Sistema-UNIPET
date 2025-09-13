@@ -79,20 +79,24 @@ Se houver problemas no deploy:
    - ✅ **CORRIGIDO**: Plugins do Replit agora são importados condicionalmente apenas em desenvolvimento
    - Em produção, apenas o plugin React é usado
 
-4. **Erro 404 - Página não encontrada**
+4. **Erro "Cannot find module '@tailwindcss/typography'"**
+   - ✅ **CORRIGIDO**: Movido `@tailwindcss/typography` para `dependencies`
+   - Plugin necessário para o build do Tailwind CSS
+
+5. **Erro 404 - Página não encontrada**
    - ✅ **CORRIGIDO**: Caminho dos arquivos estáticos corrigido de `public` para `dist/public`
 
-5. **Erro de conexão com banco de dados**
+6. **Erro de conexão com banco de dados**
    - Verifique se `DATABASE_URL` está configurada corretamente
    - Confirme se o banco PostgreSQL está acessível
    - Verifique se as credenciais estão corretas
 
-6. **Servidor não inicia**
+7. **Servidor não inicia**
    - Verifique se todas as variáveis de ambiente obrigatórias estão configuradas
    - Confirme se a porta está disponível (definida automaticamente pelo EasyPanel)
    - Verifique os logs de inicialização
 
-7. **Build falha**
+8. **Build falha**
    - Verifique se todas as dependências estão no `package.json`
    - Confirme se o Node.js versão >=18 está sendo usado
 
