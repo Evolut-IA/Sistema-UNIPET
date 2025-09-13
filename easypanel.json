@@ -1,0 +1,22 @@
+{
+  "name": "sistema-unipet",
+  "description": "Sistema de gerenciamento para pets",
+  "type": "service",
+  "buildpack": "heroku/builder:24",
+  "buildpacks": [
+    "heroku/nodejs"
+  ],
+  "environment": {
+    "NODE_ENV": "production",
+    "PORT": "3000"
+  },
+  "ports": [
+    {
+      "port": 3000,
+      "protocol": "http"
+    }
+  ],
+  "volumes": [],
+  "networks": [],
+  "restart": "unless-stopped"
+}
