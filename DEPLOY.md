@@ -75,20 +75,24 @@ Se houver problemas no deploy:
    - ✅ **CORRIGIDO**: Movidas dependências de build para `dependencies`
    - Vite, esbuild, TypeScript e outras ferramentas de build agora são instaladas em produção
 
-3. **Erro 404 - Página não encontrada**
+3. **Erro "Cannot find package '@replit/vite-plugin-runtime-error-modal'"**
+   - ✅ **CORRIGIDO**: Plugins do Replit agora são importados condicionalmente apenas em desenvolvimento
+   - Em produção, apenas o plugin React é usado
+
+4. **Erro 404 - Página não encontrada**
    - ✅ **CORRIGIDO**: Caminho dos arquivos estáticos corrigido de `public` para `dist/public`
 
-4. **Erro de conexão com banco de dados**
+5. **Erro de conexão com banco de dados**
    - Verifique se `DATABASE_URL` está configurada corretamente
    - Confirme se o banco PostgreSQL está acessível
    - Verifique se as credenciais estão corretas
 
-5. **Servidor não inicia**
+6. **Servidor não inicia**
    - Verifique se todas as variáveis de ambiente obrigatórias estão configuradas
    - Confirme se a porta está disponível (definida automaticamente pelo EasyPanel)
    - Verifique os logs de inicialização
 
-6. **Build falha**
+7. **Build falha**
    - Verifique se todas as dependências estão no `package.json`
    - Confirme se o Node.js versão >=18 está sendo usado
 
