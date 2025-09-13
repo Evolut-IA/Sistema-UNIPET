@@ -404,7 +404,7 @@ export default function PlanForm() {
                           />
                         </div>
 
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-end space-x-2" style={{ marginTop: '1.5rem' }}>
                           <div className="flex items-center space-x-2">
                             <Switch
                               checked={procedure.isIncluded}
