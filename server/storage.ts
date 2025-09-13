@@ -1,5 +1,5 @@
-import { drizzle } from "drizzle-orm/neon-http";
-import { neon } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 import * as schema from "@shared/schema";
 import { eq, like, or, desc, count } from "drizzle-orm";
 import type {
@@ -15,7 +15,12 @@ import type {
   Guide, InsertGuide
 } from "@shared/schema";
 
-const sql = neon(process.env.DATABASE_URL!);
+const sql = postgres(process.env.DATABASE_URL!, { 
+  ssl: 'require',
+  max: 10,
+  idle_timeout: 20,
+  connect_timeout: 10
+});
 const db = drizzle(sql, { schema });
 
 export interface IStorage {

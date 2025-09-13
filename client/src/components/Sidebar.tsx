@@ -72,19 +72,19 @@ export default function Sidebar() {
               {section.items.map((item) => {
                 const isActive = location === item.href;
                 return (
-                  <Link key={item.name} href={item.href}>
-                    <a
-                      className={cn(
-                        "flex items-center px-3 py-2 text-sm rounded-lg transition-colors",
-                        isActive
-                          ? "bg-primary text-primary-foreground"
-                          : "text-subtitulo hover:bg-accent hover:text-accent-foreground"
-                      )}
-                      data-testid={`link-${item.name.toLowerCase().replace(/\s+/g, '-')}`}
-                    >
-                      <item.icon className="h-5 w-5 mr-3" />
-                      {item.name}
-                    </a>
+                  <Link 
+                    key={item.name} 
+                    href={item.href}
+                    className={cn(
+                      "flex items-center px-3 py-2 text-sm rounded-lg transition-colors",
+                      isActive
+                        ? "bg-primary text-primary-foreground"
+                        : "text-subtitulo hover:bg-accent hover:text-accent-foreground"
+                    )}
+                    data-testid={`link-${item.name.toLowerCase().replace(/\s+/g, '-')}`}
+                  >
+                    <item.icon className="h-5 w-5 mr-3" />
+                    {item.name}
                   </Link>
                 );
               })}
