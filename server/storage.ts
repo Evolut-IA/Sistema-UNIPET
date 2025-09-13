@@ -340,13 +340,25 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateSiteSettings(settings: InsertSiteSettings): Promise<SiteSettings> {
-    const existing = await this.getSiteSettings();
-    if (existing) {
-      const result = await db.update(schema.siteSettings).set(settings).where(eq(schema.siteSettings.id, existing.id)).returning();
-      return result[0];
-    } else {
-      const result = await db.insert(schema.siteSettings).values(settings).returning();
-      return result[0];
+    try {
+      console.log("Updating site settings with data:", settings);
+      const existing = await this.getSiteSettings();
+      console.log("Existing settings found:", !!existing);
+      
+      if (existing) {
+        console.log("Updating existing settings with ID:", existing.id);
+        const result = await db.update(schema.siteSettings).set(settings).where(eq(schema.siteSettings.id, existing.id)).returning();
+        console.log("Update result:", result[0]);
+        return result[0];
+      } else {
+        console.log("No existing settings found, creating new record");
+        const result = await db.insert(schema.siteSettings).values(settings).returning();
+        console.log("Insert result:", result[0]);
+        return result[0];
+      }
+    } catch (error) {
+      console.error("Error in updateSiteSettings:", error);
+      throw error;
     }
   }
 

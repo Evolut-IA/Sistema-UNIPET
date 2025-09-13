@@ -465,7 +465,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(settings);
     } catch (error) {
       console.error("Error fetching site settings:", error);
-      res.status(500).json({ message: "Failed to fetch site settings" });
+      
+      // Em caso de erro, retorna dados padrão em vez de erro 500
+      const defaultSettings = {
+        whatsapp: "",
+        email: "",
+        phone: "",
+        instagramUrl: "",
+        facebookUrl: "",
+        linkedinUrl: "",
+        youtubeUrl: "",
+        cnpj: "",
+        businessHours: "",
+        ourStory: "",
+        privacyPolicy: "",
+        termsOfUse: "",
+        address: "",
+        mainImage: "",
+        networkImage: "",
+        aboutImage: "",
+        cores: {}
+      };
+      console.log("Error occurred, returning default settings:", defaultSettings);
+      res.json(defaultSettings);
     }
   });
 

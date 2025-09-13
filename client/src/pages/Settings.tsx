@@ -22,6 +22,19 @@ export default function Settings() {
 
   const { data: siteSettings, isLoading: siteLoading, error: siteError } = useQuery({
     queryKey: ["/api/settings/site"],
+    queryFn: () => apiRequest("GET", "/api/settings/site"),
+    retry: 3,
+    retryDelay: 1000,
+    staleTime: 5 * 60 * 1000, // 5 minutos
+  });
+
+  // Debug logs
+  console.log("Settings page - Query state:", { 
+    siteSettings, 
+    isLoading: siteLoading, 
+    error: siteError,
+    hasData: !!siteSettings,
+    dataKeys: siteSettings ? Object.keys(siteSettings) : []
   });
 
 
@@ -72,8 +85,12 @@ export default function Settings() {
 
   // Update forms when data loads
   useEffect(() => {
-    console.log("Site settings received:", siteSettings);
-    if (siteSettings && typeof siteSettings === 'object') {
+    console.log("useEffect triggered - Site settings received:", siteSettings);
+    console.log("useEffect - isLoading:", siteLoading, "error:", siteError);
+    
+    if (siteSettings && typeof siteSettings === 'object' && !siteLoading) {
+      console.log("Processing site settings for form reset...");
+      
       // Merge with default values to ensure all fields are present
       const mergedSettings = {
         whatsapp: (siteSettings as any).whatsapp || "",
@@ -94,10 +111,20 @@ export default function Settings() {
         aboutImage: (siteSettings as any).aboutImage || "",
         cores: (siteSettings as any).cores || {},
       };
-      console.log("Merged settings:", mergedSettings);
-      siteForm.reset(mergedSettings);
+      
+      console.log("Merged settings for form reset:", mergedSettings);
+      console.log("Resetting form with merged settings...");
+      
+      try {
+        siteForm.reset(mergedSettings);
+        console.log("Form reset completed successfully");
+      } catch (error) {
+        console.error("Error resetting form:", error);
+      }
+    } else if (!siteLoading && !siteError) {
+      console.log("No site settings data available, keeping default values");
     }
-  }, [siteSettings, siteForm]);
+  }, [siteSettings, siteLoading, siteError, siteForm]);
 
 
   const onSubmitSite = (data: any) => {
