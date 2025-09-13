@@ -66,13 +66,6 @@ const ColorInput = ({ value, onChange, label, testId }: {
       </div>
       <div className="flex-1">
         <label className="text-sm font-medium text-foreground">{label}</label>
-        <Input
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder="#000000"
-          className="mt-1"
-          data-testid={`${testId}-input`}
-        />
       </div>
     </div>
   );
