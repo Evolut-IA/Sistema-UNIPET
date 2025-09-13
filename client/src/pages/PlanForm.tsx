@@ -361,7 +361,7 @@ export default function PlanForm() {
               <Card key={field.id}>
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle className="text-foreground">
-                    Procedimentos - {benefitName || `Benefício ${index + 1}`}
+                    {benefitName || `Benefício ${index + 1}`}
                   </CardTitle>
                   <Button
                     type="button"
