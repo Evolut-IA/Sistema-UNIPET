@@ -64,21 +64,15 @@ export const pets = pgTable("pets", {
 export const plans = pgTable("plans", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: text("name").notNull(),
-  price: decimal("price").notNull(),
-  planType: text("plan_type").notNull(), // 'com_coparticipacao' or 'sem_coparticipacao'
-  features: json("features").$type<string[]>().default([]),
-  modalidadesDePagamento: json("modalidades_de_pagamento").$type<string[]>().default([]), // 'mensal', 'anual', 'ambos'
-  tiposDePagamento: json("tipos_de_pagamento").$type<{
-    mensal: string[],
-    anual: string[]
-  }>().default({ mensal: [], anual: [] }),
-  procedures: json("procedures").$type<{
-    section: string,
-    name: string,
-    price: number
-  }[]>().default([]),
-  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
-  isActive: boolean("is_active").default(true),
+  description: text("description").notNull(),
+  features: text("features").array().notNull().default([]),
+  image: text("image").notNull(),
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().default(sql`now()`),
+  buttonText: text("button_text").notNull().default("Contratar Plano"),
+  displayOrder: integer("display_order").notNull().default(0),
+  price: integer("price").notNull().default(0),
+  planType: text("plan_type").notNull().default("with_waiting_period"),
 });
 
 // Network Units table
@@ -87,11 +81,12 @@ export const networkUnits = pgTable("network_units", {
   name: text("name").notNull(),
   address: text("address").notNull(),
   phone: text("phone").notNull(),
-  services: json("services").$type<string[]>().default([]),
+  services: text("services").array().default([]),
   imageUrl: text("image_url"),
   isActive: boolean("is_active").default(true),
   whatsapp: text("whatsapp"),
   googleMapsUrl: text("google_maps_url"),
+  imageData: text("image_data"),
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
@@ -181,17 +176,17 @@ export const insertSiteSettingsSchema = createInsertSchema(siteSettings).omit({ 
 export const insertChatSettingsSchema = createInsertSchema(chatSettings).omit({ id: true });
 export const insertGuideSchema = createInsertSchema(guides).omit({ id: true, createdAt: true, updatedAt: true });
 
-// Types
-export type InsertUser = z.infer<typeof insertUserSchema>;
-export type InsertClient = z.infer<typeof insertClientSchema>;
-export type InsertPet = z.infer<typeof insertPetSchema>;
-export type InsertPlan = z.infer<typeof insertPlanSchema>;
-export type InsertNetworkUnit = z.infer<typeof insertNetworkUnitSchema>;
-export type InsertFaqItem = z.infer<typeof insertFaqItemSchema>;
-export type InsertContactSubmission = z.infer<typeof insertContactSubmissionSchema>;
-export type InsertSiteSettings = z.infer<typeof insertSiteSettingsSchema>;
-export type InsertChatSettings = z.infer<typeof insertChatSettingsSchema>;
-export type InsertGuide = z.infer<typeof insertGuideSchema>;
+// Types - Using Drizzle's $inferInsert for storage compatibility
+export type InsertUser = typeof users.$inferInsert;
+export type InsertClient = typeof clients.$inferInsert;
+export type InsertPet = typeof pets.$inferInsert;
+export type InsertPlan = typeof plans.$inferInsert;
+export type InsertNetworkUnit = typeof networkUnits.$inferInsert;
+export type InsertFaqItem = typeof faqItems.$inferInsert;
+export type InsertContactSubmission = typeof contactSubmissions.$inferInsert;
+export type InsertSiteSettings = typeof siteSettings.$inferInsert;
+export type InsertChatSettings = typeof chatSettings.$inferInsert;
+export type InsertGuide = typeof guides.$inferInsert;
 
 export type User = typeof users.$inferSelect;
 export type Client = typeof clients.$inferSelect;
