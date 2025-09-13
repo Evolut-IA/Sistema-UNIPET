@@ -1,0 +1,18 @@
+:root {
+  /* ESTILO 1 - BACKGROUNDS */
+  --secao-fundo-bg: hsl(28, 18%, 97%);
+  --container-bg: hsl(0, 0%, 100%);
+  
+  /* ESTILO 1 - BOTÕES */
+  --btn-bg: hsl(181, 48%, 31%);
+  --btn-text: hsl(0, 0%, 100%);
+  --btn-icon: hsl(0, 0%, 100%);
+  
+  /* ESTILO 1 - TEXTOS */
+  --titulo-text: hsl(0, 0%, 4%);
+  --subtitulo-text: hsl(0, 0%, 12%);
+  --texto-principal: hsl(0, 0%, 2%);
+  
+  /* ESTILO 1 - ÍCONES */
+  --icon-color: hsl(181, 48%, 31%);
+}

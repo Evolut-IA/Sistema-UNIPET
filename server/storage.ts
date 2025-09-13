@@ -1,0 +1,404 @@
+import { drizzle } from "drizzle-orm/neon-http";
+import { neon } from "@neondatabase/serverless";
+import * as schema from "@shared/schema";
+import { eq, like, or, desc, count } from "drizzle-orm";
+import type {
+  User, InsertUser,
+  Client, InsertClient,
+  Pet, InsertPet,
+  Plan, InsertPlan,
+  NetworkUnit, InsertNetworkUnit,
+  FaqItem, InsertFaqItem,
+  ContactSubmission, InsertContactSubmission,
+  SiteSettings, InsertSiteSettings,
+  ChatSettings, InsertChatSettings,
+  Guide, InsertGuide
+} from "@shared/schema";
+
+const sql = neon(process.env.DATABASE_URL!);
+const db = drizzle(sql, { schema });
+
+export interface IStorage {
+  // User methods
+  getUser(id: string): Promise<User | undefined>;
+  getUserByUsername(username: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
+  createUser(user: InsertUser): Promise<User>;
+  updateUser(id: string, updates: Partial<InsertUser>): Promise<User | undefined>;
+  deleteUser(id: string): Promise<boolean>;
+  getUsers(): Promise<User[]>;
+
+  // Client methods
+  getClient(id: string): Promise<Client | undefined>;
+  getClientByCpf(cpf: string): Promise<Client | undefined>;
+  searchClients(query: string): Promise<Client[]>;
+  createClient(client: InsertClient): Promise<Client>;
+  updateClient(id: string, updates: Partial<InsertClient>): Promise<Client | undefined>;
+  deleteClient(id: string): Promise<boolean>;
+  getClients(): Promise<Client[]>;
+
+  // Pet methods
+  getPet(id: string): Promise<Pet | undefined>;
+  getPetsByClient(clientId: string): Promise<Pet[]>;
+  createPet(pet: InsertPet): Promise<Pet>;
+  updatePet(id: string, updates: Partial<InsertPet>): Promise<Pet | undefined>;
+  deletePet(id: string): Promise<boolean>;
+  getPets(): Promise<Pet[]>;
+
+  // Plan methods
+  getPlan(id: string): Promise<Plan | undefined>;
+  getActivePlans(): Promise<Plan[]>;
+  createPlan(plan: InsertPlan): Promise<Plan>;
+  updatePlan(id: string, updates: Partial<InsertPlan>): Promise<Plan | undefined>;
+  deletePlan(id: string): Promise<boolean>;
+  getPlans(): Promise<Plan[]>;
+
+  // Network unit methods
+  getNetworkUnit(id: string): Promise<NetworkUnit | undefined>;
+  getActiveNetworkUnits(): Promise<NetworkUnit[]>;
+  createNetworkUnit(unit: InsertNetworkUnit): Promise<NetworkUnit>;
+  updateNetworkUnit(id: string, updates: Partial<InsertNetworkUnit>): Promise<NetworkUnit | undefined>;
+  deleteNetworkUnit(id: string): Promise<boolean>;
+  getNetworkUnits(): Promise<NetworkUnit[]>;
+
+  // FAQ methods
+  getFaqItem(id: string): Promise<FaqItem | undefined>;
+  getActiveFaqItems(): Promise<FaqItem[]>;
+  createFaqItem(item: InsertFaqItem): Promise<FaqItem>;
+  updateFaqItem(id: string, updates: Partial<InsertFaqItem>): Promise<FaqItem | undefined>;
+  deleteFaqItem(id: string): Promise<boolean>;
+  getFaqItems(): Promise<FaqItem[]>;
+
+  // Contact submission methods
+  getContactSubmission(id: string): Promise<ContactSubmission | undefined>;
+  createContactSubmission(submission: InsertContactSubmission): Promise<ContactSubmission>;
+  getContactSubmissions(): Promise<ContactSubmission[]>;
+  deleteContactSubmission(id: string): Promise<boolean>;
+
+  // Site settings methods
+  getSiteSettings(): Promise<SiteSettings | undefined>;
+  updateSiteSettings(settings: InsertSiteSettings): Promise<SiteSettings>;
+
+  // Chat settings methods
+  getChatSettings(): Promise<ChatSettings | undefined>;
+  updateChatSettings(settings: InsertChatSettings): Promise<ChatSettings>;
+
+  // Guide methods
+  getGuide(id: string): Promise<Guide | undefined>;
+  getGuidesByClient(clientId: string): Promise<Guide[]>;
+  createGuide(guide: InsertGuide): Promise<Guide>;
+  updateGuide(id: string, updates: Partial<InsertGuide>): Promise<Guide | undefined>;
+  deleteGuide(id: string): Promise<boolean>;
+  getGuides(): Promise<Guide[]>;
+  getRecentGuides(limit?: number): Promise<Guide[]>;
+
+  // Dashboard analytics
+  getDashboardStats(): Promise<{
+    activeClients: number;
+    registeredPets: number;
+    openGuides: number;
+    monthlyRevenue: number;
+  }>;
+}
+
+export class DatabaseStorage implements IStorage {
+  // User methods
+  async getUser(id: string): Promise<User | undefined> {
+    const result = await db.select().from(schema.users).where(eq(schema.users.id, id));
+    return result[0];
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const result = await db.select().from(schema.users).where(eq(schema.users.username, username));
+    return result[0];
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const result = await db.select().from(schema.users).where(eq(schema.users.email, email));
+    return result[0];
+  }
+
+  async createUser(user: InsertUser): Promise<User> {
+    const result = await db.insert(schema.users).values(user).returning();
+    return result[0];
+  }
+
+  async updateUser(id: string, updates: Partial<InsertUser>): Promise<User | undefined> {
+    const result = await db.update(schema.users).set(updates).where(eq(schema.users.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteUser(id: string): Promise<boolean> {
+    const result = await db.delete(schema.users).where(eq(schema.users.id, id));
+    return result.rowCount > 0;
+  }
+
+  async getUsers(): Promise<User[]> {
+    return await db.select().from(schema.users).orderBy(desc(schema.users.createdAt));
+  }
+
+  // Client methods
+  async getClient(id: string): Promise<Client | undefined> {
+    const result = await db.select().from(schema.clients).where(eq(schema.clients.id, id));
+    return result[0];
+  }
+
+  async getClientByCpf(cpf: string): Promise<Client | undefined> {
+    const result = await db.select().from(schema.clients).where(eq(schema.clients.cpf, cpf));
+    return result[0];
+  }
+
+  async searchClients(query: string): Promise<Client[]> {
+    return await db.select().from(schema.clients).where(
+      or(
+        like(schema.clients.fullName, `%${query}%`),
+        like(schema.clients.cpf, `%${query}%`),
+        like(schema.clients.email, `%${query}%`),
+        like(schema.clients.phone, `%${query}%`)
+      )
+    );
+  }
+
+  async createClient(client: InsertClient): Promise<Client> {
+    const result = await db.insert(schema.clients).values(client).returning();
+    return result[0];
+  }
+
+  async updateClient(id: string, updates: Partial<InsertClient>): Promise<Client | undefined> {
+    const result = await db.update(schema.clients).set(updates).where(eq(schema.clients.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteClient(id: string): Promise<boolean> {
+    const result = await db.delete(schema.clients).where(eq(schema.clients.id, id));
+    return result.rowCount > 0;
+  }
+
+  async getClients(): Promise<Client[]> {
+    return await db.select().from(schema.clients).orderBy(desc(schema.clients.createdAt));
+  }
+
+  // Pet methods
+  async getPet(id: string): Promise<Pet | undefined> {
+    const result = await db.select().from(schema.pets).where(eq(schema.pets.id, id));
+    return result[0];
+  }
+
+  async getPetsByClient(clientId: string): Promise<Pet[]> {
+    return await db.select().from(schema.pets).where(eq(schema.pets.clientId, clientId));
+  }
+
+  async createPet(pet: InsertPet): Promise<Pet> {
+    const result = await db.insert(schema.pets).values(pet).returning();
+    return result[0];
+  }
+
+  async updatePet(id: string, updates: Partial<InsertPet>): Promise<Pet | undefined> {
+    const result = await db.update(schema.pets).set(updates).where(eq(schema.pets.id, id)).returning();
+    return result[0];
+  }
+
+  async deletePet(id: string): Promise<boolean> {
+    const result = await db.delete(schema.pets).where(eq(schema.pets.id, id));
+    return result.rowCount > 0;
+  }
+
+  async getPets(): Promise<Pet[]> {
+    return await db.select().from(schema.pets).orderBy(desc(schema.pets.createdAt));
+  }
+
+  // Plan methods
+  async getPlan(id: string): Promise<Plan | undefined> {
+    const result = await db.select().from(schema.plans).where(eq(schema.plans.id, id));
+    return result[0];
+  }
+
+  async getActivePlans(): Promise<Plan[]> {
+    return await db.select().from(schema.plans).where(eq(schema.plans.isActive, true));
+  }
+
+  async createPlan(plan: InsertPlan): Promise<Plan> {
+    const result = await db.insert(schema.plans).values(plan).returning();
+    return result[0];
+  }
+
+  async updatePlan(id: string, updates: Partial<InsertPlan>): Promise<Plan | undefined> {
+    const result = await db.update(schema.plans).set(updates).where(eq(schema.plans.id, id)).returning();
+    return result[0];
+  }
+
+  async deletePlan(id: string): Promise<boolean> {
+    const result = await db.delete(schema.plans).where(eq(schema.plans.id, id));
+    return result.rowCount > 0;
+  }
+
+  async getPlans(): Promise<Plan[]> {
+    return await db.select().from(schema.plans).orderBy(desc(schema.plans.createdAt));
+  }
+
+  // Network unit methods
+  async getNetworkUnit(id: string): Promise<NetworkUnit | undefined> {
+    const result = await db.select().from(schema.networkUnits).where(eq(schema.networkUnits.id, id));
+    return result[0];
+  }
+
+  async getActiveNetworkUnits(): Promise<NetworkUnit[]> {
+    return await db.select().from(schema.networkUnits).where(eq(schema.networkUnits.isActive, true));
+  }
+
+  async createNetworkUnit(unit: InsertNetworkUnit): Promise<NetworkUnit> {
+    const result = await db.insert(schema.networkUnits).values(unit).returning();
+    return result[0];
+  }
+
+  async updateNetworkUnit(id: string, updates: Partial<InsertNetworkUnit>): Promise<NetworkUnit | undefined> {
+    const result = await db.update(schema.networkUnits).set(updates).where(eq(schema.networkUnits.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteNetworkUnit(id: string): Promise<boolean> {
+    const result = await db.delete(schema.networkUnits).where(eq(schema.networkUnits.id, id));
+    return result.rowCount > 0;
+  }
+
+  async getNetworkUnits(): Promise<NetworkUnit[]> {
+    return await db.select().from(schema.networkUnits).orderBy(desc(schema.networkUnits.createdAt));
+  }
+
+  // FAQ methods
+  async getFaqItem(id: string): Promise<FaqItem | undefined> {
+    const result = await db.select().from(schema.faqItems).where(eq(schema.faqItems.id, id));
+    return result[0];
+  }
+
+  async getActiveFaqItems(): Promise<FaqItem[]> {
+    return await db.select().from(schema.faqItems).where(eq(schema.faqItems.isActive, true));
+  }
+
+  async createFaqItem(item: InsertFaqItem): Promise<FaqItem> {
+    const result = await db.insert(schema.faqItems).values(item).returning();
+    return result[0];
+  }
+
+  async updateFaqItem(id: string, updates: Partial<InsertFaqItem>): Promise<FaqItem | undefined> {
+    const result = await db.update(schema.faqItems).set(updates).where(eq(schema.faqItems.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteFaqItem(id: string): Promise<boolean> {
+    const result = await db.delete(schema.faqItems).where(eq(schema.faqItems.id, id));
+    return result.rowCount > 0;
+  }
+
+  async getFaqItems(): Promise<FaqItem[]> {
+    return await db.select().from(schema.faqItems).orderBy(desc(schema.faqItems.createdAt));
+  }
+
+  // Contact submission methods
+  async getContactSubmission(id: string): Promise<ContactSubmission | undefined> {
+    const result = await db.select().from(schema.contactSubmissions).where(eq(schema.contactSubmissions.id, id));
+    return result[0];
+  }
+
+  async createContactSubmission(submission: InsertContactSubmission): Promise<ContactSubmission> {
+    const result = await db.insert(schema.contactSubmissions).values(submission).returning();
+    return result[0];
+  }
+
+  async getContactSubmissions(): Promise<ContactSubmission[]> {
+    return await db.select().from(schema.contactSubmissions).orderBy(desc(schema.contactSubmissions.createdAt));
+  }
+
+  async deleteContactSubmission(id: string): Promise<boolean> {
+    const result = await db.delete(schema.contactSubmissions).where(eq(schema.contactSubmissions.id, id));
+    return result.rowCount > 0;
+  }
+
+  // Site settings methods
+  async getSiteSettings(): Promise<SiteSettings | undefined> {
+    const result = await db.select().from(schema.siteSettings).limit(1);
+    return result[0];
+  }
+
+  async updateSiteSettings(settings: InsertSiteSettings): Promise<SiteSettings> {
+    const existing = await this.getSiteSettings();
+    if (existing) {
+      const result = await db.update(schema.siteSettings).set(settings).where(eq(schema.siteSettings.id, existing.id)).returning();
+      return result[0];
+    } else {
+      const result = await db.insert(schema.siteSettings).values(settings).returning();
+      return result[0];
+    }
+  }
+
+  // Chat settings methods
+  async getChatSettings(): Promise<ChatSettings | undefined> {
+    const result = await db.select().from(schema.chatSettings).limit(1);
+    return result[0];
+  }
+
+  async updateChatSettings(settings: InsertChatSettings): Promise<ChatSettings> {
+    const existing = await this.getChatSettings();
+    if (existing) {
+      const result = await db.update(schema.chatSettings).set(settings).where(eq(schema.chatSettings.id, existing.id)).returning();
+      return result[0];
+    } else {
+      const result = await db.insert(schema.chatSettings).values(settings).returning();
+      return result[0];
+    }
+  }
+
+  // Guide methods
+  async getGuide(id: string): Promise<Guide | undefined> {
+    const result = await db.select().from(schema.guides).where(eq(schema.guides.id, id));
+    return result[0];
+  }
+
+  async getGuidesByClient(clientId: string): Promise<Guide[]> {
+    return await db.select().from(schema.guides).where(eq(schema.guides.clientId, clientId));
+  }
+
+  async createGuide(guide: InsertGuide): Promise<Guide> {
+    const result = await db.insert(schema.guides).values(guide).returning();
+    return result[0];
+  }
+
+  async updateGuide(id: string, updates: Partial<InsertGuide>): Promise<Guide | undefined> {
+    const result = await db.update(schema.guides).set(updates).where(eq(schema.guides.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteGuide(id: string): Promise<boolean> {
+    const result = await db.delete(schema.guides).where(eq(schema.guides.id, id));
+    return result.rowCount > 0;
+  }
+
+  async getGuides(): Promise<Guide[]> {
+    return await db.select().from(schema.guides).orderBy(desc(schema.guides.createdAt));
+  }
+
+  async getRecentGuides(limit: number = 10): Promise<Guide[]> {
+    return await db.select().from(schema.guides).orderBy(desc(schema.guides.createdAt)).limit(limit);
+  }
+
+  // Dashboard analytics
+  async getDashboardStats(): Promise<{
+    activeClients: number;
+    registeredPets: number;
+    openGuides: number;
+    monthlyRevenue: number;
+  }> {
+    const clientsCount = await db.select({ count: count() }).from(schema.clients);
+    const petsCount = await db.select({ count: count() }).from(schema.pets);
+    const openGuidesCount = await db.select({ count: count() }).from(schema.guides).where(eq(schema.guides.status, 'open'));
+    
+    return {
+      activeClients: clientsCount[0]?.count || 0,
+      registeredPets: petsCount[0]?.count || 0,
+      openGuides: openGuidesCount[0]?.count || 0,
+      monthlyRevenue: 0, // TODO: Calculate based on guide values and plan payments
+    };
+  }
+}
+
+export const storage = new DatabaseStorage();
