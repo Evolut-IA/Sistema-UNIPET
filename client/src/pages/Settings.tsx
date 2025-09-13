@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -105,13 +105,13 @@ export default function Settings() {
   });
 
   // Update forms when data loads
-  React.useEffect(() => {
+  useEffect(() => {
     if (siteSettings) {
       siteForm.reset(siteSettings);
     }
   }, [siteSettings, siteForm]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (chatSettings) {
       chatForm.reset(chatSettings);
     }

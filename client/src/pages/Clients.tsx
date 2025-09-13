@@ -4,7 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useLocation } from "wouter";
+import type { Client } from "@shared/schema";
 import { Plus, Search, Edit, Trash2, Eye } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -17,11 +19,11 @@ export default function Clients() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  const { data: clients, isLoading } = useQuery({
+  const { data: clients = [], isLoading, isError: clientsError } = useQuery<Client[]>({
     queryKey: ["/api/clients"],
   });
 
-  const { data: searchResults, isLoading: searchLoading } = useQuery({
+  const { data: searchResults = [], isLoading: searchLoading, isError: searchError } = useQuery<Client[]>({
     queryKey: ["/api/clients/search", searchQuery],
     enabled: searchQuery.length > 2,
   });

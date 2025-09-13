@@ -3,7 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useLocation } from "wouter";
+import type { Client, Guide, NetworkUnit, ContactSubmission } from "@shared/schema";
 import {
   Users,
   PawPrint,
@@ -21,28 +23,28 @@ import { ptBR } from "date-fns/locale";
 export default function Dashboard() {
   const [, setLocation] = useLocation();
 
-  const { data: stats, isLoading: statsLoading } = useQuery({
+  const { data: stats = {} as any, isLoading: statsLoading, isError: statsError } = useQuery({
     queryKey: ["/api/dashboard/stats"],
   });
 
-  const { data: recentGuides, isLoading: guidesLoading } = useQuery({
+  const { data: recentGuides = [], isLoading: guidesLoading, isError: guidesError } = useQuery<Guide[]>({
     queryKey: ["/api/guides/recent"],
   });
 
-  const { data: networkUnits, isLoading: networkLoading } = useQuery({
+  const { data: networkUnits = [], isLoading: networkLoading, isError: networkError } = useQuery<NetworkUnit[]>({
     queryKey: ["/api/network-units/active"],
   });
 
-  const { data: clients, isLoading: clientsLoading } = useQuery({
+  const { data: clients = [], isLoading: clientsLoading, isError: clientsError } = useQuery<Client[]>({
     queryKey: ["/api/clients"],
   });
 
-  const { data: contactSubmissions, isLoading: submissionsLoading } = useQuery({
+  const { data: contactSubmissions = [], isLoading: submissionsLoading, isError: submissionsError } = useQuery<ContactSubmission[]>({
     queryKey: ["/api/contact-submissions"],
   });
 
-  const recentClients = clients?.slice(0, 3) || [];
-  const recentSubmissions = contactSubmissions?.slice(0, 3) || [];
+  const recentClients = clients.slice(0, 3);
+  const recentSubmissions = contactSubmissions.slice(0, 3);
 
   return (
     <div className="p-6 space-y-6">
