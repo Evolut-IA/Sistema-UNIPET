@@ -178,8 +178,10 @@ export default function Dashboard() {
 
       {/* Resumos das Páginas */}
       <div className="space-y-6">
-        {/* Resumo de Formulários */}
-        <Card>
+        {/* Primeiro Par: Formulários e Planos */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Resumo de Formulários */}
+          <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-foreground">Resumo de Formulários</CardTitle>
             <Button 
@@ -284,10 +286,10 @@ export default function Dashboard() {
             )}
           </CardContent>
         </Card>
-      </div>
+        </div>
 
-      {/* Resumos das Páginas - Continuação */}
-      <div className="space-y-6">
+        {/* Segundo Par: Rede e Clientes */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Resumo da Rede */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
@@ -401,6 +403,7 @@ export default function Dashboard() {
             )}
           </CardContent>
         </Card>
+        </div>
       </div>
 
       {/* Additional sections */}
