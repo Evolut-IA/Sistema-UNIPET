@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { InputMasked } from "@/components/ui/input-masked";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
@@ -14,6 +15,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { insertNetworkUnitSchema } from "@shared/schema";
 import { ArrowLeft } from "lucide-react";
 import { AVAILABLE_SERVICES } from "@/lib/constants";
+import { ImageUpload } from "@/components/ui/image-upload";
 
 export default function NetworkForm() {
   const [, setLocation] = useLocation();
@@ -178,7 +180,11 @@ export default function NetworkForm() {
                     <FormItem>
                       <FormLabel>Telefone *</FormLabel>
                       <FormControl>
-                        <Input {...field} data-testid="input-phone" />
+                        <InputMasked 
+                          mask="phone"
+                          {...field} 
+                          data-testid="input-phone" 
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -192,7 +198,11 @@ export default function NetworkForm() {
                     <FormItem>
                       <FormLabel>WhatsApp</FormLabel>
                       <FormControl>
-                        <Input {...field} data-testid="input-whatsapp" />
+                        <InputMasked 
+                          mask="whatsapp"
+                          {...field} 
+                          data-testid="input-whatsapp" 
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -204,9 +214,13 @@ export default function NetworkForm() {
                   name="imageUrl"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>URL da Imagem</FormLabel>
+                      <FormLabel>Imagem da unidade</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="https://..." data-testid="input-image-url" />
+                        <ImageUpload 
+                          value={field.value} 
+                          onChange={field.onChange}
+                          data-testid="input-image-url"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -277,11 +291,11 @@ export default function NetworkForm() {
                 ))}
               </div>
               {selectedServices.length > 0 && (
-                <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                  <p className="text-sm font-medium text-blue-800 mb-1">
+                <div className="mt-4 p-3 bg-accent border border-accent-foreground/20 rounded-lg">
+                  <p className="text-sm font-medium text-accent-foreground mb-1">
                     Serviços selecionados ({selectedServices.length}):
                   </p>
-                  <p className="text-sm text-blue-700">
+                  <p className="text-sm text-accent-foreground/80">
                     {selectedServices.join(", ")}
                   </p>
                 </div>

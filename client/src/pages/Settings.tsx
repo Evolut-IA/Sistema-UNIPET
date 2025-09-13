@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { InputMasked } from "@/components/ui/input-masked";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
@@ -15,6 +16,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { insertSiteSettingsSchema } from "@shared/schema";
 import { Settings as SettingsIcon, Globe, Palette, Save } from "lucide-react";
 import ThemeEditor from "@/components/ThemeEditor";
+import { ImageUpload } from "@/components/ui/image-upload";
 
 export default function Settings() {
   const { toast } = useToast();
@@ -28,37 +30,6 @@ export default function Settings() {
     staleTime: 5 * 60 * 1000, // 5 minutos
   });
 
-  // Debug logs
-  console.log("Settings page - Query state:", { 
-    siteSettings, 
-    isLoading: siteLoading, 
-    error: siteError,
-    hasData: !!siteSettings,
-    dataKeys: siteSettings ? Object.keys(siteSettings) : []
-  });
-  
-  // Log dos valores específicos
-  if (siteSettings) {
-    console.log("Site settings values:", {
-      whatsapp: (siteSettings as any).whatsapp,
-      email: (siteSettings as any).email,
-      phone: (siteSettings as any).phone,
-      instagramUrl: (siteSettings as any).instagramUrl,
-      facebookUrl: (siteSettings as any).facebookUrl,
-      linkedinUrl: (siteSettings as any).linkedinUrl,
-      youtubeUrl: (siteSettings as any).youtubeUrl,
-      cnpj: (siteSettings as any).cnpj,
-      businessHours: (siteSettings as any).businessHours,
-      ourStory: (siteSettings as any).ourStory,
-      privacyPolicy: (siteSettings as any).privacyPolicy,
-      termsOfUse: (siteSettings as any).termsOfUse,
-      address: (siteSettings as any).address,
-      mainImage: (siteSettings as any).mainImage,
-      networkImage: (siteSettings as any).networkImage,
-      aboutImage: (siteSettings as any).aboutImage,
-      cores: (siteSettings as any).cores
-    });
-  }
 
 
   const siteForm = useForm({
@@ -108,13 +79,7 @@ export default function Settings() {
 
   // Update forms when data loads
   useEffect(() => {
-    console.log("useEffect triggered - Site settings received:", siteSettings);
-    console.log("useEffect - isLoading:", siteLoading, "error:", siteError);
-    
     if (siteSettings && typeof siteSettings === 'object' && !siteLoading) {
-      console.log("Processing site settings for form reset...");
-      console.log("Raw siteSettings object:", siteSettings);
-      
       // Merge with default values to ensure all fields are present
       const mergedSettings = {
         whatsapp: (siteSettings as any).whatsapp || "",
@@ -136,37 +101,18 @@ export default function Settings() {
         cores: (siteSettings as any).cores || {},
       };
       
-      console.log("Merged settings for form reset:", mergedSettings);
-      console.log("Resetting form with merged settings...");
-      
-      try {
-        siteForm.reset(mergedSettings);
-        console.log("Form reset completed successfully");
-        
-        // Verificar se o reset funcionou
-        const currentValues = siteForm.getValues();
-        console.log("Current form values after reset:", currentValues);
-      } catch (error) {
-        console.error("Error resetting form:", error);
-      }
-    } else if (!siteLoading && !siteError) {
-      console.log("No site settings data available, keeping default values");
+      siteForm.reset(mergedSettings);
     }
   }, [siteSettings, siteLoading, siteError, siteForm]);
 
 
   const onSubmitSite = (data: any) => {
-    console.log("Form submitted with data:", data);
-    
     // Remove campos vazios antes de enviar
     const cleanData = Object.fromEntries(
       Object.entries(data).filter(([_, value]) => 
         value !== "" && value !== null && value !== undefined
       )
     );
-    
-    console.log("Cleaned data for submission:", cleanData);
-    console.log("Submitting to API...");
     
     saveSiteMutation.mutate(cleanData);
   };
@@ -228,7 +174,12 @@ export default function Settings() {
                           <FormItem>
                             <FormLabel>Email</FormLabel>
                             <FormControl>
-                              <Input {...field} type="email" data-testid="input-site-email" />
+                              <InputMasked 
+                                {...field} 
+                                type="email" 
+                                mask="email"
+                                data-testid="input-site-email" 
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -242,7 +193,11 @@ export default function Settings() {
                           <FormItem>
                             <FormLabel>Telefone</FormLabel>
                             <FormControl>
-                              <Input {...field} data-testid="input-site-phone" />
+                              <InputMasked 
+                                mask="phone"
+                                {...field} 
+                                data-testid="input-site-phone" 
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -256,7 +211,11 @@ export default function Settings() {
                           <FormItem>
                             <FormLabel>WhatsApp</FormLabel>
                             <FormControl>
-                              <Input {...field} data-testid="input-site-whatsapp" />
+                              <InputMasked 
+                                mask="whatsapp"
+                                {...field} 
+                                data-testid="input-site-whatsapp" 
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -270,7 +229,11 @@ export default function Settings() {
                           <FormItem>
                             <FormLabel>CNPJ</FormLabel>
                             <FormControl>
-                              <Input {...field} data-testid="input-site-cnpj" />
+                              <InputMasked 
+                                mask="cnpj"
+                                {...field} 
+                                data-testid="input-site-cnpj" 
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -430,7 +393,7 @@ export default function Settings() {
                     <CardTitle className="text-foreground">Imagens</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                       <FormField
                         control={siteForm.control}
                         name="mainImage"
@@ -438,7 +401,11 @@ export default function Settings() {
                           <FormItem>
                             <FormLabel>Imagem Principal</FormLabel>
                             <FormControl>
-                              <Input {...field} placeholder="https://..." data-testid="input-main-image" />
+                              <ImageUpload 
+                                value={field.value} 
+                                onChange={field.onChange}
+                                data-testid="input-main-image"
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -452,7 +419,11 @@ export default function Settings() {
                           <FormItem>
                             <FormLabel>Imagem da Rede</FormLabel>
                             <FormControl>
-                              <Input {...field} placeholder="https://..." data-testid="input-network-image" />
+                              <ImageUpload 
+                                value={field.value} 
+                                onChange={field.onChange}
+                                data-testid="input-network-image"
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -466,7 +437,11 @@ export default function Settings() {
                           <FormItem>
                             <FormLabel>Imagem Sobre Nós</FormLabel>
                             <FormControl>
-                              <Input {...field} placeholder="https://..." data-testid="input-about-image" />
+                              <ImageUpload 
+                                value={field.value} 
+                                onChange={field.onChange}
+                                data-testid="input-about-image"
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>

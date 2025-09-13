@@ -5,16 +5,25 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useLocation } from "wouter";
-import { Plus, Search, Edit, Trash2, Building2, ExternalLink, Phone, MapPin } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Building2, ExternalLink, Phone, MapPin, Eye, Copy } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
+import { PasswordDialog } from "@/components/ui/password-dialog";
+import { usePasswordDialog } from "@/hooks/use-password-dialog";
 
 export default function Network() {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedUnit, setSelectedUnit] = useState<any>(null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const confirmDialog = useConfirmDialog();
+  const passwordDialog = usePasswordDialog();
 
   const { data: units, isLoading } = useQuery({
     queryKey: ["/api/network-units"],
@@ -65,14 +74,131 @@ export default function Network() {
     unit.address?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleDelete = (id: string) => {
-    if (confirm("Tem certeza que deseja remover esta unidade?")) {
-      deleteUnitMutation.mutate(id);
-    }
+  const handleDelete = (id: string, unitName: string) => {
+    passwordDialog.openDialog({
+      title: "Verificação de Senha",
+      description: "Digite a senha do administrador para excluir esta unidade:",
+      onConfirm: async (password) => {
+        try {
+          passwordDialog.setLoading(true);
+          
+          // Verificar senha
+          const response = await fetch("/api/admin/verify-password", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ password }),
+          });
+          
+          const result = await response.json();
+          
+          if (result.valid) {
+            // Senha correta, mostrar confirmação de exclusão
+            confirmDialog.openDialog({
+              title: "Excluir Unidade",
+              description: `Tem certeza que deseja excluir a unidade "${unitName}"? Esta ação não pode ser desfeita e todos os dados relacionados serão perdidos.`,
+              confirmText: "Excluir Unidade",
+              cancelText: "Cancelar",
+              onConfirm: () => {
+                confirmDialog.setLoading(true);
+                deleteUnitMutation.mutate(id, {
+                  onSettled: () => {
+                    confirmDialog.setLoading(false);
+                  }
+                });
+              },
+            });
+          } else {
+            toast({
+              title: "Senha incorreta",
+              description: "A senha do administrador está incorreta.",
+              variant: "destructive",
+            });
+          }
+        } catch (error) {
+          toast({
+            title: "Erro",
+            description: "Erro ao verificar senha. Tente novamente.",
+            variant: "destructive",
+          });
+        } finally {
+          passwordDialog.setLoading(false);
+        }
+      },
+    });
   };
 
   const handleToggleStatus = (id: string, currentStatus: boolean) => {
     toggleUnitMutation.mutate({ id, isActive: !currentStatus });
+  };
+
+  const handleViewDetails = (unit: any) => {
+    setSelectedUnit(unit);
+    setDetailsOpen(true);
+  };
+
+  const generateUnitText = () => {
+    if (!selectedUnit) return "";
+
+    let text = "";
+    
+    // Cabeçalho
+    text += "=".repeat(50) + "\n";
+    text += "INFORMAÇÕES DA UNIDADE\n";
+    text += "=".repeat(50) + "\n\n";
+
+    // Informações Básicas
+    text += "INFORMAÇÕES BÁSICAS:\n";
+    text += "-".repeat(25) + "\n";
+    text += `Nome: ${selectedUnit.name}\n`;
+    text += `Endereço: ${selectedUnit.address}\n`;
+    text += `Telefone: ${selectedUnit.phone}\n`;
+    if (selectedUnit.whatsapp) {
+      text += `WhatsApp: ${selectedUnit.whatsapp}\n`;
+    }
+    text += `Status: ${selectedUnit.isActive ? 'Ativo' : 'Inativo'}\n\n`;
+
+    // Serviços
+    if (selectedUnit.services && selectedUnit.services.length > 0) {
+      text += "SERVIÇOS OFERECIDOS:\n";
+      text += "-".repeat(20) + "\n";
+      selectedUnit.services.forEach((service: string, index: number) => {
+        text += `${index + 1}. ${service}\n`;
+      });
+      text += "\n";
+    }
+
+    // Localização
+    if (selectedUnit.googleMapsUrl) {
+      text += "LOCALIZAÇÃO:\n";
+      text += "-".repeat(15) + "\n";
+      text += `Google Maps: ${selectedUnit.googleMapsUrl}\n\n`;
+    }
+
+    text += "=".repeat(50) + "\n";
+    text += `Gerado em: ${new Date().toLocaleString('pt-BR')}\n`;
+    text += "=".repeat(50);
+
+    return text;
+  };
+
+  const handleCopyToClipboard = async () => {
+    try {
+      const text = generateUnitText();
+      await navigator.clipboard.writeText(text);
+      toast({
+        title: "Copiado!",
+        description: "Informações da unidade copiadas para a área de transferência.",
+        variant: "default",
+      });
+    } catch (error) {
+      toast({
+        title: "Erro",
+        description: "Não foi possível copiar as informações. Tente novamente.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -112,11 +238,11 @@ export default function Network() {
       </Card>
 
       {/* Units List */}
-      <div className="space-y-4">
+      <div className="space-y-2">
         {isLoading ? (
           [...Array(5)].map((_, i) => (
             <Card key={i} className="animate-pulse">
-              <CardContent className="p-6">
+              <CardContent className="p-4">
                 <div className="h-6 bg-gray-200 rounded w-1/3 mb-2"></div>
                 <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
                 <div className="h-4 bg-gray-200 rounded w-1/4"></div>
@@ -126,12 +252,12 @@ export default function Network() {
         ) : filteredUnits?.length ? (
           filteredUnits.map((unit: any) => (
             <Card key={unit.id} className="hover:shadow-md transition-shadow">
-              <CardContent className="p-6">
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-3 mb-3">
-                      <Building2 className="h-6 w-6 text-primary" />
-                      <h3 className="text-xl font-semibold text-foreground" data-testid={`unit-name-${unit.id}`}>
+              <CardContent className="p-3">
+                <div className="flex justify-between items-center">
+                  <div className="flex-1 flex items-center space-x-4">
+                    <div className="flex items-center space-x-2">
+                      <Building2 className="h-4 w-4 text-primary" />
+                      <h3 className="font-semibold text-foreground" data-testid={`unit-name-${unit.id}`}>
                         {unit.name}
                       </h3>
                       <Badge variant={unit.isActive ? "default" : "secondary"}>
@@ -139,29 +265,28 @@ export default function Network() {
                       </Badge>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                      <div className="flex items-center space-x-2 text-muted-foreground">
-                        <MapPin className="h-4 w-4" />
-                        <span>{unit.address}</span>
-                      </div>
-                      <div className="flex items-center space-x-2 text-muted-foreground">
-                        <Phone className="h-4 w-4" />
-                        <span>{unit.phone}</span>
-                      </div>
+                    <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+                      <MapPin className="h-3 w-3" />
+                      <span>{unit.address}</span>
+                    </div>
+
+                    <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+                      <Phone className="h-3 w-3" />
+                      <span>{unit.phone}</span>
                     </div>
 
                     {unit.services && unit.services.length > 0 && (
-                      <div className="mb-4">
-                        <p className="text-sm font-medium text-foreground mb-2">Serviços oferecidos:</p>
-                        <div className="flex flex-wrap gap-1">
-                          {unit.services.slice(0, 5).map((service: string, index: number) => (
+                      <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+                        <span className="text-xs font-medium">Serviços:</span>
+                        <div className="flex space-x-1">
+                          {unit.services.slice(0, 2).map((service: string, index: number) => (
                             <Badge key={index} variant="outline" className="text-xs">
                               {service}
                             </Badge>
                           ))}
-                          {unit.services.length > 5 && (
+                          {unit.services.length > 2 && (
                             <Badge variant="outline" className="text-xs">
-                              +{unit.services.length - 5} mais
+                              +{unit.services.length - 2}
                             </Badge>
                           )}
                         </div>
@@ -169,52 +294,54 @@ export default function Network() {
                     )}
                   </div>
 
-                  <div className="flex flex-col space-y-2 ml-4">
-                    <div className="flex items-center space-x-2">
-                      <Switch
-                        checked={unit.isActive}
-                        onCheckedChange={() => handleToggleStatus(unit.id, unit.isActive)}
-                        disabled={toggleUnitMutation.isPending}
-                        data-testid={`switch-unit-status-${unit.id}`}
-                      />
-                      <span className="text-sm text-muted-foreground">
-                        {unit.isActive ? "Ativo" : "Inativo"}
-                      </span>
-                    </div>
+                  <div className="flex items-center space-x-1 ml-3">
+                    <Switch
+                      checked={unit.isActive}
+                      onCheckedChange={() => handleToggleStatus(unit.id, unit.isActive)}
+                      disabled={toggleUnitMutation.isPending}
+                      data-testid={`switch-unit-status-${unit.id}`}
+                    />
+                    
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleViewDetails(unit)}
+                      data-testid={`button-view-${unit.id}`}
+                    >
+                      <Eye className="h-4 w-4" />
+                    </Button>
 
-                    <div className="flex space-x-2">
-                      {unit.googleMapsUrl && (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          asChild
-                          data-testid={`button-maps-${unit.id}`}
-                        >
-                          <a href={unit.googleMapsUrl} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink className="h-4 w-4" />
-                          </a>
-                        </Button>
-                      )}
-                      
+                    {unit.googleMapsUrl && (
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => setLocation(`/rede/${unit.id}/editar`)}
-                        data-testid={`button-edit-${unit.id}`}
+                        asChild
+                        data-testid={`button-maps-${unit.id}`}
                       >
-                        <Edit className="h-4 w-4" />
+                        <a href={unit.googleMapsUrl} target="_blank" rel="noopener noreferrer">
+                          <ExternalLink className="h-4 w-4" />
+                        </a>
                       </Button>
-                      
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDelete(unit.id)}
-                        disabled={deleteUnitMutation.isPending}
-                        data-testid={`button-delete-${unit.id}`}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
+                    )}
+                    
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setLocation(`/rede/${unit.id}/editar`)}
+                      data-testid={`button-edit-${unit.id}`}
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleDelete(unit.id, unit.name)}
+                      disabled={deleteUnitMutation.isPending}
+                      data-testid={`button-delete-${unit.id}`}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
               </CardContent>
@@ -245,6 +372,115 @@ export default function Network() {
         )}
       </div>
 
+      {/* Details Dialog */}
+      <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Building2 className="h-5 w-5 text-primary" />
+                <span>Detalhes da Unidade</span>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleCopyToClipboard}
+                className="flex items-center space-x-2"
+              >
+                <Copy className="h-4 w-4" />
+                <span>Copiar</span>
+              </Button>
+            </DialogTitle>
+          </DialogHeader>
+          
+          {selectedUnit && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h4 className="font-semibold text-foreground mb-2">Informações Básicas</h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center space-x-2">
+                      <Building2 className="h-4 w-4 text-muted-foreground" />
+                      <span><strong>Nome:</strong> {selectedUnit.name}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <MapPin className="h-4 w-4 text-muted-foreground" />
+                      <span><strong>Endereço:</strong> {selectedUnit.address}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Phone className="h-4 w-4 text-muted-foreground" />
+                      <span><strong>Telefone:</strong> {selectedUnit.phone}</span>
+                    </div>
+                    {selectedUnit.whatsapp && (
+                      <div className="flex items-center space-x-2">
+                        <Phone className="h-4 w-4 text-muted-foreground" />
+                        <span><strong>WhatsApp:</strong> {selectedUnit.whatsapp}</span>
+                      </div>
+                    )}
+                    <div className="flex items-center space-x-2">
+                      <span><strong>Status:</strong></span>
+                      <Badge variant={selectedUnit.isActive ? "default" : "secondary"}>
+                        {selectedUnit.isActive ? "Ativo" : "Inativo"}
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+
+                {selectedUnit.services && selectedUnit.services.length > 0 && (
+                  <div>
+                    <h4 className="font-semibold text-foreground mb-2">Serviços Oferecidos</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedUnit.services.map((service: string, index: number) => (
+                        <Badge key={index} variant="outline">
+                          {service}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {selectedUnit.googleMapsUrl && (
+                <div>
+                  <h4 className="font-semibold text-foreground mb-2">Localização</h4>
+                  <Button
+                    variant="outline"
+                    asChild
+                    className="w-full"
+                  >
+                    <a href={selectedUnit.googleMapsUrl} target="_blank" rel="noopener noreferrer">
+                      <ExternalLink className="h-4 w-4 mr-2" />
+                      Ver no Google Maps
+                    </a>
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Password Dialog */}
+      <PasswordDialog
+        open={passwordDialog.isOpen}
+        onOpenChange={passwordDialog.closeDialog}
+        onConfirm={passwordDialog.confirm}
+        title={passwordDialog.title}
+        description={passwordDialog.description}
+        isLoading={passwordDialog.isLoading}
+      />
+
+      {/* Confirm Dialog */}
+      <ConfirmDialog
+        open={confirmDialog.isOpen}
+        onOpenChange={confirmDialog.closeDialog}
+        onConfirm={confirmDialog.confirm}
+        title={confirmDialog.title}
+        description={confirmDialog.description}
+        confirmText={confirmDialog.confirmText}
+        cancelText={confirmDialog.cancelText}
+        isLoading={confirmDialog.isLoading}
+      />
     </div>
   );
 }

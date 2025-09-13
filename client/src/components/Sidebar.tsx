@@ -49,8 +49,8 @@ export default function Sidebar() {
         <div className="flex items-center space-x-3">
           <Stethoscope className="h-8 w-8 text-primary" />
           <div>
-            <h1 className="text-xl font-bold text-foreground">PetSaúde CRM</h1>
-            <p className="text-sm text-muted-foreground">Sistema de Gestão</p>
+            <h1 className="text-xl font-bold text-foreground">CRM UNIPET</h1>
+            <p className="text-sm text-muted-foreground">Plano de Saúde Pet</p>
           </div>
         </div>
       </div>

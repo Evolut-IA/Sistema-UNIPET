@@ -103,17 +103,61 @@
 @layer base {
   * {
     @apply border-border;
-    outline: none !important;
-    box-shadow: none !important;
-  }
-
-  *:focus, *:hover, *:active {
-    outline: none !important;
-    box-shadow: none !important;
-    border-color: inherit !important;
   }
 
   body {
     @apply font-sans antialiased bg-background text-foreground;
   }
+}
+
+/* REMOÇÃO TOTAL DE OUTLINE E FOCUS - PRIORIDADE MÁXIMA */
+*, *::before, *::after {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+*:focus, *:focus-visible, *:focus-within {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+*:hover {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+*:active {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Remover outline de elementos específicos */
+button, input, textarea, select, a, [role="button"], [tabindex], div, span, p, h1, h2, h3, h4, h5, h6, img, svg {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+button:focus, input:focus, textarea:focus, select:focus, a:focus, [role="button"]:focus, [tabindex]:focus,
+div:focus, span:focus, p:focus, h1:focus, h2:focus, h3:focus, h4:focus, h5:focus, h6:focus,
+img:focus, svg:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+button:hover, input:hover, textarea:hover, select:hover, a:hover, [role="button"]:hover, [tabindex]:hover,
+div:hover, span:hover, p:hover, h1:hover, h2:hover, h3:hover, h4:hover, h5:hover, h6:hover,
+img:hover, svg:hover {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Forçar remoção em todos os estados */
+*:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+*:focus-within {
+  outline: none !important;
+  box-shadow: none !important;
 }

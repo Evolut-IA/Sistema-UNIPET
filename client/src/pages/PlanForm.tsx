@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { InputMasked } from "@/components/ui/input-masked";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -76,6 +77,14 @@ export default function PlanForm() {
         i === index ? { ...proc, [field]: value } : proc
       ) || []
     }));
+  };
+
+  const getPlanTypeLabel = (type: string) => {
+    switch (type) {
+      case "com_coparticipacao": return "Com Coparticipação";
+      case "sem_coparticipacao": return "Sem Coparticipação";
+      default: return type;
+    }
   };
 
 
@@ -234,11 +243,10 @@ export default function PlanForm() {
                     <FormItem>
                       <FormLabel>Preço Mensal (R$) *</FormLabel>
                       <FormControl>
-                        <Input 
+                        <InputMasked 
                           {...field} 
-                          type="number" 
-                          step="0.01" 
-                          placeholder="0.00"
+                          mask="price"
+                          placeholder="0,00"
                           data-testid="input-price" 
                         />
                       </FormControl>
@@ -262,7 +270,7 @@ export default function PlanForm() {
                         <SelectContent>
                           {PLAN_TYPES.map((type) => (
                             <SelectItem key={type} value={type}>
-                              {type === "com_coparticipacao" ? "Com Coparticipação" : "Sem Coparticipação"}
+                              {getPlanTypeLabel(type)}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -394,12 +402,11 @@ export default function PlanForm() {
                           <label className="text-sm font-medium text-foreground mb-2 block">
                             Preço (R$)
                           </label>
-                          <Input
-                            type="number"
-                            step="0.01"
+                          <InputMasked
+                            mask="price"
                             value={procedure.price}
-                            onChange={(e) => updateProcedureInBenefit(benefitName, procIndex, "price", parseFloat(e.target.value) || 0)}
-                            placeholder="0.00"
+                            onChange={(e) => updateProcedureInBenefit(benefitName, procIndex, "price", parseFloat(e.target.value.replace(",", ".")) || 0)}
+                            placeholder="0,00"
                             data-testid={`input-procedure-price-${index}-${procIndex}`}
                           />
                         </div>

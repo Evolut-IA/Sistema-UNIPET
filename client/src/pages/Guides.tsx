@@ -5,12 +5,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useLocation } from "wouter";
-import { Plus, Search, Edit, Trash2, FileText } from "lucide-react";
+import { Plus, Search, Edit, Trash2, FileText, Eye, Copy } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
+import { PasswordDialog } from "@/components/ui/password-dialog";
+import { usePasswordDialog } from "@/hooks/use-password-dialog";
 import { GUIDE_TYPES } from "@/lib/constants";
 
 export default function Guides() {
@@ -18,8 +23,12 @@ export default function Guides() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
+  const [selectedGuide, setSelectedGuide] = useState<any>(null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const confirmDialog = useConfirmDialog();
+  const passwordDialog = usePasswordDialog();
 
   const { data: guides, isLoading } = useQuery({
     queryKey: ["/api/guides"],
@@ -54,9 +63,141 @@ export default function Guides() {
     return matchesSearch && matchesStatus && matchesType;
   });
 
-  const handleDelete = (id: string) => {
-    if (confirm("Tem certeza que deseja remover esta guia?")) {
-      deleteGuideMutation.mutate(id);
+  const handleDelete = (id: string, procedureName: string) => {
+    passwordDialog.openDialog({
+      title: "Verificação de Senha",
+      description: "Digite a senha do administrador para excluir esta guia:",
+      onConfirm: async (password) => {
+        try {
+          passwordDialog.setLoading(true);
+          
+          // Verificar senha
+          const response = await fetch("/api/admin/verify-password", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ password }),
+          });
+          
+          const result = await response.json();
+          
+          if (result.valid) {
+            // Senha correta, mostrar confirmação de exclusão
+            confirmDialog.openDialog({
+              title: "Excluir Guia",
+              description: `Tem certeza que deseja excluir a guia "${procedureName}"? Esta ação não pode ser desfeita.`,
+              confirmText: "Excluir Guia",
+              cancelText: "Cancelar",
+              onConfirm: () => {
+                confirmDialog.setLoading(true);
+                deleteGuideMutation.mutate(id, {
+                  onSettled: () => {
+                    confirmDialog.setLoading(false);
+                  }
+                });
+              },
+            });
+          } else {
+            toast({
+              title: "Senha incorreta",
+              description: "A senha do administrador está incorreta.",
+              variant: "destructive",
+            });
+          }
+        } catch (error) {
+          toast({
+            title: "Erro",
+            description: "Erro ao verificar senha. Tente novamente.",
+            variant: "destructive",
+          });
+        } finally {
+          passwordDialog.setLoading(false);
+        }
+      },
+    });
+  };
+
+  const handleViewDetails = (guide: any) => {
+    setSelectedGuide(guide);
+    setDetailsOpen(true);
+  };
+
+  const generateGuideText = () => {
+    if (!selectedGuide) return "";
+
+    let text = "";
+    
+    // Cabeçalho
+    text += "=".repeat(50) + "\n";
+    text += "INFORMAÇÕES DA GUIA DE ATENDIMENTO\n";
+    text += "=".repeat(50) + "\n\n";
+
+    // Informações Básicas
+    text += "INFORMAÇÕES BÁSICAS:\n";
+    text += "-".repeat(25) + "\n";
+    text += `Nome do Procedimento: ${selectedGuide.procedureName}\n`;
+    text += `Tipo de Guia: ${selectedGuide.guideType}\n`;
+    text += `Status: ${selectedGuide.status === 'open' ? 'Aberta' : 'Fechada'}\n`;
+    text += `Valor: R$ ${selectedGuide.value || 'Não informado'}\n\n`;
+
+    // Informações do Cliente e Pet
+    if (selectedGuide.clientName || selectedGuide.petName) {
+      text += "INFORMAÇÕES DO CLIENTE E PET:\n";
+      text += "-".repeat(30) + "\n";
+      if (selectedGuide.clientName) {
+        text += `Cliente: ${selectedGuide.clientName}\n`;
+      }
+      if (selectedGuide.petName) {
+        text += `Pet: ${selectedGuide.petName}\n`;
+      }
+      text += "\n";
+    }
+
+    // Notas do Procedimento
+    if (selectedGuide.procedureNotes) {
+      text += "NOTAS DO PROCEDIMENTO:\n";
+      text += "-".repeat(25) + "\n";
+      text += `${selectedGuide.procedureNotes}\n\n`;
+    }
+
+    // Notas Gerais
+    if (selectedGuide.generalNotes) {
+      text += "NOTAS GERAIS:\n";
+      text += "-".repeat(15) + "\n";
+      text += `${selectedGuide.generalNotes}\n\n`;
+    }
+
+    // Informações do Cadastro
+    text += "INFORMAÇÕES DO CADASTRO:\n";
+    text += "-".repeat(25) + "\n";
+    text += `Data de Criação: ${selectedGuide.createdAt ? format(new Date(selectedGuide.createdAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR }) : "Não informado"}\n`;
+    if (selectedGuide.updatedAt) {
+      text += `Última Atualização: ${format(new Date(selectedGuide.updatedAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}\n`;
+    }
+
+    text += "\n" + "=".repeat(50) + "\n";
+    text += `Gerado em: ${format(new Date(), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}\n`;
+    text += "=".repeat(50);
+
+    return text;
+  };
+
+  const handleCopyToClipboard = async () => {
+    try {
+      const text = generateGuideText();
+      await navigator.clipboard.writeText(text);
+      toast({
+        title: "Copiado!",
+        description: "Informações da guia copiadas para a área de transferência.",
+        variant: "default",
+      });
+    } catch (error) {
+      toast({
+        title: "Erro",
+        description: "Não foi possível copiar as informações. Tente novamente.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -165,35 +306,46 @@ export default function Guides() {
               ))}
             </div>
           ) : filteredGuides?.length ? (
-            <div className="space-y-4">
+            <div className="space-y-2">
               {filteredGuides.map((guide: any) => (
-                <div key={guide.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-3 mb-2">
-                        <FileText className="h-5 w-5 text-primary" />
-                        <h3 className="font-semibold text-foreground text-lg" data-testid={`guide-procedure-${guide.id}`}>
+                <div key={guide.id} className="border rounded-lg p-3 hover:bg-gray-50 transition-colors">
+                  <div className="flex justify-between items-center">
+                    <div className="flex-1 flex items-center space-x-4">
+                      <div className="flex items-center space-x-2">
+                        <FileText className="h-4 w-4 text-primary" />
+                        <h3 className="font-semibold text-foreground" data-testid={`guide-procedure-${guide.id}`}>
                           {guide.procedure}
                         </h3>
                         <Badge className={getStatusColor(guide.status)}>
                           {getStatusLabel(guide.status)}
                         </Badge>
                       </div>
-                      
-                      <div className="mt-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 text-sm text-muted-foreground">
-                        <p><span className="font-medium">Tipo:</span> {getTypeLabel(guide.type)}</p>
-                        <p><span className="font-medium">Valor:</span> R$ {parseFloat(guide.value || 0).toFixed(2)}</p>
-                        <p><span className="font-medium">Criada em:</span> {guide.createdAt && format(new Date(guide.createdAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}</p>
-                        {guide.procedureNotes && (
-                          <p className="col-span-full"><span className="font-medium">Observações:</span> {guide.procedureNotes}</p>
-                        )}
-                        {guide.generalNotes && (
-                          <p className="col-span-full"><span className="font-medium">Anotações gerais:</span> {guide.generalNotes}</p>
-                        )}
+
+                      <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+                        <span className="font-medium">Tipo:</span>
+                        <span>{getTypeLabel(guide.type)}</span>
+                      </div>
+
+                      <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+                        <span className="font-medium">Valor:</span>
+                        <span>R$ {parseFloat(guide.value || 0).toFixed(2)}</span>
+                      </div>
+
+                      <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+                        <span className="font-medium">Criada:</span>
+                        <span>{guide.createdAt && format(new Date(guide.createdAt), "dd/MM/yyyy", { locale: ptBR })}</span>
                       </div>
                     </div>
                     
-                    <div className="flex space-x-2 ml-4">
+                    <div className="flex space-x-1 ml-3">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleViewDetails(guide)}
+                        data-testid={`button-view-${guide.id}`}
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
                       <Button
                         variant="outline"
                         size="sm"
@@ -205,7 +357,7 @@ export default function Guides() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => handleDelete(guide.id)}
+                        onClick={() => handleDelete(guide.id, guide.procedure)}
                         disabled={deleteGuideMutation.isPending}
                         data-testid={`button-delete-${guide.id}`}
                       >
@@ -239,6 +391,107 @@ export default function Guides() {
           )}
         </CardContent>
       </Card>
+
+      {/* Details Dialog */}
+      <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <FileText className="h-5 w-5 text-primary" />
+                <span>Detalhes da Guia</span>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleCopyToClipboard}
+                className="flex items-center space-x-2"
+              >
+                <Copy className="h-4 w-4" />
+                <span>Copiar</span>
+              </Button>
+            </DialogTitle>
+          </DialogHeader>
+          
+          {selectedGuide && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h4 className="font-semibold text-foreground mb-2">Informações Básicas</h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center space-x-2">
+                      <FileText className="h-4 w-4 text-muted-foreground" />
+                      <span><strong>Procedimento:</strong> {selectedGuide.procedure}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span><strong>Tipo:</strong> {getTypeLabel(selectedGuide.type)}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span><strong>Valor:</strong> R$ {parseFloat(selectedGuide.value || 0).toFixed(2)}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span><strong>Status:</strong></span>
+                      <Badge className={getStatusColor(selectedGuide.status)}>
+                        {getStatusLabel(selectedGuide.status)}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span><strong>Criada em:</strong> {selectedGuide.createdAt && format(new Date(selectedGuide.createdAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold text-foreground mb-2">Observações</h4>
+                  <div className="space-y-2 text-sm">
+                    {selectedGuide.procedureNotes && (
+                      <div>
+                        <span className="font-medium text-foreground">Observações do Procedimento:</span>
+                        <p className="text-muted-foreground mt-1 p-2 bg-gray-50 rounded">
+                          {selectedGuide.procedureNotes}
+                        </p>
+                      </div>
+                    )}
+                    {selectedGuide.generalNotes && (
+                      <div>
+                        <span className="font-medium text-foreground">Anotações Gerais:</span>
+                        <p className="text-muted-foreground mt-1 p-2 bg-gray-50 rounded">
+                          {selectedGuide.generalNotes}
+                        </p>
+                      </div>
+                    )}
+                    {!selectedGuide.procedureNotes && !selectedGuide.generalNotes && (
+                      <p className="text-muted-foreground italic">Nenhuma observação registrada.</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Password Dialog */}
+      <PasswordDialog
+        open={passwordDialog.isOpen}
+        onOpenChange={passwordDialog.closeDialog}
+        onConfirm={passwordDialog.confirm}
+        title={passwordDialog.title}
+        description={passwordDialog.description}
+        isLoading={passwordDialog.isLoading}
+      />
+
+      {/* Confirm Dialog */}
+      <ConfirmDialog
+        open={confirmDialog.isOpen}
+        onOpenChange={confirmDialog.closeDialog}
+        onConfirm={confirmDialog.confirm}
+        title={confirmDialog.title}
+        description={confirmDialog.description}
+        confirmText={confirmDialog.confirmText}
+        cancelText={confirmDialog.cancelText}
+        isLoading={confirmDialog.isLoading}
+      />
     </div>
   );
 }

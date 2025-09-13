@@ -536,6 +536,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Verificação de senha do administrador
+  app.post("/api/admin/verify-password", async (req, res) => {
+    try {
+      const { password } = req.body;
+      const adminPassword = process.env.SENHA_ADMIN;
+      
+      if (!adminPassword) {
+        return res.status(500).json({ message: "Senha do administrador não configurada" });
+      }
+      
+      if (password === adminPassword) {
+        res.json({ valid: true });
+      } else {
+        res.status(401).json({ valid: false, message: "Senha incorreta" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Erro ao verificar senha" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

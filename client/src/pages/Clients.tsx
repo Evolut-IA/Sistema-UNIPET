@@ -4,23 +4,38 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useLocation } from "wouter";
 import type { Client } from "@shared/schema";
-import { Plus, Search, Edit, Trash2, Eye } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Eye, Copy } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
+import { PasswordDialog } from "@/components/ui/password-dialog";
+import { usePasswordDialog } from "@/hooks/use-password-dialog";
 
 export default function Clients() {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedClient, setSelectedClient] = useState<any>(null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const confirmDialog = useConfirmDialog();
+  const passwordDialog = usePasswordDialog();
 
   const { data: clients = [], isLoading, isError: clientsError } = useQuery<Client[]>({
     queryKey: ["/api/clients"],
+  });
+
+  // Query para buscar pets do cliente selecionado
+  const { data: clientPets = [], isLoading: petsLoading } = useQuery<any[]>({
+    queryKey: ["/api/clients", selectedClient?.id, "pets"],
+    enabled: !!selectedClient?.id,
   });
 
   const { data: searchResults = [], isLoading: searchLoading, isError: searchError } = useQuery<Client[]>({
@@ -50,9 +65,146 @@ export default function Clients() {
 
   const displayClients = searchQuery.length > 2 ? searchResults : clients;
 
-  const handleDelete = (id: string) => {
-    if (confirm("Tem certeza que deseja remover este cliente?")) {
-      deleteClientMutation.mutate(id);
+  const handleDelete = (id: string, clientName: string) => {
+    passwordDialog.openDialog({
+      title: "Verificação de Senha",
+      description: "Digite a senha do administrador para excluir este cliente:",
+      onConfirm: async (password) => {
+        try {
+          passwordDialog.setLoading(true);
+          
+          // Verificar senha
+          const response = await fetch("/api/admin/verify-password", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ password }),
+          });
+          
+          const result = await response.json();
+          
+          if (result.valid) {
+            // Senha correta, mostrar confirmação de exclusão
+            confirmDialog.openDialog({
+              title: "Excluir Cliente",
+              description: `Tem certeza que deseja excluir o cliente "${clientName}"? Esta ação não pode ser desfeita e todos os dados relacionados serão perdidos.`,
+              confirmText: "Excluir Cliente",
+              cancelText: "Cancelar",
+              onConfirm: () => {
+                confirmDialog.setLoading(true);
+                deleteClientMutation.mutate(id, {
+                  onSettled: () => {
+                    confirmDialog.setLoading(false);
+                  }
+                });
+              },
+            });
+          } else {
+            toast({
+              title: "Senha incorreta",
+              description: "A senha do administrador está incorreta.",
+              variant: "destructive",
+            });
+          }
+        } catch (error) {
+          toast({
+            title: "Erro",
+            description: "Erro ao verificar senha. Tente novamente.",
+            variant: "destructive",
+          });
+        } finally {
+          passwordDialog.setLoading(false);
+        }
+      },
+    });
+  };
+
+  const handleViewDetails = (client: any) => {
+    setSelectedClient(client);
+    setDetailsOpen(true);
+  };
+
+  const generateClientText = () => {
+    if (!selectedClient) return "";
+
+    let text = "";
+    
+    // Cabeçalho
+    text += "=".repeat(50) + "\n";
+    text += "INFORMAÇÕES DO CLIENTE\n";
+    text += "=".repeat(50) + "\n\n";
+
+    // Informações Pessoais
+    text += "INFORMAÇÕES PESSOAIS:\n";
+    text += "-".repeat(25) + "\n";
+    text += `Nome Completo: ${selectedClient.fullName}\n`;
+    text += `Email: ${selectedClient.email || "Não informado"}\n`;
+    text += `Telefone: ${selectedClient.phone}\n`;
+    text += `CPF: ${selectedClient.cpf}\n\n`;
+
+    // Informações de Localização
+    text += "INFORMAÇÕES DE LOCALIZAÇÃO:\n";
+    text += "-".repeat(30) + "\n";
+    text += `Cidade: ${selectedClient.city || "Não informado"}\n`;
+    text += `Estado: ${selectedClient.state || "Não informado"}\n`;
+    text += `CEP: ${selectedClient.cep || "Não informado"}\n`;
+    text += `Endereço: ${selectedClient.address || "Não informado"}\n\n`;
+
+    // Informações do Cadastro
+    text += "INFORMAÇÕES DO CADASTRO:\n";
+    text += "-".repeat(25) + "\n";
+    text += `Data de Cadastro: ${selectedClient.createdAt ? format(new Date(selectedClient.createdAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR }) : "Não informado"}\n`;
+    if (selectedClient.updatedAt) {
+      text += `Última Atualização: ${format(new Date(selectedClient.updatedAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}\n`;
+    }
+    text += "\n";
+
+    // Pets do Cliente
+    if (clientPets && clientPets.length > 0) {
+      text += "PETS DO CLIENTE:\n";
+      text += "-".repeat(20) + "\n";
+      
+      clientPets.forEach((pet: any, index: number) => {
+        text += `\nPet ${index + 1}:\n`;
+        text += `  Nome: ${pet.name}\n`;
+        text += `  Espécie: ${pet.animalType}\n`;
+        text += `  Raça: ${pet.breed || "Não informado"}\n`;
+        text += `  Idade: ${pet.age}\n`;
+        text += `  Peso: ${pet.weight ? `${pet.weight}kg` : "Não informado"}\n`;
+        text += `  Sexo: ${pet.gender || "Não informado"}\n`;
+        if (pet.observations) {
+          text += `  Observações: ${pet.observations}\n`;
+        }
+      });
+    } else {
+      text += "PETS DO CLIENTE:\n";
+      text += "-".repeat(20) + "\n";
+      text += "Nenhum pet cadastrado para este cliente.\n";
+    }
+
+    text += "\n" + "=".repeat(50) + "\n";
+    text += `Gerado em: ${format(new Date(), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}\n`;
+    text += "=".repeat(50);
+
+    return text;
+  };
+
+  const handleCopyToClipboard = async () => {
+    try {
+      const text = generateClientText();
+      await navigator.clipboard.writeText(text);
+      toast({
+        title: "Copiado!",
+        description: "Informações do cliente copiadas para a área de transferência.",
+        variant: "default",
+      });
+    } catch (error) {
+      toast({
+        title: "Erro",
+        description: "Não foi possível copiar as informações. Tente novamente.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -111,32 +263,59 @@ export default function Clients() {
               ))}
             </div>
           ) : displayClients?.length ? (
-            <div className="space-y-4">
+            <div className="space-y-2">
               {displayClients.map((client: any) => (
-                <div key={client.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-foreground text-lg" data-testid={`client-name-${client.id}`}>
-                        {client.fullName}
-                      </h3>
-                      <div className="mt-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 text-sm text-muted-foreground">
-                        <p><span className="font-medium">Email:</span> {client.email || "Não informado"}</p>
-                        <p><span className="font-medium">Telefone:</span> {client.phone}</p>
-                        <p><span className="font-medium">CPF:</span> {client.cpf}</p>
-                        <p><span className="font-medium">Cidade:</span> {client.city || "Não informado"}</p>
-                        <p><span className="font-medium">Estado:</span> {client.state || "Não informado"}</p>
-                        <p><span className="font-medium">Cadastrado:</span> {client.createdAt && format(new Date(client.createdAt), "dd/MM/yyyy", { locale: ptBR })}</p>
+                <div key={client.id} className="border rounded-lg p-3 hover:bg-gray-50 transition-colors">
+                  <div className="flex justify-between items-center">
+                    <div className="flex-1 flex items-center space-x-4">
+                      <div className="flex items-center space-x-2">
+                        <h3 className="font-semibold text-foreground" data-testid={`client-name-${client.id}`}>
+                          {client.fullName}
+                        </h3>
+                      </div>
+
+                      <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+                        <span className="font-medium">Email:</span>
+                        <span>{client.email || "Não informado"}</span>
+                      </div>
+
+                      <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+                        <span className="font-medium">Telefone:</span>
+                        <span>{client.phone}</span>
+                      </div>
+
+                      <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+                        <span className="font-medium">CPF:</span>
+                        <span>{client.cpf}</span>
+                      </div>
+
+                      <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+                        <span className="font-medium">Cidade:</span>
+                        <span>{client.city || "Não informado"}</span>
+                      </div>
+
+                      <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+                        <span className="font-medium">Cadastrado:</span>
+                        <span>{client.createdAt && format(new Date(client.createdAt), "dd/MM/yyyy", { locale: ptBR })}</span>
                       </div>
                     </div>
-                    <div className="flex space-x-2 ml-4">
+                    
+                    <div className="flex items-center space-x-1 ml-3">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleViewDetails(client)}
+                        data-testid={`button-view-${client.id}`}
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => setLocation(`/clientes/${client.id}/pets/novo`)}
                         data-testid={`button-add-pet-${client.id}`}
                       >
-                        <Plus className="h-4 w-4 mr-1" />
-                        Adicionar Pet
+                        <Plus className="h-4 w-4" />
                       </Button>
                       <Button
                         variant="outline"
@@ -149,7 +328,7 @@ export default function Clients() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => handleDelete(client.id)}
+                        onClick={() => handleDelete(client.id, client.fullName)}
                         disabled={deleteClientMutation.isPending}
                         data-testid={`button-delete-${client.id}`}
                       >
@@ -179,6 +358,149 @@ export default function Clients() {
           )}
         </CardContent>
       </Card>
+
+      {/* Details Dialog */}
+      <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Eye className="h-5 w-5 text-primary" />
+                <span>Detalhes do Cliente</span>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleCopyToClipboard}
+                className="flex items-center space-x-2"
+              >
+                <Copy className="h-4 w-4" />
+                <span>Copiar</span>
+              </Button>
+            </DialogTitle>
+          </DialogHeader>
+          
+          {selectedClient && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h4 className="font-semibold text-foreground mb-2">Informações Pessoais</h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center space-x-2">
+                      <span><strong>Nome Completo:</strong> {selectedClient.fullName}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span><strong>Email:</strong> {selectedClient.email || "Não informado"}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span><strong>Telefone:</strong> {selectedClient.phone}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span><strong>CPF:</strong> {selectedClient.cpf}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold text-foreground mb-2">Informações de Localização</h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center space-x-2">
+                      <span><strong>Cidade:</strong> {selectedClient.city || "Não informado"}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span><strong>Estado:</strong> {selectedClient.state || "Não informado"}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span><strong>CEP:</strong> {selectedClient.cep || "Não informado"}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span><strong>Endereço:</strong> {selectedClient.address || "Não informado"}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h4 className="font-semibold text-foreground mb-2">Informações do Cadastro</h4>
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center space-x-2">
+                    <span><strong>Data de Cadastro:</strong> {selectedClient.createdAt && format(new Date(selectedClient.createdAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}</span>
+                  </div>
+                  {selectedClient.updatedAt && (
+                    <div className="flex items-center space-x-2">
+                      <span><strong>Última Atualização:</strong> {format(new Date(selectedClient.updatedAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Seção de Pets */}
+              <div>
+                <h4 className="font-semibold text-foreground mb-2">Pets do Cliente</h4>
+                {petsLoading ? (
+                  <div className="text-sm text-muted-foreground">Carregando pets...</div>
+                ) : clientPets && clientPets.length > 0 ? (
+                  <div className="space-y-2">
+                    {clientPets.map((pet: any) => (
+                      <div key={pet.id} className="border rounded-lg p-3 bg-muted/30">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                          <div className="flex items-center space-x-2">
+                            <span><strong>Nome:</strong> {pet.name}</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <span><strong>Espécie:</strong> {pet.animalType}</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <span><strong>Raça:</strong> {pet.breed || "Não informado"}</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <span><strong>Idade:</strong> {pet.age}</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <span><strong>Peso:</strong> {pet.weight ? `${pet.weight}kg` : "Não informado"}</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <span><strong>Sexo:</strong> {pet.gender || "Não informado"}</span>
+                          </div>
+                        </div>
+                        {pet.observations && (
+                          <div className="mt-2 text-sm">
+                            <span><strong>Observações:</strong> {pet.observations}</span>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-sm text-muted-foreground">Nenhum pet cadastrado para este cliente.</div>
+                )}
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Password Dialog */}
+      <PasswordDialog
+        open={passwordDialog.isOpen}
+        onOpenChange={passwordDialog.closeDialog}
+        onConfirm={passwordDialog.confirm}
+        title={passwordDialog.title}
+        description={passwordDialog.description}
+        isLoading={passwordDialog.isLoading}
+      />
+
+      {/* Confirm Dialog */}
+      <ConfirmDialog
+        open={confirmDialog.isOpen}
+        onOpenChange={confirmDialog.closeDialog}
+        onConfirm={confirmDialog.confirm}
+        title={confirmDialog.title}
+        description={confirmDialog.description}
+        confirmText={confirmDialog.confirmText}
+        cancelText={confirmDialog.cancelText}
+        isLoading={confirmDialog.isLoading}
+      />
     </div>
   );
 }

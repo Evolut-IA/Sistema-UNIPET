@@ -7,10 +7,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { InputMasked } from "@/components/ui/input-masked";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { insertClientSchema } from "@shared/schema";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Plus, Edit, Trash2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 export default function ClientForm() {
   const [, setLocation] = useLocation();
@@ -20,8 +22,13 @@ export default function ClientForm() {
 
   const isEdit = Boolean(params.id);
 
-  const { data: client, isLoading } = useQuery({
+  const { data: client, isLoading } = useQuery<any>({
     queryKey: ["/api/clients", params.id],
+    enabled: isEdit,
+  });
+
+  const { data: pets = [], isLoading: petsLoading } = useQuery<any[]>({
+    queryKey: ["/api/clients", params.id, "pets"],
     enabled: isEdit,
   });
 
@@ -153,7 +160,12 @@ export default function ClientForm() {
                     <FormItem>
                       <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input type="email" {...field} data-testid="input-email" />
+                        <InputMasked 
+                          type="email" 
+                          mask="email"
+                          {...field} 
+                          data-testid="input-email" 
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -167,7 +179,11 @@ export default function ClientForm() {
                     <FormItem>
                       <FormLabel>Celular *</FormLabel>
                       <FormControl>
-                        <Input {...field} data-testid="input-phone" />
+                        <InputMasked 
+                          mask="phone"
+                          {...field} 
+                          data-testid="input-phone" 
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -181,7 +197,11 @@ export default function ClientForm() {
                     <FormItem>
                       <FormLabel>CPF *</FormLabel>
                       <FormControl>
-                        <Input {...field} data-testid="input-cpf" />
+                        <InputMasked 
+                          mask="cpf"
+                          {...field} 
+                          data-testid="input-cpf" 
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -195,7 +215,11 @@ export default function ClientForm() {
                     <FormItem>
                       <FormLabel>CEP</FormLabel>
                       <FormControl>
-                        <Input {...field} data-testid="input-cep" />
+                        <InputMasked 
+                          mask="cep"
+                          {...field} 
+                          data-testid="input-cep" 
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -309,6 +333,85 @@ export default function ClientForm() {
           </Form>
         </CardContent>
       </Card>
+
+      {/* Pets Section - Only show when editing */}
+      {isEdit && (
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-foreground">Pets do Cliente</CardTitle>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setLocation(`/clientes/${params.id}/pets/novo`)}
+                data-testid="button-add-pet"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Adicionar Pet
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {petsLoading ? (
+              <div className="animate-pulse space-y-4">
+                <div className="h-20 bg-gray-200 rounded"></div>
+                <div className="h-20 bg-gray-200 rounded"></div>
+              </div>
+            ) : pets.length > 0 ? (
+              <div className="space-y-4">
+                {pets.map((pet: any) => (
+                  <div
+                    key={pet.id}
+                    className="flex items-center justify-between p-4 border border-border rounded-lg bg-card"
+                  >
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3">
+                        <h3 className="font-semibold text-foreground">{pet.name}</h3>
+                        <Badge variant="secondary">{pet.species}</Badge>
+                        {pet.breed && (
+                          <Badge variant="outline">{pet.breed}</Badge>
+                        )}
+                      </div>
+                      <div className="text-sm text-muted-foreground mt-1">
+                        {pet.birthDate && (
+                          <span>Nascimento: {new Date(pet.birthDate).toLocaleDateString('pt-BR')}</span>
+                        )}
+                        {pet.planId && (
+                          <span className="ml-4">Plano: {pet.planId}</span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex space-x-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setLocation(`/pets/${pet.id}/editar`)}
+                        data-testid={`button-edit-pet-${pet.id}`}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-muted-foreground mb-4">
+                  Este cliente ainda não possui pets cadastrados.
+                </p>
+                <Button
+                  variant="outline"
+                  onClick={() => setLocation(`/clientes/${params.id}/pets/novo`)}
+                  data-testid="button-add-first-pet"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Adicionar Primeiro Pet
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

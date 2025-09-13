@@ -7,12 +7,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { InputMasked } from "@/components/ui/input-masked";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { insertGuideSchema } from "@shared/schema";
-import { ArrowLeft, Search } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { GUIDE_TYPES } from "@/lib/constants";
 
 export default function GuideForm() {
@@ -20,9 +21,6 @@ export default function GuideForm() {
   const params = useParams();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [clientSearch, setClientSearch] = useState("");
-  const [selectedClient, setSelectedClient] = useState<any>(null);
-  const [selectedPet, setSelectedPet] = useState<any>(null);
 
   const isEdit = Boolean(params.id);
 
@@ -31,15 +29,6 @@ export default function GuideForm() {
     enabled: isEdit,
   });
 
-  const { data: searchResults, isLoading: searchLoading } = useQuery({
-    queryKey: ["/api/clients/search", clientSearch],
-    enabled: clientSearch.length > 2,
-  });
-
-  const { data: pets, isLoading: petsLoading } = useQuery({
-    queryKey: ["/api/clients", selectedClient?.id, "pets"],
-    enabled: Boolean(selectedClient?.id),
-  });
 
   const { data: plans } = useQuery({
     queryKey: ["/api/plans/active"],
@@ -162,95 +151,6 @@ export default function GuideForm() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          {/* Client and Pet Selection */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-foreground">Seleção de Cliente e Pet</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {/* Client Search */}
-              <div>
-                <label className="text-sm font-medium text-foreground mb-2 block">
-                  Buscar Cliente (CPF, Nome, Email ou Telefone)
-                </label>
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                  <Input
-                    placeholder="Digite para buscar cliente..."
-                    value={clientSearch}
-                    onChange={(e) => setClientSearch(e.target.value)}
-                    className="pl-10"
-                    data-testid="input-search-client"
-                  />
-                </div>
-                
-                {searchLoading && (
-                  <p className="text-sm text-muted-foreground mt-2">Buscando...</p>
-                )}
-                
-                {searchResults && searchResults.length > 0 && (
-                  <div className="mt-2 border rounded-lg max-h-40 overflow-y-auto">
-                    {searchResults.map((client: any) => (
-                      <button
-                        key={client.id}
-                        type="button"
-                        className="w-full p-3 text-left hover:bg-gray-50 border-b last:border-b-0"
-                        onClick={() => {
-                          setSelectedClient(client);
-                          setClientSearch(client.fullName);
-                          setSelectedPet(null);
-                        }}
-                        data-testid={`button-select-client-${client.id}`}
-                      >
-                        <p className="font-medium text-foreground">{client.fullName}</p>
-                        <p className="text-sm text-muted-foreground">{client.cpf} - {client.phone}</p>
-                      </button>
-                    ))}
-                  </div>
-                )}
-                
-                {selectedClient && (
-                  <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
-                    <p className="font-medium text-green-800">Cliente selecionado:</p>
-                    <p className="text-green-700">{selectedClient.fullName} - {selectedClient.cpf}</p>
-                  </div>
-                )}
-              </div>
-
-              {/* Pet Selection */}
-              {selectedClient && (
-                <div>
-                  <label className="text-sm font-medium text-foreground mb-2 block">
-                    Selecionar Pet
-                  </label>
-                  {petsLoading ? (
-                    <p className="text-sm text-muted-foreground">Carregando pets...</p>
-                  ) : pets && pets.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      {pets.map((pet: any) => (
-                        <button
-                          key={pet.id}
-                          type="button"
-                          className={`p-3 border rounded-lg text-left transition-colors ${
-                            selectedPet?.id === pet.id 
-                              ? 'border-primary bg-primary/5' 
-                              : 'border-gray-200 hover:bg-gray-50'
-                          }`}
-                          onClick={() => setSelectedPet(pet)}
-                          data-testid={`button-select-pet-${pet.id}`}
-                        >
-                          <p className="font-medium text-foreground">{pet.name}</p>
-                          <p className="text-sm text-muted-foreground">{pet.species} - {pet.breed}</p>
-                        </button>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-sm text-muted-foreground">Este cliente não possui pets cadastrados.</p>
-                  )}
-                </div>
-              )}
-            </CardContent>
-          </Card>
 
           {/* Guide Information */}
           <Card>
@@ -305,11 +205,10 @@ export default function GuideForm() {
                     <FormItem>
                       <FormLabel>Valor (R$)</FormLabel>
                       <FormControl>
-                        <Input 
+                        <InputMasked 
                           {...field} 
-                          type="number" 
-                          step="0.01" 
-                          placeholder="0.00"
+                          mask="price"
+                          placeholder="0,00"
                           data-testid="input-value" 
                         />
                       </FormControl>

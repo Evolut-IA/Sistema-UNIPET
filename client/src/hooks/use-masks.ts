@@ -1,0 +1,115 @@
+import { useCallback } from "react";
+
+export function useMasks() {
+  const applyCPFMask = useCallback((value: string) => {
+    // Remove tudo que não é dígito
+    const numbers = value.replace(/\D/g, "");
+    
+    // Aplica a máscara: 000.000.000-00
+    if (numbers.length <= 11) {
+      return numbers
+        .replace(/(\d{3})(\d)/, "$1.$2")
+        .replace(/(\d{3})(\d)/, "$1.$2")
+        .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+    }
+    
+    return value;
+  }, []);
+
+  const applyCNPJMask = useCallback((value: string) => {
+    // Remove tudo que não é dígito
+    const numbers = value.replace(/\D/g, "");
+    
+    // Aplica a máscara: 00.000.000/0000-00
+    if (numbers.length <= 14) {
+      return numbers
+        .replace(/(\d{2})(\d)/, "$1.$2")
+        .replace(/(\d{3})(\d)/, "$1.$2")
+        .replace(/(\d{3})(\d)/, "$1/$2")
+        .replace(/(\d{4})(\d{1,2})$/, "$1-$2");
+    }
+    
+    return value;
+  }, []);
+
+  const applyPhoneMask = useCallback((value: string) => {
+    // Remove tudo que não é dígito
+    const numbers = value.replace(/\D/g, "");
+    
+    // Aplica a máscara: (00) 00000-0000 ou (00) 0000-0000
+    if (numbers.length <= 11) {
+      if (numbers.length <= 10) {
+        // Telefone fixo: (00) 0000-0000
+        return numbers
+          .replace(/(\d{2})(\d)/, "($1) $2")
+          .replace(/(\d{4})(\d{1,4})$/, "$1-$2");
+      } else {
+        // Celular: (00) 00000-0000
+        return numbers
+          .replace(/(\d{2})(\d)/, "($1) $2")
+          .replace(/(\d{5})(\d{1,4})$/, "$1-$2");
+      }
+    }
+    
+    return value;
+  }, []);
+
+  const applyWhatsAppMask = useCallback((value: string) => {
+    // Remove tudo que não é dígito
+    const numbers = value.replace(/\D/g, "");
+    
+    // Aplica a máscara: (00) 00000-0000 (WhatsApp sempre é celular)
+    if (numbers.length <= 11) {
+      return numbers
+        .replace(/(\d{2})(\d)/, "($1) $2")
+        .replace(/(\d{5})(\d{1,4})$/, "$1-$2");
+    }
+    
+    return value;
+  }, []);
+
+  const applyEmailMask = useCallback((value: string) => {
+    // Email não precisa de máscara, apenas validação
+    return value.toLowerCase().trim();
+  }, []);
+
+  const applyPriceMask = useCallback((value: string) => {
+    // Remove tudo que não é dígito ou ponto
+    const numbers = value.replace(/[^\d.,]/g, "");
+    
+    // Substitui vírgula por ponto para padronizar
+    const normalized = numbers.replace(",", ".");
+    
+    // Se tem ponto, mantém apenas 2 casas decimais
+    if (normalized.includes(".")) {
+      const parts = normalized.split(".");
+      if (parts[1] && parts[1].length > 2) {
+        return parts[0] + "." + parts[1].substring(0, 2);
+      }
+    }
+    
+    return normalized;
+  }, []);
+
+  const applyCEPMask = useCallback((value: string) => {
+    // Remove tudo que não é dígito
+    const numbers = value.replace(/\D/g, "");
+    
+    // Aplica a máscara: 00000-000
+    if (numbers.length <= 8) {
+      return numbers.replace(/(\d{5})(\d{1,3})$/, "$1-$2");
+    }
+    
+    return value;
+  }, []);
+
+  return {
+    applyCPFMask,
+    applyCNPJMask,
+    applyPhoneMask,
+    applyWhatsAppMask,
+    applyEmailMask,
+    applyPriceMask,
+    applyCEPMask,
+  };
+}
