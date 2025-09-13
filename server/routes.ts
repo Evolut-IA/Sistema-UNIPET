@@ -434,6 +434,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Settings routes
   app.get("/api/settings/site", async (req, res) => {
     try {
+      console.log("=== API /api/settings/site called ===");
+      console.log("Storage object:", storage);
+      console.log("getSiteSettings method:", typeof storage.getSiteSettings);
+      
       const settings = await storage.getSiteSettings();
       console.log("Site settings from DB:", settings);
       

@@ -16,13 +16,67 @@ import type {
   Guide, InsertGuide
 } from "@shared/schema";
 
-const sql = postgres(process.env.DATABASE_URL!, { 
+const databaseUrl = process.env.DATABASE_URL || "postgresql://postgres:password@localhost:5432/unipet";
+console.log("Database URL:", databaseUrl);
+
+const sql = postgres(databaseUrl, { 
   ssl: { rejectUnauthorized: false },
   max: 10,
   idle_timeout: 20,
   connect_timeout: 10
 });
 const db = drizzle(sql, { schema });
+
+// Test database connection and create tables if needed
+async function testConnection() {
+  try {
+    console.log("Testing database connection...");
+    await sql`SELECT 1`;
+    console.log("Database connection successful!");
+    
+    // Check if site_settings table exists
+    const tableExists = await sql`
+      SELECT EXISTS (
+        SELECT FROM information_schema.tables 
+        WHERE table_schema = 'public' 
+        AND table_name = 'site_settings'
+      );
+    `;
+    
+    console.log("Site settings table exists:", tableExists[0].exists);
+    
+    if (!tableExists[0].exists) {
+      console.log("Creating site_settings table...");
+      await sql`
+        CREATE TABLE site_settings (
+          id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
+          whatsapp TEXT,
+          email TEXT,
+          phone TEXT,
+          instagram_url TEXT,
+          facebook_url TEXT,
+          linkedin_url TEXT,
+          youtube_url TEXT,
+          cnpj TEXT,
+          business_hours TEXT,
+          our_story TEXT,
+          privacy_policy TEXT,
+          terms_of_use TEXT,
+          address TEXT,
+          main_image TEXT,
+          network_image TEXT,
+          about_image TEXT,
+          cores JSONB DEFAULT '{}'::jsonb
+        );
+      `;
+      console.log("Site settings table created successfully!");
+    }
+  } catch (error) {
+    console.error("Database connection failed:", error);
+  }
+}
+
+testConnection();
 
 export interface IStorage {
   // User methods

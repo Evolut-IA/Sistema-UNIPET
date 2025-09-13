@@ -44,6 +44,84 @@ const monospaceFontOptions = [
   { value: "Source Code Pro", label: "Source Code Pro" },
 ];
 
+// Select input component with same style as ColorInput
+const SelectInput = ({ value, onChange, title, description, testId, options }: {
+  value: string;
+  onChange: (value: string) => void;
+  title: string;
+  description: string;
+  testId: string;
+  options: { value: string; label: string }[];
+}) => {
+  return (
+    <div className="flex items-center space-x-3">
+      <div className="w-10 h-10 rounded-lg border-2 border-muted flex items-center justify-center flex-shrink-0 bg-muted">
+        <Type className="h-4 w-4 text-muted-foreground" />
+      </div>
+      
+      <div className="flex-1">
+        <div className="text-sm font-semibold text-foreground">{title}</div>
+        <div className="text-xs text-muted-foreground mt-0.5">{description}</div>
+      </div>
+      
+      <div className="w-32">
+        <Select onValueChange={onChange} value={value} data-testid={testId}>
+          <SelectTrigger className="h-8">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {options.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+    </div>
+  );
+};
+
+// Number input component with same style as ColorInput
+const NumberInput = ({ value, onChange, title, description, testId, unit, min, max, step }: {
+  value: string;
+  onChange: (value: string) => void;
+  title: string;
+  description: string;
+  testId: string;
+  unit: string;
+  min?: number;
+  max?: number;
+  step?: number;
+}) => {
+  return (
+    <div className="flex items-center space-x-3">
+      <div className="w-10 h-10 rounded-lg border-2 border-muted flex items-center justify-center flex-shrink-0 bg-muted">
+        <Layout className="h-4 w-4 text-muted-foreground" />
+      </div>
+      
+      <div className="flex-1">
+        <div className="text-sm font-semibold text-foreground">{title}</div>
+        <div className="text-xs text-muted-foreground mt-0.5">{description}</div>
+      </div>
+      
+      <div className="flex items-center space-x-2 w-32">
+        <Input
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          type="number"
+          step={step}
+          min={min}
+          max={max}
+          data-testid={testId}
+          className="h-8"
+        />
+        <span className="text-xs text-muted-foreground">{unit}</span>
+      </div>
+    </div>
+  );
+};
+
 // Color input component with clean picker
 const ColorInput = ({ value, onChange, title, description, testId }: {
   value: string;
@@ -452,21 +530,14 @@ export default function ThemeEditor() {
                       name="sansSerifFont"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Fonte Principal - Para títulos, botões e textos importantes</FormLabel>
-                          <FormControl>
-                            <Select onValueChange={field.onChange} value={field.value} data-testid="select-sans-serif">
-                              <SelectTrigger>
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {fontOptions.map((font) => (
-                                  <SelectItem key={font.value} value={font.value}>
-                                    {font.label}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
+                          <SelectInput
+                            value={field.value || "DM Sans"}
+                            onChange={field.onChange}
+                            title="Fonte Principal"
+                            description="Para títulos, botões e textos importantes"
+                            testId="select-sans-serif"
+                            options={fontOptions}
+                          />
                           <FormMessage />
                         </FormItem>
                       )}
@@ -477,21 +548,14 @@ export default function ThemeEditor() {
                       name="serifFont"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Fonte Elegante - Para textos longos e conteúdo especial</FormLabel>
-                          <FormControl>
-                            <Select onValueChange={field.onChange} value={field.value} data-testid="select-serif">
-                              <SelectTrigger>
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {serifFontOptions.map((font) => (
-                                  <SelectItem key={font.value} value={font.value}>
-                                    {font.label}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
+                          <SelectInput
+                            value={field.value || "Georgia"}
+                            onChange={field.onChange}
+                            title="Fonte Elegante"
+                            description="Para textos longos e conteúdo especial"
+                            testId="select-serif"
+                            options={serifFontOptions}
+                          />
                           <FormMessage />
                         </FormItem>
                       )}
@@ -502,21 +566,14 @@ export default function ThemeEditor() {
                       name="monospaceFont"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Fonte de Código - Para números, códigos e dados técnicos</FormLabel>
-                          <FormControl>
-                            <Select onValueChange={field.onChange} value={field.value} data-testid="select-monospace">
-                              <SelectTrigger>
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {monospaceFontOptions.map((font) => (
-                                  <SelectItem key={font.value} value={font.value}>
-                                    {font.label}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
+                          <SelectInput
+                            value={field.value || "Fira Code"}
+                            onChange={field.onChange}
+                            title="Fonte de Código"
+                            description="Para números, códigos e dados técnicos"
+                            testId="select-monospace"
+                            options={monospaceFontOptions}
+                          />
                           <FormMessage />
                         </FormItem>
                       )}
@@ -540,20 +597,17 @@ export default function ThemeEditor() {
                     name="borderRadius"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Nível de Arredondamento - Quanto maior o valor, mais arredondados ficam os elementos</FormLabel>
-                        <div className="flex items-center space-x-2">
-                          <FormControl>
-                            <Input
-                              {...field}
-                              type="number"
-                              step="0.1"
-                              min="0"
-                              max="1.3"
-                              data-testid="input-border-radius"
-                            />
-                          </FormControl>
-                          <span className="text-muted-foreground">rem</span>
-                        </div>
+                        <NumberInput
+                          value={field.value || "0.5"}
+                          onChange={field.onChange}
+                          title="Nível de Arredondamento"
+                          description="Quanto maior o valor, mais arredondados ficam os elementos"
+                          testId="input-border-radius"
+                          unit="rem"
+                          min={0}
+                          max={1.3}
+                          step={0.1}
+                        />
                         <FormMessage />
                       </FormItem>
                     )}
