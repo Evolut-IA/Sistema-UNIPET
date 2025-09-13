@@ -20,7 +20,7 @@ export default function Settings() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: siteSettings, isLoading: siteLoading } = useQuery({
+  const { data: siteSettings, isLoading: siteLoading, error: siteError } = useQuery({
     queryKey: ["/api/settings/site"],
   });
 
@@ -72,14 +72,20 @@ export default function Settings() {
 
   // Update forms when data loads
   useEffect(() => {
-    if (siteSettings) {
+    if (siteSettings && Object.keys(siteSettings).length > 0) {
       siteForm.reset(siteSettings);
     }
   }, [siteSettings, siteForm]);
 
 
   const onSubmitSite = (data: any) => {
-    saveSiteMutation.mutate(data);
+    // Remove campos vazios antes de enviar
+    const cleanData = Object.fromEntries(
+      Object.entries(data).filter(([_, value]) => 
+        value !== "" && value !== null && value !== undefined
+      )
+    );
+    saveSiteMutation.mutate(cleanData);
   };
 
 

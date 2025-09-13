@@ -435,8 +435,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/settings/site", async (req, res) => {
     try {
       const settings = await storage.getSiteSettings();
+      console.log("Site settings from DB:", settings);
       res.json(settings || {});
     } catch (error) {
+      console.error("Error fetching site settings:", error);
       res.status(500).json({ message: "Failed to fetch site settings" });
     }
   });

@@ -607,40 +607,6 @@ export default function ThemeEditor() {
                       )}
                     />
                     
-                    {/* Secondary */}
-                    <FormField
-                      control={form.control}
-                      name="secondaryBackground"
-                      render={({ field }) => (
-                        <FormItem>
-                          <ColorInput
-                            value={field.value || "#0f1419"}
-                            onChange={field.onChange}
-                            title="Botão Secundário (Fundo)"
-                            description="Cor dos botões menos importantes"
-                            testId="color-secondary-bg"
-                          />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="secondaryText"
-                      render={({ field }) => (
-                        <FormItem>
-                          <ColorInput
-                            value={field.value || "#ffffff"}
-                            onChange={field.onChange}
-                            title="Botão Secundário (Texto)"
-                            description="Cor do texto dos botões secundários"
-                            testId="color-secondary-text"
-                          />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
                     
                     {/* Accent */}
                     <FormField
@@ -668,8 +634,8 @@ export default function ThemeEditor() {
                           <ColorInput
                             value={field.value || "#277677"}
                             onChange={field.onChange}
-                            title="Destaque (Texto)"
-                            description="Cor do texto dos elementos em destaque"
+                            title="Destaque (Contorno)"
+                            description="Cor do contorno dos elementos em destaque"
                             testId="color-accent-text"
                           />
                           <FormMessage />
@@ -677,40 +643,6 @@ export default function ThemeEditor() {
                       )}
                     />
                     
-                    {/* Destructive */}
-                    <FormField
-                      control={form.control}
-                      name="destructiveBackground"
-                      render={({ field }) => (
-                        <FormItem>
-                          <ColorInput
-                            value={field.value || "#277677"}
-                            onChange={field.onChange}
-                            title="Botão de Perigo (Fundo)"
-                            description="Cor dos botões perigosos como 'Excluir'"
-                            testId="color-destructive-bg"
-                          />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="destructiveText"
-                      render={({ field }) => (
-                        <FormItem>
-                          <ColorInput
-                            value={field.value || "#ffffff"}
-                            onChange={field.onChange}
-                            title="Botão de Perigo (Texto)"
-                            description="Cor do texto dos botões perigosos"
-                            testId="color-destructive-text"
-                          />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
                   </div>
                 </AccordionContent>
               </AccordionItem>
@@ -734,8 +666,8 @@ export default function ThemeEditor() {
                           <ColorInput
                             value={field.value || "#f7f9fa"}
                             onChange={field.onChange}
-                            title="Fundo dos Campos"
-                            description="Cor de fundo das caixas de texto e seleção"
+                            title="Contorno dos Campos e Botões"
+                            description="Cor do contorno das caixas de texto e botões"
                             testId="color-input-bg"
                           />
                           <FormMessage />
@@ -751,7 +683,7 @@ export default function ThemeEditor() {
                           <ColorInput
                             value={field.value || "#e1eaef"}
                             onChange={field.onChange}
-                            title="Borda dos Campos"
+                            title="Contorno dos Containers"
                             description="Cor da borda ao redor dos campos de texto"
                             testId="color-input-border"
                           />
