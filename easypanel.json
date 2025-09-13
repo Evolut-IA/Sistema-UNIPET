@@ -7,8 +7,7 @@
     "heroku/nodejs"
   ],
   "environment": {
-    "NODE_ENV": "production",
-    "PORT": "3000"
+    "NODE_ENV": "production"
   },
   "ports": [
     {

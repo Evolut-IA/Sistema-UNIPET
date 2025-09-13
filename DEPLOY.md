@@ -18,11 +18,12 @@ Configure as seguintes variáveis de ambiente no EasyPanel:
 
 ```bash
 NODE_ENV=production
-PORT=3000
 DATABASE_URL=postgresql://username:password@host:port/database
 SESSION_SECRET=your-super-secret-session-key
 SENHA_ADMIN=your-admin-password
 ```
+
+**Nota**: A variável `PORT` é definida automaticamente pelo EasyPanel.
 
 **⚠️ IMPORTANTE**: Todas essas variáveis são obrigatórias para o funcionamento correto da aplicação.
 
@@ -66,20 +67,24 @@ Se houver problemas no deploy:
 
 #### Problemas Comuns
 
-1. **Erro 404 - Página não encontrada**
+1. **Erro "cross-env: not found"**
+   - ✅ **CORRIGIDO**: Removido cross-env dos scripts de produção
+   - O NODE_ENV agora é definido diretamente no código
+
+2. **Erro 404 - Página não encontrada**
    - ✅ **CORRIGIDO**: Caminho dos arquivos estáticos corrigido de `public` para `dist/public`
 
-2. **Erro de conexão com banco de dados**
+3. **Erro de conexão com banco de dados**
    - Verifique se `DATABASE_URL` está configurada corretamente
    - Confirme se o banco PostgreSQL está acessível
    - Verifique se as credenciais estão corretas
 
-3. **Servidor não inicia**
+4. **Servidor não inicia**
    - Verifique se todas as variáveis de ambiente obrigatórias estão configuradas
-   - Confirme se a porta 3000 está disponível
+   - Confirme se a porta está disponível (definida automaticamente pelo EasyPanel)
    - Verifique os logs de inicialização
 
-4. **Build falha**
+5. **Build falha**
    - Verifique se todas as dependências estão no `package.json`
    - Confirme se o Node.js versão >=18 está sendo usado
 
@@ -88,11 +93,11 @@ Se houver problemas no deploy:
 1. **Variáveis de ambiente obrigatórias**:
    ```bash
    NODE_ENV=production
-   PORT=3000
    DATABASE_URL=postgresql://...
    SESSION_SECRET=...
    SENHA_ADMIN=...
    ```
+   (PORT é definida automaticamente pelo EasyPanel)
 
 2. **Teste local**:
    ```bash

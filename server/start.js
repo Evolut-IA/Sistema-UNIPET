@@ -10,8 +10,14 @@ import { dirname, join } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+// Definir NODE_ENV como produção se não estiver definido
+if (!process.env.NODE_ENV) {
+  process.env.NODE_ENV = 'production';
+}
+
 console.log('🚀 Iniciando Sistema UNIPET...');
 console.log('📊 Verificando configurações...');
+console.log('🌍 Ambiente:', process.env.NODE_ENV);
 
 // Verificar variáveis de ambiente essenciais
 const requiredEnvVars = ['DATABASE_URL', 'SESSION_SECRET'];
