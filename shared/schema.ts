@@ -78,6 +78,19 @@ export const plans = pgTable("plans", {
   planType: planTypeEnum("plan_type").notNull().default("with_waiting_period"),
 });
 
+// Plan Procedures table - procedimentos específicos de cada benefício
+export const planProcedures = pgTable("plan_procedures", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  planId: varchar("plan_id").notNull().references(() => plans.id, { onDelete: "cascade" }),
+  benefitName: text("benefit_name").notNull(), // nome do benefício (ex: "Consultas")
+  procedureName: text("procedure_name").notNull(), // nome do procedimento (ex: "Consulta Clínica")
+  description: text("description"), // descrição opcional do procedimento
+  price: integer("price").default(0), // preço em centavos (opcional)
+  isIncluded: boolean("is_included").default(true), // se está incluído no plano
+  displayOrder: integer("display_order").default(0), // ordem de exibição
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+});
+
 // Network Units table
 export const networkUnits = pgTable("network_units", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -213,6 +226,7 @@ export const insertPetSchema = createInsertSchema(pets).omit({ id: true, created
   })).optional()
 });
 export const insertPlanSchema = createInsertSchema(plans).omit({ id: true, createdAt: true });
+export const insertPlanProcedureSchema = createInsertSchema(planProcedures).omit({ id: true, createdAt: true });
 export const insertNetworkUnitSchema = createInsertSchema(networkUnits).omit({ id: true, createdAt: true });
 export const insertFaqItemSchema = createInsertSchema(faqItems).omit({ id: true, createdAt: true });
 export const insertContactSubmissionSchema = createInsertSchema(contactSubmissions).omit({ id: true, createdAt: true });
@@ -225,6 +239,7 @@ export type InsertUser = typeof users.$inferInsert;
 export type InsertClient = typeof clients.$inferInsert;
 export type InsertPet = typeof pets.$inferInsert;
 export type InsertPlan = typeof plans.$inferInsert;
+export type InsertPlanProcedure = typeof planProcedures.$inferInsert;
 export type InsertNetworkUnit = typeof networkUnits.$inferInsert;
 export type InsertFaqItem = typeof faqItems.$inferInsert;
 export type InsertContactSubmission = typeof contactSubmissions.$inferInsert;
@@ -236,6 +251,7 @@ export type User = typeof users.$inferSelect;
 export type Client = typeof clients.$inferSelect;
 export type Pet = typeof pets.$inferSelect;
 export type Plan = typeof plans.$inferSelect;
+export type PlanProcedure = typeof planProcedures.$inferSelect;
 export type NetworkUnit = typeof networkUnits.$inferSelect;
 export type FaqItem = typeof faqItems.$inferSelect;
 export type ContactSubmission = typeof contactSubmissions.$inferSelect;

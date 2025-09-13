@@ -13,7 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { insertPlanSchema } from "@shared/schema";
+import { insertPlanSchema, insertPlanProcedureSchema } from "@shared/schema";
 import { ArrowLeft, Plus, Trash2 } from "lucide-react";
 import { PLAN_TYPES } from "@/lib/constants";
 
@@ -24,6 +24,7 @@ export default function PlanForm() {
   const queryClient = useQueryClient();
 
   const isEdit = Boolean(params.id);
+  const [benefitProcedures, setBenefitProcedures] = useState<Record<string, any[]>>({});
 
   const { data: plan, isLoading } = useQuery({
     queryKey: ["/api/plans", params.id],
@@ -49,6 +50,33 @@ export default function PlanForm() {
     control: form.control,
     name: "features",
   });
+
+  // Funções para gerenciar procedimentos por benefício
+  const addProcedureToBenefit = (benefitName: string) => {
+    setBenefitProcedures(prev => ({
+      ...prev,
+      [benefitName]: [
+        ...(prev[benefitName] || []),
+        { procedureName: "", description: "", price: 0, isIncluded: true }
+      ]
+    }));
+  };
+
+  const removeProcedureFromBenefit = (benefitName: string, index: number) => {
+    setBenefitProcedures(prev => ({
+      ...prev,
+      [benefitName]: prev[benefitName]?.filter((_, i) => i !== index) || []
+    }));
+  };
+
+  const updateProcedureInBenefit = (benefitName: string, index: number, field: string, value: any) => {
+    setBenefitProcedures(prev => ({
+      ...prev,
+      [benefitName]: prev[benefitName]?.map((proc, i) => 
+        i === index ? { ...proc, [field]: value } : proc
+      ) || []
+    }));
+  };
 
 
   useEffect(() => {
@@ -92,11 +120,53 @@ export default function PlanForm() {
     },
   });
 
-  const onSubmit = (data: any) => {
-    mutation.mutate({
-      ...data,
-      price: parseFloat(data.price).toString(),
-    });
+  const onSubmit = async (data: any) => {
+    try {
+      // Primeiro, salva o plano
+      const planData = {
+        ...data,
+        price: parseFloat(data.price).toString(),
+      };
+
+      let planId;
+      if (isEdit) {
+        await apiRequest("PUT", `/api/plans/${params.id}`, planData);
+        planId = params.id;
+      } else {
+        const response = await apiRequest("POST", "/api/plans", planData);
+        planId = response.id;
+      }
+
+      // Depois, salva os procedimentos para cada benefício
+      for (const [benefitName, procedures] of Object.entries(benefitProcedures)) {
+        for (const procedure of procedures as any[]) {
+          if (procedure.procedureName.trim()) {
+            await apiRequest("POST", "/api/plan-procedures", {
+              planId,
+              benefitName,
+              procedureName: procedure.procedureName,
+              description: procedure.description || "",
+              price: Math.round((procedure.price || 0) * 100), // converte para centavos
+              isIncluded: procedure.isIncluded,
+              displayOrder: 0
+            });
+          }
+        }
+      }
+
+      queryClient.invalidateQueries({ queryKey: ["/api/plans"] });
+      toast({
+        title: isEdit ? "Plano atualizado" : "Plano criado",
+        description: isEdit ? "Plano foi atualizado com sucesso." : "Plano foi criado com sucesso.",
+      });
+      setLocation("/planos");
+    } catch (error) {
+      toast({
+        title: "Erro",
+        description: isEdit ? "Falha ao atualizar plano." : "Falha ao criar plano.",
+        variant: "destructive",
+      });
+    }
   };
 
 
@@ -282,7 +352,101 @@ export default function PlanForm() {
             </CardContent>
           </Card>
 
+          {/* Procedimentos por Benefício */}
+          {featureFields.map((field, index) => {
+            const benefitName = form.getValues(`features.${index}`) || "";
+            const procedures = benefitProcedures[benefitName] || [];
+            
+            return (
+              <Card key={field.id}>
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <CardTitle className="text-foreground">
+                    Procedimentos - {benefitName || `Benefício ${index + 1}`}
+                  </CardTitle>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => addProcedureToBenefit(benefitName)}
+                    data-testid={`button-add-procedure-${index}`}
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Adicionar Procedimento
+                  </Button>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {procedures.map((procedure, procIndex) => (
+                      <div key={procIndex} className="grid grid-cols-1 md:grid-cols-4 gap-3 p-4 border rounded-lg">
+                        <div>
+                          <label className="text-sm font-medium text-foreground mb-2 block">
+                            Nome do Procedimento
+                          </label>
+                          <Input
+                            value={procedure.procedureName}
+                            onChange={(e) => updateProcedureInBenefit(benefitName, procIndex, "procedureName", e.target.value)}
+                            placeholder="Ex: Consulta Clínica"
+                            data-testid={`input-procedure-name-${index}-${procIndex}`}
+                          />
+                        </div>
 
+                        <div>
+                          <label className="text-sm font-medium text-foreground mb-2 block">
+                            Descrição
+                          </label>
+                          <Input
+                            value={procedure.description}
+                            onChange={(e) => updateProcedureInBenefit(benefitName, procIndex, "description", e.target.value)}
+                            placeholder="Descrição opcional"
+                            data-testid={`input-procedure-description-${index}-${procIndex}`}
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-sm font-medium text-foreground mb-2 block">
+                            Preço (R$)
+                          </label>
+                          <Input
+                            type="number"
+                            step="0.01"
+                            value={procedure.price}
+                            onChange={(e) => updateProcedureInBenefit(benefitName, procIndex, "price", parseFloat(e.target.value) || 0)}
+                            placeholder="0.00"
+                            data-testid={`input-procedure-price-${index}-${procIndex}`}
+                          />
+                        </div>
+
+                        <div className="flex items-end space-x-2">
+                          <div className="flex items-center space-x-2">
+                            <Switch
+                              checked={procedure.isIncluded}
+                              onCheckedChange={(checked) => updateProcedureInBenefit(benefitName, procIndex, "isIncluded", checked)}
+                              data-testid={`switch-procedure-included-${index}-${procIndex}`}
+                            />
+                            <label className="text-sm text-foreground">Incluído</label>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => removeProcedureFromBenefit(benefitName, procIndex)}
+                            data-testid={`button-remove-procedure-${index}-${procIndex}`}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                    {procedures.length === 0 && (
+                      <p className="text-muted-foreground text-center py-8">
+                        Nenhum procedimento adicionado para este benefício.
+                      </p>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
 
           <div className="flex justify-end space-x-4">
             <Button
