@@ -251,12 +251,18 @@ export default function Dashboard() {
           <CardContent>
             {statsLoading ? (
               <div className="space-y-3">
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                    <Skeleton className="h-4 w-32" />
-                    <Skeleton className="h-6 w-12" />
-                  </div>
-                ))}
+                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-6 w-12" />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {[...Array(2)].map((_, i) => (
+                    <div key={i} className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                      <Skeleton className="h-4 w-24" />
+                      <Skeleton className="h-6 w-8" />
+                    </div>
+                  ))}
+                </div>
               </div>
             ) : (
               <div className="space-y-3">
@@ -264,13 +270,15 @@ export default function Dashboard() {
                   <span className="text-sm text-muted-foreground">Total de Planos</span>
                   <span className="text-xl font-bold text-foreground">{stats?.totalPlans || 0}</span>
                 </div>
-                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                  <span className="text-sm text-muted-foreground">Planos Ativos</span>
-                  <span className="text-xl font-bold text-primary">{stats?.activePlans || 0}</span>
-                </div>
-                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                  <span className="text-sm text-muted-foreground">Planos Inativos</span>
-                  <span className="text-xl font-bold text-destructive">{stats?.inactivePlans || 0}</span>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                    <span className="text-sm text-muted-foreground">Planos Ativos</span>
+                    <span className="text-xl font-bold text-primary">{stats?.activePlans || 0}</span>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                    <span className="text-sm text-muted-foreground">Planos Inativos</span>
+                    <span className="text-xl font-bold text-destructive">{stats?.inactivePlans || 0}</span>
+                  </div>
                 </div>
               </div>
             )}
@@ -297,12 +305,18 @@ export default function Dashboard() {
           <CardContent>
             {networkLoading ? (
               <div className="space-y-3">
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                    <Skeleton className="h-4 w-32" />
-                    <Skeleton className="h-6 w-12" />
-                  </div>
-                ))}
+                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-6 w-12" />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {[...Array(2)].map((_, i) => (
+                    <div key={i} className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                      <Skeleton className="h-4 w-24" />
+                      <Skeleton className="h-6 w-8" />
+                    </div>
+                  ))}
+                </div>
               </div>
             ) : networkUnits?.length ? (
               <div className="space-y-3">
@@ -310,17 +324,19 @@ export default function Dashboard() {
                   <span className="text-sm text-muted-foreground">Total de Unidades</span>
                   <span className="text-xl font-bold text-foreground">{networkUnits.length}</span>
                 </div>
-                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                  <span className="text-sm text-muted-foreground">Unidades Ativas</span>
-                  <span className="text-xl font-bold text-primary">
-                    {networkUnits.filter((u: any) => u.isActive).length}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                  <span className="text-sm text-muted-foreground">Unidades Inativas</span>
-                  <span className="text-xl font-bold text-destructive">
-                    {networkUnits.filter((u: any) => !u.isActive).length}
-                  </span>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                    <span className="text-sm text-muted-foreground">Unidades Ativas</span>
+                    <span className="text-xl font-bold text-primary">
+                      {networkUnits.filter((u: any) => u.isActive).length}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                    <span className="text-sm text-muted-foreground">Unidades Inativas</span>
+                    <span className="text-xl font-bold text-destructive">
+                      {networkUnits.filter((u: any) => !u.isActive).length}
+                    </span>
+                  </div>
                 </div>
               </div>
             ) : (
@@ -346,12 +362,18 @@ export default function Dashboard() {
           <CardContent>
             {clientsLoading ? (
               <div className="space-y-3">
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                    <Skeleton className="h-4 w-32" />
-                    <Skeleton className="h-6 w-12" />
-                  </div>
-                ))}
+                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-6 w-12" />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {[...Array(2)].map((_, i) => (
+                    <div key={i} className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                      <Skeleton className="h-4 w-24" />
+                      <Skeleton className="h-6 w-8" />
+                    </div>
+                  ))}
+                </div>
               </div>
             ) : clients?.length ? (
               <div className="space-y-3">
@@ -359,17 +381,19 @@ export default function Dashboard() {
                   <span className="text-sm text-muted-foreground">Total de Clientes</span>
                   <span className="text-xl font-bold text-foreground">{clients.length}</span>
                 </div>
-                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                  <span className="text-sm text-muted-foreground">Clientes Ativos</span>
-                  <span className="text-xl font-bold text-primary">
-                    {clients.filter((c: any) => c.isActive !== false).length}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                  <span className="text-sm text-muted-foreground">Com Pets Cadastrados</span>
-                  <span className="text-xl font-bold text-muted-foreground">
-                    {clients.filter((c: any) => c.pets && c.pets.length > 0).length}
-                  </span>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                    <span className="text-sm text-muted-foreground">Clientes Ativos</span>
+                    <span className="text-xl font-bold text-primary">
+                      {clients.filter((c: any) => c.isActive !== false).length}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                    <span className="text-sm text-muted-foreground">Com Pets Cadastrados</span>
+                    <span className="text-xl font-bold text-muted-foreground">
+                      {clients.filter((c: any) => c.pets && c.pets.length > 0).length}
+                    </span>
+                  </div>
                 </div>
               </div>
             ) : (
