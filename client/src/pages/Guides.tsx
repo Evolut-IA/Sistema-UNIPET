@@ -98,7 +98,7 @@ export default function Guides() {
         </div>
         <Button 
           className="btn-primary"
-          onClick={() => setLocation("/guides/new")}
+          onClick={() => setLocation("/guias/novo")}
           data-testid="button-new-guide"
         >
           <Plus className="h-4 w-4 mr-2" />
@@ -197,7 +197,7 @@ export default function Guides() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => setLocation(`/guides/${guide.id}/edit`)}
+                        onClick={() => setLocation(`/guias/${guide.id}/editar`)}
                         data-testid={`button-edit-${guide.id}`}
                       >
                         <Edit className="h-4 w-4" />
@@ -228,7 +228,7 @@ export default function Guides() {
               {!searchQuery && typeFilter === "all" && statusFilter === "all" && (
                 <Button 
                   className="btn-primary"
-                  onClick={() => setLocation("/guides/new")}
+                  onClick={() => setLocation("/guias/novo")}
                   data-testid="button-add-first-guide"
                 >
                   <Plus className="h-4 w-4 mr-2" />

@@ -86,7 +86,7 @@ export default function PlanForm() {
         title: isEdit ? "Plano atualizado" : "Plano criado",
         description: isEdit ? "Plano foi atualizado com sucesso." : "Plano foi criado com sucesso.",
       });
-      setLocation("/plans");
+      setLocation("/planos");
     },
     onError: () => {
       toast({
@@ -142,7 +142,7 @@ export default function PlanForm() {
       <div className="flex items-center space-x-4">
         <Button
           variant="outline"
-          onClick={() => setLocation("/plans")}
+          onClick={() => setLocation("/planos")}
           data-testid="button-back-to-plans"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
@@ -478,7 +478,7 @@ export default function PlanForm() {
             <Button
               type="button"
               variant="outline"
-              onClick={() => setLocation("/plans")}
+              onClick={() => setLocation("/planos")}
               data-testid="button-cancel"
             >
               Cancelar

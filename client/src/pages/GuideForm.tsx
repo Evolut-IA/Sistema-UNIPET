@@ -88,7 +88,7 @@ export default function GuideForm() {
         title: isEdit ? "Guia atualizada" : "Guia criada",
         description: isEdit ? "Guia foi atualizada com sucesso." : "Guia foi criada com sucesso.",
       });
-      setLocation("/guides");
+      setLocation("/guias");
     },
     onError: () => {
       toast({
@@ -144,7 +144,7 @@ export default function GuideForm() {
       <div className="flex items-center space-x-4">
         <Button
           variant="outline"
-          onClick={() => setLocation("/guides")}
+          onClick={() => setLocation("/guias")}
           data-testid="button-back-to-guides"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
@@ -386,7 +386,7 @@ export default function GuideForm() {
             <Button
               type="button"
               variant="outline"
-              onClick={() => setLocation("/guides")}
+              onClick={() => setLocation("/guias")}
               data-testid="button-cancel"
             >
               Cancelar

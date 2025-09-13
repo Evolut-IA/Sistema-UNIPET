@@ -27,24 +27,24 @@ function Router() {
     <Layout>
       <Switch>
         <Route path="/" component={Dashboard} />
-        <Route path="/clients" component={Clients} />
-        <Route path="/clients/new" component={ClientForm} />
-        <Route path="/clients/:id/edit" component={ClientForm} />
-        <Route path="/clients/:clientId/pets/new" component={PetForm} />
-        <Route path="/pets/:id/edit" component={PetForm} />
-        <Route path="/guides" component={Guides} />
-        <Route path="/guides/new" component={GuideForm} />
-        <Route path="/guides/:id/edit" component={GuideForm} />
-        <Route path="/plans" component={Plans} />
-        <Route path="/plans/new" component={PlanForm} />
-        <Route path="/plans/:id/edit" component={PlanForm} />
-        <Route path="/network" component={Network} />
-        <Route path="/network/new" component={NetworkForm} />
-        <Route path="/network/:id/edit" component={NetworkForm} />
-        <Route path="/faq" component={FAQ} />
-        <Route path="/contact-submissions" component={ContactSubmissions} />
-        <Route path="/settings" component={Settings} />
-        <Route path="/administration" component={Administration} />
+        <Route path="/clientes" component={Clients} />
+        <Route path="/clientes/novo" component={ClientForm} />
+        <Route path="/clientes/:id/editar" component={ClientForm} />
+        <Route path="/clientes/:clientId/pets/novo" component={PetForm} />
+        <Route path="/pets/:id/editar" component={PetForm} />
+        <Route path="/guias" component={Guides} />
+        <Route path="/guias/novo" component={GuideForm} />
+        <Route path="/guias/:id/editar" component={GuideForm} />
+        <Route path="/planos" component={Plans} />
+        <Route path="/planos/novo" component={PlanForm} />
+        <Route path="/planos/:id/editar" component={PlanForm} />
+        <Route path="/rede" component={Network} />
+        <Route path="/rede/novo" component={NetworkForm} />
+        <Route path="/rede/:id/editar" component={NetworkForm} />
+        <Route path="/perguntas-frequentes" component={FAQ} />
+        <Route path="/formularios" component={ContactSubmissions} />
+        <Route path="/configuracoes" component={Settings} />
+        <Route path="/administracao" component={Administration} />
         <Route component={NotFound} />
       </Switch>
     </Layout>

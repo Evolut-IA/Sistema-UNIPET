@@ -110,7 +110,7 @@ export default function PetForm() {
         title: isEdit ? "Pet atualizado" : "Pet cadastrado",
         description: isEdit ? "Pet foi atualizado com sucesso." : "Pet foi cadastrado com sucesso.",
       });
-      setLocation("/clients");
+      setLocation("/clientes");
     },
     onError: () => {
       toast({
@@ -143,7 +143,7 @@ export default function PetForm() {
       <div className="flex items-center space-x-4">
         <Button
           variant="outline"
-          onClick={() => setLocation("/clients")}
+          onClick={() => setLocation("/clientes")}
           data-testid="button-back-to-clients"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
@@ -455,7 +455,7 @@ export default function PetForm() {
             <Button
               type="button"
               variant="outline"
-              onClick={() => setLocation("/clients")}
+              onClick={() => setLocation("/clientes")}
               data-testid="button-cancel"
             >
               Cancelar

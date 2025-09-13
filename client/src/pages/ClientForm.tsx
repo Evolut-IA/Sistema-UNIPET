@@ -74,7 +74,7 @@ export default function ClientForm() {
         title: isEdit ? "Cliente atualizado" : "Cliente cadastrado",
         description: isEdit ? "Cliente foi atualizado com sucesso." : "Cliente foi cadastrado com sucesso.",
       });
-      setLocation("/clients");
+      setLocation("/clientes");
     },
     onError: () => {
       toast({
@@ -107,7 +107,7 @@ export default function ClientForm() {
       <div className="flex items-center space-x-4">
         <Button
           variant="outline"
-          onClick={() => setLocation("/clients")}
+          onClick={() => setLocation("/clientes")}
           data-testid="button-back-to-clients"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
@@ -291,7 +291,7 @@ export default function ClientForm() {
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => setLocation("/clients")}
+                  onClick={() => setLocation("/clientes")}
                   data-testid="button-cancel"
                 >
                   Cancelar

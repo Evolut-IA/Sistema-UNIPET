@@ -66,7 +66,7 @@ export default function Clients() {
         </div>
         <Button 
           className="btn-primary"
-          onClick={() => setLocation("/clients/new")}
+          onClick={() => setLocation("/clientes/novo")}
           data-testid="button-new-client"
         >
           <Plus className="h-4 w-4 mr-2" />
@@ -132,7 +132,7 @@ export default function Clients() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => setLocation(`/clients/${client.id}/pets/new`)}
+                        onClick={() => setLocation(`/clientes/${client.id}/pets/novo`)}
                         data-testid={`button-add-pet-${client.id}`}
                       >
                         <Plus className="h-4 w-4 mr-1" />
@@ -141,7 +141,7 @@ export default function Clients() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => setLocation(`/clients/${client.id}/edit`)}
+                        onClick={() => setLocation(`/clientes/${client.id}/editar`)}
                         data-testid={`button-edit-${client.id}`}
                       >
                         <Edit className="h-4 w-4" />
@@ -168,7 +168,7 @@ export default function Clients() {
               {searchQuery.length <= 2 && (
                 <Button 
                   className="mt-4"
-                  onClick={() => setLocation("/clients/new")}
+                  onClick={() => setLocation("/clientes/novo")}
                   data-testid="button-add-first-client"
                 >
                   <Plus className="h-4 w-4 mr-2" />

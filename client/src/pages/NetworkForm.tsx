@@ -74,7 +74,7 @@ export default function NetworkForm() {
         title: isEdit ? "Unidade atualizada" : "Unidade cadastrada",
         description: isEdit ? "Unidade foi atualizada com sucesso." : "Unidade foi cadastrada com sucesso.",
       });
-      setLocation("/network");
+      setLocation("/rede");
     },
     onError: () => {
       toast({
@@ -118,7 +118,7 @@ export default function NetworkForm() {
       <div className="flex items-center space-x-4">
         <Button
           variant="outline"
-          onClick={() => setLocation("/network")}
+          onClick={() => setLocation("/rede")}
           data-testid="button-back-to-network"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
@@ -293,7 +293,7 @@ export default function NetworkForm() {
             <Button
               type="button"
               variant="outline"
-              onClick={() => setLocation("/network")}
+              onClick={() => setLocation("/rede")}
               data-testid="button-cancel"
             >
               Cancelar

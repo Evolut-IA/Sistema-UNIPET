@@ -85,7 +85,7 @@ export default function Network() {
         </div>
         <Button 
           className="btn-primary"
-          onClick={() => setLocation("/network/new")}
+          onClick={() => setLocation("/rede/novo")}
           data-testid="button-new-unit"
         >
           <Plus className="h-4 w-4 mr-2" />
@@ -199,7 +199,7 @@ export default function Network() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => setLocation(`/network/${unit.id}/edit`)}
+                        onClick={() => setLocation(`/rede/${unit.id}/editar`)}
                         data-testid={`button-edit-${unit.id}`}
                       >
                         <Edit className="h-4 w-4" />
@@ -233,7 +233,7 @@ export default function Network() {
               {!searchQuery && (
                 <Button 
                   className="btn-primary"
-                  onClick={() => setLocation("/network/new")}
+                  onClick={() => setLocation("/rede/novo")}
                   data-testid="button-add-first-unit"
                 >
                   <Plus className="h-4 w-4 mr-2" />

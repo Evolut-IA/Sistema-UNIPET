@@ -100,7 +100,7 @@ export default function Plans() {
         </div>
         <Button 
           className="btn-primary"
-          onClick={() => setLocation("/plans/new")}
+          onClick={() => setLocation("/planos/novo")}
           data-testid="button-new-plan"
         >
           <Plus className="h-4 w-4 mr-2" />
@@ -197,7 +197,7 @@ export default function Plans() {
                     variant="outline"
                     size="sm"
                     className="flex-1"
-                    onClick={() => setLocation(`/plans/${plan.id}/edit`)}
+                    onClick={() => setLocation(`/planos/${plan.id}/editar`)}
                     data-testid={`button-edit-${plan.id}`}
                   >
                     <Edit className="h-4 w-4 mr-1" />
@@ -228,7 +228,7 @@ export default function Plans() {
             {!searchQuery && (
               <Button 
                 className="btn-primary"
-                onClick={() => setLocation("/plans/new")}
+                onClick={() => setLocation("/planos/novo")}
                 data-testid="button-add-first-plan"
               >
                 <Plus className="h-4 w-4 mr-2" />

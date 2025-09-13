@@ -57,7 +57,7 @@ export default function Dashboard() {
         <div className="flex items-center space-x-4">
           <Button 
             className="btn-primary"
-            onClick={() => setLocation("/guides/new")}
+            onClick={() => setLocation("/guias/novo")}
             data-testid="button-new-guide"
           >
             <Plus className="h-4 w-4 mr-2" />
@@ -182,7 +182,7 @@ export default function Dashboard() {
               variant="ghost" 
               size="sm" 
               className="text-primary"
-              onClick={() => setLocation("/guides")}
+              onClick={() => setLocation("/guias")}
               data-testid="button-view-all-guides"
             >
               Ver todas
@@ -251,7 +251,7 @@ export default function Dashboard() {
               <Button 
                 variant="outline" 
                 className="p-4 h-auto text-left justify-start"
-                onClick={() => setLocation("/clients/new")}
+                onClick={() => setLocation("/clientes/novo")}
                 data-testid="button-quick-new-client"
               >
                 <div>
@@ -264,7 +264,7 @@ export default function Dashboard() {
               <Button 
                 variant="outline" 
                 className="p-4 h-auto text-left justify-start"
-                onClick={() => setLocation("/guides/new")}
+                onClick={() => setLocation("/guias/novo")}
                 data-testid="button-quick-new-guide"
               >
                 <div>
@@ -277,7 +277,7 @@ export default function Dashboard() {
               <Button 
                 variant="outline" 
                 className="p-4 h-auto text-left justify-start"
-                onClick={() => setLocation("/clients")}
+                onClick={() => setLocation("/clientes")}
                 data-testid="button-quick-search-client"
               >
                 <div>
@@ -290,7 +290,7 @@ export default function Dashboard() {
               <Button 
                 variant="outline" 
                 className="p-4 h-auto text-left justify-start"
-                onClick={() => setLocation("/settings")}
+                onClick={() => setLocation("/configuracoes")}
                 data-testid="button-quick-reports"
               >
                 <div>
@@ -314,7 +314,7 @@ export default function Dashboard() {
               variant="ghost" 
               size="sm" 
               className="text-primary"
-              onClick={() => setLocation("/clients")}
+              onClick={() => setLocation("/clientes")}
               data-testid="button-view-all-clients"
             >
               Ver todos
@@ -358,7 +358,7 @@ export default function Dashboard() {
               variant="ghost" 
               size="sm" 
               className="text-primary"
-              onClick={() => setLocation("/network")}
+              onClick={() => setLocation("/rede")}
               data-testid="button-manage-network"
             >
               Gerenciar

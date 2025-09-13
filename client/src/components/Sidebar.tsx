@@ -23,19 +23,19 @@ const navigation = [
   {
     name: "Gestão",
     items: [
-      { name: "Clientes & Pets", href: "/clients", icon: Users },
-      { name: "Guias de Atendimento", href: "/guides", icon: FileText },
-      { name: "Planos de Saúde", href: "/plans", icon: CreditCard },
-      { name: "Rede Credenciada", href: "/network", icon: Building2 },
-      { name: "Formulários", href: "/contact-submissions", icon: Mail }
+      { name: "Clientes & Pets", href: "/clientes", icon: Users },
+      { name: "Guias de Atendimento", href: "/guias", icon: FileText },
+      { name: "Planos de Saúde", href: "/planos", icon: CreditCard },
+      { name: "Rede Credenciada", href: "/rede", icon: Building2 },
+      { name: "Formulários", href: "/formularios", icon: Mail }
     ]
   },
   {
     name: "Sistema",
     items: [
-      { name: "FAQ", href: "/faq", icon: HelpCircle },
-      { name: "Administração", href: "/administration", icon: UserCog },
-      { name: "Configurações", href: "/settings", icon: Settings }
+      { name: "FAQ", href: "/perguntas-frequentes", icon: HelpCircle },
+      { name: "Administração", href: "/administracao", icon: UserCog },
+      { name: "Configurações", href: "/configuracoes", icon: Settings }
     ]
   }
 ];
