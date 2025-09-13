@@ -27,6 +27,9 @@
     },
     "DATABASE_URL": {
       "description": "PostgreSQL database URL"
+    },
+    "SENHA_ADMIN": {
+      "description": "Admin password for system access"
     }
   },
   "addons": [

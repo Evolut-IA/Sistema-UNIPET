@@ -21,7 +21,10 @@ NODE_ENV=production
 PORT=3000
 DATABASE_URL=postgresql://username:password@host:port/database
 SESSION_SECRET=your-super-secret-session-key
+SENHA_ADMIN=your-admin-password
 ```
+
+**⚠️ IMPORTANTE**: Todas essas variáveis são obrigatórias para o funcionamento correto da aplicação.
 
 ### Passos para Deploy
 
@@ -61,7 +64,43 @@ SESSION_SECRET=your-super-secret-session-key
 
 Se houver problemas no deploy:
 
-1. Verifique se todas as variáveis de ambiente estão configuradas
-2. Confirme se o banco de dados está acessível
-3. Verifique os logs de build no EasyPanel
-4. Teste localmente com `npm run build && npm start`
+#### Problemas Comuns
+
+1. **Erro 404 - Página não encontrada**
+   - ✅ **CORRIGIDO**: Caminho dos arquivos estáticos corrigido de `public` para `dist/public`
+
+2. **Erro de conexão com banco de dados**
+   - Verifique se `DATABASE_URL` está configurada corretamente
+   - Confirme se o banco PostgreSQL está acessível
+   - Verifique se as credenciais estão corretas
+
+3. **Servidor não inicia**
+   - Verifique se todas as variáveis de ambiente obrigatórias estão configuradas
+   - Confirme se a porta 3000 está disponível
+   - Verifique os logs de inicialização
+
+4. **Build falha**
+   - Verifique se todas as dependências estão no `package.json`
+   - Confirme se o Node.js versão >=18 está sendo usado
+
+#### Verificações
+
+1. **Variáveis de ambiente obrigatórias**:
+   ```bash
+   NODE_ENV=production
+   PORT=3000
+   DATABASE_URL=postgresql://...
+   SESSION_SECRET=...
+   SENHA_ADMIN=...
+   ```
+
+2. **Teste local**:
+   ```bash
+   npm run build
+   npm start
+   ```
+
+3. **Logs importantes**:
+   - "Database URL configured: Yes"
+   - "Database connection successful!"
+   - "serving on port 3000"

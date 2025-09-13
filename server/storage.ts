@@ -17,10 +17,10 @@ import type {
 } from "@shared/schema";
 
 const databaseUrl = process.env.DATABASE_URL || "postgresql://postgres:password@localhost:5432/unipet";
-console.log("Database URL:", databaseUrl);
+console.log("Database URL configured:", databaseUrl ? "Yes" : "No");
 
 const sql = postgres(databaseUrl, { 
-  ssl: { rejectUnauthorized: false },
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
   max: 10,
   idle_timeout: 20,
   connect_timeout: 10
