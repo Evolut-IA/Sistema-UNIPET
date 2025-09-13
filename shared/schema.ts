@@ -197,6 +197,17 @@ export const themeSettings = pgTable("theme_settings", {
   chart3Color: text("chart3_color").default("#277677"),
   chart4Color: text("chart4_color").default("#277677"),
   chart5Color: text("chart5_color").default("#277677"),
+
+  // Custom legacy colors from cores.css
+  customBackgroundColor: text("custom_background_color").default("#FBF9F7"),
+  customContainerColor: text("custom_container_color").default("#ffffff"),
+  customButtonBackground: text("custom_button_background").default("#277677"),
+  customButtonText: text("custom_button_text").default("#ffffff"),
+  customButtonIcon: text("custom_button_icon").default("#ffffff"),
+  customTitleColor: text("custom_title_color").default("#090909"),
+  customSubtitleColor: text("custom_subtitle_color").default("#1e1e1e"),
+  customBodyText: text("custom_body_text").default("#060606"),
+  customIconColor: text("custom_icon_color").default("#277677"),
 });
 
 // Guides table
