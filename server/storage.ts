@@ -70,6 +70,39 @@ async function testConnection() {
         );
       `;
       console.log("Site settings table created successfully!");
+    } else {
+      // Check all required columns
+      const requiredColumns = [
+        'whatsapp', 'email', 'phone', 'instagram_url', 'facebook_url', 
+        'linkedin_url', 'youtube_url', 'cnpj', 'business_hours', 
+        'our_story', 'privacy_policy', 'terms_of_use', 'address', 
+        'main_image', 'network_image', 'about_image', 'cores'
+      ];
+      
+      for (const column of requiredColumns) {
+        const columnExists = await sql`
+          SELECT EXISTS (
+            SELECT FROM information_schema.columns 
+            WHERE table_schema = 'public' 
+            AND table_name = 'site_settings'
+            AND column_name = ${column}
+          );
+        `;
+        
+        console.log(`${column} column exists:`, columnExists[0].exists);
+        
+        if (!columnExists[0].exists) {
+          console.log(`Adding ${column} column to site_settings table...`);
+          
+          if (column === 'cores') {
+            await sql`ALTER TABLE site_settings ADD COLUMN cores JSONB DEFAULT '{}'::jsonb;`;
+          } else {
+            await sql`ALTER TABLE site_settings ADD COLUMN ${sql(column)} TEXT;`;
+          }
+          
+          console.log(`${column} column added successfully!`);
+        }
+      }
     }
   } catch (error) {
     console.error("Database connection failed:", error);
