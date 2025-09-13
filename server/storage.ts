@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as schema from "@shared/schema";
@@ -16,7 +17,7 @@ import type {
 } from "@shared/schema";
 
 const sql = postgres(process.env.DATABASE_URL!, { 
-  ssl: 'require',
+  ssl: { rejectUnauthorized: false },
   max: 10,
   idle_timeout: 20,
   connect_timeout: 10
