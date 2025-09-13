@@ -130,10 +130,10 @@ export default function Settings() {
     <div className="p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center space-x-4">
-        <SettingsIcon className="h-8 w-8 text-icon" />
+        <SettingsIcon className="h-8 w-8 text-primary" />
         <div>
-          <h1 className="text-3xl font-bold text-titulo">Configurações</h1>
-          <p className="text-subtitulo">Gerencie as configurações do sistema</p>
+          <h1 className="text-3xl font-bold text-foreground">Configurações</h1>
+          <p className="text-muted-foreground">Gerencie as configurações do sistema</p>
         </div>
       </div>
 
@@ -175,7 +175,7 @@ export default function Settings() {
                 {/* Contact Information */}
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-titulo">Informações de Contato</CardTitle>
+                    <CardTitle className="text-foreground">Informações de Contato</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -269,7 +269,7 @@ export default function Settings() {
                 {/* Social Media */}
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-titulo">Redes Sociais</CardTitle>
+                    <CardTitle className="text-foreground">Redes Sociais</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -335,7 +335,7 @@ export default function Settings() {
                 {/* Content */}
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-titulo">Conteúdo</CardTitle>
+                    <CardTitle className="text-foreground">Conteúdo</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-6">
                     <FormField
@@ -385,7 +385,7 @@ export default function Settings() {
                 {/* Images */}
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-titulo">Imagens</CardTitle>
+                    <CardTitle className="text-foreground">Imagens</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-6">
@@ -472,7 +472,7 @@ export default function Settings() {
                 {/* Chat Configuration */}
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-titulo">Configuração do Chat</CardTitle>
+                    <CardTitle className="text-foreground">Configuração do Chat</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-6">
@@ -483,7 +483,7 @@ export default function Settings() {
                           <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                             <div className="space-y-0.5">
                               <FormLabel className="text-base">Chat Habilitado</FormLabel>
-                              <p className="text-sm text-subtitulo">
+                              <p className="text-sm text-muted-foreground">
                                 Ative ou desative o chat no site
                               </p>
                             </div>

@@ -51,13 +51,13 @@ export default function Sidebar() {
   const [location] = useLocation();
 
   return (
-    <div className="flex flex-col h-full bg-container border-r border-border">
+    <div className="flex flex-col h-full bg-card border-r border-border">
       <div className="p-6">
         <div className="flex items-center space-x-3">
           <Stethoscope className="h-8 w-8 text-primary" />
           <div>
-            <h1 className="text-xl font-bold text-titulo">PetSaúde CRM</h1>
-            <p className="text-sm text-subtitulo">Sistema de Gestão</p>
+            <h1 className="text-xl font-bold text-foreground">PetSaúde CRM</h1>
+            <p className="text-sm text-muted-foreground">Sistema de Gestão</p>
           </div>
         </div>
       </div>
@@ -65,7 +65,7 @@ export default function Sidebar() {
       <nav className="flex-1 px-6 pb-6 space-y-6 overflow-y-auto">
         {navigation.map((section) => (
           <div key={section.name}>
-            <h3 className="text-xs font-semibold text-subtitulo uppercase tracking-wider mb-3">
+            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
               {section.name}
             </h3>
             <div className="space-y-1">
@@ -79,7 +79,7 @@ export default function Sidebar() {
                       "flex items-center px-3 py-2 text-sm rounded-lg transition-colors",
                       isActive
                         ? "bg-primary text-primary-foreground"
-                        : "text-subtitulo hover:bg-accent hover:text-accent-foreground"
+                        : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                     )}
                     data-testid={`link-${item.name.toLowerCase().replace(/\s+/g, '-')}`}
                   >

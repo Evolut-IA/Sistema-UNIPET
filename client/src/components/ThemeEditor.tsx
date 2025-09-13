@@ -342,7 +342,7 @@ export default function ThemeEditor() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-titulo flex items-center space-x-2">
+        <CardTitle className="text-foreground flex items-center space-x-2">
           <Palette className="h-5 w-5" />
           <span>Personalizar Aparência</span>
         </CardTitle>

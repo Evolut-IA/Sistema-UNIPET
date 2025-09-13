@@ -114,10 +114,10 @@ export default function ClientForm() {
           Voltar
         </Button>
         <div>
-          <h1 className="text-3xl font-bold text-titulo">
+          <h1 className="text-3xl font-bold text-foreground">
             {isEdit ? "Editar Cliente" : "Novo Cliente"}
           </h1>
-          <p className="text-subtitulo">
+          <p className="text-muted-foreground">
             {isEdit ? "Atualize as informações do cliente" : "Cadastre um novo cliente"}
           </p>
         </div>
@@ -126,7 +126,7 @@ export default function ClientForm() {
       {/* Form */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-titulo">Informações do Cliente</CardTitle>
+          <CardTitle className="text-foreground">Informações do Cliente</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>

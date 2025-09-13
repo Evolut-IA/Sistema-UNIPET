@@ -125,10 +125,10 @@ export default function NetworkForm() {
           Voltar
         </Button>
         <div>
-          <h1 className="text-3xl font-bold text-titulo">
+          <h1 className="text-3xl font-bold text-foreground">
             {isEdit ? "Editar Unidade" : "Nova Unidade"}
           </h1>
-          <p className="text-subtitulo">
+          <p className="text-muted-foreground">
             {isEdit ? "Atualize as informações da unidade" : "Cadastre uma nova unidade da rede"}
           </p>
         </div>
@@ -139,7 +139,7 @@ export default function NetworkForm() {
           {/* Basic Information */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-titulo">Informações Básicas</CardTitle>
+              <CardTitle className="text-foreground">Informações Básicas</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -234,7 +234,7 @@ export default function NetworkForm() {
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 col-span-full">
                       <div className="space-y-0.5">
                         <FormLabel className="text-base">Unidade Ativa</FormLabel>
-                        <p className="text-sm text-subtitulo">
+                        <p className="text-sm text-muted-foreground">
                           Unidades ativas são exibidas na rede credenciada
                         </p>
                       </div>
@@ -255,7 +255,7 @@ export default function NetworkForm() {
           {/* Services */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-titulo">Serviços Oferecidos</CardTitle>
+              <CardTitle className="text-foreground">Serviços Oferecidos</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -269,7 +269,7 @@ export default function NetworkForm() {
                     />
                     <label 
                       htmlFor={`service-${service}`}
-                      className="text-sm text-titulo cursor-pointer"
+                      className="text-sm text-foreground cursor-pointer"
                     >
                       {service}
                     </label>

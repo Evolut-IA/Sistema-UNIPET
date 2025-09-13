@@ -149,10 +149,10 @@ export default function PlanForm() {
           Voltar
         </Button>
         <div>
-          <h1 className="text-3xl font-bold text-titulo">
+          <h1 className="text-3xl font-bold text-foreground">
             {isEdit ? "Editar Plano" : "Novo Plano"}
           </h1>
-          <p className="text-subtitulo">
+          <p className="text-muted-foreground">
             {isEdit ? "Atualize as informações do plano" : "Crie um novo plano de saúde"}
           </p>
         </div>
@@ -163,7 +163,7 @@ export default function PlanForm() {
           {/* Basic Information */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-titulo">Informações Básicas</CardTitle>
+              <CardTitle className="text-foreground">Informações Básicas</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -233,7 +233,7 @@ export default function PlanForm() {
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
                         <FormLabel className="text-base">Plano Ativo</FormLabel>
-                        <p className="text-sm text-subtitulo">
+                        <p className="text-sm text-muted-foreground">
                           Planos ativos podem ser contratados por clientes
                         </p>
                       </div>
@@ -254,7 +254,7 @@ export default function PlanForm() {
           {/* Features */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-titulo">Benefícios do Plano</CardTitle>
+              <CardTitle className="text-foreground">Benefícios do Plano</CardTitle>
               <Button
                 type="button"
                 variant="outline"
@@ -298,7 +298,7 @@ export default function PlanForm() {
                   </div>
                 ))}
                 {featureFields.length === 0 && (
-                  <p className="text-subtitulo text-center py-4">
+                  <p className="text-muted-foreground text-center py-4">
                     Nenhum benefício adicionado ainda.
                   </p>
                 )}
@@ -309,12 +309,12 @@ export default function PlanForm() {
           {/* Payment Configuration */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-titulo">Configuração de Pagamento</CardTitle>
+              <CardTitle className="text-foreground">Configuração de Pagamento</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Payment Modalities */}
               <div>
-                <label className="text-sm font-medium text-titulo mb-3 block">
+                <label className="text-sm font-medium text-foreground mb-3 block">
                   Modalidades de Pagamento
                 </label>
                 <div className="space-y-2">
@@ -328,7 +328,7 @@ export default function PlanForm() {
                       />
                       <label 
                         htmlFor={`modality-${modality}`}
-                        className="text-sm text-titulo capitalize cursor-pointer"
+                        className="text-sm text-foreground capitalize cursor-pointer"
                       >
                         {modality === "mensal" ? "Pagamento Mensal" : "Pagamento Anual"}
                       </label>
@@ -341,7 +341,7 @@ export default function PlanForm() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {PAYMENT_MODALITIES.map((modality) => (
                   <div key={modality}>
-                    <label className="text-sm font-medium text-titulo mb-3 block capitalize">
+                    <label className="text-sm font-medium text-foreground mb-3 block capitalize">
                       Tipos de Pagamento - {modality === "mensal" ? "Mensal" : "Anual"}
                     </label>
                     <div className="space-y-2">
@@ -355,7 +355,7 @@ export default function PlanForm() {
                           />
                           <label 
                             htmlFor={`method-${modality}-${method}`}
-                            className="text-sm text-titulo cursor-pointer"
+                            className="text-sm text-foreground cursor-pointer"
                           >
                             {method}
                           </label>
@@ -371,7 +371,7 @@ export default function PlanForm() {
           {/* Procedures */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-titulo">Procedimentos Inclusos</CardTitle>
+              <CardTitle className="text-foreground">Procedimentos Inclusos</CardTitle>
               <Button
                 type="button"
                 variant="outline"
@@ -466,7 +466,7 @@ export default function PlanForm() {
                   </div>
                 ))}
                 {procedureFields.length === 0 && (
-                  <p className="text-subtitulo text-center py-8">
+                  <p className="text-muted-foreground text-center py-8">
                     Nenhum procedimento adicionado ainda.
                   </p>
                 )}

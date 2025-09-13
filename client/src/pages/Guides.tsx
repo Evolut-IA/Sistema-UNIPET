@@ -93,8 +93,8 @@ export default function Guides() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-titulo">Guias de Atendimento</h1>
-          <p className="text-subtitulo">Gerencie as guias de atendimento</p>
+          <h1 className="text-3xl font-bold text-foreground">Guias de Atendimento</h1>
+          <p className="text-muted-foreground">Gerencie as guias de atendimento</p>
         </div>
         <Button 
           className="btn-primary"
@@ -151,7 +151,7 @@ export default function Guides() {
       {/* Guides List */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-titulo">Guias ({filteredGuides?.length || 0})</CardTitle>
+          <CardTitle className="text-foreground">Guias ({filteredGuides?.length || 0})</CardTitle>
         </CardHeader>
         <CardContent>
           {isLoading ? (
@@ -171,8 +171,8 @@ export default function Guides() {
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-2">
-                        <FileText className="h-5 w-5 text-icon" />
-                        <h3 className="font-semibold text-titulo text-lg" data-testid={`guide-procedure-${guide.id}`}>
+                        <FileText className="h-5 w-5 text-primary" />
+                        <h3 className="font-semibold text-foreground text-lg" data-testid={`guide-procedure-${guide.id}`}>
                           {guide.procedure}
                         </h3>
                         <Badge className={getStatusColor(guide.status)}>
@@ -180,7 +180,7 @@ export default function Guides() {
                         </Badge>
                       </div>
                       
-                      <div className="mt-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 text-sm text-subtitulo">
+                      <div className="mt-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 text-sm text-muted-foreground">
                         <p><span className="font-medium">Tipo:</span> {getTypeLabel(guide.type)}</p>
                         <p><span className="font-medium">Valor:</span> R$ {parseFloat(guide.value || 0).toFixed(2)}</p>
                         <p><span className="font-medium">Criada em:</span> {guide.createdAt && format(new Date(guide.createdAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}</p>
@@ -219,7 +219,7 @@ export default function Guides() {
           ) : (
             <div className="text-center py-12">
               <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-subtitulo mb-4">
+              <p className="text-muted-foreground mb-4">
                 {searchQuery || typeFilter !== "all" || statusFilter !== "all" 
                   ? "Nenhuma guia encontrada com os filtros aplicados." 
                   : "Nenhuma guia cadastrada ainda."

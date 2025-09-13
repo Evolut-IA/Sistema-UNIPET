@@ -139,8 +139,8 @@ export default function FAQ() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-titulo">FAQ</h1>
-          <p className="text-subtitulo">Gerencie as perguntas frequentes</p>
+          <h1 className="text-3xl font-bold text-foreground">FAQ</h1>
+          <p className="text-muted-foreground">Gerencie as perguntas frequentes</p>
         </div>
         
         <Dialog open={dialogOpen} onOpenChange={(open) => {
@@ -158,7 +158,7 @@ export default function FAQ() {
           </DialogTrigger>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle className="text-titulo">
+              <DialogTitle className="text-foreground">
                 {editingItem ? "Editar Item" : "Novo Item FAQ"}
               </DialogTitle>
             </DialogHeader>
@@ -199,7 +199,7 @@ export default function FAQ() {
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
                         <FormLabel className="text-base">Item Ativo</FormLabel>
-                        <p className="text-sm text-subtitulo">
+                        <p className="text-sm text-muted-foreground">
                           Itens ativos são exibidos no FAQ público
                         </p>
                       </div>
@@ -258,7 +258,7 @@ export default function FAQ() {
         {/* Public FAQ Preview */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-titulo flex items-center">
+            <CardTitle className="text-foreground flex items-center">
               <HelpCircle className="h-5 w-5 mr-2" />
               Visualização Pública ({activeItems.length} itens)
             </CardTitle>
@@ -271,14 +271,14 @@ export default function FAQ() {
                     <AccordionTrigger className="text-left">
                       {item.question}
                     </AccordionTrigger>
-                    <AccordionContent className="text-subtitulo">
+                    <AccordionContent className="text-muted-foreground">
                       {item.answer}
                     </AccordionContent>
                   </AccordionItem>
                 ))}
               </Accordion>
             ) : (
-              <p className="text-subtitulo text-center py-8">
+              <p className="text-muted-foreground text-center py-8">
                 Nenhum item ativo para exibição pública.
               </p>
             )}
@@ -288,7 +288,7 @@ export default function FAQ() {
         {/* Management Panel */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-titulo">
+            <CardTitle className="text-foreground">
               Gerenciamento ({filteredItems?.length || 0} itens)
             </CardTitle>
           </CardHeader>
@@ -307,7 +307,7 @@ export default function FAQ() {
                 {filteredItems.map((item: any) => (
                   <div key={item.id} className="border rounded-lg p-4">
                     <div className="flex justify-between items-start mb-2">
-                      <h4 className="font-medium text-titulo text-sm" data-testid={`faq-question-${item.id}`}>
+                      <h4 className="font-medium text-foreground text-sm" data-testid={`faq-question-${item.id}`}>
                         {item.question}
                       </h4>
                       <Badge variant={item.isActive ? "default" : "secondary"}>
@@ -315,7 +315,7 @@ export default function FAQ() {
                       </Badge>
                     </div>
                     
-                    <p className="text-xs text-subtitulo mb-3 line-clamp-2">
+                    <p className="text-xs text-muted-foreground mb-3 line-clamp-2">
                       {item.answer}
                     </p>
                     
@@ -351,7 +351,7 @@ export default function FAQ() {
               </div>
             ) : (
               <div className="text-center py-8">
-                <p className="text-subtitulo mb-4">
+                <p className="text-muted-foreground mb-4">
                   {searchQuery 
                     ? "Nenhum item encontrado para a busca." 
                     : "Nenhum item cadastrado ainda."
@@ -377,25 +377,25 @@ export default function FAQ() {
       {filteredItems && filteredItems.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-titulo">Estatísticas</CardTitle>
+            <CardTitle className="text-foreground">Estatísticas</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="text-center">
-                <p className="text-2xl font-bold text-titulo">{filteredItems.length}</p>
-                <p className="text-sm text-subtitulo">Total de Itens</p>
+                <p className="text-2xl font-bold text-foreground">{filteredItems.length}</p>
+                <p className="text-sm text-muted-foreground">Total de Itens</p>
               </div>
               <div className="text-center">
                 <p className="text-2xl font-bold text-green-600">
                   {filteredItems.filter((item: any) => item.isActive).length}
                 </p>
-                <p className="text-sm text-subtitulo">Itens Ativos</p>
+                <p className="text-sm text-muted-foreground">Itens Ativos</p>
               </div>
               <div className="text-center">
                 <p className="text-2xl font-bold text-red-600">
                   {filteredItems.filter((item: any) => !item.isActive).length}
                 </p>
-                <p className="text-sm text-subtitulo">Itens Inativos</p>
+                <p className="text-sm text-muted-foreground">Itens Inativos</p>
               </div>
             </div>
           </CardContent>

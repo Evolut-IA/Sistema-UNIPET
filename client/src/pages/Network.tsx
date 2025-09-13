@@ -80,8 +80,8 @@ export default function Network() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-titulo">Rede Credenciada</h1>
-          <p className="text-subtitulo">Gerencie as unidades credenciadas</p>
+          <h1 className="text-3xl font-bold text-foreground">Rede Credenciada</h1>
+          <p className="text-muted-foreground">Gerencie as unidades credenciadas</p>
         </div>
         <Button 
           className="btn-primary"
@@ -130,8 +130,8 @@ export default function Network() {
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
                     <div className="flex items-center space-x-3 mb-3">
-                      <Building2 className="h-6 w-6 text-icon" />
-                      <h3 className="text-xl font-semibold text-titulo" data-testid={`unit-name-${unit.id}`}>
+                      <Building2 className="h-6 w-6 text-primary" />
+                      <h3 className="text-xl font-semibold text-foreground" data-testid={`unit-name-${unit.id}`}>
                         {unit.name}
                       </h3>
                       <Badge variant={unit.isActive ? "default" : "secondary"}>
@@ -140,11 +140,11 @@ export default function Network() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                      <div className="flex items-center space-x-2 text-subtitulo">
+                      <div className="flex items-center space-x-2 text-muted-foreground">
                         <MapPin className="h-4 w-4" />
                         <span>{unit.address}</span>
                       </div>
-                      <div className="flex items-center space-x-2 text-subtitulo">
+                      <div className="flex items-center space-x-2 text-muted-foreground">
                         <Phone className="h-4 w-4" />
                         <span>{unit.phone}</span>
                       </div>
@@ -152,7 +152,7 @@ export default function Network() {
 
                     {unit.services && unit.services.length > 0 && (
                       <div className="mb-4">
-                        <p className="text-sm font-medium text-titulo mb-2">Serviços oferecidos:</p>
+                        <p className="text-sm font-medium text-foreground mb-2">Serviços oferecidos:</p>
                         <div className="flex flex-wrap gap-1">
                           {unit.services.slice(0, 5).map((service: string, index: number) => (
                             <Badge key={index} variant="outline" className="text-xs">
@@ -177,7 +177,7 @@ export default function Network() {
                         disabled={toggleUnitMutation.isPending}
                         data-testid={`switch-unit-status-${unit.id}`}
                       />
-                      <span className="text-sm text-subtitulo">
+                      <span className="text-sm text-muted-foreground">
                         {unit.isActive ? "Ativo" : "Inativo"}
                       </span>
                     </div>
@@ -224,7 +224,7 @@ export default function Network() {
           <Card>
             <CardContent className="text-center py-12">
               <Building2 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-subtitulo mb-4">
+              <p className="text-muted-foreground mb-4">
                 {searchQuery 
                   ? "Nenhuma unidade encontrada para a busca." 
                   : "Nenhuma unidade cadastrada ainda."
@@ -249,25 +249,25 @@ export default function Network() {
       {filteredUnits && filteredUnits.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-titulo">Resumo da Rede</CardTitle>
+            <CardTitle className="text-foreground">Resumo da Rede</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="text-center">
-                <p className="text-2xl font-bold text-titulo">{filteredUnits.length}</p>
-                <p className="text-sm text-subtitulo">Total de Unidades</p>
+                <p className="text-2xl font-bold text-foreground">{filteredUnits.length}</p>
+                <p className="text-sm text-muted-foreground">Total de Unidades</p>
               </div>
               <div className="text-center">
                 <p className="text-2xl font-bold text-green-600">
                   {filteredUnits.filter((u: any) => u.isActive).length}
                 </p>
-                <p className="text-sm text-subtitulo">Unidades Ativas</p>
+                <p className="text-sm text-muted-foreground">Unidades Ativas</p>
               </div>
               <div className="text-center">
                 <p className="text-2xl font-bold text-red-600">
                   {filteredUnits.filter((u: any) => !u.isActive).length}
                 </p>
-                <p className="text-sm text-subtitulo">Unidades Inativas</p>
+                <p className="text-sm text-muted-foreground">Unidades Inativas</p>
               </div>
             </div>
           </CardContent>

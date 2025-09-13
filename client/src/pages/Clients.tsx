@@ -61,8 +61,8 @@ export default function Clients() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-titulo">Clientes & Pets</h1>
-          <p className="text-subtitulo">Gerencie clientes e seus pets</p>
+          <h1 className="text-3xl font-bold text-foreground">Clientes & Pets</h1>
+          <p className="text-muted-foreground">Gerencie clientes e seus pets</p>
         </div>
         <Button 
           className="btn-primary"
@@ -95,7 +95,7 @@ export default function Clients() {
       {/* Clients List */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-titulo">
+          <CardTitle className="text-foreground">
             {searchQuery.length > 2 ? "Resultados da Busca" : "Todos os Clientes"}
           </CardTitle>
         </CardHeader>
@@ -116,10 +116,10 @@ export default function Clients() {
                 <div key={client.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
-                      <h3 className="font-semibold text-titulo text-lg" data-testid={`client-name-${client.id}`}>
+                      <h3 className="font-semibold text-foreground text-lg" data-testid={`client-name-${client.id}`}>
                         {client.fullName}
                       </h3>
-                      <div className="mt-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 text-sm text-subtitulo">
+                      <div className="mt-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 text-sm text-muted-foreground">
                         <p><span className="font-medium">Email:</span> {client.email || "Não informado"}</p>
                         <p><span className="font-medium">Telefone:</span> {client.phone}</p>
                         <p><span className="font-medium">CPF:</span> {client.cpf}</p>
@@ -162,7 +162,7 @@ export default function Clients() {
             </div>
           ) : (
             <div className="text-center py-12">
-              <p className="text-subtitulo">
+              <p className="text-muted-foreground">
                 {searchQuery.length > 2 ? "Nenhum cliente encontrado para a busca." : "Nenhum cliente cadastrado ainda."}
               </p>
               {searchQuery.length <= 2 && (

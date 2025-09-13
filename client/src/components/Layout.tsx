@@ -11,7 +11,7 @@ export default function Layout({ children }: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen bg-secao-fundo">
+    <div className="flex h-screen bg-background">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div 
@@ -31,7 +31,7 @@ export default function Layout({ children }: LayoutProps) {
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Mobile header */}
-        <div className="lg:hidden bg-container border-b border-border p-4">
+        <div className="lg:hidden bg-card border-b border-border p-4">
           <Button
             variant="ghost"
             size="sm"

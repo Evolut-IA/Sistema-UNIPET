@@ -150,10 +150,10 @@ export default function PetForm() {
           Voltar
         </Button>
         <div>
-          <h1 className="text-3xl font-bold text-titulo">
+          <h1 className="text-3xl font-bold text-foreground">
             {isEdit ? "Editar Pet" : "Novo Pet"}
           </h1>
-          <p className="text-subtitulo">
+          <p className="text-muted-foreground">
             {client && `Cliente: ${client.fullName}`}
           </p>
         </div>
@@ -164,7 +164,7 @@ export default function PetForm() {
           {/* Basic Information */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-titulo">Informações Básicas</CardTitle>
+              <CardTitle className="text-foreground">Informações Básicas</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -350,7 +350,7 @@ export default function PetForm() {
           {/* Medical History */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-titulo">Histórico Médico</CardTitle>
+              <CardTitle className="text-foreground">Histórico Médico</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
@@ -430,7 +430,7 @@ export default function PetForm() {
           {/* Preventive Care */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-titulo">Cuidados Preventivos</CardTitle>
+              <CardTitle className="text-foreground">Cuidados Preventivos</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-6">

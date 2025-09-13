@@ -192,10 +192,10 @@ export default function Administration() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div className="flex items-center space-x-4">
-          <UserCog className="h-8 w-8 text-icon" />
+          <UserCog className="h-8 w-8 text-primary" />
           <div>
-            <h1 className="text-3xl font-bold text-titulo">Administração</h1>
-            <p className="text-subtitulo">Gerencie usuários e permissões do sistema</p>
+            <h1 className="text-3xl font-bold text-foreground">Administração</h1>
+            <p className="text-muted-foreground">Gerencie usuários e permissões do sistema</p>
           </div>
         </div>
         
@@ -214,7 +214,7 @@ export default function Administration() {
           </DialogTrigger>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle className="text-titulo">
+              <DialogTitle className="text-foreground">
                 {editingUser ? "Editar Usuário" : "Novo Usuário"}
               </DialogTitle>
             </DialogHeader>
@@ -296,7 +296,7 @@ export default function Administration() {
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
                         <FormLabel className="text-base">Usuário Ativo</FormLabel>
-                        <p className="text-sm text-subtitulo">
+                        <p className="text-sm text-muted-foreground">
                           Usuários ativos podem acessar o sistema
                         </p>
                       </div>
@@ -326,11 +326,11 @@ export default function Administration() {
                         <div className="grid gap-1.5 leading-none">
                           <label 
                             htmlFor={`permission-${permission.id}`}
-                            className="text-sm font-medium text-titulo cursor-pointer"
+                            className="text-sm font-medium text-foreground cursor-pointer"
                           >
                             {permission.label}
                           </label>
-                          <p className="text-xs text-subtitulo">
+                          <p className="text-xs text-muted-foreground">
                             {permission.description}
                           </p>
                         </div>
@@ -382,7 +382,7 @@ export default function Administration() {
       {/* Users List */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-titulo">
+          <CardTitle className="text-foreground">
             Usuários ({filteredUsers?.length || 0})
           </CardTitle>
         </CardHeader>
@@ -404,8 +404,8 @@ export default function Administration() {
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-2">
-                        <User className="h-5 w-5 text-icon" />
-                        <h3 className="font-semibold text-titulo" data-testid={`user-name-${user.id}`}>
+                        <User className="h-5 w-5 text-primary" />
+                        <h3 className="font-semibold text-foreground" data-testid={`user-name-${user.id}`}>
                           {user.username}
                         </h3>
                         <Badge className={getRoleColor(user.role)}>
@@ -416,7 +416,7 @@ export default function Administration() {
                         </Badge>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 text-sm text-subtitulo mb-3">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 text-sm text-muted-foreground mb-3">
                         <p><span className="font-medium">Email:</span> {user.email}</p>
                         <p><span className="font-medium">Criado em:</span> {user.createdAt && format(new Date(user.createdAt), "dd/MM/yyyy", { locale: ptBR })}</p>
                         <p><span className="font-medium">Permissões:</span> {user.permissions?.length || 0}</p>
@@ -449,7 +449,7 @@ export default function Administration() {
                           disabled={toggleUserMutation.isPending}
                           data-testid={`switch-user-status-${user.id}`}
                         />
-                        <span className="text-sm text-subtitulo">
+                        <span className="text-sm text-muted-foreground">
                           {user.isActive ? "Ativo" : "Inativo"}
                         </span>
                       </div>
@@ -481,7 +481,7 @@ export default function Administration() {
           ) : (
             <div className="text-center py-12">
               <UserCog className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-subtitulo mb-4">
+              <p className="text-muted-foreground mb-4">
                 {searchQuery 
                   ? "Nenhum usuário encontrado para a busca." 
                   : "Nenhum usuário cadastrado ainda."
@@ -507,8 +507,8 @@ export default function Administration() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card>
             <CardContent className="p-4 text-center">
-              <p className="text-2xl font-bold text-titulo">{filteredUsers.length}</p>
-              <p className="text-sm text-subtitulo">Total de Usuários</p>
+              <p className="text-2xl font-bold text-foreground">{filteredUsers.length}</p>
+              <p className="text-sm text-muted-foreground">Total de Usuários</p>
             </CardContent>
           </Card>
           
@@ -517,7 +517,7 @@ export default function Administration() {
               <p className="text-2xl font-bold text-green-600">
                 {filteredUsers.filter((u: any) => u.isActive).length}
               </p>
-              <p className="text-sm text-subtitulo">Usuários Ativos</p>
+              <p className="text-sm text-muted-foreground">Usuários Ativos</p>
             </CardContent>
           </Card>
           
@@ -526,7 +526,7 @@ export default function Administration() {
               <p className="text-2xl font-bold text-blue-600">
                 {filteredUsers.filter((u: any) => u.role === "admin").length}
               </p>
-              <p className="text-sm text-subtitulo">Administradores</p>
+              <p className="text-sm text-muted-foreground">Administradores</p>
             </CardContent>
           </Card>
           
@@ -535,7 +535,7 @@ export default function Administration() {
               <p className="text-2xl font-bold text-purple-600">
                 {filteredUsers.filter((u: any) => u.role === "manager").length}
               </p>
-              <p className="text-sm text-subtitulo">Gerentes</p>
+              <p className="text-sm text-muted-foreground">Gerentes</p>
             </CardContent>
           </Card>
         </div>

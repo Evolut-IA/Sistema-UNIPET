@@ -74,12 +74,12 @@ export default function ContactSubmissions() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-titulo">Formulários de Contato</h1>
-          <p className="text-subtitulo">Visualize e gerencie os formulários recebidos</p>
+          <h1 className="text-3xl font-bold text-foreground">Formulários de Contato</h1>
+          <p className="text-muted-foreground">Visualize e gerencie os formulários recebidos</p>
         </div>
         <div className="flex items-center space-x-2">
-          <Mail className="h-5 w-5 text-icon" />
-          <span className="text-sm text-subtitulo">
+          <Mail className="h-5 w-5 text-primary" />
+          <span className="text-sm text-muted-foreground">
             {submissions?.length || 0} formulários recebidos
           </span>
         </div>
@@ -104,7 +104,7 @@ export default function ContactSubmissions() {
       {/* Submissions List */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-titulo">
+          <CardTitle className="text-foreground">
             Formulários ({filteredSubmissions?.length || 0})
           </CardTitle>
         </CardHeader>
@@ -126,8 +126,8 @@ export default function ContactSubmissions() {
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-2">
-                        <User className="h-5 w-5 text-icon" />
-                        <h3 className="font-semibold text-titulo" data-testid={`submission-name-${submission.id}`}>
+                        <User className="h-5 w-5 text-primary" />
+                        <h3 className="font-semibold text-foreground" data-testid={`submission-name-${submission.id}`}>
                           {submission.name}
                         </h3>
                         <Badge className={getPlanInterestColor(submission.planInterest)}>
@@ -135,7 +135,7 @@ export default function ContactSubmissions() {
                         </Badge>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 text-sm text-subtitulo mb-3">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 text-sm text-muted-foreground mb-3">
                         <div className="flex items-center space-x-1">
                           <Mail className="h-4 w-4" />
                           <span>{submission.email}</span>
@@ -154,7 +154,7 @@ export default function ContactSubmissions() {
                         </div>
                       </div>
 
-                      <div className="flex items-center space-x-4 text-sm text-subtitulo">
+                      <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                         <div className="flex items-center space-x-1">
                           <PawPrint className="h-4 w-4" />
                           <span>{submission.petName} ({submission.animalType}, {submission.petAge})</span>
@@ -162,7 +162,7 @@ export default function ContactSubmissions() {
                       </div>
 
                       {submission.message && (
-                        <div className="mt-2 p-2 bg-gray-50 rounded text-sm text-subtitulo">
+                        <div className="mt-2 p-2 bg-gray-50 rounded text-sm text-muted-foreground">
                           <p className="line-clamp-2">{submission.message}</p>
                         </div>
                       )}
@@ -194,7 +194,7 @@ export default function ContactSubmissions() {
           ) : (
             <div className="text-center py-12">
               <Mail className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-subtitulo">
+              <p className="text-muted-foreground">
                 {searchQuery 
                   ? "Nenhum formulário encontrado para a busca." 
                   : "Nenhum formulário recebido ainda."
@@ -210,8 +210,8 @@ export default function ContactSubmissions() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card>
             <CardContent className="p-4 text-center">
-              <p className="text-2xl font-bold text-titulo">{filteredSubmissions.length}</p>
-              <p className="text-sm text-subtitulo">Total de Formulários</p>
+              <p className="text-2xl font-bold text-foreground">{filteredSubmissions.length}</p>
+              <p className="text-sm text-muted-foreground">Total de Formulários</p>
             </CardContent>
           </Card>
           
@@ -220,8 +220,8 @@ export default function ContactSubmissions() {
             return (
               <Card key={plan}>
                 <CardContent className="p-4 text-center">
-                  <p className="text-2xl font-bold text-titulo">{count}</p>
-                  <p className="text-sm text-subtitulo">Interesse em {plan}</p>
+                  <p className="text-2xl font-bold text-foreground">{count}</p>
+                  <p className="text-sm text-muted-foreground">Interesse em {plan}</p>
                 </CardContent>
               </Card>
             );
@@ -233,48 +233,48 @@ export default function ContactSubmissions() {
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle className="text-titulo">Detalhes do Formulário</DialogTitle>
+            <DialogTitle className="text-foreground">Detalhes do Formulário</DialogTitle>
           </DialogHeader>
           {selectedSubmission && (
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-titulo">Nome Completo</label>
-                  <p className="text-subtitulo">{selectedSubmission.name}</p>
+                  <label className="text-sm font-medium text-foreground">Nome Completo</label>
+                  <p className="text-muted-foreground">{selectedSubmission.name}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-titulo">Email</label>
-                  <p className="text-subtitulo">{selectedSubmission.email}</p>
+                  <label className="text-sm font-medium text-foreground">Email</label>
+                  <p className="text-muted-foreground">{selectedSubmission.email}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-titulo">Telefone</label>
-                  <p className="text-subtitulo">{selectedSubmission.phone}</p>
+                  <label className="text-sm font-medium text-foreground">Telefone</label>
+                  <p className="text-muted-foreground">{selectedSubmission.phone}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-titulo">Cidade</label>
-                  <p className="text-subtitulo">{selectedSubmission.city}</p>
+                  <label className="text-sm font-medium text-foreground">Cidade</label>
+                  <p className="text-muted-foreground">{selectedSubmission.city}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-titulo">Nome do Pet</label>
-                  <p className="text-subtitulo">{selectedSubmission.petName}</p>
+                  <label className="text-sm font-medium text-foreground">Nome do Pet</label>
+                  <p className="text-muted-foreground">{selectedSubmission.petName}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-titulo">Tipo de Animal</label>
-                  <p className="text-subtitulo">{selectedSubmission.animalType}</p>
+                  <label className="text-sm font-medium text-foreground">Tipo de Animal</label>
+                  <p className="text-muted-foreground">{selectedSubmission.animalType}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-titulo">Idade do Pet</label>
-                  <p className="text-subtitulo">{selectedSubmission.petAge}</p>
+                  <label className="text-sm font-medium text-foreground">Idade do Pet</label>
+                  <p className="text-muted-foreground">{selectedSubmission.petAge}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-titulo">Plano de Interesse</label>
+                  <label className="text-sm font-medium text-foreground">Plano de Interesse</label>
                   <Badge className={getPlanInterestColor(selectedSubmission.planInterest)}>
                     {selectedSubmission.planInterest}
                   </Badge>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-titulo">Data de Recebimento</label>
-                  <p className="text-subtitulo">
+                  <label className="text-sm font-medium text-foreground">Data de Recebimento</label>
+                  <p className="text-muted-foreground">
                     {selectedSubmission.createdAt && format(new Date(selectedSubmission.createdAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
                   </p>
                 </div>
@@ -282,9 +282,9 @@ export default function ContactSubmissions() {
               
               {selectedSubmission.message && (
                 <div>
-                  <label className="text-sm font-medium text-titulo">Mensagem</label>
+                  <label className="text-sm font-medium text-foreground">Mensagem</label>
                   <div className="mt-1 p-3 bg-gray-50 rounded-lg">
-                    <p className="text-subtitulo whitespace-pre-wrap">{selectedSubmission.message}</p>
+                    <p className="text-muted-foreground whitespace-pre-wrap">{selectedSubmission.message}</p>
                   </div>
                 </div>
               )}

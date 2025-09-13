@@ -151,10 +151,10 @@ export default function GuideForm() {
           Voltar
         </Button>
         <div>
-          <h1 className="text-3xl font-bold text-titulo">
+          <h1 className="text-3xl font-bold text-foreground">
             {isEdit ? "Editar Guia" : "Nova Guia"}
           </h1>
-          <p className="text-subtitulo">
+          <p className="text-muted-foreground">
             {isEdit ? "Atualize as informações da guia" : "Crie uma nova guia de atendimento"}
           </p>
         </div>
@@ -165,12 +165,12 @@ export default function GuideForm() {
           {/* Client and Pet Selection */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-titulo">Seleção de Cliente e Pet</CardTitle>
+              <CardTitle className="text-foreground">Seleção de Cliente e Pet</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Client Search */}
               <div>
-                <label className="text-sm font-medium text-titulo mb-2 block">
+                <label className="text-sm font-medium text-foreground mb-2 block">
                   Buscar Cliente (CPF, Nome, Email ou Telefone)
                 </label>
                 <div className="relative">
@@ -185,7 +185,7 @@ export default function GuideForm() {
                 </div>
                 
                 {searchLoading && (
-                  <p className="text-sm text-subtitulo mt-2">Buscando...</p>
+                  <p className="text-sm text-muted-foreground mt-2">Buscando...</p>
                 )}
                 
                 {searchResults && searchResults.length > 0 && (
@@ -202,8 +202,8 @@ export default function GuideForm() {
                         }}
                         data-testid={`button-select-client-${client.id}`}
                       >
-                        <p className="font-medium text-titulo">{client.fullName}</p>
-                        <p className="text-sm text-subtitulo">{client.cpf} - {client.phone}</p>
+                        <p className="font-medium text-foreground">{client.fullName}</p>
+                        <p className="text-sm text-muted-foreground">{client.cpf} - {client.phone}</p>
                       </button>
                     ))}
                   </div>
@@ -220,11 +220,11 @@ export default function GuideForm() {
               {/* Pet Selection */}
               {selectedClient && (
                 <div>
-                  <label className="text-sm font-medium text-titulo mb-2 block">
+                  <label className="text-sm font-medium text-foreground mb-2 block">
                     Selecionar Pet
                   </label>
                   {petsLoading ? (
-                    <p className="text-sm text-subtitulo">Carregando pets...</p>
+                    <p className="text-sm text-muted-foreground">Carregando pets...</p>
                   ) : pets && pets.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {pets.map((pet: any) => (
@@ -239,13 +239,13 @@ export default function GuideForm() {
                           onClick={() => setSelectedPet(pet)}
                           data-testid={`button-select-pet-${pet.id}`}
                         >
-                          <p className="font-medium text-titulo">{pet.name}</p>
-                          <p className="text-sm text-subtitulo">{pet.species} - {pet.breed}</p>
+                          <p className="font-medium text-foreground">{pet.name}</p>
+                          <p className="text-sm text-muted-foreground">{pet.species} - {pet.breed}</p>
                         </button>
                       ))}
                     </div>
                   ) : (
-                    <p className="text-sm text-subtitulo">Este cliente não possui pets cadastrados.</p>
+                    <p className="text-sm text-muted-foreground">Este cliente não possui pets cadastrados.</p>
                   )}
                 </div>
               )}
@@ -255,7 +255,7 @@ export default function GuideForm() {
           {/* Guide Information */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-titulo">Informações da Guia</CardTitle>
+              <CardTitle className="text-foreground">Informações da Guia</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -95,8 +95,8 @@ export default function Plans() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-titulo">Planos de Saúde</h1>
-          <p className="text-subtitulo">Gerencie os planos de saúde disponíveis</p>
+          <h1 className="text-3xl font-bold text-foreground">Planos de Saúde</h1>
+          <p className="text-muted-foreground">Gerencie os planos de saúde disponíveis</p>
         </div>
         <Button 
           className="btn-primary"
@@ -149,8 +149,8 @@ export default function Plans() {
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-start">
                   <div className="flex items-center space-x-2">
-                    <CreditCard className="h-5 w-5 text-icon" />
-                    <CardTitle className="text-titulo text-lg" data-testid={`plan-name-${plan.id}`}>
+                    <CreditCard className="h-5 w-5 text-primary" />
+                    <CardTitle className="text-foreground text-lg" data-testid={`plan-name-${plan.id}`}>
                       {plan.name}
                     </CardTitle>
                   </div>
@@ -167,16 +167,16 @@ export default function Plans() {
               </CardHeader>
               <CardContent className="pt-0">
                 <div className="mb-4">
-                  <p className="text-3xl font-bold text-titulo">
+                  <p className="text-3xl font-bold text-foreground">
                     R$ {parseFloat(plan.price || 0).toFixed(2)}
-                    <span className="text-lg font-normal text-subtitulo">/mês</span>
+                    <span className="text-lg font-normal text-muted-foreground">/mês</span>
                   </p>
                 </div>
 
                 {plan.features && plan.features.length > 0 && (
                   <div className="mb-4">
-                    <p className="text-sm font-medium text-titulo mb-2">Principais benefícios:</p>
-                    <ul className="text-sm text-subtitulo space-y-1">
+                    <p className="text-sm font-medium text-foreground mb-2">Principais benefícios:</p>
+                    <ul className="text-sm text-muted-foreground space-y-1">
                       {plan.features.slice(0, 3).map((feature: string, index: number) => (
                         <li key={index} className="flex items-start">
                           <span className="text-green-500 mr-2">✓</span>
@@ -184,7 +184,7 @@ export default function Plans() {
                         </li>
                       ))}
                       {plan.features.length > 3 && (
-                        <li className="text-xs text-subtitulo italic">
+                        <li className="text-xs text-muted-foreground italic">
                           +{plan.features.length - 3} benefícios adicionais
                         </li>
                       )}
@@ -219,7 +219,7 @@ export default function Plans() {
         ) : (
           <div className="col-span-full text-center py-12">
             <CreditCard className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-subtitulo mb-4">
+            <p className="text-muted-foreground mb-4">
               {searchQuery 
                 ? "Nenhum plano encontrado para a busca." 
                 : "Nenhum plano cadastrado ainda."
@@ -243,25 +243,25 @@ export default function Plans() {
       {filteredPlans && filteredPlans.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-titulo">Resumo</CardTitle>
+            <CardTitle className="text-foreground">Resumo</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="text-center">
-                <p className="text-2xl font-bold text-titulo">{filteredPlans.length}</p>
-                <p className="text-sm text-subtitulo">Total de Planos</p>
+                <p className="text-2xl font-bold text-foreground">{filteredPlans.length}</p>
+                <p className="text-sm text-muted-foreground">Total de Planos</p>
               </div>
               <div className="text-center">
                 <p className="text-2xl font-bold text-green-600">
                   {filteredPlans.filter((p: any) => p.isActive).length}
                 </p>
-                <p className="text-sm text-subtitulo">Planos Ativos</p>
+                <p className="text-sm text-muted-foreground">Planos Ativos</p>
               </div>
               <div className="text-center">
                 <p className="text-2xl font-bold text-red-600">
                   {filteredPlans.filter((p: any) => !p.isActive).length}
                 </p>
-                <p className="text-sm text-subtitulo">Planos Inativos</p>
+                <p className="text-sm text-muted-foreground">Planos Inativos</p>
               </div>
             </div>
           </CardContent>
