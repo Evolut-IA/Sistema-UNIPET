@@ -71,20 +71,24 @@ Se houver problemas no deploy:
    - ✅ **CORRIGIDO**: Removido cross-env dos scripts de produção
    - O NODE_ENV agora é definido diretamente no código
 
-2. **Erro 404 - Página não encontrada**
+2. **Erro "vite: not found" durante o build**
+   - ✅ **CORRIGIDO**: Movidas dependências de build para `dependencies`
+   - Vite, esbuild, TypeScript e outras ferramentas de build agora são instaladas em produção
+
+3. **Erro 404 - Página não encontrada**
    - ✅ **CORRIGIDO**: Caminho dos arquivos estáticos corrigido de `public` para `dist/public`
 
-3. **Erro de conexão com banco de dados**
+4. **Erro de conexão com banco de dados**
    - Verifique se `DATABASE_URL` está configurada corretamente
    - Confirme se o banco PostgreSQL está acessível
    - Verifique se as credenciais estão corretas
 
-4. **Servidor não inicia**
+5. **Servidor não inicia**
    - Verifique se todas as variáveis de ambiente obrigatórias estão configuradas
    - Confirme se a porta está disponível (definida automaticamente pelo EasyPanel)
    - Verifique os logs de inicialização
 
-5. **Build falha**
+6. **Build falha**
    - Verifique se todas as dependências estão no `package.json`
    - Confirme se o Node.js versão >=18 está sendo usado
 
