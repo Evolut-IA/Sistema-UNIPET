@@ -115,37 +115,6 @@
   }
 
   body {
-    @apply font-sans antialiased;
-    background-color: var(--secao-fundo-bg);
-    color: var(--texto-principal);
+    @apply font-sans antialiased bg-background text-foreground;
   }
-}
-
-.btn-primary {
-  background-color: var(--btn-bg);
-  color: var(--btn-text);
-  border: none;
-}
-
-.btn-primary:hover {
-  background-color: var(--btn-bg);
-  color: var(--btn-text);
-}
-
-.text-primary-custom {
-  color: var(--titulo-text);
-}
-
-.text-secondary-custom {
-  color: var(--subtitulo-text);
-}
-
-.icon-custom {
-  color: var(--icon-color);
-}
-
-.card-custom {
-  background-color: var(--container-bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
 }

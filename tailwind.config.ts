@@ -11,16 +11,6 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
-        // Custom pet health colors
-        'secao-fundo': 'var(--secao-fundo-bg)',
-        'container': 'var(--container-bg)',
-        'btn': 'var(--btn-bg)',
-        'btn-text': 'var(--btn-text)',
-        'titulo': 'var(--titulo-text)',
-        'subtitulo': 'var(--subtitulo-text)',
-        'texto-principal': 'var(--texto-principal)',
-        'icon': 'var(--icon-color)',
-        
         // Standard theme colors
         background: "var(--background)",
         foreground: "var(--foreground)",
