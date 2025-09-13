@@ -128,12 +128,18 @@ export default function Settings() {
 
 
   const onSubmitSite = (data: any) => {
+    console.log("Form submitted with data:", data);
+    
     // Remove campos vazios antes de enviar
     const cleanData = Object.fromEntries(
       Object.entries(data).filter(([_, value]) => 
         value !== "" && value !== null && value !== undefined
       )
     );
+    
+    console.log("Cleaned data for submission:", cleanData);
+    console.log("Submitting to API...");
+    
     saveSiteMutation.mutate(cleanData);
   };
 

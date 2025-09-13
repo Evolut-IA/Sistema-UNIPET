@@ -701,8 +701,8 @@ export default function ThemeEditor() {
                 <AccordionTrigger className="flex items-center space-x-2">
                   <Package className="h-4 w-4" />
                   <div>
-                    <span>Cards e Janelas</span>
-                    <p className="text-sm text-muted-foreground mt-1">Cores dos cartões, janelas e caixas de conteúdo</p>
+                    <span>Cores dos Cards</span>
+                    <p className="text-sm text-muted-foreground mt-1">Configure as cores dos cartões e janelas do sistema</p>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-6">
