@@ -1,0 +1,213 @@
+Faça um sistema no estilo CRM para um plano de saude pet.
+OBS: Eu fui colocando #1, #2 mas não é essa a ordem. Pense em uma ordem estratégica para ficar funcional.
+REGRAS PARA FAZER O SITE:
+#ESTILO DO SITE: Moderno
+
+
+# ESTILOS E CORES A SEREM UTILIZADOS GLOBALMENTE (Crie um arquivo cores.css para conter essas cores):
+:root {
+  /* ESTILO 1 - BACKGROUNDS */
+  --secao-fundo-bg: #FBF9F7;
+  --container-bg: #ffffff;
+  
+  /* ESTILO 1 - BOTÕES */
+  --btn-bg: #277677;
+  --btn-text: #ffffff;
+  --btn-icon: #ffffff;
+  
+  /* ESTILO 1 - TEXTOS */
+  --titulo-text: #090909;
+  --subtitulo-text: #1e1e1e;
+  --texto-principal: #060606;
+  
+  /* ESTILO 1 - ÍCONES */
+  --icon-color: #277677;
+}
+
+# REGRAS DE ESTILO:
+1. Não utilize estilo hover. Não quero que apareça focus, bordas, mude a cor de nada ao passar o mouse em cima e nem ao clicar. Eu não quero de jeito nenhum mudança de cores e aparecimento de estilos como Focus Border.
+2. Todos os componentes, páginas, seções, literalmente tudo que utiliza cor no site deve puxar exclusivamente do arquivo que tem que ser criado como cores.css onde vai ter somente as cores fornecidas mostras acima.
+
+#1 Funcionalidades Principais
+Gestão de Clientes e Pets:
+Cadastro de Clientes com os seguintes campos:
+- Nome Completo*
+- Email
+- Celular*
+- CPF
+- CEP
+- Endereço
+- Número
+- Complemento
+- Bairro
+- Estado
+- Cidade
+
+Ao acessar o cadastro do cliente, deve ser possível adicionar um novo pet. O formulário do pet contém os seguintes campos (os campos obrigatórios estão marcados com ):
+
+Informações Básicas:
+- Nome do pet*
+- Espécie*
+- Raça
+- Data de nascimento ou Idade
+- Sexo*
+- Castração/esterilização (sim/não)
+- Cor/pelagem
+- Peso atual
+- Número de microchip ou tatuagem
+
+Histórico Médico:
+- Doenças prévias
+- Cirurgias ou tratamentos passados
+- Alergias conhecidas
+- Medicamentos atuais
+- Condições hereditárias
+
+Cuidados Preventivos:
+- Datas de vacinas (raiva, V10, etc.)
+- Último check-up
+- Tratamentos antipulgas/parasitas
+
+#2 Guias de atendimento
+Para gerar a guia, deve ter um campo para digitar para encontrar o cliente. Utilize o CPF, nome, e-mail ou telefone informado no cadastro do cliente. Após localizar o cliente, selecione um dos pets vinculados ao seu cadastro para prosseguir.
+Tambem deve ter o campo onde será possivel selecionar qual o procedimento da guia aberta de acordo com as possibilidades do plano que o pet está vinculado.
+Deve ter um campo textarea para anotar sobre o procedimento e um campo textarea para anotações gerais. Os campos de textarea não devem ser obrigatórios, já os outros sim.
+
+Tipos de guias que podem ser abertas:
+- Guia de Consulta
+- Guia de Exames
+- Guia de Internação
+- Guia de Reembolso
+
+#3  Gestão de Procedimentos
+Configuração de Planos e Valores:
+O sistema permite definir quais procedimentos estão inclusos em cada plano, com valores específicos por procedimento de acordo com o plano selecionado.
+
+Exemplo de Precificação:
+- Plano Básico: Consulta Clínica Geral = R$ 50,00
+- Plano Confort: Consulta Clínica Geral = R$ 20,00
+
+Seções de Procedimentos Disponíveis:
+Para cada plano, é possível configurar os benefícios nas seguintes seções. Caso alguma seção não seja utilizada em determinado plano, ela pode permanecer vazia e não será exibida.
+- Consultas
+- Procedimentos e Anestesia
+- Procedimentos Ambulatoriais
+- Exames Laboratoriais
+- Exames Laboratoriais Complexos
+- Cirurgia Eletiva
+- Cirurgias
+- Exames de Imagem
+- Vacinas
+- Benefícios Especiais
+- Especialistas
+
+#4 Gestão de planos
+Utilize o banco de dados para utilizar a table 'plans' para essa função.
+Utilize a coluna 'name' para definir o nome do plano
+Utilize a coluna 'price' para definir para definir o preço mensal do plano
+Utilize a coluna 'plan_type' para definir se é com sem coparticipação ou coparticipação.
+Utilize a coluna 'features' para definir os beneficios principais do plano em checklist
+Crie e utilize a coluna 'modalidadesdepagamento' para definir se vai ser permitido pagamento somente mensal, somente anual ou os dois.
+crie e utilize a coluna 'tiposdepagamento' para definir quais tipos de pagamento é permitido no plano sendo eles PIX, Cartão de Crédito e Boleto. Pode ser definido diferentes tipos para modalidade mensal e para modalidade anual.
+
+#5 Rede credenciada
+Utilize o banco de dados para utilizar a table 'network_units' para essa função.
+Utilize a coluna 'name' para definir o nome da unidade.
+Utilize a coluna 'address' para definir o endereço.
+Utilize a coluna 'phone' para definir o telefone.
+Utilize a coluna 'services' para definir tags, as opções são essas abaixo pode escolher quantas quiser:
+- Aplicação de medicamentos
+- Aplicação de vacinas obrigatórias
+- Aplicação de vacinas opcionais
+- Atendimento emergencial / urgência 24h
+- Banho e tosa higiênica
+- Castração
+- Cirurgias de emergência
+- Cirurgias odontológicas
+- Cirurgias oftalmológicas
+- Cirurgias ortopédicas
+- Consulta clínica geral
+- Consulta especializada (dermatologia, cardiologia, etc.)
+- Controle de ectoparasitas (pulgas e carrapatos)
+- Eletrocardiograma (ECG)
+- Emissão de atestados de saúde
+- Emissão de passaporte pet / documentação para viagens
+- Exames de imagem (raio-X, ultrassonografia, endoscopia)
+- Exames laboratoriais (sangue, urina, fezes)
+- Extração dentária
+- Hidratação de pelagem
+- Internação cirúrgica
+- Internação clínica
+- Limpeza de ouvidos / corte de unhas
+- Limpeza dental (profilaxia)
+- Microchipagem
+- Plano alimentar personalizado
+- Programa de controle de obesidade
+- Terapia intensiva / UTI veterinária
+- Testes alérgicos
+- Tosa por padrão de raça
+- Tratamento com fluidoterapia
+- Venda de produtos pet (ração, medicamentos, acessórios)
+- Vermifugação
+Utilize a coluna 'image_url' para definir a imagem da unidade.
+Utilize a coluna 'is_active' para definir se a unidade está ativa ou não.
+Utilize a coluna 'whatsapp' para definir o número de whatsapp da unidade.
+Utilize a coluna 'google_maps_url' para definir o link do google maps no endereço da unidade.
+
+#4 FAQ
+Utilize o banco de dados para utilizar a table 'faq_items' para essa função.
+É um local onde podera ser registrado perguntas e respostas.
+Utilize a coluna 'question' para definir a pergunta.
+Utilize a coluna 'answer' para definir a resposta.
+Utilize a coluna 'is_active' para definir se está ativa ou não.
+
+#5 Formulários preenchidos
+Utilize o banco de dados para utilizar a table 'contact_submissions' para essa função.
+Utilize a coluna 'name' para mostrar o Nome Completo
+Utilize a coluna 'email' para mostrar o E-mail
+Utilize a coluna 'phone' para mostrar o Telefone
+Utilize a coluna 'city' para mostrar a Cidade
+Utilize a coluna 'pet_name' para mostrar o Nome do Pet
+Utilize a coluna 'animal_type' para mostrar o Tipo de Animal
+Utilize a coluna 'pet_age' para mostrar a Idade do Pet
+Utilize a coluna 'plan_interest' para mostrar o Plano de Interesse
+Utilize a coluna 'message' para mostrar a Mensagem (Opcional)
+Utilize a coluna 'created_at' para mostrar data de recebimento do formulario.
+
+
+#6 Informações gerais do plano de sáude
+Utilize o banco de dados para utilizar a table 'site_settings' para essa função.
+Utilize a coluna 'whatsapp' para definiro whatsapp do plano de sáude.
+Utilize a coluna 'email' para definir o email do plano de sáude.
+Utilize a coluna 'phone' para definir o telefone do plano de sáude.
+Utilize a coluna 'instagram_url' para definir o instagram do plano de sáude.
+Utilize a coluna 'facebook_url' para definir o facebook do plano de sáude.
+Utilize a coluna 'linkedin_url' para definir o linkedin do plano de sáude.
+Utilize a coluna 'youtube_url' para definir o youtube do plano de sáude.
+Utilize a coluna 'cnpj' para definir o cnpj do plano de sáude.
+Utilize a coluna 'business_hours' para definir o horario de atendimento do plano de sáude.
+Utilize a coluna 'our_story' para definir
+Utilize a coluna 'privacy_policy' para definir as politicas de privacidade do site do plano de sáude.
+Utilize a coluna 'terms_of_use' para definir os termos de uso do site do plano de sáude.
+Utilize a coluna 'address' para definir o endereço do plano de sáude.
+Utilize a coluna 'main_image' para definir a imagem 'Principal' para o site do plano de sáude.
+Utilize a coluna 'network_image' para definir a imagem 'Secundaria' para o site do plano de sáude.
+Utilize a coluna 'about_image' para definir a imagem 'Sobre o plano de sáude' para o site do plano de sáude.
+Crie a coluna 'cores' para definir as cores do arquivo 'cores.css' do site conforme mudar aqui as cores deve mudar no site inteiro onde a cor é utilizada.
+
+#7 informações do chat de IA do site
+Utilize o banco de dados para utilizar a table 'chat_settings' para essa função.
+Utilize a coluna 'welcome_message' para definir a mensagem que aparece no chat quando ele é aberto
+Utilize a coluna 'bot_icon' para definir a imagem que ficara de perfil do chat aberto
+Utilize a coluna 'user_icon' para definir a imagem que ficaria de perfil do suporte do chat aberto
+Utilize a coluna 'placeholder_text' para definir o texto de placeholder...
+Utilize a coluna 'chat_title' para definir o titulo do chat
+Utilize a coluna 'chat_position' para definir se o chat vai ficar em qual lado do site
+Utilize a coluna 'chat_size' para definir o tamanho do chat quando ele esta aberto
+Utilize a coluna 'is_enabled' para definir se ele vai aparecer ou não no site
+
+#8 Administração de contas
+Aqui deve ser permitido criar subcontas que vão ter acesso somente as partes do sistema que o usuario principal determinar como por exemplo o usuario principal foi la e escolheu um email e senha e determinou que esse usuario pode alterar somente criar guias. E assim por diante.
+
+#9 Dashboard geral
+Implementar módulos de analytics e relatórios avançados
