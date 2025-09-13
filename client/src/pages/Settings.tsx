@@ -12,8 +12,8 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { insertSiteSettingsSchema, insertChatSettingsSchema } from "@shared/schema";
-import { Settings as SettingsIcon, MessageCircle, Globe, Palette, Save } from "lucide-react";
+import { insertSiteSettingsSchema } from "@shared/schema";
+import { Settings as SettingsIcon, Globe, Palette, Save } from "lucide-react";
 import ThemeEditor from "@/components/ThemeEditor";
 
 export default function Settings() {
@@ -24,9 +24,6 @@ export default function Settings() {
     queryKey: ["/api/settings/site"],
   });
 
-  const { data: chatSettings, isLoading: chatLoading } = useQuery({
-    queryKey: ["/api/settings/chat"],
-  });
 
   const siteForm = useForm({
     resolver: zodResolver(insertSiteSettingsSchema),
@@ -51,19 +48,6 @@ export default function Settings() {
     },
   });
 
-  const chatForm = useForm({
-    resolver: zodResolver(insertChatSettingsSchema),
-    defaultValues: {
-      welcomeMessage: "",
-      botIcon: "",
-      userIcon: "",
-      placeholderText: "",
-      chatTitle: "",
-      chatPosition: "right",
-      chatSize: "medium",
-      isEnabled: true,
-    },
-  });
 
   const saveSiteMutation = useMutation({
     mutationFn: async (data: any) => {
@@ -85,25 +69,6 @@ export default function Settings() {
     },
   });
 
-  const saveChatMutation = useMutation({
-    mutationFn: async (data: any) => {
-      await apiRequest("PUT", "/api/settings/chat", data);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/settings/chat"] });
-      toast({
-        title: "Configurações salvas",
-        description: "Configurações do chat foram salvas com sucesso.",
-      });
-    },
-    onError: () => {
-      toast({
-        title: "Erro",
-        description: "Falha ao salvar configurações do chat.",
-        variant: "destructive",
-      });
-    },
-  });
 
   // Update forms when data loads
   useEffect(() => {
@@ -112,19 +77,11 @@ export default function Settings() {
     }
   }, [siteSettings, siteForm]);
 
-  useEffect(() => {
-    if (chatSettings) {
-      chatForm.reset(chatSettings);
-    }
-  }, [chatSettings, chatForm]);
 
   const onSubmitSite = (data: any) => {
     saveSiteMutation.mutate(data);
   };
 
-  const onSubmitChat = (data: any) => {
-    saveChatMutation.mutate(data);
-  };
 
   return (
     <div className="p-6 space-y-6">
@@ -138,14 +95,10 @@ export default function Settings() {
       </div>
 
       <Tabs defaultValue="site" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="site" className="flex items-center space-x-2">
             <Globe className="h-4 w-4" />
             <span>Site</span>
-          </TabsTrigger>
-          <TabsTrigger value="chat" className="flex items-center space-x-2">
-            <MessageCircle className="h-4 w-4" />
-            <span>Chat IA</span>
           </TabsTrigger>
           <TabsTrigger value="theme" className="flex items-center space-x-2">
             <Palette className="h-4 w-4" />
@@ -450,194 +403,6 @@ export default function Settings() {
           )}
         </TabsContent>
 
-        {/* Chat Settings */}
-        <TabsContent value="chat" className="space-y-6">
-          {chatLoading ? (
-            <div className="space-y-4">
-              {[...Array(2)].map((_, i) => (
-                <Card key={i} className="animate-pulse">
-                  <CardContent className="p-6">
-                    <div className="h-4 bg-gray-200 rounded w-1/4 mb-4"></div>
-                    <div className="space-y-3">
-                      <div className="h-10 bg-gray-200 rounded"></div>
-                      <div className="h-10 bg-gray-200 rounded"></div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <Form {...chatForm}>
-              <form onSubmit={chatForm.handleSubmit(onSubmitChat)} className="space-y-6">
-                {/* Chat Configuration */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-foreground">Configuração do Chat</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-6">
-                      <FormField
-                        control={chatForm.control}
-                        name="isEnabled"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                            <div className="space-y-0.5">
-                              <FormLabel className="text-base">Chat Habilitado</FormLabel>
-                              <p className="text-sm text-muted-foreground">
-                                Ative ou desative o chat no site
-                              </p>
-                            </div>
-                            <FormControl>
-                              <Switch
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                                data-testid="switch-chat-enabled"
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <FormField
-                          control={chatForm.control}
-                          name="chatTitle"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Título do Chat</FormLabel>
-                              <FormControl>
-                                <Input {...field} placeholder="Chat de Suporte" data-testid="input-chat-title" />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={chatForm.control}
-                          name="placeholderText"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Texto do Placeholder</FormLabel>
-                              <FormControl>
-                                <Input {...field} placeholder="Digite sua mensagem..." data-testid="input-placeholder-text" />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={chatForm.control}
-                          name="chatPosition"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Posição do Chat</FormLabel>
-                              <Select onValueChange={field.onChange} value={field.value}>
-                                <FormControl>
-                                  <SelectTrigger data-testid="select-chat-position">
-                                    <SelectValue />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  <SelectItem value="left">Esquerda</SelectItem>
-                                  <SelectItem value="right">Direita</SelectItem>
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={chatForm.control}
-                          name="chatSize"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Tamanho do Chat</FormLabel>
-                              <Select onValueChange={field.onChange} value={field.value}>
-                                <FormControl>
-                                  <SelectTrigger data-testid="select-chat-size">
-                                    <SelectValue />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  <SelectItem value="small">Pequeno</SelectItem>
-                                  <SelectItem value="medium">Médio</SelectItem>
-                                  <SelectItem value="large">Grande</SelectItem>
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={chatForm.control}
-                          name="botIcon"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Ícone do Bot</FormLabel>
-                              <FormControl>
-                                <Input {...field} placeholder="https://..." data-testid="input-bot-icon" />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={chatForm.control}
-                          name="userIcon"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Ícone do Usuário</FormLabel>
-                              <FormControl>
-                                <Input {...field} placeholder="https://..." data-testid="input-user-icon" />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
-                      <FormField
-                        control={chatForm.control}
-                        name="welcomeMessage"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Mensagem de Boas-vindas</FormLabel>
-                            <FormControl>
-                              <Textarea 
-                                {...field} 
-                                rows={3} 
-                                placeholder="Olá! Como posso ajudá-lo hoje?"
-                                data-testid="textarea-welcome-message" 
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <div className="flex justify-end">
-                  <Button
-                    type="submit"
-                    className="btn-primary"
-                    disabled={saveChatMutation.isPending}
-                    data-testid="button-save-chat"
-                  >
-                    <Save className="h-4 w-4 mr-2" />
-                    {saveChatMutation.isPending ? "Salvando..." : "Salvar Configurações"}
-                  </Button>
-                </div>
-              </form>
-            </Form>
-          )}
-        </TabsContent>
 
         {/* Theme Settings */}
         <TabsContent value="theme" className="space-y-6" data-testid="tab-content-theme">

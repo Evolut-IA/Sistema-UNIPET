@@ -11,7 +11,6 @@ import type {
   FaqItem, InsertFaqItem,
   ContactSubmission, InsertContactSubmission,
   SiteSettings, InsertSiteSettings,
-  ChatSettings, InsertChatSettings,
   ThemeSettings, InsertThemeSettings,
   Guide, InsertGuide
 } from "@shared/schema";
@@ -85,9 +84,6 @@ export interface IStorage {
   getSiteSettings(): Promise<SiteSettings | undefined>;
   updateSiteSettings(settings: InsertSiteSettings): Promise<SiteSettings>;
 
-  // Chat settings methods
-  getChatSettings(): Promise<ChatSettings | undefined>;
-  updateChatSettings(settings: InsertChatSettings): Promise<ChatSettings>;
 
   // Theme settings methods
   getThemeSettings(): Promise<ThemeSettings | undefined>;
@@ -139,8 +135,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteUser(id: string): Promise<boolean> {
-    const result = await db.delete(schema.users).where(eq(schema.users.id, id));
-    return result.rowCount > 0;
+    const result = await db.delete(schema.users).where(eq(schema.users.id, id)).returning({ id: schema.users.id });
+    return result.length > 0;
   }
 
   async getUsers(): Promise<User[]> {
@@ -180,8 +176,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteClient(id: string): Promise<boolean> {
-    const result = await db.delete(schema.clients).where(eq(schema.clients.id, id));
-    return result.rowCount > 0;
+    const result = await db.delete(schema.clients).where(eq(schema.clients.id, id)).returning({ id: schema.clients.id });
+    return result.length > 0;
   }
 
   async getClients(): Promise<Client[]> {
@@ -209,8 +205,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deletePet(id: string): Promise<boolean> {
-    const result = await db.delete(schema.pets).where(eq(schema.pets.id, id));
-    return result.rowCount > 0;
+    const result = await db.delete(schema.pets).where(eq(schema.pets.id, id)).returning({ id: schema.pets.id });
+    return result.length > 0;
   }
 
   async getPets(): Promise<Pet[]> {
@@ -238,8 +234,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deletePlan(id: string): Promise<boolean> {
-    const result = await db.delete(schema.plans).where(eq(schema.plans.id, id));
-    return result.rowCount > 0;
+    const result = await db.delete(schema.plans).where(eq(schema.plans.id, id)).returning({ id: schema.plans.id });
+    return result.length > 0;
   }
 
   async getPlans(): Promise<Plan[]> {
@@ -272,8 +268,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteNetworkUnit(id: string): Promise<boolean> {
-    const result = await db.delete(schema.networkUnits).where(eq(schema.networkUnits.id, id));
-    return result.rowCount > 0;
+    const result = await db.delete(schema.networkUnits).where(eq(schema.networkUnits.id, id)).returning({ id: schema.networkUnits.id });
+    return result.length > 0;
   }
 
   async getNetworkUnits(): Promise<NetworkUnit[]> {
@@ -301,8 +297,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteFaqItem(id: string): Promise<boolean> {
-    const result = await db.delete(schema.faqItems).where(eq(schema.faqItems.id, id));
-    return result.rowCount > 0;
+    const result = await db.delete(schema.faqItems).where(eq(schema.faqItems.id, id)).returning({ id: schema.faqItems.id });
+    return result.length > 0;
   }
 
   async getFaqItems(): Promise<FaqItem[]> {
@@ -325,8 +321,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteContactSubmission(id: string): Promise<boolean> {
-    const result = await db.delete(schema.contactSubmissions).where(eq(schema.contactSubmissions.id, id));
-    return result.rowCount > 0;
+    const result = await db.delete(schema.contactSubmissions).where(eq(schema.contactSubmissions.id, id)).returning({ id: schema.contactSubmissions.id });
+    return result.length > 0;
   }
 
   // Site settings methods
@@ -346,22 +342,6 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  // Chat settings methods
-  async getChatSettings(): Promise<ChatSettings | undefined> {
-    const result = await db.select().from(schema.chatSettings).limit(1);
-    return result[0];
-  }
-
-  async updateChatSettings(settings: InsertChatSettings): Promise<ChatSettings> {
-    const existing = await this.getChatSettings();
-    if (existing) {
-      const result = await db.update(schema.chatSettings).set(settings).where(eq(schema.chatSettings.id, existing.id)).returning();
-      return result[0];
-    } else {
-      const result = await db.insert(schema.chatSettings).values(settings).returning();
-      return result[0];
-    }
-  }
 
   // Theme settings methods
   async getThemeSettings(): Promise<ThemeSettings | undefined> {
@@ -401,8 +381,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteGuide(id: string): Promise<boolean> {
-    const result = await db.delete(schema.guides).where(eq(schema.guides.id, id));
-    return result.rowCount > 0;
+    const result = await db.delete(schema.guides).where(eq(schema.guides.id, id)).returning({ id: schema.guides.id });
+    return result.length > 0;
   }
 
   async getGuides(): Promise<Guide[]> {

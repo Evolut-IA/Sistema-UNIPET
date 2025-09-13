@@ -140,18 +140,6 @@ export const siteSettings = pgTable("site_settings", {
   cores: json("cores").$type<{[key: string]: string}>().default({}),
 });
 
-// Chat settings table
-export const chatSettings = pgTable("chat_settings", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  welcomeMessage: text("welcome_message"),
-  botIcon: text("bot_icon"),
-  userIcon: text("user_icon"),
-  placeholderText: text("placeholder_text"),
-  chatTitle: text("chat_title"),
-  chatPosition: text("chat_position"), // 'left' or 'right'
-  chatSize: text("chat_size"), // 'small', 'medium', 'large'
-  isEnabled: boolean("is_enabled").default(true),
-});
 
 // Theme settings table
 export const themeSettings = pgTable("theme_settings", {
@@ -218,13 +206,17 @@ export const guides = pgTable("guides", {
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true });
 export const insertClientSchema = createInsertSchema(clients).omit({ id: true, createdAt: true, updatedAt: true });
-export const insertPetSchema = createInsertSchema(pets).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertPetSchema = createInsertSchema(pets).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  vaccineData: z.array(z.object({
+    vaccine: z.string(),
+    date: z.string()
+  })).optional()
+});
 export const insertPlanSchema = createInsertSchema(plans).omit({ id: true, createdAt: true });
 export const insertNetworkUnitSchema = createInsertSchema(networkUnits).omit({ id: true, createdAt: true });
 export const insertFaqItemSchema = createInsertSchema(faqItems).omit({ id: true, createdAt: true });
 export const insertContactSubmissionSchema = createInsertSchema(contactSubmissions).omit({ id: true, createdAt: true });
 export const insertSiteSettingsSchema = createInsertSchema(siteSettings).omit({ id: true });
-export const insertChatSettingsSchema = createInsertSchema(chatSettings).omit({ id: true });
 export const insertThemeSettingsSchema = createInsertSchema(themeSettings).omit({ id: true });
 export const insertGuideSchema = createInsertSchema(guides).omit({ id: true, createdAt: true, updatedAt: true });
 
@@ -237,7 +229,6 @@ export type InsertNetworkUnit = typeof networkUnits.$inferInsert;
 export type InsertFaqItem = typeof faqItems.$inferInsert;
 export type InsertContactSubmission = typeof contactSubmissions.$inferInsert;
 export type InsertSiteSettings = typeof siteSettings.$inferInsert;
-export type InsertChatSettings = typeof chatSettings.$inferInsert;
 export type InsertThemeSettings = typeof themeSettings.$inferInsert;
 export type InsertGuide = typeof guides.$inferInsert;
 
@@ -249,6 +240,5 @@ export type NetworkUnit = typeof networkUnits.$inferSelect;
 export type FaqItem = typeof faqItems.$inferSelect;
 export type ContactSubmission = typeof contactSubmissions.$inferSelect;
 export type SiteSettings = typeof siteSettings.$inferSelect;
-export type ChatSettings = typeof chatSettings.$inferSelect;
 export type ThemeSettings = typeof themeSettings.$inferSelect;
 export type Guide = typeof guides.$inferSelect;

@@ -8,7 +8,6 @@ import {
   Building2,
   HelpCircle,
   Mail,
-  MessageCircle,
   UserCog,
   Settings,
   Stethoscope
@@ -27,20 +26,14 @@ const navigation = [
       { name: "Clientes & Pets", href: "/clients", icon: Users },
       { name: "Guias de Atendimento", href: "/guides", icon: FileText },
       { name: "Planos de Saúde", href: "/plans", icon: CreditCard },
-      { name: "Rede Credenciada", href: "/network", icon: Building2 }
-    ]
-  },
-  {
-    name: "Suporte",
-    items: [
-      { name: "FAQ", href: "/faq", icon: HelpCircle },
-      { name: "Formulários", href: "/contact-submissions", icon: Mail },
-      { name: "Chat IA", href: "/chat", icon: MessageCircle }
+      { name: "Rede Credenciada", href: "/network", icon: Building2 },
+      { name: "Formulários", href: "/contact-submissions", icon: Mail }
     ]
   },
   {
     name: "Sistema",
     items: [
+      { name: "FAQ", href: "/faq", icon: HelpCircle },
       { name: "Administração", href: "/administration", icon: UserCog },
       { name: "Configurações", href: "/settings", icon: Settings }
     ]
