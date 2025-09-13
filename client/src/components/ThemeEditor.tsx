@@ -542,7 +542,7 @@ export default function ThemeEditor() {
                               type="number"
                               step="0.1"
                               min="0"
-                              max="2"
+                              max="1.3"
                               data-testid="input-border-radius"
                             />
                           </FormControl>
