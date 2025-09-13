@@ -320,6 +320,14 @@ export default function ContactSubmissions() {
                     </div>
 
                     <div className="flex space-x-1 ml-3">
+                      <button
+                        onClick={() => handleWhatsApp(submission)}
+                        data-testid={`button-whatsapp-${submission.id}`}
+                        className="p-1"
+                        title="Enviar mensagem no WhatsApp"
+                      >
+                        <WhatsAppIcon className="h-7 w-7" />
+                      </button>
                       <Button
                         variant="outline"
                         size="sm"
@@ -328,14 +336,17 @@ export default function ContactSubmissions() {
                       >
                         <Eye className="h-4 w-4" />
                       </Button>
-                      <button
-                        onClick={() => handleWhatsApp(submission)}
-                        data-testid={`button-whatsapp-${submission.id}`}
-                        className="p-1 hover:bg-gray-100 rounded transition-colors"
-                        title="Enviar mensagem no WhatsApp"
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setSelectedSubmission(submission);
+                          handleCopyToClipboard();
+                        }}
+                        data-testid={`button-copy-${submission.id}`}
                       >
-                        <WhatsAppIcon className="h-5 w-5" />
-                      </button>
+                        <Copy className="h-4 w-4" />
+                      </Button>
                       <Button
                         variant="outline"
                         size="sm"
@@ -369,18 +380,7 @@ export default function ContactSubmissions() {
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle className="flex items-center justify-between">
-              <span className="text-foreground">Detalhes do Formulário</span>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleCopyToClipboard}
-                className="flex items-center space-x-2"
-              >
-                <Copy className="h-4 w-4" />
-                <span>Copiar</span>
-              </Button>
-            </DialogTitle>
+            <DialogTitle className="text-foreground">Detalhes do Formulário</DialogTitle>
           </DialogHeader>
           {selectedSubmission && (
             <div className="space-y-4">

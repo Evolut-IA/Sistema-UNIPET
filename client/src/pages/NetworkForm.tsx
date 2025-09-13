@@ -214,7 +214,7 @@ export default function NetworkForm() {
                   name="imageUrl"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Imagem da unidade</FormLabel>
+                      <FormLabel>Imagem da unidade *</FormLabel>
                       <FormControl>
                         <ImageUpload 
                           value={field.value} 

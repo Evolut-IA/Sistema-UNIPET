@@ -349,6 +349,17 @@ export default function Guides() {
                       <Button
                         variant="outline"
                         size="sm"
+                        onClick={() => {
+                          setSelectedGuide(guide);
+                          handleCopyToClipboard();
+                        }}
+                        data-testid={`button-copy-${guide.id}`}
+                      >
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
                         onClick={() => setLocation(`/guias/${guide.id}/editar`)}
                         data-testid={`button-edit-${guide.id}`}
                       >
@@ -396,20 +407,9 @@ export default function Guides() {
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
         <DialogContent className="sm:max-w-2xl">
           <DialogHeader>
-            <DialogTitle className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <FileText className="h-5 w-5 text-primary" />
-                <span>Detalhes da Guia</span>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleCopyToClipboard}
-                className="flex items-center space-x-2"
-              >
-                <Copy className="h-4 w-4" />
-                <span>Copiar</span>
-              </Button>
+            <DialogTitle className="flex items-center space-x-2">
+              <FileText className="h-5 w-5 text-primary" />
+              <span>Detalhes da Guia</span>
             </DialogTitle>
           </DialogHeader>
           

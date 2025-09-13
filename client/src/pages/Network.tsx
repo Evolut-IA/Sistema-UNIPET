@@ -302,14 +302,25 @@ export default function Network() {
                       data-testid={`switch-unit-status-${unit.id}`}
                     />
                     
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleViewDetails(unit)}
-                      data-testid={`button-view-${unit.id}`}
-                    >
-                      <Eye className="h-4 w-4" />
-                    </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleViewDetails(unit)}
+                        data-testid={`button-view-${unit.id}`}
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setSelectedUnit(unit);
+                          handleCopyToClipboard();
+                        }}
+                        data-testid={`button-copy-${unit.id}`}
+                      >
+                        <Copy className="h-4 w-4" />
+                      </Button>
 
                     {unit.googleMapsUrl && (
                       <Button
@@ -376,20 +387,9 @@ export default function Network() {
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
         <DialogContent className="sm:max-w-2xl">
           <DialogHeader>
-            <DialogTitle className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <Building2 className="h-5 w-5 text-primary" />
-                <span>Detalhes da Unidade</span>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleCopyToClipboard}
-                className="flex items-center space-x-2"
-              >
-                <Copy className="h-4 w-4" />
-                <span>Copiar</span>
-              </Button>
+            <DialogTitle className="flex items-center space-x-2">
+              <Building2 className="h-5 w-5 text-primary" />
+              <span>Detalhes da Unidade</span>
             </DialogTitle>
           </DialogHeader>
           

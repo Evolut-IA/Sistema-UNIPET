@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useImageUpload } from "@/hooks/use-image-upload";
-import { ImagePlus, X, Upload, Trash2 } from "lucide-react";
+import { ImagePlus, X, Upload } from "lucide-react";
 import { useCallback, useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -121,14 +121,6 @@ export function ImageUpload({
                 className="h-9 w-9 p-0"
               >
                 <Upload className="h-4 w-4" />
-              </Button>
-              <Button
-                size="sm"
-                variant="destructive"
-                onClick={handleRemove}
-                className="h-9 w-9 p-0"
-              >
-                <Trash2 className="h-4 w-4" />
               </Button>
             </div>
           </div>
