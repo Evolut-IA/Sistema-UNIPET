@@ -52,11 +52,15 @@ const ColorInput = ({ value, onChange, label, testId }: {
   testId: string;
 }) => {
   const [open, setOpen] = useState(false);
-  const [hexInput, setHexInput] = useState(value);
+  const [tempValue, setTempValue] = useState(value);
 
-  useEffect(() => {
-    setHexInput(value);
-  }, [value]);
+  // Reset temporary value when opening popover
+  const handleOpenChange = (newOpen: boolean) => {
+    if (newOpen) {
+      setTempValue(value);
+    }
+    setOpen(newOpen);
+  };
 
   const handleHexChange = (newHex: string) => {
     // Ensure the hex starts with # and is valid
@@ -65,23 +69,35 @@ const ColorInput = ({ value, onChange, label, testId }: {
       formattedHex = '#' + formattedHex;
     }
     
-    // Validate hex color
+    // Just update temp value, don't apply yet
     if (/^#[0-9A-F]{6}$/i.test(formattedHex)) {
-      setHexInput(formattedHex);
-      onChange(formattedHex);
+      setTempValue(formattedHex);
     } else if (formattedHex.length <= 7) {
-      setHexInput(formattedHex);
+      setTempValue(formattedHex);
     }
   };
 
   const handleColorPickerChange = (newColor: string) => {
-    setHexInput(newColor);
-    onChange(newColor);
+    setTempValue(newColor);
+  };
+
+  const handleConfirm = () => {
+    // Apply the change only when confirming
+    if (/^#[0-9A-F]{6}$/i.test(tempValue)) {
+      onChange(tempValue);
+    }
+    setOpen(false);
+  };
+
+  const handleCancel = () => {
+    // Reset to original value and close
+    setTempValue(value);
+    setOpen(false);
   };
 
   return (
     <div className="flex items-center space-x-3">
-      <Popover open={open} onOpenChange={setOpen}>
+      <Popover open={open} onOpenChange={handleOpenChange}>
         <PopoverTrigger asChild>
           <div 
             className="w-10 h-10 rounded-lg border-2 border-muted cursor-pointer flex-shrink-0 transition-all duration-200 hover:scale-105 hover:shadow-md"
@@ -102,7 +118,7 @@ const ColorInput = ({ value, onChange, label, testId }: {
                   Código HEX
                 </label>
                 <Input
-                  value={hexInput}
+                  value={tempValue}
                   onChange={(e) => handleHexChange(e.target.value)}
                   placeholder="#000000"
                   className="mt-1 font-mono text-sm"
@@ -117,7 +133,7 @@ const ColorInput = ({ value, onChange, label, testId }: {
                 <div className="mt-2 relative">
                   <input
                     type="color"
-                    value={value}
+                    value={tempValue}
                     onChange={(e) => handleColorPickerChange(e.target.value)}
                     className="w-full h-12 rounded-md border border-input cursor-pointer"
                   />
@@ -129,17 +145,28 @@ const ColorInput = ({ value, onChange, label, testId }: {
                   <div className="flex items-center space-x-2">
                     <div 
                       className="w-6 h-6 rounded border"
-                      style={{ backgroundColor: value }}
+                      style={{ backgroundColor: tempValue }}
                     />
-                    <span className="text-sm font-mono text-muted-foreground">{value}</span>
+                    <span className="text-sm font-mono text-muted-foreground">{tempValue}</span>
                   </div>
-                  <Button 
-                    size="sm" 
-                    onClick={() => setOpen(false)}
-                    className="text-xs px-3 py-1 h-7"
-                  >
-                    Pronto
-                  </Button>
+                  <div className="flex space-x-2">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={handleCancel}
+                      className="text-xs px-3 py-1 h-7"
+                    >
+                      Cancelar
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      onClick={handleConfirm}
+                      className="text-xs px-3 py-1 h-7"
+                      disabled={!/^#[0-9A-F]{6}$/i.test(tempValue)}
+                    >
+                      Pronto
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
