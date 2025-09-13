@@ -72,8 +72,30 @@ export default function Settings() {
 
   // Update forms when data loads
   useEffect(() => {
-    if (siteSettings && Object.keys(siteSettings).length > 0) {
-      siteForm.reset(siteSettings);
+    console.log("Site settings received:", siteSettings);
+    if (siteSettings && typeof siteSettings === 'object') {
+      // Merge with default values to ensure all fields are present
+      const mergedSettings = {
+        whatsapp: (siteSettings as any).whatsapp || "",
+        email: (siteSettings as any).email || "",
+        phone: (siteSettings as any).phone || "",
+        instagramUrl: (siteSettings as any).instagramUrl || "",
+        facebookUrl: (siteSettings as any).facebookUrl || "",
+        linkedinUrl: (siteSettings as any).linkedinUrl || "",
+        youtubeUrl: (siteSettings as any).youtubeUrl || "",
+        cnpj: (siteSettings as any).cnpj || "",
+        businessHours: (siteSettings as any).businessHours || "",
+        ourStory: (siteSettings as any).ourStory || "",
+        privacyPolicy: (siteSettings as any).privacyPolicy || "",
+        termsOfUse: (siteSettings as any).termsOfUse || "",
+        address: (siteSettings as any).address || "",
+        mainImage: (siteSettings as any).mainImage || "",
+        networkImage: (siteSettings as any).networkImage || "",
+        aboutImage: (siteSettings as any).aboutImage || "",
+        cores: (siteSettings as any).cores || {},
+      };
+      console.log("Merged settings:", mergedSettings);
+      siteForm.reset(mergedSettings);
     }
   }, [siteSettings, siteForm]);
 

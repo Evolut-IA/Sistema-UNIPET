@@ -328,8 +328,15 @@ export class DatabaseStorage implements IStorage {
 
   // Site settings methods
   async getSiteSettings(): Promise<SiteSettings | undefined> {
-    const result = await db.select().from(schema.siteSettings).limit(1);
-    return result[0];
+    try {
+      console.log("Fetching site settings from database...");
+      const result = await db.select().from(schema.siteSettings).limit(1);
+      console.log("Site settings query result:", result);
+      return result[0];
+    } catch (error) {
+      console.error("Error in getSiteSettings:", error);
+      throw error;
+    }
   }
 
   async updateSiteSettings(settings: InsertSiteSettings): Promise<SiteSettings> {

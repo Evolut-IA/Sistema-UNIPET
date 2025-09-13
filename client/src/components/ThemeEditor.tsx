@@ -231,10 +231,10 @@ export default function ThemeEditor() {
       
       // Charts
       chart1Color: "#277677",
-      chart2Color: "#277677",
-      chart3Color: "#277677",
-      chart4Color: "#277677",
-      chart5Color: "#277677",
+      chart2Color: "#10b981",
+      chart3Color: "#f59e0b",
+      chart4Color: "#22c55e",
+      chart5Color: "#ef4444",
     },
   });
 
@@ -684,7 +684,7 @@ export default function ThemeEditor() {
                             value={field.value || "#e1eaef"}
                             onChange={field.onChange}
                             title="Contorno dos Containers"
-                            description="Cor da borda ao redor dos campos de texto"
+                            description="Cor do contorno ao redor dos containers"
                             testId="color-input-border"
                           />
                           <FormMessage />
@@ -692,22 +692,6 @@ export default function ThemeEditor() {
                       )}
                     />
                     
-                    <FormField
-                      control={form.control}
-                      name="focusBorder"
-                      render={({ field }) => (
-                        <FormItem>
-                          <ColorInput
-                            value={field.value || "#277677"}
-                            onChange={field.onChange}
-                            title="Borda Ativa"
-                            description="Cor da borda quando você clica em um campo"
-                            testId="color-focus-border"
-                          />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
                   </div>
                 </AccordionContent>
               </AccordionItem>
@@ -828,7 +812,7 @@ export default function ThemeEditor() {
                       render={({ field }) => (
                         <FormItem>
                           <ColorInput
-                            value={field.value || "#277677"}
+                            value={field.value || "#10b981"}
                             onChange={field.onChange}
                             title="Gráfico Cor 2"
                             description="Segunda cor usada em gráficos"
@@ -845,7 +829,7 @@ export default function ThemeEditor() {
                       render={({ field }) => (
                         <FormItem>
                           <ColorInput
-                            value={field.value || "#277677"}
+                            value={field.value || "#f59e0b"}
                             onChange={field.onChange}
                             title="Gráfico Cor 3"
                             description="Terceira cor usada em gráficos"
@@ -862,7 +846,7 @@ export default function ThemeEditor() {
                       render={({ field }) => (
                         <FormItem>
                           <ColorInput
-                            value={field.value || "#277677"}
+                            value={field.value || "#22c55e"}
                             onChange={field.onChange}
                             title="Gráfico Cor 4"
                             description="Quarta cor usada em gráficos"
@@ -879,7 +863,7 @@ export default function ThemeEditor() {
                       render={({ field }) => (
                         <FormItem>
                           <ColorInput
-                            value={field.value || "#277677"}
+                            value={field.value || "#ef4444"}
                             onChange={field.onChange}
                             title="Gráfico Cor 5"
                             description="Quinta cor usada em gráficos"

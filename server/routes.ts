@@ -436,7 +436,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const settings = await storage.getSiteSettings();
       console.log("Site settings from DB:", settings);
-      res.json(settings || {});
+      
+      // Se não há dados, retorna um objeto com campos vazios
+      if (!settings) {
+        const defaultSettings = {
+          whatsapp: "",
+          email: "",
+          phone: "",
+          instagramUrl: "",
+          facebookUrl: "",
+          linkedinUrl: "",
+          youtubeUrl: "",
+          cnpj: "",
+          businessHours: "",
+          ourStory: "",
+          privacyPolicy: "",
+          termsOfUse: "",
+          address: "",
+          mainImage: "",
+          networkImage: "",
+          aboutImage: "",
+          cores: {}
+        };
+        console.log("No settings found, returning defaults:", defaultSettings);
+        return res.json(defaultSettings);
+      }
+      
+      res.json(settings);
     } catch (error) {
       console.error("Error fetching site settings:", error);
       res.status(500).json({ message: "Failed to fetch site settings" });
