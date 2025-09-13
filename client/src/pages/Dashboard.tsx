@@ -453,31 +453,43 @@ export default function Dashboard() {
             <CardTitle className="text-foreground">Distribuição de Planos</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-muted-foreground">Plano Básico</span>
-                <span className="font-medium text-foreground">45%</span>
+            {plansLoading ? (
+              <div className="space-y-3">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <Skeleton className="h-4 w-24" />
+                      <Skeleton className="h-4 w-8" />
+                    </div>
+                    <Skeleton className="h-2 w-full rounded-full" />
+                  </div>
+                ))}
               </div>
-              <div className="w-full bg-muted rounded-full h-2">
-                <div className="bg-chart-1 h-2 rounded-full" style={{width: "45%"}}></div>
+            ) : plans?.length ? (
+              <div className="space-y-3">
+                {plans.map((plan: any, index: number) => {
+                  // Calcular porcentagem baseada na posição do plano (exemplo)
+                  const percentages = [45, 30, 20, 5]; // Distribuição exemplo
+                  const percentage = percentages[index] || 5;
+                  const chartColors = ['bg-chart-1', 'bg-chart-2', 'bg-chart-3', 'bg-chart-4'];
+                  const chartColor = chartColors[index] || 'bg-chart-1';
+                  
+                  return (
+                    <div key={plan.id} className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">{plan.name}</span>
+                        <span className="font-medium text-foreground">{percentage}%</span>
+                      </div>
+                      <div className="w-full bg-muted rounded-full h-2">
+                        <div className={`${chartColor} h-2 rounded-full`} style={{width: `${percentage}%`}}></div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-muted-foreground">Plano Confort</span>
-                <span className="font-medium text-foreground">35%</span>
-              </div>
-              <div className="w-full bg-muted rounded-full h-2">
-                <div className="bg-chart-2 h-2 rounded-full" style={{width: "35%"}}></div>
-              </div>
-
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-muted-foreground">Plano Premium</span>
-                <span className="font-medium text-foreground">20%</span>
-              </div>
-              <div className="w-full bg-muted rounded-full h-2">
-                <div className="bg-chart-3 h-2 rounded-full" style={{width: "20%"}}></div>
-              </div>
-            </div>
+            ) : (
+              <p className="text-muted-foreground text-center py-8">Nenhum plano encontrado</p>
+            )}
           </CardContent>
         </Card>
       </div>

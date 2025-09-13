@@ -203,6 +203,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Plan Procedures routes
+  app.post("/api/plan-procedures", async (req, res) => {
+    try {
+      const procedure = await storage.createPlanProcedure(req.body);
+      res.status(201).json(procedure);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid procedure data" });
+    }
+  });
+
+  app.get("/api/plan-procedures/:planId", async (req, res) => {
+    try {
+      const procedures = await storage.getPlanProcedures(req.params.planId);
+      res.json(procedures);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch plan procedures" });
+    }
+  });
+
+  app.delete("/api/plan-procedures/:planId", async (req, res) => {
+    try {
+      const deleted = await storage.deletePlanProcedures(req.params.planId);
+      if (!deleted) {
+        return res.status(404).json({ message: "Plan procedures not found" });
+      }
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete plan procedures" });
+    }
+  });
+
   // Network unit routes
   app.get("/api/network-units", async (req, res) => {
     try {

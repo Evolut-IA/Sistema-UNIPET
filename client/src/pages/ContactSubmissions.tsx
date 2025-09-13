@@ -320,14 +320,15 @@ export default function ContactSubmissions() {
                     </div>
 
                     <div className="flex space-x-1 ml-3">
-                      <button
+                      <Button
+                        variant="outline"
+                        size="sm"
                         onClick={() => handleWhatsApp(submission)}
                         data-testid={`button-whatsapp-${submission.id}`}
-                        className="p-1"
                         title="Enviar mensagem no WhatsApp"
                       >
-                        <WhatsAppIcon className="h-7 w-7" />
-                      </button>
+                        <WhatsAppIcon className="h-4 w-4" />
+                      </Button>
                       <Button
                         variant="outline"
                         size="sm"

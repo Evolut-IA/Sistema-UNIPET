@@ -20,15 +20,15 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 const AVAILABLE_PERMISSIONS = [
-  { id: "clients", label: "Gerenciar Clientes", description: "Criar, editar e remover clientes" },
-  { id: "pets", label: "Gerenciar Pets", description: "Cadastrar e editar pets" },
-  { id: "guides", label: "Gerenciar Guias", description: "Criar e gerenciar guias de atendimento" },
-  { id: "plans", label: "Gerenciar Planos", description: "Configurar planos de saúde" },
-  { id: "network", label: "Gerenciar Rede", description: "Administrar rede credenciada" },
-  { id: "faq", label: "Gerenciar FAQ", description: "Editar perguntas frequentes" },
-  { id: "submissions", label: "Ver Formulários", description: "Visualizar formulários de contato" },
-  { id: "settings", label: "Configurações", description: "Alterar configurações do sistema" },
-  { id: "administration", label: "Administração", description: "Gerenciar outros usuários" },
+  { id: "clients", label: "Clientes", description: "Acesso à seção de clientes" },
+  { id: "pets", label: "Pets", description: "Acesso à seção de pets" },
+  { id: "guides", label: "Guias", description: "Acesso à seção de guias de atendimento" },
+  { id: "plans", label: "Planos", description: "Acesso à seção de planos de saúde" },
+  { id: "network", label: "Rede", description: "Acesso à seção de rede credenciada" },
+  { id: "faq", label: "FAQ", description: "Acesso à seção de perguntas frequentes" },
+  { id: "submissions", label: "Formulários", description: "Acesso à seção de formulários de contato" },
+  { id: "settings", label: "Configurações", description: "Acesso à seção de configurações do sistema" },
+  { id: "administration", label: "Administração", description: "Acesso à seção de administração de usuários" },
 ];
 
 export default function Administration() {
@@ -38,7 +38,7 @@ export default function Administration() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  const { data: users, isLoading } = useQuery({
+  const { data: users = [], isLoading } = useQuery<any[]>({
     queryKey: ["/api/users"],
   });
 
@@ -50,8 +50,8 @@ export default function Administration() {
       username: "",
       email: "",
       password: "",
-      role: "user",
-      permissions: [],
+      role: "view",
+      permissions: [] as string[],
       isActive: true,
     },
   });
@@ -123,7 +123,7 @@ export default function Administration() {
     },
   });
 
-  const filteredUsers = users?.filter((user: any) =>
+  const filteredUsers = users.filter((user: any) =>
     user.username?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     user.email?.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -134,8 +134,8 @@ export default function Administration() {
       username: user.username || "",
       email: user.email || "",
       password: "", // Don't prefill password for editing
-      role: user.role || "user",
-      permissions: user.permissions || [],
+      role: user.role || "view",
+      permissions: (user.permissions || []) as string[],
       isActive: user.isActive ?? true,
     });
     setDialogOpen(true);
@@ -163,24 +163,26 @@ export default function Administration() {
 
   const getRoleColor = (role: string) => {
     switch (role) {
-      case "admin": return "bg-red-100 text-red-800";
-      case "manager": return "bg-blue-100 text-blue-800";
-      case "user": return "bg-green-100 text-green-800";
+      case "delete": return "bg-red-100 text-red-800";
+      case "edit": return "bg-blue-100 text-blue-800";
+      case "add": return "bg-purple-100 text-purple-800";
+      case "view": return "bg-green-100 text-green-800";
       default: return "bg-gray-100 text-gray-800";
     }
   };
 
   const getRoleLabel = (role: string) => {
     switch (role) {
-      case "admin": return "Administrador";
-      case "manager": return "Gerente";
-      case "user": return "Usuário";
+      case "delete": return "Excluir";
+      case "edit": return "Editar";
+      case "add": return "Adicionar";
+      case "view": return "Visualizar";
       default: return role;
     }
   };
 
   const handlePermissionChange = (permission: string, checked: boolean) => {
-    const currentPermissions = form.getValues("permissions") || [];
+    const currentPermissions = (form.getValues("permissions") || []) as string[];
     if (checked) {
       form.setValue("permissions", [...currentPermissions, permission]);
     } else {
@@ -284,9 +286,10 @@ export default function Administration() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="user">Usuário</SelectItem>
-                            <SelectItem value="manager">Gerente</SelectItem>
-                            <SelectItem value="admin">Administrador</SelectItem>
+                            <SelectItem value="view">Visualizar</SelectItem>
+                            <SelectItem value="add">Adicionar</SelectItem>
+                            <SelectItem value="edit">Editar</SelectItem>
+                            <SelectItem value="delete">Excluir</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -319,7 +322,7 @@ export default function Administration() {
 
                 {/* Permissions */}
                 <div className="space-y-3">
-                  <FormLabel>Permissões</FormLabel>
+                  <FormLabel>Locais de Acesso</FormLabel>
                   <div className="grid grid-cols-1 gap-3 max-h-48 overflow-y-auto border rounded-lg p-3">
                     {AVAILABLE_PERMISSIONS.map((permission) => (
                       <div key={permission.id} className="flex items-start space-x-3">
@@ -425,7 +428,7 @@ export default function Administration() {
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 text-sm text-muted-foreground mb-3">
                         <p><span className="font-medium">Email:</span> {user.email}</p>
                         <p><span className="font-medium">Criado em:</span> {user.createdAt && format(new Date(user.createdAt), "dd/MM/yyyy", { locale: ptBR })}</p>
-                        <p><span className="font-medium">Permissões:</span> {user.permissions?.length || 0}</p>
+                        <p><span className="font-medium">Locais:</span> {user.permissions?.length || 0}</p>
                       </div>
 
                       {user.permissions && user.permissions.length > 0 && (
@@ -529,19 +532,37 @@ export default function Administration() {
           
           <Card>
             <CardContent className="p-4 text-center">
-              <p className="text-2xl font-bold text-blue-600">
-                {filteredUsers.filter((u: any) => u.role === "admin").length}
+              <p className="text-2xl font-bold text-red-600">
+                {filteredUsers.filter((u: any) => u.role === "delete").length}
               </p>
-              <p className="text-sm text-muted-foreground">Administradores</p>
+              <p className="text-sm text-muted-foreground">Excluir</p>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4 text-center">
+              <p className="text-2xl font-bold text-blue-600">
+                {filteredUsers.filter((u: any) => u.role === "edit").length}
+              </p>
+              <p className="text-sm text-muted-foreground">Editar</p>
             </CardContent>
           </Card>
           
           <Card>
             <CardContent className="p-4 text-center">
               <p className="text-2xl font-bold text-purple-600">
-                {filteredUsers.filter((u: any) => u.role === "manager").length}
+                {filteredUsers.filter((u: any) => u.role === "add").length}
               </p>
-              <p className="text-sm text-muted-foreground">Gerentes</p>
+              <p className="text-sm text-muted-foreground">Adicionar</p>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4 text-center">
+              <p className="text-2xl font-bold text-green-600">
+                {filteredUsers.filter((u: any) => u.role === "view").length}
+              </p>
+              <p className="text-sm text-muted-foreground">Visualizar</p>
             </CardContent>
           </Card>
         </div>

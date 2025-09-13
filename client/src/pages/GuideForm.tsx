@@ -89,20 +89,16 @@ export default function GuideForm() {
   });
 
   const onSubmit = (data: any) => {
-    if (!selectedClient || !selectedPet) {
+    if (!data.clientId || !data.petId) {
       toast({
         title: "Erro",
-        description: "Selecione um cliente e um pet.",
+        description: "Cliente e pet são obrigatórios.",
         variant: "destructive",
       });
       return;
     }
 
-    mutation.mutate({
-      ...data,
-      clientId: selectedClient.id,
-      petId: selectedPet.id,
-    });
+    mutation.mutate(data);
   };
 
   const getTypeLabel = (type: string) => {
@@ -293,7 +289,7 @@ export default function GuideForm() {
             <Button
               type="submit"
               className="btn-primary"
-              disabled={mutation.isPending || !selectedClient || !selectedPet}
+              disabled={mutation.isPending}
               data-testid="button-save"
             >
               {mutation.isPending ? "Salvando..." : isEdit ? "Atualizar" : "Criar Guia"}

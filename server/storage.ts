@@ -335,6 +335,21 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
+  // Plan Procedures methods
+  async createPlanProcedure(procedure: any): Promise<any> {
+    const result = await db.insert(schema.planProcedures).values(procedure).returning();
+    return result[0];
+  }
+
+  async getPlanProcedures(planId: string): Promise<any[]> {
+    return await db.select().from(schema.planProcedures).where(eq(schema.planProcedures.planId, planId));
+  }
+
+  async deletePlanProcedures(planId: string): Promise<boolean> {
+    const result = await db.delete(schema.planProcedures).where(eq(schema.planProcedures.planId, planId)).returning({ id: schema.planProcedures.id });
+    return result.length > 0;
+  }
+
   // Network unit methods
   async getNetworkUnit(id: string): Promise<NetworkUnit | undefined> {
     const result = await db.select().from(schema.networkUnits).where(eq(schema.networkUnits.id, id));

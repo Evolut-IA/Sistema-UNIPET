@@ -37,7 +37,7 @@ export default function PlanForm() {
     defaultValues: {
       name: "",
       price: "",
-      planType: "with_waiting_period",
+      planType: "com_coparticipacao",
       features: [],
       description: "",
       image: "",
@@ -93,7 +93,7 @@ export default function PlanForm() {
       form.reset({
         name: plan.name || "",
         price: plan.price || "",
-        planType: plan.planType || "with_waiting_period",
+        planType: plan.planType || "com_coparticipacao",
         features: plan.features || [],
         description: plan.description || "",
         image: plan.image || "",
