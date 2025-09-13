@@ -31,18 +31,16 @@ export default function PlanForm() {
   });
 
   const form = useForm({
-    resolver: zodResolver(insertPlanSchema.extend({
-      modalidadesDePagamento: insertPlanSchema.shape.modalidadesDePagamento.optional(),
-      tiposDePagamento: insertPlanSchema.shape.tiposDePagamento.optional(),
-    })),
+    resolver: zodResolver(insertPlanSchema),
     defaultValues: {
       name: "",
       price: "",
-      planType: "",
+      planType: "with_waiting_period",
       features: [],
-      modalidadesDePagamento: [],
-      tiposDePagamento: { mensal: [], anual: [] },
-      procedures: [],
+      description: "",
+      image: "",
+      buttonText: "Contratar Plano",
+      displayOrder: 0,
       isActive: true,
     },
   });
@@ -52,21 +50,18 @@ export default function PlanForm() {
     name: "features",
   });
 
-  const { fields: procedureFields, append: appendProcedure, remove: removeProcedure } = useFieldArray({
-    control: form.control,
-    name: "procedures",
-  });
 
   useEffect(() => {
     if (plan) {
       form.reset({
         name: plan.name || "",
         price: plan.price || "",
-        planType: plan.planType || "",
+        planType: plan.planType || "with_waiting_period",
         features: plan.features || [],
-        modalidadesDePagamento: plan.modalidadesDePagamento || [],
-        tiposDePagamento: plan.tiposDePagamento || { mensal: [], anual: [] },
-        procedures: plan.procedures || [],
+        description: plan.description || "",
+        image: plan.image || "",
+        buttonText: plan.buttonText || "Contratar Plano",
+        displayOrder: plan.displayOrder || 0,
         isActive: plan.isActive ?? true,
       });
     }
@@ -104,25 +99,6 @@ export default function PlanForm() {
     });
   };
 
-  const handlePaymentModalityChange = (modality: string, checked: boolean) => {
-    const current = form.getValues("modalidadesDePagamento") || [];
-    if (checked) {
-      form.setValue("modalidadesDePagamento", [...current, modality]);
-    } else {
-      form.setValue("modalidadesDePagamento", current.filter(m => m !== modality));
-    }
-  };
-
-  const handlePaymentMethodChange = (modality: string, method: string, checked: boolean) => {
-    const current = form.getValues("tiposDePagamento") || { mensal: [], anual: [] };
-    const currentMethods = current[modality as keyof typeof current] || [];
-    
-    if (checked) {
-      form.setValue(`tiposDePagamento.${modality}` as any, [...currentMethods, method]);
-    } else {
-      form.setValue(`tiposDePagamento.${modality}` as any, currentMethods.filter(m => m !== method));
-    }
-  };
 
   if (isEdit && isLoading) {
     return (
