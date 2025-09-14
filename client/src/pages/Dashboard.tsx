@@ -43,7 +43,7 @@ export default function Dashboard() {
     queryKey: ["/api/contact-submissions"],
   });
 
-  const { data: plans = [], isLoading: plansLoading, isError: plansError } = useQuery({
+  const { data: plans = [], isLoading: plansLoading, isError: plansError } = useQuery<any[]>({
     queryKey: ["/api/plans"],
   });
 

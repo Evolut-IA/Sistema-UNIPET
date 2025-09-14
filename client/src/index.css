@@ -140,6 +140,91 @@ button, input, textarea, select, a, [role="button"], [tabindex], div, span, p, h
   box-shadow: none !important;
 }
 
+/* Mobile-First Responsive Utilities */
+@media (max-width: 767px) {
+  /* Container Mobile Responsive */
+  .container-mobile {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+
+  /* Stack elements vertically on mobile */
+  .stack-mobile {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  /* Mobile-specific spacing */
+  .space-mobile {
+    gap: 0.5rem !important;
+  }
+
+  /* Reduce padding on mobile */
+  .p-mobile {
+    padding: 0.75rem !important;
+  }
+
+  /* Full width on mobile */
+  .w-mobile-full {
+    width: 100% !important;
+  }
+
+  /* Text size adjustments for mobile */
+  .text-mobile-sm {
+    font-size: 0.875rem !important;
+    line-height: 1.25rem !important;
+  }
+
+  /* Button mobile positioning */
+  .btn-mobile-center {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: 100% !important;
+  }
+
+  /* Grid to single column on mobile */
+  .grid-mobile-single {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Hide overflow on mobile */
+  .overflow-mobile-hidden {
+    overflow-x: hidden !important;
+  }
+
+  /* Card mobile specific */
+  .card-mobile {
+    margin-bottom: 1rem !important;
+    padding: 0.75rem !important;
+  }
+
+  /* Flex mobile adjustments */
+  .flex-mobile-col {
+    flex-direction: column !important;
+  }
+
+  .flex-mobile-wrap {
+    flex-wrap: wrap !important;
+  }
+
+  /* Mobile header spacing */
+  .header-mobile {
+    padding: 0.5rem !important;
+    gap: 0.5rem !important;
+  }
+
+  /* Mobile form spacing */
+  .form-mobile {
+    gap: 1rem !important;
+  }
+
+  .form-mobile .form-item {
+    margin-bottom: 1rem !important;
+  }
+}
+
 button:focus, input:focus, textarea:focus, select:focus, a:focus, [role="button"]:focus, [tabindex]:focus,
 div:focus, span:focus, p:focus, h1:focus, h2:focus, h3:focus, h4:focus, h5:focus, h6:focus,
 img:focus, svg:focus {
