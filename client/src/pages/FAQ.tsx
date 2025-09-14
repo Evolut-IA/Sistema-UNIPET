@@ -103,10 +103,10 @@ export default function FAQ() {
     },
   });
 
-  const filteredItems = faqItems?.filter((item: any) =>
+  const filteredItems = Array.isArray(faqItems) ? faqItems?.filter((item: any) =>
     item.question?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     item.answer?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  ) : [];
 
   const handleEdit = (item: any) => {
     setEditingItem(item);
@@ -135,12 +135,12 @@ export default function FAQ() {
   const activeItems = filteredItems?.filter((item: any) => item.isActive) || [];
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">FAQ</h1>
-          <p className="text-muted-foreground">Gerencie as perguntas frequentes</p>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <div className="flex-1 min-w-0">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground break-words">FAQ</h1>
+          <p className="text-sm text-muted-foreground">Gerencie as perguntas frequentes</p>
         </div>
         
         <Dialog open={dialogOpen} onOpenChange={(open) => {

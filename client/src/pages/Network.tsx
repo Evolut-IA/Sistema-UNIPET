@@ -69,10 +69,10 @@ export default function Network() {
     },
   });
 
-  const filteredUnits = units?.filter((unit: any) =>
+  const filteredUnits = Array.isArray(units) ? units?.filter((unit: any) =>
     unit.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     unit.address?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  ) : [];
 
   const handleDelete = (id: string, unitName: string) => {
     passwordDialog.openDialog({
