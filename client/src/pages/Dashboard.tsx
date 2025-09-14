@@ -51,26 +51,26 @@ export default function Dashboard() {
   const recentSubmissions = contactSubmissions.slice(0, 3);
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Dashboard Geral</h1>
-          <p className="text-muted-foreground">Visão geral do sistema de gestão</p>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <div className="flex-1">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground break-words">Dashboard Geral</h1>
+          <p className="text-sm text-muted-foreground">Visão geral do sistema de gestão</p>
         </div>
-        <div className="flex items-center space-x-4">
+        <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-3 xs:gap-4">
           <Button 
-            className="btn-primary"
+            className="btn-primary w-full xs:w-auto"
             onClick={() => setLocation("/guias/novo")}
             data-testid="button-new-guide"
           >
             <Plus className="h-4 w-4 mr-2" />
             Nova Guia
           </Button>
-          <div className="flex items-center space-x-2">
-            <User className="h-8 w-8 text-primary" />
-            <div>
-              <p className="text-sm font-medium text-foreground">Administrador</p>
+          <div className="flex items-center gap-2 p-2 xs:p-0">
+            <User className="h-6 w-6 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
+            <div className="min-w-0">
+              <p className="text-xs sm:text-sm font-medium text-foreground truncate">Administrador</p>
               <p className="text-xs text-muted-foreground">Sistema</p>
             </div>
           </div>
@@ -78,99 +78,99 @@ export default function Dashboard() {
       </div>
 
       {/* Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
         <Card>
           <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Clientes Ativos</p>
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex-1 min-w-0">
+                <p className="text-xs sm:text-sm text-muted-foreground">Clientes Ativos</p>
                 {statsLoading ? (
-                  <Skeleton className="h-8 w-16 mt-1" />
+                  <Skeleton className="h-6 sm:h-8 w-12 sm:w-16 mt-1" />
                 ) : (
                   <>
-                    <p className="text-3xl font-bold text-foreground" data-testid="metric-active-clients">
+                    <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground truncate" data-testid="metric-active-clients">
                       {stats?.activeClients?.toLocaleString() || 0}
                     </p>
                     <p className="text-xs text-green-600 mt-1 flex items-center">
-                      <ArrowUp className="h-3 w-3 mr-1" />
-                      Crescimento este mês
+                      <ArrowUp className="h-3 w-3 mr-1 flex-shrink-0" />
+                      <span className="truncate">Crescimento este mês</span>
                     </p>
                   </>
                 )}
               </div>
-              <Users className="h-8 w-8 text-primary" />
+              <Users className="h-6 w-6 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Pets Cadastrados</p>
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex-1 min-w-0">
+                <p className="text-xs sm:text-sm text-muted-foreground">Pets Cadastrados</p>
                 {statsLoading ? (
-                  <Skeleton className="h-8 w-16 mt-1" />
+                  <Skeleton className="h-6 sm:h-8 w-12 sm:w-16 mt-1" />
                 ) : (
                   <>
-                    <p className="text-3xl font-bold text-foreground" data-testid="metric-registered-pets">
+                    <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground truncate" data-testid="metric-registered-pets">
                       {stats?.registeredPets?.toLocaleString() || 0}
                     </p>
                     <p className="text-xs text-green-600 mt-1 flex items-center">
-                      <ArrowUp className="h-3 w-3 mr-1" />
-                      Crescimento este mês
+                      <ArrowUp className="h-3 w-3 mr-1 flex-shrink-0" />
+                      <span className="truncate">Crescimento este mês</span>
                     </p>
                   </>
                 )}
               </div>
-              <PawPrint className="h-8 w-8 text-primary" />
+              <PawPrint className="h-6 w-6 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Guias Abertas</p>
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex-1 min-w-0">
+                <p className="text-xs sm:text-sm text-muted-foreground">Guias Abertas</p>
                 {statsLoading ? (
-                  <Skeleton className="h-8 w-16 mt-1" />
+                  <Skeleton className="h-6 sm:h-8 w-12 sm:w-16 mt-1" />
                 ) : (
                   <>
-                    <p className="text-3xl font-bold text-foreground" data-testid="metric-open-guides">
+                    <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground truncate" data-testid="metric-open-guides">
                       {stats?.openGuides?.toLocaleString() || 0}
                     </p>
                     <p className="text-xs text-yellow-600 mt-1 flex items-center">
-                      <ArrowRight className="h-3 w-3 mr-1" />
-                      Atualizações hoje
+                      <ArrowRight className="h-3 w-3 mr-1 flex-shrink-0" />
+                      <span className="truncate">Atualizações hoje</span>
                     </p>
                   </>
                 )}
               </div>
-              <FileText className="h-8 w-8 text-primary" />
+              <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Receita Mensal</p>
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex-1 min-w-0">
+                <p className="text-xs sm:text-sm text-muted-foreground">Receita Mensal</p>
                 {statsLoading ? (
-                  <Skeleton className="h-8 w-20 mt-1" />
+                  <Skeleton className="h-6 sm:h-8 w-16 sm:w-20 mt-1" />
                 ) : (
                   <>
-                    <p className="text-3xl font-bold text-foreground" data-testid="metric-monthly-revenue">
+                    <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground truncate" data-testid="metric-monthly-revenue">
                       R$ {((stats?.monthlyRevenue || 0) / 1000).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}K
                     </p>
                     <p className="text-xs text-green-600 mt-1 flex items-center">
-                      <ArrowUp className="h-3 w-3 mr-1" />
-                      Crescimento este mês
+                      <ArrowUp className="h-3 w-3 mr-1 flex-shrink-0" />
+                      <span className="truncate">Crescimento este mês</span>
                     </p>
                   </>
                 )}
               </div>
-              <TrendingUp className="h-8 w-8 text-primary" />
+              <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
             </div>
           </CardContent>
         </Card>
@@ -182,8 +182,8 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Resumo de Formulários */}
           <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-foreground">Resumo de Formulários</CardTitle>
+          <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <CardTitle className="text-foreground min-w-0">Resumo de Formulários</CardTitle>
             <Button 
               variant="ghost" 
               size="sm" 
@@ -238,8 +238,8 @@ export default function Dashboard() {
 
         {/* Resumo de Planos */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-foreground">Resumo de Planos</CardTitle>
+          <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <CardTitle className="text-foreground min-w-0">Resumo de Planos</CardTitle>
             <Button 
               variant="ghost" 
               size="sm" 
@@ -292,8 +292,8 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Resumo da Rede */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-foreground">Resumo da Rede</CardTitle>
+          <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <CardTitle className="text-foreground min-w-0">Resumo da Rede</CardTitle>
             <Button 
               variant="ghost" 
               size="sm" 
@@ -349,8 +349,8 @@ export default function Dashboard() {
 
         {/* Resumo de Clientes */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-foreground">Resumo de Clientes</CardTitle>
+          <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <CardTitle className="text-foreground min-w-0">Resumo de Clientes</CardTitle>
             <Button 
               variant="ghost" 
               size="sm" 
@@ -411,7 +411,7 @@ export default function Dashboard() {
         {/* System Health */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-foreground">Status do Sistema</CardTitle>
+            <CardTitle className="text-foreground min-w-0">Status do Sistema</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -450,7 +450,7 @@ export default function Dashboard() {
         {/* Plan Distribution */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-foreground">Distribuição de Planos</CardTitle>
+            <CardTitle className="text-foreground min-w-0">Distribuição de Planos</CardTitle>
           </CardHeader>
           <CardContent>
             {plansLoading ? (

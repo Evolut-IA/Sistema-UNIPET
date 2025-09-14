@@ -119,30 +119,30 @@ export default function Settings() {
 
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex items-center space-x-4">
-        <SettingsIcon className="h-8 w-8 text-primary" />
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Configurações</h1>
-          <p className="text-muted-foreground">Gerencie as configurações do sistema</p>
+      <div className="flex items-center gap-3 sm:gap-4">
+        <SettingsIcon className="h-6 w-6 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
+        <div className="min-w-0">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground break-words">Configurações</h1>
+          <p className="text-sm text-muted-foreground">Gerencie as configurações do sistema</p>
         </div>
       </div>
 
-      <Tabs defaultValue="site" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="site" className="flex items-center space-x-2">
-            <Globe className="h-4 w-4" />
-            <span>Site</span>
+      <Tabs defaultValue="site" className="space-y-4 sm:space-y-6">
+        <TabsList className="grid w-full grid-cols-2 gap-1">
+          <TabsTrigger value="site" className="flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm">
+            <Globe className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+            <span className="truncate">Site</span>
           </TabsTrigger>
-          <TabsTrigger value="theme" className="flex items-center space-x-2">
-            <Palette className="h-4 w-4" />
-            <span>Tema</span>
+          <TabsTrigger value="theme" className="flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm">
+            <Palette className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+            <span className="truncate">Tema</span>
           </TabsTrigger>
         </TabsList>
 
         {/* Site Settings */}
-        <TabsContent value="site" className="space-y-6">
+        <TabsContent value="site" className="space-y-4 sm:space-y-6">
           {siteLoading ? (
             <div className="space-y-4">
               {[...Array(3)].map((_, i) => (
@@ -159,14 +159,14 @@ export default function Settings() {
             </div>
           ) : (
             <Form {...siteForm}>
-              <form onSubmit={siteForm.handleSubmit(onSubmitSite)} className="space-y-6">
+              <form onSubmit={siteForm.handleSubmit(onSubmitSite)} className="space-y-4 sm:space-y-6">
                 {/* Contact Information */}
                 <Card>
                   <CardHeader>
                     <CardTitle className="text-foreground">Informações de Contato</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                       <FormField
                         control={siteForm.control}
                         name="email"
@@ -277,7 +277,7 @@ export default function Settings() {
                     <CardTitle className="text-foreground">Redes Sociais</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                       <FormField
                         control={siteForm.control}
                         name="instagramUrl"
