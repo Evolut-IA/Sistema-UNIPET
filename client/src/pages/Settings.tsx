@@ -393,7 +393,7 @@ export default function Settings() {
                     <CardTitle className="text-foreground">Imagens</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
                       <FormField
                         control={siteForm.control}
                         name="mainImage"
