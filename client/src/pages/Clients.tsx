@@ -301,48 +301,55 @@ export default function Clients() {
             <div className="space-y-2">
               {displayClients.map((client: any) => (
                 <div key={client.id} className="border rounded-lg p-3 hover:bg-gray-50 transition-colors">
-                  <div className="flex justify-between items-center">
-                    <div className="flex-1 flex items-center space-x-4">
-                      <div className="flex items-center space-x-2">
-                        <h3 className="font-semibold text-foreground" data-testid={`client-name-${client.id}`}>
+                  <div className="flex flex-col lg:flex-row lg:justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      {/* Nome do Cliente */}
+                      <div className="mb-2">
+                        <h3 className="font-semibold text-foreground break-words" data-testid={`client-name-${client.id}`}>
                           {client.fullName}
                         </h3>
                       </div>
 
-                      <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                        <span className="font-medium">Email:</span>
-                        <span>{client.email || "Não informado"}</span>
-                      </div>
+                      {/* Informações em Grid Responsivo */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 text-sm text-muted-foreground">
+                        <div className="flex flex-col space-y-1">
+                          <span className="font-medium">Email:</span>
+                          <span className="break-all">{client.email || "Não informado"}</span>
+                        </div>
 
-                      <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                        <span className="font-medium">Telefone:</span>
-                        <span>{client.phone}</span>
-                      </div>
+                        <div className="flex flex-col space-y-1">
+                          <span className="font-medium">Telefone:</span>
+                          <span className="break-all">{client.phone}</span>
+                        </div>
 
-                      <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                        <span className="font-medium">CPF:</span>
-                        <span>{client.cpf}</span>
-                      </div>
+                        <div className="flex flex-col space-y-1">
+                          <span className="font-medium">CPF:</span>
+                          <span>{client.cpf}</span>
+                        </div>
 
-                      <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                        <span className="font-medium">Cidade:</span>
-                        <span>{client.city || "Não informado"}</span>
-                      </div>
+                        <div className="flex flex-col space-y-1">
+                          <span className="font-medium">Cidade:</span>
+                          <span className="break-words">{client.city || "Não informado"}</span>
+                        </div>
 
-                      <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                        <span className="font-medium">Cadastrado:</span>
-                        <span>{client.createdAt && format(new Date(client.createdAt), "dd/MM/yyyy", { locale: ptBR })}</span>
+                        <div className="flex flex-col space-y-1">
+                          <span className="font-medium">Cadastrado:</span>
+                          <span>{client.createdAt && format(new Date(client.createdAt), "dd/MM/yyyy", { locale: ptBR })}</span>
+                        </div>
                       </div>
                     </div>
                     
-                    <div className="flex items-center space-x-1 ml-3">
+                    {/* Botões de Ação */}
+                    <div className="flex flex-wrap gap-1 lg:flex-col lg:gap-1 lg:w-auto">
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => handleViewDetails(client)}
                         data-testid={`button-view-${client.id}`}
+                        className="text-xs"
                       >
-                        <Eye className="h-4 w-4" />
+                        <Eye className="h-3 w-3 mr-1" />
+                        Ver
                       </Button>
                       <Button
                         variant="outline"
@@ -352,24 +359,30 @@ export default function Clients() {
                           handleCopyToClipboard();
                         }}
                         data-testid={`button-copy-${client.id}`}
+                        className="text-xs"
                       >
-                        <Copy className="h-4 w-4" />
+                        <Copy className="h-3 w-3 mr-1" />
+                        Copiar
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => setLocation(`/clientes/${client.id}/pets/novo`)}
                         data-testid={`button-add-pet-${client.id}`}
+                        className="text-xs"
                       >
-                        <AddPetIcon className="h-4 w-4" />
+                        <AddPetIcon className="h-3 w-3 mr-1" />
+                        Pet
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => setLocation(`/clientes/${client.id}/editar`)}
                         data-testid={`button-edit-${client.id}`}
+                        className="text-xs"
                       >
-                        <Edit className="h-4 w-4" />
+                        <Edit className="h-3 w-3 mr-1" />
+                        Editar
                       </Button>
                       <Button
                         variant="outline"
@@ -377,8 +390,10 @@ export default function Clients() {
                         onClick={() => handleDelete(client.id, client.fullName)}
                         disabled={deleteClientMutation.isPending}
                         data-testid={`button-delete-${client.id}`}
+                        className="text-xs"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="h-3 w-3 mr-1" />
+                        Excluir
                       </Button>
                     </div>
                   </div>
