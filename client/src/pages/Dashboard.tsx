@@ -93,7 +93,7 @@ export default function Dashboard() {
                     </p>
                     <p className="text-xs text-green-600 mt-1 flex items-center">
                       <ArrowUp className="h-3 w-3 mr-1" />
-                      +12% este mês
+                      Crescimento este mês
                     </p>
                   </>
                 )}
@@ -117,7 +117,7 @@ export default function Dashboard() {
                     </p>
                     <p className="text-xs text-green-600 mt-1 flex items-center">
                       <ArrowUp className="h-3 w-3 mr-1" />
-                      +8% este mês
+                      Crescimento este mês
                     </p>
                   </>
                 )}
@@ -141,7 +141,7 @@ export default function Dashboard() {
                     </p>
                     <p className="text-xs text-yellow-600 mt-1 flex items-center">
                       <ArrowRight className="h-3 w-3 mr-1" />
-                      +3% hoje
+                      Atualizações hoje
                     </p>
                   </>
                 )}
@@ -161,11 +161,11 @@ export default function Dashboard() {
                 ) : (
                   <>
                     <p className="text-3xl font-bold text-foreground" data-testid="metric-monthly-revenue">
-                      R$ {((stats?.monthlyRevenue || 0) / 1000).toFixed(1)}K
+                      R$ {((stats?.monthlyRevenue || 0) / 1000).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}K
                     </p>
                     <p className="text-xs text-green-600 mt-1 flex items-center">
                       <ArrowUp className="h-3 w-3 mr-1" />
-                      +15% este mês
+                      Crescimento este mês
                     </p>
                   </>
                 )}
@@ -468,9 +468,12 @@ export default function Dashboard() {
             ) : plans?.length ? (
               <div className="space-y-3">
                 {plans.map((plan: any, index: number) => {
-                  // Calcular porcentagem baseada na posição do plano (exemplo)
-                  const percentages = [45, 30, 20, 5]; // Distribuição exemplo
-                  const percentage = percentages[index] || 5;
+                  // Calcular porcentagem baseada no interesse real dos formulários
+                  const totalSubmissions = contactSubmissions.length;
+                  const planInterest = contactSubmissions.filter((s: any) => 
+                    s.planInterest?.toLowerCase() === plan.name?.toLowerCase()
+                  ).length;
+                  const percentage = totalSubmissions > 0 ? Math.round((planInterest / totalSubmissions) * 100) : 0;
                   const chartColors = ['bg-chart-1', 'bg-chart-2', 'bg-chart-3', 'bg-chart-4'];
                   const chartColor = chartColors[index] || 'bg-chart-1';
                   

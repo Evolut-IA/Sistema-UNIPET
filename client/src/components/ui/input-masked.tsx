@@ -39,10 +39,21 @@ const InputMasked = React.forwardRef<HTMLInputElement, InputMaskedProps>(
           }
         
         case "whatsapp":
-          return value
-            .replace(/\D/g, "")
-            .replace(/(\d{2})(\d)/, "($1) $2")
-            .replace(/(\d{5})(\d{1,4})$/, "$1-$2");
+          const whatsappNumbers = value.replace(/\D/g, "");
+          if (whatsappNumbers.length <= 2) {
+            // Apenas DDD: (11
+            return whatsappNumbers.replace(/(\d{2})/, "($1");
+          } else if (whatsappNumbers.length <= 10) {
+            // Formato para telefone fixo: (11) 1234-5678
+            return whatsappNumbers
+              .replace(/(\d{2})(\d)/, "($1) $2")
+              .replace(/(\d{4})(\d{1,4})$/, "$1-$2");
+          } else {
+            // Formato para celular: (11) 91234-5678
+            return whatsappNumbers
+              .replace(/(\d{2})(\d)/, "($1) $2")
+              .replace(/(\d{5})(\d{1,4})$/, "$1-$2");
+          }
         
         case "cep":
           return value
@@ -50,10 +61,20 @@ const InputMasked = React.forwardRef<HTMLInputElement, InputMaskedProps>(
             .replace(/(\d{5})(\d{1,3})$/, "$1-$2");
         
         case "price":
-          return value
-            .replace(/[^\d.,]/g, "")
-            .replace(",", ".")
-            .replace(/(\d+\.\d{2})\d+/, "$1");
+          // Remove tudo que não é dígito
+          const numbers = value.replace(/\D/g, "");
+          
+          // Se não tem números, retorna vazio
+          if (!numbers) return "";
+          
+          // Converte para número e formata no padrão brasileiro
+          const numericValue = parseInt(numbers) / 100;
+          
+          // Formata com separadores de milhares e decimais
+          return numericValue.toLocaleString('pt-BR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          });
         
         case "email":
           return value.toLowerCase().trim();

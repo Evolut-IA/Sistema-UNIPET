@@ -328,7 +328,7 @@ export default function Guides() {
 
                       <div className="flex items-center space-x-1 text-sm text-muted-foreground">
                         <span className="font-medium">Valor:</span>
-                        <span>R$ {parseFloat(guide.value || 0).toFixed(2)}</span>
+                        <span>R$ {parseFloat(guide.value || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                       </div>
 
                       <div className="flex items-center space-x-1 text-sm text-muted-foreground">
@@ -427,7 +427,7 @@ export default function Guides() {
                       <span><strong>Tipo:</strong> {getTypeLabel(selectedGuide.type)}</span>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <span><strong>Valor:</strong> R$ {parseFloat(selectedGuide.value || 0).toFixed(2)}</span>
+                      <span><strong>Valor:</strong> R$ {parseFloat(selectedGuide.value || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <span><strong>Status:</strong></span>

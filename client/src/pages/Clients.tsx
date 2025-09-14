@@ -182,13 +182,34 @@ export default function Clients() {
       clientPets.forEach((pet: any, index: number) => {
         text += `\nPet ${index + 1}:\n`;
         text += `  Nome: ${pet.name}\n`;
-        text += `  Espécie: ${pet.animalType}\n`;
-        text += `  Raça: ${pet.breed || "Não informado"}\n`;
-        text += `  Idade: ${pet.age}\n`;
-        text += `  Peso: ${pet.weight ? `${pet.weight}kg` : "Não informado"}\n`;
-        text += `  Sexo: ${pet.gender || "Não informado"}\n`;
-        if (pet.observations) {
-          text += `  Observações: ${pet.observations}\n`;
+        text += `  Espécie: ${pet.species}\n`;
+        if (pet.breed) text += `  Raça: ${pet.breed}\n`;
+        if (pet.age) text += `  Idade: ${pet.age}\n`;
+        if (pet.sex) text += `  Sexo: ${pet.sex}\n`;
+        if (pet.color) text += `  Cor: ${pet.color}\n`;
+        if (pet.weight) text += `  Peso: ${pet.weight}kg\n`;
+        if (pet.birthDate) text += `  Data de Nascimento: ${format(new Date(pet.birthDate), "dd/MM/yyyy", { locale: ptBR })}\n`;
+        if (pet.castrated !== null) text += `  Castrado: ${pet.castrated ? "Sim" : "Não"}\n`;
+        if (pet.microchip) text += `  Microchip: ${pet.microchip}\n`;
+        if (pet.lastCheckup) text += `  Último Check-up: ${format(new Date(pet.lastCheckup), "dd/MM/yyyy", { locale: ptBR })}\n`;
+        
+        // Informações de Saúde
+        if (pet.previousDiseases || pet.surgeries || pet.allergies || pet.currentMedications || pet.hereditaryConditions || pet.parasiteTreatments) {
+          text += `  \n  Informações de Saúde:\n`;
+          if (pet.previousDiseases) text += `    Doenças Anteriores: ${pet.previousDiseases}\n`;
+          if (pet.surgeries) text += `    Cirurgias: ${pet.surgeries}\n`;
+          if (pet.allergies) text += `    Alergias: ${pet.allergies}\n`;
+          if (pet.currentMedications) text += `    Medicações Atuais: ${pet.currentMedications}\n`;
+          if (pet.hereditaryConditions) text += `    Condições Hereditárias: ${pet.hereditaryConditions}\n`;
+          if (pet.parasiteTreatments) text += `    Tratamentos Antiparasitários: ${pet.parasiteTreatments}\n`;
+        }
+        
+        // Vacinas
+        if (pet.vaccineData && pet.vaccineData.length > 0) {
+          text += `  \n  Vacinas:\n`;
+          pet.vaccineData.forEach((vaccine: any) => {
+            text += `    ${vaccine.vaccine}: ${format(new Date(vaccine.date), "dd/MM/yyyy", { locale: ptBR })}\n`;
+          });
         }
       });
     } else {
@@ -386,8 +407,8 @@ export default function Clients() {
 
       {/* Details Dialog */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent className="sm:max-w-2xl">
-          <DialogHeader>
+        <DialogContent className="sm:max-w-lg max-h-[80vh] flex flex-col">
+          <DialogHeader className="flex-shrink-0">
             <DialogTitle className="flex items-center space-x-2">
               <Eye className="h-5 w-5 text-primary" />
               <span>Detalhes do Cliente</span>
@@ -395,8 +416,8 @@ export default function Clients() {
           </DialogHeader>
           
           {selectedClient && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-4 overflow-y-auto flex-1 pr-2">
+              <div className="grid grid-cols-1 gap-4">
                 <div>
                   <h4 className="font-semibold text-foreground mb-2">Informações Pessoais</h4>
                   <div className="space-y-2 text-sm">
@@ -457,29 +478,111 @@ export default function Clients() {
                   <div className="space-y-2">
                     {clientPets.map((pet: any) => (
                       <div key={pet.id} className="border rounded-lg p-3 bg-muted/30">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                        <div className="grid grid-cols-1 gap-2 text-sm">
+                          {/* Informações Básicas */}
                           <div className="flex items-center space-x-2">
                             <span><strong>Nome:</strong> {pet.name}</span>
                           </div>
                           <div className="flex items-center space-x-2">
-                            <span><strong>Espécie:</strong> {pet.animalType}</span>
+                            <span><strong>Espécie:</strong> {pet.species}</span>
                           </div>
-                          <div className="flex items-center space-x-2">
-                            <span><strong>Raça:</strong> {pet.breed || "Não informado"}</span>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <span><strong>Idade:</strong> {pet.age}</span>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <span><strong>Peso:</strong> {pet.weight ? `${pet.weight}kg` : "Não informado"}</span>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <span><strong>Sexo:</strong> {pet.gender || "Não informado"}</span>
-                          </div>
+                          {pet.breed && (
+                            <div className="flex items-center space-x-2">
+                              <span><strong>Raça:</strong> {pet.breed}</span>
+                            </div>
+                          )}
+                          {pet.age && (
+                            <div className="flex items-center space-x-2">
+                              <span><strong>Idade:</strong> {pet.age}</span>
+                            </div>
+                          )}
+                          {pet.sex && (
+                            <div className="flex items-center space-x-2">
+                              <span><strong>Sexo:</strong> {pet.sex}</span>
+                            </div>
+                          )}
+                          {pet.color && (
+                            <div className="flex items-center space-x-2">
+                              <span><strong>Cor:</strong> {pet.color}</span>
+                            </div>
+                          )}
+                          {pet.weight && (
+                            <div className="flex items-center space-x-2">
+                              <span><strong>Peso:</strong> {pet.weight}kg</span>
+                            </div>
+                          )}
+                          {pet.birthDate && (
+                            <div className="flex items-center space-x-2">
+                              <span><strong>Data de Nascimento:</strong> {format(new Date(pet.birthDate), "dd/MM/yyyy", { locale: ptBR })}</span>
+                            </div>
+                          )}
+                          {pet.castrated !== null && (
+                            <div className="flex items-center space-x-2">
+                              <span><strong>Castrado:</strong> {pet.castrated ? "Sim" : "Não"}</span>
+                            </div>
+                          )}
+                          {pet.microchip && (
+                            <div className="flex items-center space-x-2">
+                              <span><strong>Microchip:</strong> {pet.microchip}</span>
+                            </div>
+                          )}
+                          {pet.lastCheckup && (
+                            <div className="flex items-center space-x-2">
+                              <span><strong>Último Check-up:</strong> {format(new Date(pet.lastCheckup), "dd/MM/yyyy", { locale: ptBR })}</span>
+                            </div>
+                          )}
                         </div>
-                        {pet.observations && (
-                          <div className="mt-2 text-sm">
-                            <span><strong>Observações:</strong> {pet.observations}</span>
+                        
+                        {/* Informações de Saúde */}
+                        {(pet.previousDiseases || pet.surgeries || pet.allergies || pet.currentMedications || pet.hereditaryConditions || pet.parasiteTreatments) && (
+                          <div className="mt-3 pt-2 border-t border-border">
+                            <h5 className="font-medium text-foreground mb-2">Informações de Saúde</h5>
+                            <div className="grid grid-cols-1 gap-2 text-sm">
+                              {pet.previousDiseases && (
+                                <div className="flex items-start space-x-2">
+                                  <span><strong>Doenças Anteriores:</strong> {pet.previousDiseases}</span>
+                                </div>
+                              )}
+                              {pet.surgeries && (
+                                <div className="flex items-start space-x-2">
+                                  <span><strong>Cirurgias:</strong> {pet.surgeries}</span>
+                                </div>
+                              )}
+                              {pet.allergies && (
+                                <div className="flex items-start space-x-2">
+                                  <span><strong>Alergias:</strong> {pet.allergies}</span>
+                                </div>
+                              )}
+                              {pet.currentMedications && (
+                                <div className="flex items-start space-x-2">
+                                  <span><strong>Medicações Atuais:</strong> {pet.currentMedications}</span>
+                                </div>
+                              )}
+                              {pet.hereditaryConditions && (
+                                <div className="flex items-start space-x-2">
+                                  <span><strong>Condições Hereditárias:</strong> {pet.hereditaryConditions}</span>
+                                </div>
+                              )}
+                              {pet.parasiteTreatments && (
+                                <div className="flex items-start space-x-2">
+                                  <span><strong>Tratamentos Antiparasitários:</strong> {pet.parasiteTreatments}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                        
+                        {/* Dados de Vacinação */}
+                        {pet.vaccineData && pet.vaccineData.length > 0 && (
+                          <div className="mt-3 pt-2 border-t border-border">
+                            <h5 className="font-medium text-foreground mb-2">Vacinas</h5>
+                            <div className="space-y-1 text-sm">
+                              {pet.vaccineData.map((vaccine: any, index: number) => (
+                                <div key={index} className="flex items-center space-x-2">
+                                  <span><strong>{vaccine.vaccine}:</strong> {format(new Date(vaccine.date), "dd/MM/yyyy", { locale: ptBR })}</span>
+                                </div>
+                              ))}
+                            </div>
                           </div>
                         )}
                       </div>

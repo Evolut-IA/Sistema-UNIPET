@@ -19,11 +19,15 @@ import type {
 const databaseUrl = process.env.DATABASE_URL || "postgresql://postgres:password@localhost:5432/unipet";
 console.log("Database URL configured:", databaseUrl ? "Yes" : "No");
 
+// Enhanced connection configuration with better error handling
 const sql = postgres(databaseUrl, { 
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
   max: 10,
   idle_timeout: 20,
-  connect_timeout: 10
+  connect_timeout: 10,
+  onnotice: (notice) => console.log('PostgreSQL notice:', notice),
+  onparameter: (key, value) => console.log(`PostgreSQL parameter: ${key} = ${value}`),
+  debug: process.env.NODE_ENV === 'development' ? true : false
 });
 const db = drizzle(sql, { schema });
 
@@ -31,6 +35,7 @@ const db = drizzle(sql, { schema });
 async function testConnection() {
   try {
     console.log("Testing database connection...");
+    console.log("Attempting to connect to:", databaseUrl.replace(/\/\/.*@/, '//***:***@')); // Hide credentials in logs
     await sql`SELECT 1`;
     console.log("Database connection successful!");
     
@@ -106,6 +111,15 @@ async function testConnection() {
     }
   } catch (error) {
     console.error("Database connection failed:", error);
+    console.error("\n=== DATABASE SETUP INSTRUCTIONS ===");
+    console.error("To fix this error, you need to set up a PostgreSQL database:");
+    console.error("1. Install PostgreSQL: https://www.postgresql.org/download/");
+    console.error("2. Create a database named 'unipet'");
+    console.error("3. Create a user 'postgres' with password 'password' (or update DATABASE_URL)");
+    console.error("4. Start PostgreSQL service");
+    console.error("5. Create a .env file with: DATABASE_URL=postgresql://postgres:password@localhost:5432/unipet");
+    console.error("\nAlternative: Use a cloud database service like Supabase, Neon, or Railway");
+    console.error("=====================================\n");
   }
 }
 
@@ -192,6 +206,9 @@ export interface IStorage {
     registeredPets: number;
     openGuides: number;
     monthlyRevenue: number;
+    totalPlans: number;
+    activePlans: number;
+    inactivePlans: number;
   }>;
 }
 
@@ -264,6 +281,10 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteClient(id: string): Promise<boolean> {
+    // Primeiro, excluir todos os pets associados ao cliente
+    await db.delete(schema.pets).where(eq(schema.pets.clientId, id));
+    
+    // Depois, excluir o cliente
     const result = await db.delete(schema.clients).where(eq(schema.clients.id, id)).returning({ id: schema.clients.id });
     return result.length > 0;
   }
@@ -293,6 +314,10 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deletePet(id: string): Promise<boolean> {
+    // Primeiro, excluir todos os guides associados ao pet
+    await db.delete(schema.guides).where(eq(schema.guides.petId, id));
+    
+    // Depois, excluir o pet
     const result = await db.delete(schema.pets).where(eq(schema.pets.id, id)).returning({ id: schema.pets.id });
     return result.length > 0;
   }
@@ -322,6 +347,13 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deletePlan(id: string): Promise<boolean> {
+    // Primeiro, excluir todos os pets associados ao plano
+    await db.delete(schema.pets).where(eq(schema.pets.planId, id));
+    
+    // Excluir procedures do plano
+    await db.delete(schema.planProcedures).where(eq(schema.planProcedures.planId, id));
+    
+    // Depois, excluir o plano
     const result = await db.delete(schema.plans).where(eq(schema.plans.id, id)).returning({ id: schema.plans.id });
     return result.length > 0;
   }
@@ -527,16 +559,25 @@ export class DatabaseStorage implements IStorage {
     registeredPets: number;
     openGuides: number;
     monthlyRevenue: number;
+    totalPlans: number;
+    activePlans: number;
+    inactivePlans: number;
   }> {
     const clientsCount = await db.select({ count: count() }).from(schema.clients);
     const petsCount = await db.select({ count: count() }).from(schema.pets);
     const openGuidesCount = await db.select({ count: count() }).from(schema.guides).where(eq(schema.guides.status, 'open'));
+    const totalPlansCount = await db.select({ count: count() }).from(schema.plans);
+    const activePlansCount = await db.select({ count: count() }).from(schema.plans).where(eq(schema.plans.isActive, true));
+    const inactivePlansCount = await db.select({ count: count() }).from(schema.plans).where(eq(schema.plans.isActive, false));
     
     return {
       activeClients: clientsCount[0]?.count || 0,
       registeredPets: petsCount[0]?.count || 0,
       openGuides: openGuidesCount[0]?.count || 0,
       monthlyRevenue: 0, // TODO: Calculate based on guide values and plan payments
+      totalPlans: totalPlansCount[0]?.count || 0,
+      activePlans: activePlansCount[0]?.count || 0,
+      inactivePlans: inactivePlansCount[0]?.count || 0,
     };
   }
 }

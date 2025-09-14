@@ -24,17 +24,17 @@ export default function PetForm() {
   const isEdit = Boolean(params.id);
   const clientId = params.clientId;
 
-  const { data: pet, isLoading: petLoading } = useQuery({
+  const { data: pet, isLoading: petLoading } = useQuery<any>({
     queryKey: ["/api/pets", params.id],
     enabled: isEdit,
   });
 
-  const { data: client, isLoading: clientLoading } = useQuery({
+  const { data: client, isLoading: clientLoading } = useQuery<any>({
     queryKey: ["/api/clients", clientId],
     enabled: Boolean(clientId),
   });
 
-  const { data: plans } = useQuery({
+  const { data: plans } = useQuery<any[]>({
     queryKey: ["/api/plans/active"],
   });
 
@@ -47,7 +47,7 @@ export default function PetForm() {
       name: "",
       species: "",
       breed: "",
-      birthDate: undefined,
+      birthDate: undefined as Date | undefined,
       age: "",
       sex: "",
       castrated: false,
@@ -60,7 +60,7 @@ export default function PetForm() {
       currentMedications: "",
       hereditaryConditions: "",
       vaccineData: [],
-      lastCheckup: undefined,
+      lastCheckup: undefined as Date | undefined,
       parasite_treatments: "",
       planId: "",
     },

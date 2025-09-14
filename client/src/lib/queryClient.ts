@@ -20,6 +20,12 @@ export async function apiRequest(
   });
 
   await throwIfResNotOk(res);
+  
+  // Para respostas com status 204 (No Content), não tentar fazer JSON.parse
+  if (res.status === 204) {
+    return null;
+  }
+  
   return await res.json();
 }
 
@@ -38,6 +44,12 @@ export const getQueryFn: <T>(options: {
     }
 
     await throwIfResNotOk(res);
+    
+    // Para respostas com status 204 (No Content), não tentar fazer JSON.parse
+    if (res.status === 204) {
+      return null;
+    }
+    
     return await res.json();
   };
 

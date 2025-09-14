@@ -1,3 +1,6 @@
+/* Importar correções para inputs */
+@import './input-fix.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
