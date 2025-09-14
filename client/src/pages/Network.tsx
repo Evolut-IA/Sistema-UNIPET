@@ -202,15 +202,15 @@ export default function Network() {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Rede Credenciada</h1>
-          <p className="text-muted-foreground">Gerencie as unidades credenciadas</p>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <div className="flex-1 min-w-0">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground break-words">Rede Credenciada</h1>
+          <p className="text-sm text-muted-foreground">Gerencie as unidades credenciadas</p>
         </div>
         <Button 
-          className="btn-primary"
+          className="btn-primary w-full sm:w-auto"
           onClick={() => setLocation("/rede/novo")}
           data-testid="button-new-unit"
         >
@@ -221,8 +221,8 @@ export default function Network() {
 
       {/* Search */}
       <Card>
-        <CardContent className="p-6">
-          <div className="flex space-x-4">
+        <CardContent className="p-3 sm:p-4 lg:p-6">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input

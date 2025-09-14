@@ -191,14 +191,14 @@ export default function Administration() {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <div className="flex items-center space-x-4">
-          <UserCog className="h-8 w-8 text-primary" />
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">Administração</h1>
-            <p className="text-muted-foreground">Gerencie usuários e permissões do sistema</p>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <UserCog className="h-6 w-6 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
+          <div className="min-w-0">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground break-words">Administração</h1>
+            <p className="text-sm text-muted-foreground">Gerencie usuários e permissões do sistema</p>
           </div>
         </div>
         

@@ -67,12 +67,12 @@ export default function ContactSubmissions() {
     },
   });
 
-  const filteredSubmissions = submissions?.filter((submission: any) =>
+  const filteredSubmissions = Array.isArray(submissions) ? submissions?.filter((submission: any) =>
     submission.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     submission.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     submission.phone?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     submission.petName?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  ) : [];
 
   const handleViewDetails = (submission: any) => {
     setSelectedSubmission(submission);
@@ -228,24 +228,24 @@ export default function ContactSubmissions() {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Formulários de Contato</h1>
-          <p className="text-muted-foreground">Visualize e gerencie os formulários recebidos</p>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <div className="flex-1 min-w-0">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground break-words">Formulários de Contato</h1>
+          <p className="text-sm text-muted-foreground">Visualize e gerencie os formulários recebidos</p>
         </div>
-        <div className="flex items-center space-x-2">
-          <Mail className="h-5 w-5 text-primary" />
-          <span className="text-sm text-muted-foreground">
-            {submissions?.length || 0} formulários recebidos
+        <div className="flex items-center gap-2 p-2 sm:p-0">
+          <Mail className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
+          <span className="text-xs sm:text-sm text-muted-foreground">
+            {Array.isArray(submissions) ? submissions.length : 0} formulários recebidos
           </span>
         </div>
       </div>
 
       {/* Search */}
       <Card>
-        <CardContent className="p-6">
+        <CardContent className="p-3 sm:p-4 lg:p-6">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
