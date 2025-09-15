@@ -205,20 +205,18 @@ export default function Network() {
     <div className="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground break-words">Rede Credenciada</h1>
           <p className="text-sm text-muted-foreground">Gerencie as unidades credenciadas</p>
         </div>
-        <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-3 xs:gap-4">
-          <Button 
-            className="btn-primary w-full xs:w-auto"
-            onClick={() => setLocation("/rede/novo")}
-            data-testid="button-new-unit"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Nova Unidade
-          </Button>
-        </div>
+        <Button 
+          className="btn-primary w-full sm:w-auto"
+          onClick={() => setLocation("/rede/novo")}
+          data-testid="button-new-unit"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          Nova Unidade
+        </Button>
       </div>
 
       {/* Search */}
@@ -255,7 +253,7 @@ export default function Network() {
           filteredUnits.map((unit: any) => (
             <Card key={unit.id} className="hover:shadow-md transition-shadow">
               <CardContent className="p-3">
-                <div className="flex justify-between items-center">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
                   <div className="flex-1">
                     {/* Título Principal */}
                     <div className="flex items-center space-x-2 mb-2">
@@ -269,7 +267,7 @@ export default function Network() {
                     </div>
 
                     {/* Informações Detalhadas - Ocultas em Mobile */}
-                    <div className="hidden sm:flex items-center space-x-4">
+                    <div className="hidden sm:block">
                       <div className="flex items-center space-x-1 text-sm text-muted-foreground">
                         <MapPin className="h-3 w-3" />
                         <span>{unit.address}</span>
@@ -300,7 +298,7 @@ export default function Network() {
                     </div>
                   </div>
 
-                  <div className="flex items-center space-x-1 ml-3">
+                  <div className="flex items-center flex-wrap gap-1 w-full sm:w-auto sm:ml-3">
                     <Switch
                       checked={unit.isActive}
                       onCheckedChange={() => handleToggleStatus(unit.id, unit.isActive)}
@@ -311,6 +309,7 @@ export default function Network() {
                       <Button
                         variant="outline"
                         size="sm"
+                        className="w-full sm:w-auto"
                         onClick={() => handleViewDetails(unit)}
                         data-testid={`button-view-${unit.id}`}
                       >
@@ -319,6 +318,7 @@ export default function Network() {
                       <Button
                         variant="outline"
                         size="sm"
+                        className="w-full sm:w-auto"
                         onClick={() => {
                           setSelectedUnit(unit);
                           handleCopyToClipboard();
@@ -332,6 +332,7 @@ export default function Network() {
                       <Button
                         variant="outline"
                         size="sm"
+                        className="w-full sm:w-auto"
                         asChild
                         data-testid={`button-maps-${unit.id}`}
                       >
@@ -344,6 +345,7 @@ export default function Network() {
                     <Button
                       variant="outline"
                       size="sm"
+                      className="w-full sm:w-auto"
                       onClick={() => setLocation(`/rede/${unit.id}/editar`)}
                       data-testid={`button-edit-${unit.id}`}
                     >
@@ -353,6 +355,7 @@ export default function Network() {
                     <Button
                       variant="outline"
                       size="sm"
+                      className="w-full sm:w-auto"
                       onClick={() => handleDelete(unit.id, unit.name)}
                       disabled={deleteUnitMutation.isPending}
                       data-testid={`button-delete-${unit.id}`}

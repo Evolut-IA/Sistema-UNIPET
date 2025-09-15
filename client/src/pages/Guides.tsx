@@ -232,13 +232,13 @@ export default function Guides() {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Guias de Atendimento</h1>
-          <p className="text-muted-foreground">Gerencie as guias de atendimento</p>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <div className="flex-1 min-w-0">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground break-words">Guias de Atendimento</h1>
+          <p className="text-sm text-muted-foreground">Gerencie as guias de atendimento</p>
         </div>
         <Button 
-          className="btn-primary"
+          className="btn-primary w-full sm:w-auto"
           onClick={() => setLocation("/guias/novo")}
           data-testid="button-new-guide"
         >
@@ -309,7 +309,7 @@ export default function Guides() {
             <div className="space-y-2">
               {filteredGuides.map((guide: any) => (
                 <div key={guide.id} className="border rounded-lg p-3 hover:bg-gray-50 transition-colors">
-                  <div className="flex justify-between items-center">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
                     <div className="flex-1">
                       {/* Título Principal */}
                       <div className="flex items-center space-x-2 mb-2">
@@ -323,7 +323,7 @@ export default function Guides() {
                       </div>
 
                       {/* Informações Detalhadas - Ocultas em Mobile */}
-                      <div className="hidden sm:flex items-center space-x-4">
+                      <div className="hidden sm:block">
                         <div className="flex items-center space-x-1 text-sm text-muted-foreground">
                           <span className="font-medium">Tipo:</span>
                           <span>{getTypeLabel(guide.type)}</span>
@@ -341,10 +341,11 @@ export default function Guides() {
                       </div>
                     </div>
                     
-                    <div className="flex space-x-1 ml-3">
+                    <div className="flex flex-wrap gap-1 w-full sm:w-auto sm:ml-3">
                       <Button
                         variant="outline"
                         size="sm"
+                        className="w-full sm:w-auto"
                         onClick={() => handleViewDetails(guide)}
                         data-testid={`button-view-${guide.id}`}
                       >
@@ -353,6 +354,7 @@ export default function Guides() {
                       <Button
                         variant="outline"
                         size="sm"
+                        className="w-full sm:w-auto"
                         onClick={() => {
                           setSelectedGuide(guide);
                           handleCopyToClipboard();
@@ -364,6 +366,7 @@ export default function Guides() {
                       <Button
                         variant="outline"
                         size="sm"
+                        className="w-full sm:w-auto"
                         onClick={() => setLocation(`/guias/${guide.id}/editar`)}
                         data-testid={`button-edit-${guide.id}`}
                       >
@@ -372,6 +375,7 @@ export default function Guides() {
                       <Button
                         variant="outline"
                         size="sm"
+                        className="w-full sm:w-auto"
                         onClick={() => handleDelete(guide.id, guide.procedure)}
                         disabled={deleteGuideMutation.isPending}
                         data-testid={`button-delete-${guide.id}`}

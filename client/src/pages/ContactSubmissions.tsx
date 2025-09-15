@@ -281,7 +281,7 @@ export default function ContactSubmissions() {
             <div className="space-y-2">
               {filteredSubmissions.map((submission: any) => (
                 <div key={submission.id} className="border rounded-lg p-3 hover:bg-gray-50 transition-colors">
-                  <div className="flex justify-between items-center">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
                     <div className="flex-1">
                       {/* Título Principal */}
                       <div className="flex items-center space-x-2 mb-2">
@@ -295,7 +295,7 @@ export default function ContactSubmissions() {
                       </div>
 
                       {/* Informações Detalhadas - Ocultas em Mobile */}
-                      <div className="hidden sm:flex items-center space-x-4">
+                      <div className="hidden sm:block">
                         <div className="flex items-center space-x-1 text-sm text-muted-foreground">
                           <Mail className="h-3 w-3" />
                           <span>{submission.email}</span>
@@ -323,10 +323,11 @@ export default function ContactSubmissions() {
                       </div>
                     </div>
 
-                    <div className="flex space-x-1 ml-3">
+                    <div className="flex flex-wrap gap-1 w-full sm:w-auto sm:ml-3">
                       <Button
                         variant="outline"
                         size="sm"
+                        className="w-full sm:w-auto"
                         onClick={() => handleWhatsApp(submission)}
                         data-testid={`button-whatsapp-${submission.id}`}
                         title="Enviar mensagem no WhatsApp"
@@ -336,6 +337,7 @@ export default function ContactSubmissions() {
                       <Button
                         variant="outline"
                         size="sm"
+                        className="w-full sm:w-auto"
                         onClick={() => handleViewDetails(submission)}
                         data-testid={`button-view-${submission.id}`}
                       >
@@ -344,6 +346,7 @@ export default function ContactSubmissions() {
                       <Button
                         variant="outline"
                         size="sm"
+                        className="w-full sm:w-auto"
                         onClick={() => {
                           setSelectedSubmission(submission);
                           handleCopyToClipboard();
@@ -355,6 +358,7 @@ export default function ContactSubmissions() {
                       <Button
                         variant="outline"
                         size="sm"
+                        className="w-full sm:w-auto"
                         onClick={() => handleDelete(submission.id, submission.name)}
                         disabled={deleteMutation.isPending}
                         data-testid={`button-delete-${submission.id}`}
