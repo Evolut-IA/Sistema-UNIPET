@@ -399,7 +399,7 @@ export default function Clients() {
           
           {selectedClient && (
             <div 
-              className="space-y-4 overflow-y-auto flex-1 pr-2 custom-scrollbar no-rounded-scrollbar" 
+              className="space-y-4 overflow-y-auto flex-1 pr-2" 
               style={{
                 scrollbarWidth: 'thin',
                 scrollbarColor: '#6b7280 #e5e7eb'
