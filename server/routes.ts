@@ -104,7 +104,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/pets", async (req, res) => {
     try {
-      const petData = insertPetSchema.parse(req.body);
+      // Handle empty string planId
+      const requestData = { ...req.body };
+      if (requestData.planId === "") {
+        delete requestData.planId;
+      }
+      
+      const petData = insertPetSchema.parse(requestData);
       const pet = await storage.createPet(petData);
       res.status(201).json(pet);
     } catch (error) {
@@ -114,14 +120,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/pets/:id", async (req, res) => {
     try {
-      const petData = insertPetSchema.partial().parse(req.body);
+      console.log("Received pet update data:", JSON.stringify(req.body, null, 2));
+      
+      // Handle empty string planId
+      const requestData = { ...req.body };
+      if (requestData.planId === "") {
+        delete requestData.planId;
+      }
+      
+      const petData = insertPetSchema.partial().parse(requestData);
+      console.log("Parsed pet data:", JSON.stringify(petData, null, 2));
       const pet = await storage.updatePet(req.params.id, petData);
       if (!pet) {
         return res.status(404).json({ message: "Pet not found" });
       }
       res.json(pet);
     } catch (error) {
-      res.status(400).json({ message: "Invalid pet data" });
+      console.error("Pet update error:", error);
+      if (error instanceof Error) {
+        res.status(400).json({ message: error.message });
+      } else {
+        res.status(400).json({ message: "Invalid pet data" });
+      }
     }
   });
 
