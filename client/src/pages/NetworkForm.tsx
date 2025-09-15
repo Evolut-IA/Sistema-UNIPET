@@ -212,19 +212,21 @@ export default function NetworkForm() {
                   <div className="mt-1 p-3 bg-muted/50 border border-border rounded-md">
                     <div className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm text-muted-foreground">
-                        {window.location.origin}/unidade/
-                      </span>
-                      <span className="text-sm font-medium text-foreground">
-                        {generatedSlug || "nome-da-unidade"}
-                      </span>
+                      <a 
+                        href={`${window.location.origin}/${generatedSlug || "nome-da-unidade"}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+                      >
+                        {window.location.origin}/{generatedSlug || "nome-da-unidade"}
+                      </a>
                     </div>
                     <p className="text-xs text-muted-foreground mt-1">
                       {!isEdit 
                         ? "A URL é gerada automaticamente baseada no nome da unidade" 
                         : watchedName !== originalName 
                           ? "Nova URL será gerada automaticamente quando o nome for alterado"
-                          : "URL atual da unidade"
+                          : "URL atual da unidade - clique para acessar"
                       }
                     </p>
                   </div>
