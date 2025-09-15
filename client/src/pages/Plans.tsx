@@ -66,9 +66,9 @@ export default function Plans() {
     },
   });
 
-  const filteredPlans = plans?.filter((plan: any) =>
+  const filteredPlans = plans ? plans.filter((plan: any) =>
     plan.name?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  ) : [];
 
   const handleDelete = (id: string, planName: string) => {
     passwordDialog.openDialog({
