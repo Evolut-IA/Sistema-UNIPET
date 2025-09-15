@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { InputMasked } from "@/components/ui/input-masked";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { insertGuideSchema } from "@shared/schema";
@@ -168,11 +169,12 @@ export default function GuideForm() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {GUIDE_TYPES.map((type) => (
-                            <SelectItem key={type} value={type}>
+                          {GUIDE_TYPES.flatMap((type, index) => [
+                            <SelectItem key={type} value={type} className="py-3 px-4">
                               {getTypeLabel(type)}
-                            </SelectItem>
-                          ))}
+                            </SelectItem>,
+                            ...(index < GUIDE_TYPES.length - 1 ? [<Separator key={`separator-${type}`} />] : [])
+                          ])}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -226,9 +228,12 @@ export default function GuideForm() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="open">Aberta</SelectItem>
-                          <SelectItem value="closed">Fechada</SelectItem>
-                          <SelectItem value="cancelled">Cancelada</SelectItem>
+                          {[{value: "open", label: "Aberta"}, {value: "closed", label: "Fechada"}, {value: "cancelled", label: "Cancelada"}].flatMap((status, index, array) => [
+                            <SelectItem key={status.value} value={status.value} className="py-3 px-4">
+                              {status.label}
+                            </SelectItem>,
+                            ...(index < array.length - 1 ? [<Separator key={`separator-${status.value}`} />] : [])
+                          ])}
                         </SelectContent>
                       </Select>
                       <FormMessage />

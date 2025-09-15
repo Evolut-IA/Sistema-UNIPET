@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useLocation } from "wouter";
 import { Plus, Search, Edit, Trash2, FileText, Eye, Copy } from "lucide-react";
@@ -266,12 +267,12 @@ export default function Guides() {
                 <SelectValue placeholder="Filtrar por tipo" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Todos os tipos</SelectItem>
-                {GUIDE_TYPES.map((type) => (
-                  <SelectItem key={type} value={type}>
-                    {getTypeLabel(type)}
-                  </SelectItem>
-                ))}
+                {[{ value: "all", label: "Todos os tipos" }, ...GUIDE_TYPES.map(type => ({ value: type, label: getTypeLabel(type) }))].flatMap((item, index, array) => [
+                  <SelectItem key={item.value} value={item.value} className="py-3 px-4">
+                    {item.label}
+                  </SelectItem>,
+                  ...(index < array.length - 1 ? [<Separator key={`separator-${item.value}`} />] : [])
+                ])}
               </SelectContent>
             </Select>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
@@ -279,10 +280,17 @@ export default function Guides() {
                 <SelectValue placeholder="Filtrar por status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Todos os status</SelectItem>
-                <SelectItem value="open">Abertas</SelectItem>
-                <SelectItem value="closed">Fechadas</SelectItem>
-                <SelectItem value="cancelled">Canceladas</SelectItem>
+                {[
+                  { value: "all", label: "Todos os status" },
+                  { value: "open", label: "Abertas" },
+                  { value: "closed", label: "Fechadas" },
+                  { value: "cancelled", label: "Canceladas" }
+                ].flatMap((status, index, array) => [
+                  <SelectItem key={status.value} value={status.value} className="py-3 px-4">
+                    {status.label}
+                  </SelectItem>,
+                  ...(index < array.length - 1 ? [<Separator key={`separator-${status.value}`} />] : [])
+                ])}
               </SelectContent>
             </Select>
           </div>

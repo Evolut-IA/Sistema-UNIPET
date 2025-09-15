@@ -11,6 +11,7 @@ import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -295,10 +296,17 @@ export default function Administration() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="view">Visualizar</SelectItem>
-                            <SelectItem value="add">Adicionar</SelectItem>
-                            <SelectItem value="edit">Editar</SelectItem>
-                            <SelectItem value="delete">Excluir</SelectItem>
+                            {[
+                              { value: "view", label: "Visualizar" },
+                              { value: "add", label: "Adicionar" },
+                              { value: "edit", label: "Editar" },
+                              { value: "delete", label: "Excluir" }
+                            ].flatMap((role, index, array) => [
+                              <SelectItem key={role.value} value={role.value} className="py-3 px-4">
+                                {role.label}
+                              </SelectItem>,
+                              ...(index < array.length - 1 ? [<Separator key={`separator-${role.value}`} />] : [])
+                            ])}
                           </SelectContent>
                         </Select>
                         <FormMessage />

@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { InputMasked } from "@/components/ui/input-masked";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
@@ -268,11 +269,12 @@ export default function PlanForm() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {PLAN_TYPES.map((type) => (
-                            <SelectItem key={type} value={type}>
+                          {PLAN_TYPES.flatMap((type, index) => [
+                            <SelectItem key={type} value={type} className="py-3 px-4">
                               {getPlanTypeLabel(type)}
-                            </SelectItem>
-                          ))}
+                            </SelectItem>,
+                            ...(index < PLAN_TYPES.length - 1 ? [<Separator key={`separator-${type}`} />] : [])
+                          ])}
                         </SelectContent>
                       </Select>
                       <FormMessage />

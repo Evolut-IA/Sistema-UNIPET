@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useToast } from "@/hooks/use-toast";
@@ -70,11 +71,12 @@ const SelectInput = ({ value, onChange, title, description, testId, options }: {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {options.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
+            {options.flatMap((option, index) => [
+              <SelectItem key={option.value} value={option.value} className="py-3 px-4">
                 {option.label}
-              </SelectItem>
-            ))}
+              </SelectItem>,
+              ...(index < options.length - 1 ? [<Separator key={`separator-${option.value}`} />] : [])
+            ])}
           </SelectContent>
         </Select>
       </div>

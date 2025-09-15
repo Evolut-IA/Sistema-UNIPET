@@ -209,12 +209,12 @@ export default function PetForm() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="Cão">Cão</SelectItem>
-                          <SelectItem value="Gato">Gato</SelectItem>
-                          <SelectItem value="Ave">Ave</SelectItem>
-                          <SelectItem value="Roedor">Roedor</SelectItem>
-                          <SelectItem value="Réptil">Réptil</SelectItem>
-                          <SelectItem value="Outros">Outros</SelectItem>
+                          {["Cão", "Gato", "Ave", "Roedor", "Réptil", "Outros"].flatMap((species, index, array) => [
+                            <SelectItem key={species} value={species} className="py-3 px-4">
+                              {species}
+                            </SelectItem>,
+                            ...(index < array.length - 1 ? [<Separator key={`separator-${species}`} />] : [])
+                          ])}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -263,8 +263,12 @@ export default function PetForm() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="Macho">Macho</SelectItem>
-                          <SelectItem value="Fêmea">Fêmea</SelectItem>
+                          {["Macho", "Fêmea"].flatMap((sex, index, array) => [
+                            <SelectItem key={sex} value={sex} className="py-3 px-4">
+                              {sex}
+                            </SelectItem>,
+                            ...(index < array.length - 1 ? [<Separator key={`separator-${sex}`} />] : [])
+                          ])}
                         </SelectContent>
                       </Select>
                       <FormMessage />
