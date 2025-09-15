@@ -64,11 +64,13 @@ const DateFilterComponent = React.memo(function DateFilterComponent({
   className,
   initialRange
 }: DateFilterComponentProps) {
-  // Use default range (last 30 days) if no initial range provided
-  const defaultRange = React.useMemo(() => 
-    initialRange || getDefaultDateRange(), 
-    [initialRange]
-  )
+  // Use default range (last 30 days) if no valid initial range provided
+  const defaultRange = React.useMemo(() => {
+    if (initialRange?.startDate && initialRange?.endDate) {
+      return initialRange
+    }
+    return getDefaultDateRange()
+  }, [initialRange])
   
   const {
     dateRange,
@@ -107,9 +109,9 @@ const DateFilterComponent = React.memo(function DateFilterComponent({
     handleQuickSelection(getCurrentWeekRange())
   }, [handleQuickSelection])
 
-  // Set default range on component mount if no filtering is active
+  // Set default range on component mount if no valid filtering is active
   React.useEffect(() => {
-    if (!initialRange && !isFiltering) {
+    if ((!initialRange?.startDate || !initialRange?.endDate) && !isFiltering) {
       const defaultRange = getDefaultDateRange()
       setDateRange(defaultRange)
       onDateRangeChange?.(defaultRange.startDate, defaultRange.endDate)
@@ -150,6 +152,7 @@ const DateFilterComponent = React.memo(function DateFilterComponent({
               onClick={handleLast30Days}
               disabled={isLoading}
               className="h-8 px-3 text-xs"
+              aria-label="Filtrar por últimos 30 dias"
             >
               Últimos 30 dias
             </Button>
@@ -159,6 +162,7 @@ const DateFilterComponent = React.memo(function DateFilterComponent({
               onClick={handleCurrentMonth}
               disabled={isLoading}
               className="h-8 px-3 text-xs"
+              aria-label="Filtrar por mês atual"
             >
               Mês atual
             </Button>
@@ -168,6 +172,7 @@ const DateFilterComponent = React.memo(function DateFilterComponent({
               onClick={handleCurrentWeek}
               disabled={isLoading}
               className="h-8 px-3 text-xs"
+              aria-label="Filtrar por semana atual"
             >
               Semana atual
             </Button>
