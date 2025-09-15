@@ -209,9 +209,9 @@ const DateFilterComponent = React.memo(function DateFilterComponent({
 
           {/* Loading State */}
           {isLoading && (
-            <div className="flex items-center gap-2 p-2 bg-muted rounded-md">
-              <div className="h-3 w-3 animate-spin rounded-full border-2 border-primary border-t-transparent flex-shrink-0" />
-              <span className="text-xs text-muted-foreground">
+            <div className="flex items-center gap-2 p-2 bg-primary border border-border rounded-md">
+              <div className="h-3 w-3 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent flex-shrink-0" />
+              <span className="text-xs text-primary-foreground">
                 Aplicando filtro...
               </span>
             </div>
