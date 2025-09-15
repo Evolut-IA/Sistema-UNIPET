@@ -104,9 +104,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/pets", async (req, res) => {
     try {
-      // Handle empty string planId
+      // Handle empty string or undefined planId
       const requestData = { ...req.body };
-      if (requestData.planId === "") {
+      if (requestData.planId === "" || requestData.planId === undefined) {
         delete requestData.planId;
       }
       
@@ -120,9 +120,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/pets/:id", async (req, res) => {
     try {
-      // Handle empty string planId
+      // Handle empty string or undefined planId
       const requestData = { ...req.body };
-      if (requestData.planId === "") {
+      if (requestData.planId === "" || requestData.planId === undefined) {
         delete requestData.planId;
       }
       

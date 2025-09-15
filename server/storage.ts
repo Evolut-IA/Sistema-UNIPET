@@ -618,6 +618,8 @@ export class DatabaseStorage implements IStorage {
     petCount: number;
     percentage: number;
   }[]> {
+    // TODO: Consider adding cache for this query if performance becomes an issue
+    // Cache could be invalidated when pets or plans are modified
     // Get all active plans
     const allPlans = await db.select({ 
       id: schema.plans.id, 
@@ -632,6 +634,7 @@ export class DatabaseStorage implements IStorage {
     const clientIdsArray = activeClientIds.map(client => client.clientId);
     
     if (clientIdsArray.length === 0) {
+      console.log("No active clients found for plan distribution");
       return allPlans.map(plan => ({
         planId: plan.id,
         planName: plan.name,

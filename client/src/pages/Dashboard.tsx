@@ -464,18 +464,42 @@ export default function Dashboard() {
         {/* Plan Distribution */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-foreground min-w-0">Distribuição de Planos</CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-foreground min-w-0">Distribuição de Planos</CardTitle>
+              {!distributionLoading && !distributionError && (
+                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  Atualizado
+                </div>
+              )}
+            </div>
           </CardHeader>
           <CardContent>
             {distributionLoading ? (
-              <div className="space-y-3">
+              <div className="space-y-4">
+                {/* Loading do resumo total */}
+                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                  <Skeleton className="h-4 w-40" />
+                  <div className="text-right space-y-1">
+                    <Skeleton className="h-6 w-8" />
+                    <Skeleton className="h-3 w-12" />
+                  </div>
+                </div>
+                
+                {/* Loading dos planos */}
                 {[...Array(4)].map((_, i) => (
                   <div key={i} className="space-y-2">
                     <div className="flex justify-between items-center">
-                      <Skeleton className="h-4 w-24" />
-                      <Skeleton className="h-4 w-8" />
+                      <div className="flex items-center gap-2">
+                        <Skeleton className="w-3 h-3 rounded-full" />
+                        <Skeleton className="h-4 w-20" />
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <Skeleton className="h-3 w-12" />
+                        <Skeleton className="h-4 w-8" />
+                      </div>
                     </div>
-                    <Skeleton className="h-2 w-full rounded-full" />
+                    <Skeleton className="h-3 w-full rounded-full" />
                   </div>
                 ))}
               </div>
@@ -485,30 +509,115 @@ export default function Dashboard() {
                   Erro ao carregar distribuição de planos. Tente novamente.
                 </AlertDescription>
               </Alert>
-            ) : planDistribution?.length ? (
-              <div className="space-y-3">
+            ) : planDistribution?.length && planDistribution.some(plan => plan.petCount > 0) ? (
+              <div className="space-y-4">
+                {/* Resumo total */}
+                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground">Total de Pets com Planos</span>
+                    {planDistribution.some(plan => plan.petCount > 0) && (
+                      <div className="w-2 h-2 bg-green-500 rounded-full" title="Dados atualizados"></div>
+                    )}
+                  </div>
+                  <div className="text-right">
+                    <span className="text-xl font-bold text-foreground">
+                      {planDistribution.reduce((sum, plan) => sum + plan.petCount, 0)}
+                    </span>
+                    <div className="text-xs text-muted-foreground">
+                      {planDistribution.reduce((sum, plan) => sum + plan.percentage, 0)}% total
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Distribuição por plano */}
                 {planDistribution.map((plan, index: number) => {
-                  const chartColors = ['bg-chart-1', 'bg-chart-2', 'bg-chart-3', 'bg-chart-4'];
-                  const chartColor = chartColors[index % chartColors.length] || 'bg-chart-1';
+                  // Cores específicas para cada plano
+                  const planColors = {
+                    'BASIC': { bg: 'bg-blue-500', text: 'text-blue-700', light: 'bg-blue-100' },
+                    'COMFORT': { bg: 'bg-green-500', text: 'text-green-700', light: 'bg-green-100' },
+                    'PLATINUM': { bg: 'bg-purple-500', text: 'text-purple-700', light: 'bg-purple-100' },
+                    'INFINITY': { bg: 'bg-orange-500', text: 'text-orange-700', light: 'bg-orange-100' },
+                    'PREMIUM': { bg: 'bg-red-500', text: 'text-red-700', light: 'bg-red-100' }
+                  };
+                  
+                  const colors = planColors[plan.planName as keyof typeof planColors] || 
+                    { bg: 'bg-gray-500', text: 'text-gray-700', light: 'bg-gray-100' };
                   
                   return (
                     <div key={plan.planId} className="space-y-2">
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground">{plan.planName}</span>
                         <div className="flex items-center gap-2">
-                          <span className="text-xs text-muted-foreground">({plan.petCount} pets)</span>
-                          <span className="font-medium text-foreground">{plan.percentage}%</span>
+                          <div className={`w-3 h-3 rounded-full ${colors.bg}`}></div>
+                          <span className="text-sm font-medium text-foreground">{plan.planName}</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className="text-xs text-muted-foreground">
+                            {plan.petCount} pet{plan.petCount !== 1 ? 's' : ''}
+                          </span>
+                          <span className={`text-sm font-bold ${colors.text} min-w-[3rem] text-right`}>
+                            {plan.percentage}%
+                          </span>
                         </div>
                       </div>
-                      <div className="w-full bg-muted rounded-full h-2">
-                        <div className={`${chartColor} h-2 rounded-full`} style={{width: `${plan.percentage}%`}}></div>
+                      <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
+                        <div 
+                          className={`${colors.bg} h-3 rounded-full transition-all duration-500 ease-in-out`} 
+                          style={{width: `${plan.percentage}%`}}
+                          role="progressbar"
+                          aria-valuenow={plan.percentage}
+                          aria-valuemin={0}
+                          aria-valuemax={100}
+                          aria-label={`${plan.planName}: ${plan.percentage}% (${plan.petCount} pets)`}
+                          title={`${plan.planName}: ${plan.petCount} pet${plan.petCount !== 1 ? 's' : ''} (${plan.percentage}%)`}
+                        ></div>
                       </div>
                     </div>
                   );
                 })}
               </div>
+            ) : planDistribution?.length ? (
+              <div className="space-y-4">
+                <div className="text-center py-4">
+                  <PawPrint className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+                  <p className="text-muted-foreground text-sm">
+                    Planos disponíveis, mas nenhum pet associado
+                  </p>
+                </div>
+                
+                {/* Mostrar planos mesmo sem pets */}
+                {planDistribution.map((plan) => {
+                  const planColors = {
+                    'BASIC': { bg: 'bg-blue-500', text: 'text-blue-700', light: 'bg-blue-100' },
+                    'COMFORT': { bg: 'bg-green-500', text: 'text-green-700', light: 'bg-green-100' },
+                    'PLATINUM': { bg: 'bg-purple-500', text: 'text-purple-700', light: 'bg-purple-100' },
+                    'INFINITY': { bg: 'bg-orange-500', text: 'text-orange-700', light: 'bg-orange-100' },
+                    'PREMIUM': { bg: 'bg-red-500', text: 'text-red-700', light: 'bg-red-100' }
+                  };
+                  
+                  const colors = planColors[plan.planName as keyof typeof planColors] || 
+                    { bg: 'bg-gray-500', text: 'text-gray-700', light: 'bg-gray-100' };
+                  
+                  return (
+                    <div key={plan.planId} className="flex items-center justify-between p-2 bg-muted/50 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <div className={`w-3 h-3 rounded-full ${colors.bg} opacity-50`}></div>
+                        <span className="text-sm text-muted-foreground">{plan.planName}</span>
+                      </div>
+                      <span className="text-xs text-muted-foreground">0 pets (0%)</span>
+                    </div>
+                  );
+                })}
+              </div>
             ) : (
-              <p className="text-muted-foreground text-center py-8">Nenhum plano com pets encontrado</p>
+              <div className="text-center py-8">
+                <PawPrint className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+                <p className="text-muted-foreground text-sm">
+                  Nenhum plano ativo encontrado
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Configure planos ativos para ver a distribuição
+                </p>
+              </div>
             )}
           </CardContent>
         </Card>

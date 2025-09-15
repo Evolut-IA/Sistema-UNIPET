@@ -343,13 +343,17 @@ export default function PetForm() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Plano de Saúde</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value || ""}>
                         <FormControl>
                           <SelectTrigger data-testid="select-plan">
                             <SelectValue placeholder="Selecione um plano" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
+                          <SelectItem value="" className="py-3 pl-10 pr-4">
+                            Nenhum plano selecionado
+                          </SelectItem>
+                          <Separator />
                           {plans?.flatMap((plan: any, index: number) => [
                             <SelectItem key={plan.id} value={plan.id} className="py-3 pl-10 pr-4">
                               {plan.name} - {new Intl.NumberFormat('pt-BR', { 
