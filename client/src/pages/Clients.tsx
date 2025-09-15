@@ -339,8 +339,8 @@ export default function Clients() {
                       </div>
                     </div>
                     
-                    {/* Botões de Ação */}
-                    <div className="flex flex-wrap gap-1 lg:flex-col lg:gap-1 lg:w-auto">
+                    {/* Botões em linha horizontal */}
+                    <div className="flex items-center space-x-1 w-full sm:w-auto">
                       <Button
                         variant="outline"
                         size="sm"
