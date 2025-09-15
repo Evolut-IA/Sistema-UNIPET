@@ -312,11 +312,13 @@ export default function Guides() {
                   <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
                     <div className="flex-1">
                       {/* Título Principal */}
-                      <div className="flex items-center space-x-2 mb-2">
-                        <FileText className="h-4 w-4 text-primary" />
-                        <h3 className="font-semibold text-foreground" data-testid={`guide-procedure-${guide.id}`}>
-                          {guide.procedure}
-                        </h3>
+                      <div className="mb-2">
+                        <div className="flex items-center space-x-2 mb-1">
+                          <FileText className="h-4 w-4 text-primary" />
+                          <h3 className="font-semibold text-foreground" data-testid={`guide-procedure-${guide.id}`}>
+                            {guide.procedure}
+                          </h3>
+                        </div>
                         <Badge className={getStatusColor(guide.status)}>
                           {getStatusLabel(guide.status)}
                         </Badge>
