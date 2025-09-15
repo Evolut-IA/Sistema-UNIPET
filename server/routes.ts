@@ -583,6 +583,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/procedures/:procedureId/plan-procedures", async (req, res) => {
+    try {
+      const planProcedures = await storage.getPlanProceduresByProcedure(req.params.procedureId);
+      res.json(planProcedures);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch procedure plan procedures" });
+    }
+  });
+
   app.post("/api/plan-procedures", async (req, res) => {
     try {
       const planProcedureData = insertPlanProcedureSchema.parse(req.body);

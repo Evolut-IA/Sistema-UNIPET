@@ -608,6 +608,20 @@ export class DatabaseStorage implements IStorage {
     }));
   }
 
+  async getPlanProceduresByProcedure(procedureId: string): Promise<(PlanProcedure & { plan: Plan })[]> {
+    const result = await db
+      .select()
+      .from(schema.planProcedures)
+      .innerJoin(schema.plans, eq(schema.planProcedures.planId, schema.plans.id))
+      .where(eq(schema.planProcedures.procedureId, procedureId))
+      .orderBy(schema.planProcedures.displayOrder);
+
+    return result.map(row => ({
+      ...row.plan_procedures,
+      plan: row.plans
+    }));
+  }
+
   async updatePlanProcedure(id: string, updates: Partial<InsertPlanProcedure>): Promise<PlanProcedure | undefined> {
     const result = await db.update(schema.planProcedures).set(updates).where(eq(schema.planProcedures.id, id)).returning();
     return result[0];
