@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as schema from "@shared/schema";
-import { eq, like, or, desc, count, sum, sql as sqlTemplate, gte, lt, and } from "drizzle-orm";
+import { eq, like, or, desc, count, sum, sql as sqlTemplate, gte, lt, and, inArray } from "drizzle-orm";
 import type {
   User, InsertUser,
   Client, InsertClient,
@@ -568,15 +568,33 @@ export class DatabaseStorage implements IStorage {
       .selectDistinct({ clientId: schema.guides.clientId })
       .from(schema.guides);
     
-    // Count all pets (keeping current behavior)
+    // Count all pets (temporary - reverting to working version)
     const petsCount = await db.select({ count: count() }).from(schema.pets);
     
     // Count open guides (already correct)
     const openGuidesCount = await db.select({ count: count() }).from(schema.guides).where(eq(schema.guides.status, 'open'));
     
-    // Calculate monthly revenue from guides in current month 
-    // TODO: Fix Drizzle sum query issue - using fixed value for now
-    const monthlyRevenue = 1695; // Temporary fix - should be dynamic
+    // Calculate monthly revenue from guides in current month (September 2025)
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth(); // 8 for September (0-based)
+    
+    // Create date range for current month
+    const startOfMonth = new Date(currentYear, currentMonth, 1);
+    const endOfMonth = new Date(currentYear, currentMonth + 1, 1);
+    
+    const monthlyGuides = await db
+      .select({ value: schema.guides.value })
+      .from(schema.guides)
+      .where(and(
+        gte(schema.guides.createdAt, startOfMonth),
+        lt(schema.guides.createdAt, endOfMonth)
+      ));
+    
+    const monthlyRevenue = monthlyGuides.reduce((sum, guide) => {
+      const value = parseFloat(guide.value.toString()) || 0;
+      return sum + value;
+    }, 0);
     
     // Count plans
     const totalPlansCount = await db.select({ count: count() }).from(schema.plans);
@@ -585,13 +603,71 @@ export class DatabaseStorage implements IStorage {
     
     return {
       activeClients: activeClientsCount.length || 0,
-      registeredPets: petsCount[0]?.count || 0,
-      openGuides: openGuidesCount[0]?.count || 0,
+      registeredPets: Number(petsCount[0]?.count) || 0,
+      openGuides: Number(openGuidesCount[0]?.count) || 0,
       monthlyRevenue: monthlyRevenue,
-      totalPlans: totalPlansCount[0]?.count || 0,
-      activePlans: activePlansCount[0]?.count || 0,
-      inactivePlans: inactivePlansCount[0]?.count || 0,
+      totalPlans: Number(totalPlansCount[0]?.count) || 0,
+      activePlans: Number(activePlansCount[0]?.count) || 0,
+      inactivePlans: Number(inactivePlansCount[0]?.count) || 0,
     };
+  }
+
+  async getPlanDistribution(): Promise<{
+    planId: string;
+    planName: string;
+    petCount: number;
+    percentage: number;
+  }[]> {
+    // Get all active plans
+    const allPlans = await db.select({ 
+      id: schema.plans.id, 
+      name: schema.plans.name 
+    }).from(schema.plans).where(eq(schema.plans.isActive, true));
+    
+    // Get all pets from active clients (clients with guides) with their plans
+    const activeClientIds = await db
+      .selectDistinct({ clientId: schema.guides.clientId })
+      .from(schema.guides);
+    
+    const clientIdsArray = activeClientIds.map(client => client.clientId);
+    
+    if (clientIdsArray.length === 0) {
+      return allPlans.map(plan => ({
+        planId: plan.id,
+        planName: plan.name,
+        petCount: 0,
+        percentage: 0
+      }));
+    }
+    
+    // Get pets with plans for active clients (excluding pets without plans)
+    const petsWithPlans = await db
+      .select({
+        planId: schema.pets.planId
+      })
+      .from(schema.pets)
+      .where(and(
+        inArray(schema.pets.clientId, clientIdsArray),
+        sqlTemplate`${schema.pets.planId} IS NOT NULL`
+      ));
+    
+    // Count total pets with plans (all have plans due to WHERE filter)
+    const totalPetsWithPlans = petsWithPlans.length;
+    
+    // Calculate distribution
+    const distribution = allPlans.map(plan => {
+      const petCount = petsWithPlans.filter(pet => pet.planId === plan.id).length;
+      const percentage = totalPetsWithPlans > 0 ? Math.round((petCount / totalPetsWithPlans) * 100) : 0;
+      
+      return {
+        planId: plan.id,
+        planName: plan.name,
+        petCount,
+        percentage
+      };
+    });
+    
+    return distribution;
   }
 }
 

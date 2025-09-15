@@ -563,7 +563,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const stats = await storage.getDashboardStats();
       res.json(stats);
     } catch (error) {
+      console.error("Dashboard stats error:", error);
       res.status(500).json({ message: "Failed to fetch dashboard stats" });
+    }
+  });
+
+  app.get("/api/dashboard/plan-distribution", async (req, res) => {
+    try {
+      const distribution = await storage.getPlanDistribution();
+      res.json(distribution);
+    } catch (error) {
+      console.error("Plan distribution error:", error);
+      res.status(500).json({ message: "Failed to fetch plan distribution" });
     }
   });
 

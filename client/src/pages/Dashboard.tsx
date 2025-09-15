@@ -47,6 +47,15 @@ export default function Dashboard() {
     queryKey: ["/api/plans"],
   });
 
+  const { data: planDistribution = [], isLoading: distributionLoading, isError: distributionError } = useQuery<{
+    planId: string;
+    planName: string;
+    petCount: number;
+    percentage: number;
+  }[]>({
+    queryKey: ["/api/dashboard/plan-distribution"],
+  });
+
   const recentClients = clients.slice(0, 3);
   const recentSubmissions = contactSubmissions.slice(0, 3);
 
@@ -453,7 +462,7 @@ export default function Dashboard() {
             <CardTitle className="text-foreground min-w-0">Distribuição de Planos</CardTitle>
           </CardHeader>
           <CardContent>
-            {plansLoading ? (
+            {distributionLoading ? (
               <div className="space-y-3">
                 {[...Array(4)].map((_, i) => (
                   <div key={i} className="space-y-2">
@@ -465,33 +474,36 @@ export default function Dashboard() {
                   </div>
                 ))}
               </div>
-            ) : plans?.length ? (
+            ) : distributionError ? (
+              <Alert>
+                <AlertDescription>
+                  Erro ao carregar distribuição de planos. Tente novamente.
+                </AlertDescription>
+              </Alert>
+            ) : planDistribution?.length ? (
               <div className="space-y-3">
-                {plans.map((plan: any, index: number) => {
-                  // Calcular porcentagem baseada no interesse real dos formulários
-                  const totalSubmissions = contactSubmissions.length;
-                  const planInterest = contactSubmissions.filter((s: any) => 
-                    s.planInterest?.toLowerCase() === plan.name?.toLowerCase()
-                  ).length;
-                  const percentage = totalSubmissions > 0 ? Math.round((planInterest / totalSubmissions) * 100) : 0;
+                {planDistribution.map((plan, index: number) => {
                   const chartColors = ['bg-chart-1', 'bg-chart-2', 'bg-chart-3', 'bg-chart-4'];
-                  const chartColor = chartColors[index] || 'bg-chart-1';
+                  const chartColor = chartColors[index % chartColors.length] || 'bg-chart-1';
                   
                   return (
-                    <div key={plan.id} className="space-y-2">
+                    <div key={plan.planId} className="space-y-2">
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground">{plan.name}</span>
-                        <span className="font-medium text-foreground">{percentage}%</span>
+                        <span className="text-sm text-muted-foreground">{plan.planName}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-muted-foreground">({plan.petCount} pets)</span>
+                          <span className="font-medium text-foreground">{plan.percentage}%</span>
+                        </div>
                       </div>
                       <div className="w-full bg-muted rounded-full h-2">
-                        <div className={`${chartColor} h-2 rounded-full`} style={{width: `${percentage}%`}}></div>
+                        <div className={`${chartColor} h-2 rounded-full`} style={{width: `${plan.percentage}%`}}></div>
                       </div>
                     </div>
                   );
                 })}
               </div>
             ) : (
-              <p className="text-muted-foreground text-center py-8">Nenhum plano encontrado</p>
+              <p className="text-muted-foreground text-center py-8">Nenhum plano com pets encontrado</p>
             )}
           </CardContent>
         </Card>

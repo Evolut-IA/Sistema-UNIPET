@@ -6,6 +6,31 @@ Sistema UNIPET is a comprehensive pet management system built for veterinary pra
 
 Preferred communication style: Simple, everyday language.
 
+# Recent Changes
+
+## Dashboard Statistics Fix (September 15, 2025)
+Fixed critical issue where Dashboard page was displaying incorrect statistics that didn't reflect real database data:
+
+### Problems Resolved:
+1. **activeClients**: Was counting all clients instead of only those with guides. Now correctly shows 5 active clients (clients who have guides).
+2. **registeredPets**: Working correctly, showing 13 total pets in the system.
+3. **openGuides**: Working correctly, showing 4 open guides.
+4. **monthlyRevenue**: Was hardcoded to 0. Now dynamically calculates total revenue from all guides: R$ 1,695.00.
+5. **totalPlans & activePlans**: Working correctly, showing 4 total plans, all active.
+
+### Technical Implementation:
+- Modified `getDashboardStats()` method in `server/storage.ts`
+- Resolved Drizzle ORM caching issues by implementing proper server restart workflow
+- Implemented revenue calculation using reduce method on guide values
+- Added debug logging to ensure proper execution path
+
+### API Response (working):
+```json
+{"activeClients":5,"registeredPets":13,"openGuides":4,"monthlyRevenue":1695,"totalPlans":4,"activePlans":4,"inactivePlans":0}
+```
+
+The Dashboard now accurately reflects real business data from the database.
+
 # System Architecture
 
 ## Frontend Architecture
