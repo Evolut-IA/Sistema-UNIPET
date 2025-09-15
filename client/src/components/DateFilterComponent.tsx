@@ -16,17 +16,6 @@ export interface DateFilterComponentProps {
   initialRange?: DateRange
 }
 
-// Helper function to get default date range (last 30 days)
-const getDefaultDateRange = (): DateRange => {
-  const today = new Date()
-  const thirtyDaysAgo = new Date()
-  thirtyDaysAgo.setDate(today.getDate() - 30)
-  
-  return {
-    startDate: jsDateToCalendarDate(thirtyDaysAgo),
-    endDate: jsDateToCalendarDate(today)
-  }
-}
 
 // Helper function to get current month range
 const getCurrentMonthRange = (): DateRange => {
@@ -106,10 +95,6 @@ const DateFilterComponent = React.memo(function DateFilterComponent({
     setDateRange(range)
     onDateRangeChange?.(range.startDate, range.endDate)
   }, [setDateRange, onDateRangeChange])
-
-  const handleLast30Days = React.useCallback(() => {
-    handleQuickSelection(getDefaultDateRange())
-  }, [handleQuickSelection])
 
   const handleCurrentMonth = React.useCallback(() => {
     handleQuickSelection(getCurrentMonthRange())
