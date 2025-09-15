@@ -253,10 +253,10 @@ export default function Network() {
           filteredUnits.map((unit: any) => (
             <Card key={unit.id} className="hover:shadow-md transition-shadow">
               <CardContent className="p-3">
-                <div className="flex flex-col lg:flex-row lg:justify-between gap-3">
-                  <div className="flex-1 min-w-0">
+                <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-3">
+                  <div className="flex-1 min-w-0 flex items-center">
                     {/* Nome da Unidade */}
-                    <div className="mb-2">
+                    <div className="w-full">
                       <h3 className="font-semibold text-foreground break-words" data-testid={`unit-name-${unit.id}`}>
                         {unit.name}
                       </h3>

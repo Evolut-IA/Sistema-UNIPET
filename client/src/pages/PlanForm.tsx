@@ -467,30 +467,6 @@ export default function PlanForm() {
     }
   };
 
-  // Função para carregar procedimentos de um plano predefinido
-  const loadPredefinedPlan = (planType: keyof typeof PREDEFINED_PLANS) => {
-    const planData = PREDEFINED_PLANS[planType];
-    
-    // Limpar benefícios existentes
-    form.setValue("features", []);
-    setBenefitProcedures({});
-    
-    // Adicionar benefícios e procedimentos
-    const newFeatures = Object.keys(planData);
-    form.setValue("features", newFeatures);
-    
-    const newBenefitProcedures: Record<string, any[]> = {};
-    Object.entries(planData).forEach(([benefitName, procedures]) => {
-      newBenefitProcedures[benefitName] = procedures;
-    });
-    
-    setBenefitProcedures(newBenefitProcedures);
-    
-    toast({
-      title: `Plano ${planType} carregado`,
-      description: `Foram carregados ${newFeatures.length} benefícios com seus respectivos procedimentos.`,
-    });
-  };
 
 
   useEffect(() => {
