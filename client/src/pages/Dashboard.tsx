@@ -399,45 +399,6 @@ export default function Dashboard() {
 
       {/* Additional sections */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* System Health */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-foreground min-w-0">Status do Sistema</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-primary rounded-full"></div>
-                  <span className="text-sm text-muted-foreground">Banco de Dados</span>
-                </div>
-                <span className="text-xs text-primary">Online</span>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-primary rounded-full"></div>
-                  <span className="text-sm text-muted-foreground">API Externa</span>
-                </div>
-                <span className="text-xs text-primary">Conectado</span>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-primary rounded-full"></div>
-                  <span className="text-sm text-muted-foreground">Chat IA</span>
-                </div>
-                <span className="text-xs text-primary">Ativo</span>
-              </div>
-
-              <div className="mt-4 p-3 bg-muted rounded-lg">
-                <p className="text-xs text-muted-foreground">Sistema operacional:</p>
-                <p className="text-sm font-medium text-foreground">100% funcional</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
         {/* Plan Distribution */}
         <Card>
           <CardHeader>
