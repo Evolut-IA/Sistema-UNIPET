@@ -58,18 +58,28 @@ const getCurrentWeekRange = (): DateRange => {
   }
 }
 
+// Helper function to get today's range
+const getTodayRange = (): DateRange => {
+  const today = new Date()
+  
+  return {
+    startDate: jsDateToCalendarDate(today),
+    endDate: jsDateToCalendarDate(today)
+  }
+}
+
 const DateFilterComponent = React.memo(function DateFilterComponent({
   onDateRangeChange,
   isLoading = false,
   className,
   initialRange
 }: DateFilterComponentProps) {
-  // Use default range (last 30 days) if no valid initial range provided
+  // Use default range (current month) if no valid initial range provided
   const defaultRange = React.useMemo(() => {
     if (initialRange?.startDate && initialRange?.endDate) {
       return initialRange
     }
-    return getDefaultDateRange()
+    return getCurrentMonthRange()
   }, [initialRange])
   
   const {
@@ -109,10 +119,14 @@ const DateFilterComponent = React.memo(function DateFilterComponent({
     handleQuickSelection(getCurrentWeekRange())
   }, [handleQuickSelection])
 
+  const handleToday = React.useCallback(() => {
+    handleQuickSelection(getTodayRange())
+  }, [handleQuickSelection])
+
   // Set default range on component mount if no valid filtering is active
   React.useEffect(() => {
     if ((!initialRange?.startDate || !initialRange?.endDate) && !isFiltering) {
-      const defaultRange = getDefaultDateRange()
+      const defaultRange = getCurrentMonthRange()
       setDateRange(defaultRange)
       onDateRangeChange?.(defaultRange.startDate, defaultRange.endDate)
     }
@@ -149,16 +163,6 @@ const DateFilterComponent = React.memo(function DateFilterComponent({
             <Button
               variant="outline"
               size="sm"
-              onClick={handleLast30Days}
-              disabled={isLoading}
-              className="h-8 px-3 text-xs"
-              aria-label="Filtrar por últimos 30 dias"
-            >
-              Últimos 30 dias
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
               onClick={handleCurrentMonth}
               disabled={isLoading}
               className="h-8 px-3 text-xs"
@@ -175,6 +179,16 @@ const DateFilterComponent = React.memo(function DateFilterComponent({
               aria-label="Filtrar por semana atual"
             >
               Semana atual
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleToday}
+              disabled={isLoading}
+              className="h-8 px-3 text-xs"
+              aria-label="Filtrar por hoje"
+            >
+              Hoje
             </Button>
           </div>
 
