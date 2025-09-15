@@ -171,9 +171,18 @@ export default function ThemeEditor() {
   const saveThemeMutation = useMutation({
     mutationFn: async (data: any) => {
       await apiRequest("PUT", "/api/settings/theme", data);
+      return data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["/api/settings/theme"] });
+      
+      // Dispatch event to update cache for next page load
+      const event = new CustomEvent('theme-updated', { detail: data });
+      window.dispatchEvent(event);
+      
+      // Update localStorage cache
+      localStorage.setItem('cached-theme', JSON.stringify(data));
+      
       toast({
         title: "Tema salvo",
         description: "Configurações do tema foram salvas com sucesso.",

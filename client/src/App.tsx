@@ -54,21 +54,23 @@ function Router() {
 
 
 function App() {
-  // Load and apply saved theme settings on app initialization
+  // Theme is already loaded by theme-loader.js before React renders
+  // This effect listens for theme updates and updates the cache
   useEffect(() => {
-    const loadThemeSettings = async () => {
-      try {
-        const response = await fetch('/api/settings/theme');
-        if (response.ok) {
-          const themeSettings: ThemeSettings = await response.json();
-          applyThemeToCSSVariables(themeSettings);
-        }
-      } catch (error) {
-        console.log('Theme settings not available, using default theme');
-      }
+    // Listen for theme updates from the theme editor
+    const handleThemeUpdate = (event: CustomEvent) => {
+      const themeSettings = event.detail;
+      // Update the cache for next page load
+      localStorage.setItem('cached-theme', JSON.stringify(themeSettings));
+      // Apply the new theme
+      applyThemeToCSSVariables(themeSettings);
     };
 
-    loadThemeSettings();
+    window.addEventListener('theme-updated' as any, handleThemeUpdate as any);
+    
+    return () => {
+      window.removeEventListener('theme-updated' as any, handleThemeUpdate as any);
+    };
   }, []);
 
   return (

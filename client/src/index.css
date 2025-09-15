@@ -6,42 +6,57 @@
 @tailwind utilities;
 
 :root {
-  --background: hsl(30deg 33.33% 97.65%);
-  --foreground: hsl(210 25% 7.8431%);
-  --card: hsl(180 6.6667% 97.0588%);
-  --card-foreground: hsl(210 25% 7.8431%);
-  --popover: hsl(0 0% 100%);
-  --popover-foreground: hsl(210 25% 7.8431%);
-  --primary: hsl(180.75deg 50.63% 30.98%);
-  --primary-foreground: hsl(0 0% 100%);
-  --secondary: hsl(210 25% 7.8431%);
-  --secondary-foreground: hsl(0 0% 100%);
-  --muted: hsl(0deg 0% 87.84%);
-  --muted-foreground: hsl(210 25% 7.8431%);
-  --accent: hsl(211.5789 51.3514% 92.7451%);
-  --accent-foreground: hsl(180.75deg 50.63% 30.98%);
-  --destructive: hsl(180.75deg 50.63% 30.98%);
-  --destructive-foreground: hsl(0 0% 100%);
-  --border: hsl(201.4286 30.4348% 90.9804%);
-  --input: hsl(200 23.0769% 97.4510%);
-  --ring: hsl(180.75deg 50.63% 30.98%);
-  --chart-1: hsl(180.75deg 50.63% 30.98%);
-  --chart-2: hsl(180.75deg 50.63% 30.98%);
-  --chart-3: hsl(180.75deg 50.63% 30.98%);
-  --chart-4: hsl(180.75deg 50.63% 30.98%);
-  --chart-5: hsl(180.75deg 50.63% 30.98%);
-  --sidebar: hsl(180 6.6667% 97.0588%);
-  --sidebar-foreground: hsl(210 25% 7.8431%);
-  --sidebar-primary: hsl(203.8863 88.2845% 53.1373%);
-  --sidebar-primary-foreground: hsl(0 0% 100%);
-  --sidebar-accent: hsl(211.5789 51.3514% 92.7451%);
-  --sidebar-accent-foreground: hsl(203.8863 88.2845% 53.1373%);
-  --sidebar-border: hsl(205.0000 25.0000% 90.5882%);
-  --sidebar-ring: hsl(202.8169 89.1213% 53.1373%);
+  /* Foundation - matching DEFAULT_THEME */
+  --background: #faf9f7;
+  --foreground: #1a1a1a;
+  --muted: #e0e0e0;
+  --muted-foreground: #1a1a1a;
+  
+  /* Typography - matching DEFAULT_THEME */
   --font-sans: 'DM Sans', sans-serif;
   --font-serif: 'Georgia', serif;
   --font-mono: 'Fira Code', monospace;
+  
+  /* Shape & Spacing - matching DEFAULT_THEME */
   --radius: 0.5rem;
+  
+  /* Actions - matching DEFAULT_THEME */
+  --primary: #277677;
+  --primary-foreground: #ffffff;
+  --secondary: #0f1419;
+  --secondary-foreground: #ffffff;
+  --accent: #e3ecf6;
+  --accent-foreground: #277677;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  
+  /* Forms - matching DEFAULT_THEME */
+  --input: #f7f9fa;
+  --border: #e1eaef;
+  --ring: #277677;
+  
+  /* Containers - matching DEFAULT_THEME */
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+  --popover: #ffffff;
+  --popover-foreground: #1a1a1a;
+  
+  /* Sidebar - matching DEFAULT_THEME */
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1a1a1a;
+  --sidebar-primary: #277677;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e3ecf6;
+  --sidebar-accent-foreground: #277677;
+  --sidebar-border: #e1eaef;
+  --sidebar-ring: #277677;
+  
+  /* Charts - matching DEFAULT_THEME */
+  --chart-1: #277677;
+  --chart-2: #10b981;
+  --chart-3: #f59e0b;
+  --chart-4: #22c55e;
+  --chart-5: #ef4444;
   --shadow: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
   --spacing: 0.25rem;
   --shadow-lg: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 4px 6px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
