@@ -61,8 +61,32 @@ app.use((req, res, next) => {
   // EasyPanel will automatically set the PORT environment variable
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
-  const port = parseInt(process.env.PORT || '5000', 10);
+  const port = parseInt(process.env.PORT || '80', 10);
+  
   server.listen(port, "0.0.0.0", () => {
     log(`serving on port ${port}`);
+    
+    // Health check endpoint
+    app.get('/health', (_req, res) => {
+      res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+    });
+    
+    // Graceful shutdown
+    const gracefulShutdown = (signal: string) => {
+      log(`Received ${signal}, shutting down gracefully...`);
+      server.close(() => {
+        log('Server closed');
+        process.exit(0);
+      });
+      
+      // Force close after 30 seconds
+      setTimeout(() => {
+        log('Force closing server');
+        process.exit(1);
+      }, 30000);
+    };
+    
+    process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+    process.on('SIGINT', () => gracefulShutdown('SIGINT'));
   });
 })();

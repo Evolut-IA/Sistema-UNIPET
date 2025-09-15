@@ -11,10 +11,18 @@
   },
   "ports": [
     {
-      "port": 3000,
+      "port": 80,
       "protocol": "http"
     }
   ],
+  "healthCheck": {
+    "enabled": true,
+    "path": "/health",
+    "interval": 30,
+    "timeout": 10,
+    "retries": 3,
+    "startPeriod": 60
+  },
   "volumes": [],
   "networks": [],
   "restart": "unless-stopped"
