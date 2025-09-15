@@ -253,7 +253,7 @@ export default function FAQ() {
       <Card>
         <CardContent className="p-6">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
             <Input
               placeholder="Buscar perguntas e respostas..."
               value={searchQuery}
@@ -278,8 +278,8 @@ export default function FAQ() {
               <div className="space-y-4">
                 {[...Array(3)].map((_, i) => (
                   <div key={i} className="border rounded-lg p-4 animate-pulse">
-                    <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                    <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                    <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
+                    <div className="h-3 bg-muted rounded w-1/2"></div>
                   </div>
                 ))}
               </div>

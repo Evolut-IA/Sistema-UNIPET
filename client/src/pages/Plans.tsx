@@ -139,9 +139,9 @@ export default function Plans() {
 
   const getPlanTypeColor = (type: string) => {
     switch (type) {
-      case "with_waiting_period": return "bg-gray-100 text-gray-800";
-      case "without_waiting_period": return "bg-gray-100 text-gray-800";
-      default: return "bg-gray-100 text-gray-800";
+      case "with_waiting_period": return "bg-muted text-muted-foreground";
+      case "without_waiting_period": return "bg-muted text-muted-foreground";
+      default: return "bg-muted text-muted-foreground";
     }
   };
 
@@ -168,7 +168,7 @@ export default function Plans() {
         <CardContent className="p-6">
           <div className="flex space-x-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <Input
                 placeholder="Buscar por nome do plano..."
                 value={searchQuery}
@@ -187,13 +187,13 @@ export default function Plans() {
           [...Array(6)].map((_, i) => (
             <Card key={i} className="animate-pulse">
               <CardContent className="p-6">
-                <div className="h-6 bg-gray-200 rounded mb-2"></div>
-                <div className="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
-                <div className="h-8 bg-gray-200 rounded mb-4"></div>
+                <div className="h-6 bg-muted rounded mb-2"></div>
+                <div className="h-4 bg-muted rounded w-3/4 mb-4"></div>
+                <div className="h-8 bg-muted rounded mb-4"></div>
                 <div className="space-y-2">
-                  <div className="h-3 bg-gray-200 rounded"></div>
-                  <div className="h-3 bg-gray-200 rounded"></div>
-                  <div className="h-3 bg-gray-200 rounded"></div>
+                  <div className="h-3 bg-muted rounded"></div>
+                  <div className="h-3 bg-muted rounded"></div>
+                  <div className="h-3 bg-muted rounded"></div>
                 </div>
               </CardContent>
             </Card>
@@ -234,7 +234,7 @@ export default function Plans() {
                     <ul className="text-sm text-muted-foreground space-y-1">
                       {plan.features.slice(0, 3).map((feature: string, index: number) => (
                         <li key={index} className="flex items-start">
-                          <span className="text-green-500 mr-2">✓</span>
+                          <span className="text-chart-4 mr-2">✓</span>
                           {feature}
                         </li>
                       ))}
@@ -273,7 +273,7 @@ export default function Plans() {
           ))
         ) : (
           <div className="col-span-full text-center py-12">
-            <CreditCard className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <CreditCard className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
             <p className="text-muted-foreground mb-4">
               {searchQuery 
                 ? "Nenhum plano encontrado para a busca." 

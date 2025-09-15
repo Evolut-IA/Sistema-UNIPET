@@ -204,10 +204,10 @@ export default function Guides() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "open": return "bg-green-100 text-green-800";
-      case "closed": return "bg-gray-100 text-gray-800";
-      case "cancelled": return "bg-red-100 text-red-800";
-      default: return "bg-gray-100 text-gray-800";
+      case "open": return "bg-chart-4/20 text-chart-4";
+      case "closed": return "bg-muted text-muted-foreground";
+      case "cancelled": return "bg-chart-5/20 text-chart-5";
+      default: return "bg-muted text-muted-foreground";
     }
   };
 
@@ -253,7 +253,7 @@ export default function Guides() {
         <CardContent className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <Input
                 placeholder="Buscar por procedimento..."
                 value={searchQuery}
@@ -307,16 +307,16 @@ export default function Guides() {
             <div className="space-y-4">
               {[...Array(5)].map((_, i) => (
                 <div key={i} className="border rounded-lg p-4 animate-pulse">
-                  <div className="h-4 bg-gray-200 rounded w-1/4 mb-2"></div>
-                  <div className="h-3 bg-gray-200 rounded w-1/2 mb-1"></div>
-                  <div className="h-3 bg-gray-200 rounded w-1/3"></div>
+                  <div className="h-4 bg-muted rounded w-1/4 mb-2"></div>
+                  <div className="h-3 bg-muted rounded w-1/2 mb-1"></div>
+                  <div className="h-3 bg-muted rounded w-1/3"></div>
                 </div>
               ))}
             </div>
           ) : filteredGuides?.length ? (
             <div className="space-y-2">
               {filteredGuides.map((guide: any) => (
-                <div key={guide.id} className="border rounded-lg p-3 hover:bg-gray-50 transition-colors">
+                <div key={guide.id} className="border rounded-lg p-3 hover:bg-muted/10 transition-colors">
                   <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-3">
                     <div className="flex-1 min-w-0">
                       {/* Nome da Guia */}
@@ -422,7 +422,7 @@ export default function Guides() {
             </div>
           ) : (
             <div className="text-center py-12">
-              <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <p className="text-muted-foreground mb-4">
                 {searchQuery || typeFilter !== "all" || statusFilter !== "all" 
                   ? "Nenhuma guia encontrada com os filtros aplicados." 
@@ -488,7 +488,7 @@ export default function Guides() {
                     {selectedGuide.procedureNotes && (
                       <div>
                         <span className="font-medium text-foreground">Observações do Procedimento:</span>
-                        <p className="text-muted-foreground mt-1 p-2 bg-gray-50 rounded">
+                        <p className="text-muted-foreground mt-1 p-2 bg-muted/10 rounded">
                           {selectedGuide.procedureNotes}
                         </p>
                       </div>
@@ -496,7 +496,7 @@ export default function Guides() {
                     {selectedGuide.generalNotes && (
                       <div>
                         <span className="font-medium text-foreground">Anotações Gerais:</span>
-                        <p className="text-muted-foreground mt-1 p-2 bg-gray-50 rounded">
+                        <p className="text-muted-foreground mt-1 p-2 bg-muted/10 rounded">
                           {selectedGuide.generalNotes}
                         </p>
                       </div>

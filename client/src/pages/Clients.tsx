@@ -266,7 +266,7 @@ export default function Clients() {
         <CardContent className="p-3 sm:p-4 lg:p-6">
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <Input
                 placeholder="Buscar por nome, CPF, email ou telefone..."
                 value={searchQuery}
@@ -291,16 +291,16 @@ export default function Clients() {
             <div className="space-y-4">
               {[...Array(5)].map((_, i) => (
                 <div key={i} className="border rounded-lg p-4 animate-pulse">
-                  <div className="h-4 bg-gray-200 rounded w-1/4 mb-2"></div>
-                  <div className="h-3 bg-gray-200 rounded w-1/2 mb-1"></div>
-                  <div className="h-3 bg-gray-200 rounded w-1/3"></div>
+                  <div className="h-4 bg-muted rounded w-1/4 mb-2"></div>
+                  <div className="h-3 bg-muted rounded w-1/2 mb-1"></div>
+                  <div className="h-3 bg-muted rounded w-1/3"></div>
                 </div>
               ))}
             </div>
           ) : displayClients?.length ? (
             <div className="space-y-2">
               {displayClients.map((client: any) => (
-                <div key={client.id} className="border rounded-lg p-3 hover:bg-gray-50 transition-colors">
+                <div key={client.id} className="border rounded-lg p-3 hover:bg-muted/10 transition-colors">
                   <div className="flex flex-col lg:flex-row lg:justify-between gap-3">
                     <div className="flex-1 min-w-0">
                       {/* Nome do Cliente */}
@@ -402,7 +402,7 @@ export default function Clients() {
               className="space-y-4 overflow-y-auto flex-1 pr-2" 
               style={{
                 scrollbarWidth: 'thin',
-                scrollbarColor: '#6b7280 #e5e7eb'
+                scrollbarColor: 'hsl(var(--muted-foreground)) hsl(var(--muted))'
               }}
             >
               <div className="grid grid-cols-1 gap-4">

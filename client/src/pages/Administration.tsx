@@ -164,11 +164,11 @@ export default function Administration() {
 
   const getRoleColor = (role: string) => {
     switch (role) {
-      case "delete": return "bg-red-100 text-red-800";
-      case "edit": return "bg-blue-100 text-blue-800";
-      case "add": return "bg-purple-100 text-purple-800";
-      case "view": return "bg-green-100 text-green-800";
-      default: return "bg-gray-100 text-gray-800";
+      case "delete": return "bg-chart-5/20 text-chart-5";
+      case "edit": return "bg-chart-1/20 text-chart-1";
+      case "add": return "bg-chart-2/20 text-chart-2";
+      case "view": return "bg-chart-4/20 text-chart-4";
+      default: return "bg-muted text-muted-foreground";
     }
   };
 
@@ -392,7 +392,7 @@ export default function Administration() {
       <Card>
         <CardContent className="p-6">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
             <Input
               placeholder="Buscar usuários por nome ou email..."
               value={searchQuery}
@@ -416,16 +416,16 @@ export default function Administration() {
             <div className="space-y-4">
               {[...Array(5)].map((_, i) => (
                 <div key={i} className="border rounded-lg p-4 animate-pulse">
-                  <div className="h-4 bg-gray-200 rounded w-1/4 mb-2"></div>
-                  <div className="h-3 bg-gray-200 rounded w-1/2 mb-1"></div>
-                  <div className="h-3 bg-gray-200 rounded w-1/3"></div>
+                  <div className="h-4 bg-muted rounded w-1/4 mb-2"></div>
+                  <div className="h-3 bg-muted rounded w-1/2 mb-1"></div>
+                  <div className="h-3 bg-muted rounded w-1/3"></div>
                 </div>
               ))}
             </div>
           ) : filteredUsers?.length ? (
             <div className="space-y-4">
               {filteredUsers.map((user: any) => (
-                <div key={user.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                <div key={user.id} className="border rounded-lg p-4 hover:bg-muted/10 transition-colors">
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-2">
@@ -502,7 +502,7 @@ export default function Administration() {
             </div>
           ) : (
             <div className="text-center py-12">
-              <UserCog className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <UserCog className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <p className="text-muted-foreground mb-4">
                 {searchQuery 
                   ? "Nenhum usuário encontrado para a busca." 
@@ -536,7 +536,7 @@ export default function Administration() {
           
           <Card>
             <CardContent className="p-4 text-center">
-              <p className="text-2xl font-bold text-green-600">
+              <p className="text-2xl font-bold text-chart-4">
                 {filteredUsers.filter((u: any) => u.isActive).length}
               </p>
               <p className="text-sm text-muted-foreground">Usuários Ativos</p>
@@ -545,7 +545,7 @@ export default function Administration() {
           
           <Card>
             <CardContent className="p-4 text-center">
-              <p className="text-2xl font-bold text-red-600">
+              <p className="text-2xl font-bold text-chart-5">
                 {filteredUsers.filter((u: any) => u.role === "delete").length}
               </p>
               <p className="text-sm text-muted-foreground">Excluir</p>
@@ -554,7 +554,7 @@ export default function Administration() {
           
           <Card>
             <CardContent className="p-4 text-center">
-              <p className="text-2xl font-bold text-blue-600">
+              <p className="text-2xl font-bold text-chart-1">
                 {filteredUsers.filter((u: any) => u.role === "edit").length}
               </p>
               <p className="text-sm text-muted-foreground">Editar</p>
@@ -563,7 +563,7 @@ export default function Administration() {
           
           <Card>
             <CardContent className="p-4 text-center">
-              <p className="text-2xl font-bold text-purple-600">
+              <p className="text-2xl font-bold text-chart-2">
                 {filteredUsers.filter((u: any) => u.role === "add").length}
               </p>
               <p className="text-sm text-muted-foreground">Adicionar</p>
@@ -572,7 +572,7 @@ export default function Administration() {
           
           <Card>
             <CardContent className="p-4 text-center">
-              <p className="text-2xl font-bold text-green-600">
+              <p className="text-2xl font-bold text-chart-4">
                 {filteredUsers.filter((u: any) => u.role === "view").length}
               </p>
               <p className="text-sm text-muted-foreground">Visualizar</p>

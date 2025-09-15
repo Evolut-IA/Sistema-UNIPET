@@ -4,8 +4,8 @@ import { ScrollArea } from '@base-ui-components/react/scroll-area';
 export default function ExampleScrollArea() {
   return (
     <ScrollArea.Root className="h-[8.5rem] w-96 max-w-[calc(100vw-8rem)]">
-      <ScrollArea.Viewport className="h-full overscroll-contain rounded-md outline outline-1 -outline-offset-1 outline-gray-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-800">
-        <div className="flex flex-col gap-4 py-3 pr-6 pl-4 text-sm leading-[1.375rem] text-gray-900">
+      <ScrollArea.Viewport className="h-full overscroll-contain rounded-md outline outline-1 -outline-offset-1 outline-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary">
+        <div className="flex flex-col gap-4 py-3 pr-6 pl-4 text-sm leading-[1.375rem] text-foreground">
           <p>
             Vernacular architecture is building done outside any academic tradition,
             and without professional guidance. It is not a particular architectural
@@ -30,8 +30,8 @@ export default function ExampleScrollArea() {
           </p>
         </div>
       </ScrollArea.Viewport>
-      <ScrollArea.Scrollbar className="m-2 flex w-1 justify-center rounded bg-gray-200 opacity-0 transition-opacity delay-300 data-[hovering]:opacity-100 data-[hovering]:delay-0 data-[hovering]:duration-75 data-[scrolling]:opacity-100 data-[scrolling]:delay-0 data-[scrolling]:duration-75">
-        <ScrollArea.Thumb className="w-full rounded bg-gray-500" />
+      <ScrollArea.Scrollbar className="m-2 flex w-1 justify-center rounded bg-muted opacity-0 transition-opacity delay-300 data-[hovering]:opacity-100 data-[hovering]:delay-0 data-[hovering]:duration-75 data-[scrolling]:opacity-100 data-[scrolling]:delay-0 data-[scrolling]:duration-75">
+        <ScrollArea.Thumb className="w-full rounded bg-muted-foreground/50" />
       </ScrollArea.Scrollbar>
     </ScrollArea.Root>
   );

@@ -25,8 +25,8 @@ export const CustomScrollArea = React.forwardRef<
     >
       {children}
     </BaseScrollArea.Viewport>
-    <BaseScrollArea.Scrollbar className="m-2 flex w-1 justify-center rounded bg-gray-200 opacity-0 transition-opacity delay-300 data-[hovering]:opacity-100 data-[hovering]:delay-0 data-[hovering]:duration-75 data-[scrolling]:opacity-100 data-[scrolling]:delay-0 data-[scrolling]:duration-75">
-      <BaseScrollArea.Thumb className="w-full rounded bg-gray-500" />
+    <BaseScrollArea.Scrollbar className="m-2 flex w-1 justify-center rounded bg-muted opacity-0 transition-opacity delay-300 data-[hovering]:opacity-100 data-[hovering]:delay-0 data-[hovering]:duration-75 data-[scrolling]:opacity-100 data-[scrolling]:delay-0 data-[scrolling]:duration-75">
+      <BaseScrollArea.Thumb className="w-full rounded bg-muted-foreground/50" />
     </BaseScrollArea.Scrollbar>
   </BaseScrollArea.Root>
 ));

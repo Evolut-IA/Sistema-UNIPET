@@ -220,10 +220,10 @@ export default function ContactSubmissions() {
 
   const getPlanInterestColor = (plan: string) => {
     switch (plan?.toLowerCase()) {
-      case "básico": return "bg-blue-100 text-blue-800";
-      case "confort": return "bg-green-100 text-green-800";
-      case "premium": return "bg-purple-100 text-purple-800";
-      default: return "bg-gray-100 text-gray-800";
+      case "básico": return "bg-chart-1/20 text-chart-1";
+      case "confort": return "bg-chart-4/20 text-chart-4";
+      case "premium": return "bg-chart-2/20 text-chart-2";
+      default: return "bg-muted text-muted-foreground";
     }
   };
 
@@ -247,7 +247,7 @@ export default function ContactSubmissions() {
       <Card>
         <CardContent className="p-3 sm:p-4 lg:p-6">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
             <Input
               placeholder="Buscar por nome, email, telefone ou pet..."
               value={searchQuery}
@@ -271,16 +271,16 @@ export default function ContactSubmissions() {
             <div className="space-y-4">
               {[...Array(5)].map((_, i) => (
                 <div key={i} className="border rounded-lg p-4 animate-pulse">
-                  <div className="h-4 bg-gray-200 rounded w-1/3 mb-2"></div>
-                  <div className="h-3 bg-gray-200 rounded w-1/2 mb-1"></div>
-                  <div className="h-3 bg-gray-200 rounded w-1/4"></div>
+                  <div className="h-4 bg-muted rounded w-1/3 mb-2"></div>
+                  <div className="h-3 bg-muted rounded w-1/2 mb-1"></div>
+                  <div className="h-3 bg-muted rounded w-1/4"></div>
                 </div>
               ))}
             </div>
           ) : filteredSubmissions?.length ? (
             <div className="space-y-2">
               {filteredSubmissions.map((submission: any) => (
-                <div key={submission.id} className="border rounded-lg p-3 hover:bg-gray-50 transition-colors">
+                <div key={submission.id} className="border rounded-lg p-3 hover:bg-muted/10 transition-colors">
                   <div className="flex flex-col lg:flex-row lg:justify-between gap-3">
                     <div className="flex-1 min-w-0">
                       {/* Nome do Formulário */}
@@ -340,7 +340,7 @@ export default function ContactSubmissions() {
             </div>
           ) : (
             <div className="text-center py-12">
-              <Mail className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <Mail className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <p className="text-muted-foreground">
                 {searchQuery 
                   ? "Nenhum formulário encontrado para a busca." 
@@ -407,7 +407,7 @@ export default function ContactSubmissions() {
               {selectedSubmission.message && (
                 <div>
                   <label className="text-sm font-medium text-foreground">Mensagem</label>
-                  <div className="mt-1 p-3 bg-gray-50 rounded-lg">
+                  <div className="mt-1 p-3 bg-muted/10 rounded-lg">
                     <p className="text-muted-foreground whitespace-pre-wrap">{selectedSubmission.message}</p>
                   </div>
                 </div>
