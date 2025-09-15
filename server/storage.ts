@@ -654,6 +654,7 @@ export class DatabaseStorage implements IStorage {
     registeredPets: number;
     openGuides: number;
     monthlyRevenue: number;
+    totalRevenue: number;
     totalPlans: number;
     activePlans: number;
     inactivePlans: number;
@@ -734,6 +735,16 @@ export class DatabaseStorage implements IStorage {
       return sum + value;
     }, 0);
     
+    // Calculate total revenue from all guides (no date filter)
+    const totalRevenueGuides = await db
+      .select({ value: schema.guides.value })
+      .from(schema.guides);
+    
+    const totalRevenue = totalRevenueGuides.reduce((sum, guide) => {
+      const value = parseFloat(guide.value?.toString() || '0') || 0;
+      return sum + value;
+    }, 0);
+    
     // Count plans
     const totalPlansCount = await db.select({ count: count() }).from(schema.plans);
     const activePlansCount = await db.select({ count: count() }).from(schema.plans).where(eq(schema.plans.isActive, true));
@@ -744,6 +755,7 @@ export class DatabaseStorage implements IStorage {
       registeredPets: Number(petsCount[0]?.count) || 0,
       openGuides: Number(openGuidesCount[0]?.count) || 0,
       monthlyRevenue: monthlyRevenue,
+      totalRevenue: totalRevenue,
       totalPlans: Number(totalPlansCount[0]?.count) || 0,
       activePlans: Number(activePlansCount[0]?.count) || 0,
       inactivePlans: Number(inactivePlansCount[0]?.count) || 0,
