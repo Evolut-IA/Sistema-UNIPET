@@ -17,7 +17,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { insertUserSchema } from "@shared/schema";
-import { UserCog, Plus, Search, Edit, Trash2, Shield, User, Key, Network, Lock, Eye, EyeOff } from "lucide-react";
+import { UserCog, Plus, Search, Edit, Trash2, Shield, User, Key, Network, Lock, Eye, EyeOff, Globe } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -225,6 +225,11 @@ export default function Administration() {
       confirmPassword: "",
     });
     setCredentialDialogOpen(true);
+  };
+
+  const handleEditUrl = (networkUnit: any) => {
+    // Navigate to the network unit edit page
+    window.location.href = `/rede/${networkUnit.id}/editar`;
   };
 
   const onCredentialSubmit = (data: any) => {
@@ -642,9 +647,9 @@ export default function Administration() {
                   const status = getCredentialStatus(unit);
                   return (
                     <div key={unit.id} className="border rounded-lg p-4 hover:bg-muted/10 transition-colors">
-                      <div className="flex justify-between items-start">
+                      <div className="flex justify-between items-center">
                         <div className="flex-1">
-                          <div className="flex items-center space-x-3 mb-2">
+                          <div className="flex items-center space-x-3 mb-3">
                             <Network className="h-5 w-5 text-primary" />
                             <h3 className="font-semibold text-foreground">
                               {unit.name}
@@ -654,29 +659,31 @@ export default function Administration() {
                             </Badge>
                           </div>
 
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 text-sm text-muted-foreground mb-3">
-                            <p><span className="font-medium">Endereço:</span> {unit.address}</p>
-                            <p><span className="font-medium">Telefone:</span> {unit.phone}</p>
-                            <p><span className="font-medium">URL Slug:</span> {unit.urlSlug || "Não definido"}</p>
-                          </div>
-
-                          {unit.login && (
-                            <div className="text-sm text-muted-foreground mb-3">
-                              <p><span className="font-medium">Login atual:</span> {unit.login}</p>
+                          <div className="flex items-center gap-6 text-sm text-muted-foreground">
+                            <p><span className="font-medium">URL Slug:</span> /{unit.urlSlug || "não-definido"}</p>
+                            <p><span className="font-medium">Login atual:</span> {unit.login || "Não configurado"}</p>
+                            
+                            <div className="flex gap-2 ml-auto">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleEditCredentials(unit)}
+                                className="flex items-center space-x-2"
+                              >
+                                <Key className="h-4 w-4" />
+                                <span>Editar Credenciais</span>
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleEditUrl(unit)}
+                                className="flex items-center space-x-2"
+                              >
+                                <Globe className="h-4 w-4" />
+                                <span>Editar URL</span>
+                              </Button>
                             </div>
-                          )}
-                        </div>
-
-                        <div className="flex flex-col space-y-2 ml-4">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleEditCredentials(unit)}
-                            className="flex items-center space-x-2"
-                          >
-                            <Key className="h-4 w-4" />
-                            <span>{unit.login ? "Editar Credenciais" : "Definir Credenciais"}</span>
-                          </Button>
+                          </div>
                         </div>
                       </div>
                     </div>
