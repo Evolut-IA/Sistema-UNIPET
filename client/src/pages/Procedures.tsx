@@ -263,61 +263,20 @@ export default function Procedures() {
           </DialogHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Basic Information */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Informações Básicas</h3>
-                  
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Nome do Procedimento *</FormLabel>
-                        <FormControl>
-                          <Input {...field} data-testid="input-procedure-name" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="description"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Descrição</FormLabel>
-                        <FormControl>
-                          <Textarea {...field} rows={4} data-testid="textarea-procedure-description" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="isActive"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                        <div className="space-y-0.5">
-                          <FormLabel className="text-base">Procedimento Ativo</FormLabel>
-                          <p className="text-sm text-muted-foreground">
-                            Procedimentos ativos ficam disponíveis para uso
-                          </p>
-                        </div>
-                        <FormControl>
-                          <Switch
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                            data-testid="switch-procedure-active"
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                </div>
+              <div className="space-y-6">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nome do Procedimento *</FormLabel>
+                      <FormControl>
+                        <Input {...field} data-testid="input-procedure-name" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
                 {/* Plan Values */}
                 <div className="space-y-4">
@@ -460,59 +419,52 @@ export default function Procedures() {
                 ))}
               </div>
             ) : filteredItems?.length ? (
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {filteredItems.map((item: any) => (
-                  <div key={item.id} className="border rounded-lg p-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <h4 className="font-medium text-foreground text-sm" data-testid={`procedure-name-${item.id}`}>
-                        {item.name}
-                      </h4>
-                      <Badge variant={item.isActive ? "default" : "secondary"}>
-                        {item.isActive ? "Ativo" : "Inativo"}
-                      </Badge>
-                    </div>
-                    
-                    {item.description && (
-                      <p className="text-xs text-muted-foreground mb-3 line-clamp-2">
-                        {item.description}
-                      </p>
-                    )}
-                    
-                    <div className="flex items-center space-x-2">
-                      <Switch
-                        checked={item.isActive}
-                        onCheckedChange={() => handleToggleStatus(item.id, item.isActive)}
-                        disabled={toggleMutation.isPending}
-                        data-testid={`switch-procedure-status-${item.id}`}
-                      />
+                  <div key={item.id} className="border rounded-lg p-3 hover:bg-muted/10 transition-colors">
+                    <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-3">
+                      <div className="flex-1 min-w-0 flex items-center">
+                        {/* Nome do Procedimento */}
+                        <div className="w-full">
+                          <h3 className="font-semibold text-foreground break-words" data-testid={`procedure-name-${item.id}`}>
+                            {item.name}
+                          </h3>
+                        </div>
+                      </div>
                       
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleView(item)}
-                        data-testid={`button-view-${item.id}`}
-                      >
-                        <Eye className="h-3 w-3" />
-                      </Button>
-                      
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleEdit(item)}
-                        data-testid={`button-edit-${item.id}`}
-                      >
-                        <Edit className="h-3 w-3" />
-                      </Button>
-                      
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDelete(item.id)}
-                        disabled={deleteMutation.isPending}
-                        data-testid={`button-delete-${item.id}`}
-                      >
-                        <Trash2 className="h-3 w-3" />
-                      </Button>
+                      {/* Botões em linha horizontal */}
+                      <div className="flex items-center space-x-1 w-full sm:w-auto">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleView(item)}
+                          data-testid={`button-view-${item.id}`}
+                          className="text-xs"
+                        >
+                          <Eye className="h-3 w-3" />
+                        </Button>
+                        
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleEdit(item)}
+                          data-testid={`button-edit-${item.id}`}
+                          className="text-xs"
+                        >
+                          <Edit className="h-3 w-3" />
+                        </Button>
+                        
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDelete(item.id)}
+                          disabled={deleteMutation.isPending}
+                          data-testid={`button-delete-${item.id}`}
+                          className="text-xs"
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 ))}
