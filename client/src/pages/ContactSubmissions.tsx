@@ -323,11 +323,11 @@ export default function ContactSubmissions() {
                       </div>
                     </div>
 
-                    <div className="flex flex-wrap gap-1 w-full sm:w-auto sm:ml-3">
+                    {/* Botões em linha horizontal */}
+                    <div className="flex items-center space-x-1 w-full sm:w-auto sm:ml-3">
                       <Button
                         variant="outline"
                         size="sm"
-                        className="w-full sm:w-auto"
                         onClick={() => handleWhatsApp(submission)}
                         data-testid={`button-whatsapp-${submission.id}`}
                         title="Enviar mensagem no WhatsApp"
@@ -337,7 +337,6 @@ export default function ContactSubmissions() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="w-full sm:w-auto"
                         onClick={() => handleViewDetails(submission)}
                         data-testid={`button-view-${submission.id}`}
                       >
@@ -346,7 +345,6 @@ export default function ContactSubmissions() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="w-full sm:w-auto"
                         onClick={() => {
                           setSelectedSubmission(submission);
                           handleCopyToClipboard();
@@ -358,7 +356,6 @@ export default function ContactSubmissions() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="w-full sm:w-auto"
                         onClick={() => handleDelete(submission.id, submission.name)}
                         disabled={deleteMutation.isPending}
                         data-testid={`button-delete-${submission.id}`}
