@@ -225,7 +225,7 @@ export default function Dashboard() {
           <CardContent className="p-6">
             <div className="flex items-start justify-between gap-2">
               <div className="flex-1 min-w-0">
-                <p className="text-xs sm:text-sm text-muted-foreground">Receita Mensal</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Receita no Período Selecionado</p>
                 {statsLoading ? (
                   <div className="space-y-2">
                     <Skeleton className="h-6 sm:h-8 w-16 sm:w-20 mt-1" />

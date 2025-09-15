@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { DateRangePicker } from "@/components/ui/date-range-picker"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useDateFilter, type DateRange } from "@/hooks/use-date-filter"
-import { formatDateRangeForDisplay } from "@/lib/date-utils"
+import { formatDateRangeForDisplay, jsDateToCalendarDate } from "@/lib/date-utils"
 import { cn } from "@/lib/utils"
 
 export interface DateFilterComponentProps {
@@ -16,12 +16,60 @@ export interface DateFilterComponentProps {
   initialRange?: DateRange
 }
 
+// Helper function to get default date range (last 30 days)
+const getDefaultDateRange = (): DateRange => {
+  const today = new Date()
+  const thirtyDaysAgo = new Date()
+  thirtyDaysAgo.setDate(today.getDate() - 30)
+  
+  return {
+    startDate: jsDateToCalendarDate(thirtyDaysAgo),
+    endDate: jsDateToCalendarDate(today)
+  }
+}
+
+// Helper function to get current month range
+const getCurrentMonthRange = (): DateRange => {
+  const today = new Date()
+  const firstDay = new Date(today.getFullYear(), today.getMonth(), 1)
+  const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0)
+  
+  return {
+    startDate: jsDateToCalendarDate(firstDay),
+    endDate: jsDateToCalendarDate(lastDay)
+  }
+}
+
+// Helper function to get current week range
+const getCurrentWeekRange = (): DateRange => {
+  const today = new Date()
+  const currentDay = today.getDay()
+  const diff = currentDay === 0 ? -6 : 1 - currentDay // Adjust for Monday start
+  
+  const monday = new Date(today)
+  monday.setDate(today.getDate() + diff)
+  
+  const sunday = new Date(monday)
+  sunday.setDate(monday.getDate() + 6)
+  
+  return {
+    startDate: jsDateToCalendarDate(monday),
+    endDate: jsDateToCalendarDate(sunday)
+  }
+}
+
 const DateFilterComponent = React.memo(function DateFilterComponent({
   onDateRangeChange,
   isLoading = false,
   className,
   initialRange
 }: DateFilterComponentProps) {
+  // Use default range (last 30 days) if no initial range provided
+  const defaultRange = React.useMemo(() => 
+    initialRange || getDefaultDateRange(), 
+    [initialRange]
+  )
+  
   const {
     dateRange,
     setDateRange,
@@ -29,7 +77,7 @@ const DateFilterComponent = React.memo(function DateFilterComponent({
     isFiltering,
     isValidRange,
     errorMessage
-  } = useDateFilter(initialRange)
+  } = useDateFilter(defaultRange)
 
   const handleDateRangeChange = React.useCallback((range: DateRange) => {
     setDateRange(range)
@@ -40,6 +88,33 @@ const DateFilterComponent = React.memo(function DateFilterComponent({
     clearFilter()
     onDateRangeChange?.(null, null)
   }, [clearFilter, onDateRangeChange])
+
+  // Quick date selection handlers
+  const handleQuickSelection = React.useCallback((range: DateRange) => {
+    setDateRange(range)
+    onDateRangeChange?.(range.startDate, range.endDate)
+  }, [setDateRange, onDateRangeChange])
+
+  const handleLast30Days = React.useCallback(() => {
+    handleQuickSelection(getDefaultDateRange())
+  }, [handleQuickSelection])
+
+  const handleCurrentMonth = React.useCallback(() => {
+    handleQuickSelection(getCurrentMonthRange())
+  }, [handleQuickSelection])
+
+  const handleCurrentWeek = React.useCallback(() => {
+    handleQuickSelection(getCurrentWeekRange())
+  }, [handleQuickSelection])
+
+  // Set default range on component mount if no filtering is active
+  React.useEffect(() => {
+    if (!initialRange && !isFiltering) {
+      const defaultRange = getDefaultDateRange()
+      setDateRange(defaultRange)
+      onDateRangeChange?.(defaultRange.startDate, defaultRange.endDate)
+    }
+  }, [initialRange, isFiltering, setDateRange, onDateRangeChange])
 
   return (
     <Card className={cn("w-full", className)}>
@@ -67,12 +142,43 @@ const DateFilterComponent = React.memo(function DateFilterComponent({
             )}
           </div>
 
+          {/* Quick Selection Buttons */}
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleLast30Days}
+              disabled={isLoading}
+              className="h-8 px-3 text-xs"
+            >
+              Últimos 30 dias
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleCurrentMonth}
+              disabled={isLoading}
+              className="h-8 px-3 text-xs"
+            >
+              Mês atual
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleCurrentWeek}
+              disabled={isLoading}
+              className="h-8 px-3 text-xs"
+            >
+              Semana atual
+            </Button>
+          </div>
+
           {/* Date Range Picker */}
           <div className="space-y-2">
             <DateRangePicker
               value={dateRange}
               onChange={handleDateRangeChange}
-              placeholder="Selecionar período"
+              placeholder="Selecionar período personalizado"
               disabled={isLoading}
               className="w-full"
             />
