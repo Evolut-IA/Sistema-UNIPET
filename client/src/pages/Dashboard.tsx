@@ -301,27 +301,27 @@ export default function Dashboard() {
                 config={{
                   formularios: {
                     label: "Formulários",
-                    color: "hsl(var(--chart-1))",
+                    color: "var(--chart-1)",
                   },
                   planos: {
                     label: "Planos",
-                    color: "hsl(var(--chart-1))",
+                    color: "var(--chart-1)",
                   },
                   rede: {
                     label: "Unidades de Rede",
-                    color: "hsl(var(--chart-1))",
+                    color: "var(--chart-1)",
                   },
                   clientes: {
                     label: "Clientes",
-                    color: "hsl(var(--chart-1))",
+                    color: "var(--chart-1)",
                   },
                   pets: {
                     label: "Pets",
-                    color: "hsl(var(--chart-1))",
+                    color: "var(--chart-1)",
                   },
                   guias: {
                     label: "Guias",
-                    color: "hsl(var(--chart-1))",
+                    color: "var(--chart-1)",
                   },
                 }}
                 className="h-72 w-full"
