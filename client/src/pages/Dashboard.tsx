@@ -481,7 +481,7 @@ export default function Dashboard() {
                   // Cores específicas para cada plano
                   const planColors = {
                     'BASIC': { bg: 'bg-chart-1', text: 'text-chart-1', light: 'bg-chart-1/20' },
-                    'COMFORT': { bg: 'bg-chart-4', text: 'text-chart-4', light: 'bg-chart-4/20' },
+                    'COMFORT': { bg: 'bg-chart-3', text: 'text-chart-3', light: 'bg-chart-3/20' },
                     'PLATINUM': { bg: 'bg-chart-2', text: 'text-chart-2', light: 'bg-chart-2/20' },
                     'INFINITY': { bg: 'bg-chart-3', text: 'text-chart-3', light: 'bg-chart-3/20' },
                     'PREMIUM': { bg: 'bg-chart-5', text: 'text-chart-5', light: 'bg-chart-5/20' }
@@ -535,7 +535,7 @@ export default function Dashboard() {
                 {planDistribution.map((plan) => {
                   const planColors = {
                     'BASIC': { bg: 'bg-chart-1', text: 'text-chart-1', light: 'bg-chart-1/20' },
-                    'COMFORT': { bg: 'bg-chart-4', text: 'text-chart-4', light: 'bg-chart-4/20' },
+                    'COMFORT': { bg: 'bg-chart-3', text: 'text-chart-3', light: 'bg-chart-3/20' },
                     'PLATINUM': { bg: 'bg-chart-2', text: 'text-chart-2', light: 'bg-chart-2/20' },
                     'INFINITY': { bg: 'bg-chart-3', text: 'text-chart-3', light: 'bg-chart-3/20' },
                     'PREMIUM': { bg: 'bg-chart-5', text: 'text-chart-5', light: 'bg-chart-5/20' }
