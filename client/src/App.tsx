@@ -21,6 +21,7 @@ import Administration from "@/pages/Administration";
 import NotFound from "@/pages/not-found";
 import { useEffect } from "react";
 import type { ThemeSettings } from "@shared/schema";
+import { applyThemeToCSSVariables } from "@/lib/theme-defaults";
 
 function Router() {
   return (
@@ -51,62 +52,6 @@ function Router() {
   );
 }
 
-// Function to apply theme settings to CSS variables
-const applyThemeSettings = (themeSettings: ThemeSettings) => {
-  const root = document.documentElement;
-  
-  // Foundation
-  root.style.setProperty('--background', themeSettings.backgroundColor || '#faf9f7');
-  root.style.setProperty('--foreground', themeSettings.textColor || '#1a1a1a');
-  root.style.setProperty('--muted', themeSettings.mutedBackgroundColor || '#e0e0e0');
-  root.style.setProperty('--muted-foreground', themeSettings.mutedTextColor || '#1a1a1a');
-  
-  // Typography
-  root.style.setProperty('--font-sans', `'${themeSettings.sansSerifFont || 'DM Sans'}', sans-serif`);
-  root.style.setProperty('--font-serif', `'${themeSettings.serifFont || 'Georgia'}', serif`);
-  root.style.setProperty('--font-mono', `'${themeSettings.monospaceFont || 'Fira Code'}', monospace`);
-  
-  // Shape & Spacing
-  root.style.setProperty('--radius', `${themeSettings.borderRadius || '0.5'}rem`);
-  
-  // Actions
-  root.style.setProperty('--primary', themeSettings.primaryBackground || '#277677');
-  root.style.setProperty('--primary-foreground', themeSettings.primaryText || '#ffffff');
-  root.style.setProperty('--secondary', themeSettings.secondaryBackground || '#0f1419');
-  root.style.setProperty('--secondary-foreground', themeSettings.secondaryText || '#ffffff');
-  root.style.setProperty('--accent', themeSettings.accentBackground || '#e3ecf6');
-  root.style.setProperty('--accent-foreground', themeSettings.accentText || '#277677');
-  root.style.setProperty('--destructive', themeSettings.destructiveBackground || '#277677');
-  root.style.setProperty('--destructive-foreground', themeSettings.destructiveText || '#ffffff');
-  
-  // Forms
-  root.style.setProperty('--input', themeSettings.inputBackground || '#f7f9fa');
-  root.style.setProperty('--border', themeSettings.inputBorder || '#e1eaef');
-  root.style.setProperty('--ring', themeSettings.focusBorder || '#277677');
-  
-  // Containers
-  root.style.setProperty('--card', themeSettings.cardBackground || '#ffffff');
-  root.style.setProperty('--card-foreground', themeSettings.cardText || '#1a1a1a');
-  root.style.setProperty('--popover', themeSettings.popoverBackground || '#ffffff');
-  root.style.setProperty('--popover-foreground', themeSettings.popoverText || '#1a1a1a');
-  
-  // Sidebar (additional mapping)
-  root.style.setProperty('--sidebar', themeSettings.cardBackground || '#ffffff');
-  root.style.setProperty('--sidebar-foreground', themeSettings.cardText || '#1a1a1a');
-  root.style.setProperty('--sidebar-primary', themeSettings.primaryBackground || '#277677');
-  root.style.setProperty('--sidebar-primary-foreground', themeSettings.primaryText || '#ffffff');
-  root.style.setProperty('--sidebar-accent', themeSettings.accentBackground || '#e3ecf6');
-  root.style.setProperty('--sidebar-accent-foreground', themeSettings.accentText || '#277677');
-  root.style.setProperty('--sidebar-border', themeSettings.inputBorder || '#e1eaef');
-  root.style.setProperty('--sidebar-ring', themeSettings.focusBorder || '#277677');
-  
-  // Charts
-  root.style.setProperty('--chart-1', themeSettings.chart1Color || '#277677');
-  root.style.setProperty('--chart-2', themeSettings.chart2Color || '#277677');
-  root.style.setProperty('--chart-3', themeSettings.chart3Color || '#277677');
-  root.style.setProperty('--chart-4', themeSettings.chart4Color || '#277677');
-  root.style.setProperty('--chart-5', themeSettings.chart5Color || '#277677');
-};
 
 function App() {
   // Load and apply saved theme settings on app initialization
@@ -116,7 +61,7 @@ function App() {
         const response = await fetch('/api/settings/theme');
         if (response.ok) {
           const themeSettings: ThemeSettings = await response.json();
-          applyThemeSettings(themeSettings);
+          applyThemeToCSSVariables(themeSettings);
         }
       } catch (error) {
         console.log('Theme settings not available, using default theme');

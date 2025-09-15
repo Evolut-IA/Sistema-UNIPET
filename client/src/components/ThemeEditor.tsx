@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { insertThemeSettingsSchema } from "@shared/schema";
 import { Palette, Type, Layout, MousePointer, FormInput, Package, BarChart3, Save, Pipette } from "lucide-react";
+import { DEFAULT_THEME, applyThemeToCSSVariables } from "@/lib/theme-defaults";
 
 // Color input component with clean picker
 const ColorInput = ({ value, onChange, title, description, testId }: {
@@ -164,49 +165,7 @@ export default function ThemeEditor() {
 
   const form = useForm({
     resolver: zodResolver(insertThemeSettingsSchema),
-    defaultValues: {
-      // Foundation
-      backgroundColor: "#faf9f7",
-      textColor: "#1a1a1a",
-      mutedBackgroundColor: "#e0e0e0",
-      mutedTextColor: "#1a1a1a",
-      
-      // Typography
-      sansSerifFont: "DM Sans",
-      serifFont: "Georgia",
-      monospaceFont: "Fira Code",
-      
-      // Shape & Spacing
-      borderRadius: "0.5",
-      
-      // Actions
-      primaryBackground: "#277677",
-      primaryText: "#ffffff",
-      secondaryBackground: "#0f1419",
-      secondaryText: "#ffffff",
-      accentBackground: "#e3ecf6",
-      accentText: "#277677",
-      destructiveBackground: "#277677",
-      destructiveText: "#ffffff",
-      
-      // Forms
-      inputBackground: "#f7f9fa",
-      inputBorder: "#e1eaef",
-      focusBorder: "#277677",
-      
-      // Containers
-      cardBackground: "#ffffff",
-      cardText: "#1a1a1a",
-      popoverBackground: "#ffffff",
-      popoverText: "#1a1a1a",
-      
-      // Charts
-      chart1Color: "#277677",
-      chart2Color: "#10b981",
-      chart3Color: "#f59e0b",
-      chart4Color: "#22c55e",
-      chart5Color: "#ef4444",
-    },
+    defaultValues: DEFAULT_THEME,
   });
 
   const saveThemeMutation = useMutation({
@@ -239,59 +198,7 @@ export default function ThemeEditor() {
   // Apply theme changes in real-time
   const watchedValues = form.watch();
   useEffect(() => {
-    const root = document.documentElement;
-    
-    // Foundation
-    root.style.setProperty('--background', watchedValues.backgroundColor);
-    root.style.setProperty('--foreground', watchedValues.textColor);
-    root.style.setProperty('--muted', watchedValues.mutedBackgroundColor);
-    root.style.setProperty('--muted-foreground', watchedValues.mutedTextColor);
-    
-    // Typography
-    root.style.setProperty('--font-sans', `'${watchedValues.sansSerifFont}', sans-serif`);
-    root.style.setProperty('--font-serif', `'${watchedValues.serifFont}', serif`);
-    root.style.setProperty('--font-mono', `'${watchedValues.monospaceFont}', monospace`);
-    
-    // Shape & Spacing
-    root.style.setProperty('--radius', `${watchedValues.borderRadius}rem`);
-    
-    // Actions
-    root.style.setProperty('--primary', watchedValues.primaryBackground);
-    root.style.setProperty('--primary-foreground', watchedValues.primaryText);
-    root.style.setProperty('--secondary', watchedValues.secondaryBackground);
-    root.style.setProperty('--secondary-foreground', watchedValues.secondaryText);
-    root.style.setProperty('--accent', watchedValues.accentBackground);
-    root.style.setProperty('--accent-foreground', watchedValues.accentText);
-    root.style.setProperty('--destructive', watchedValues.destructiveBackground);
-    root.style.setProperty('--destructive-foreground', watchedValues.destructiveText);
-    
-    // Forms
-    root.style.setProperty('--input', watchedValues.inputBackground);
-    root.style.setProperty('--border', watchedValues.inputBorder);
-    root.style.setProperty('--ring', watchedValues.focusBorder);
-    
-    // Containers
-    root.style.setProperty('--card', watchedValues.cardBackground);
-    root.style.setProperty('--card-foreground', watchedValues.cardText);
-    root.style.setProperty('--popover', watchedValues.popoverBackground);
-    root.style.setProperty('--popover-foreground', watchedValues.popoverText);
-    
-    // Sidebar (additional mapping)
-    root.style.setProperty('--sidebar', watchedValues.cardBackground);
-    root.style.setProperty('--sidebar-foreground', watchedValues.cardText);
-    root.style.setProperty('--sidebar-primary', watchedValues.primaryBackground);
-    root.style.setProperty('--sidebar-primary-foreground', watchedValues.primaryText);
-    root.style.setProperty('--sidebar-accent', watchedValues.accentBackground);
-    root.style.setProperty('--sidebar-accent-foreground', watchedValues.accentText);
-    root.style.setProperty('--sidebar-border', watchedValues.inputBorder);
-    root.style.setProperty('--sidebar-ring', watchedValues.focusBorder);
-    
-    // Charts
-    root.style.setProperty('--chart-1', watchedValues.chart1Color);
-    root.style.setProperty('--chart-2', watchedValues.chart2Color);
-    root.style.setProperty('--chart-3', watchedValues.chart3Color);
-    root.style.setProperty('--chart-4', watchedValues.chart4Color);
-    root.style.setProperty('--chart-5', watchedValues.chart5Color);
+    applyThemeToCSSVariables(watchedValues);
   }, [watchedValues]);
 
   const onSubmit = (data: any) => {
@@ -347,7 +254,7 @@ export default function ThemeEditor() {
                         render={({ field }) => (
                           <FormItem>
                             <ColorInput
-                              value={field.value || "#277677"}
+                              value={field.value || DEFAULT_THEME.primaryBackground}
                               onChange={field.onChange}
                               title="Fundo do Botão"
                               description="Cor de fundo dos botões principais"
@@ -364,7 +271,7 @@ export default function ThemeEditor() {
                         render={({ field }) => (
                           <FormItem>
                             <ColorInput
-                              value={field.value || "#ffffff"}
+                              value={field.value || DEFAULT_THEME.primaryText}
                               onChange={field.onChange}
                               title="Texto do Botão"
                               description="Cor do texto dentro dos botões"
@@ -381,7 +288,7 @@ export default function ThemeEditor() {
                         render={({ field }) => (
                           <FormItem>
                             <ColorInput
-                              value={field.value || "#e3ecf6"}
+                              value={field.value || DEFAULT_THEME.accentBackground}
                               onChange={field.onChange}
                               title="Fundo do botão em destaque"
                               description="Cor de fundo dos botões em destaque"
@@ -398,7 +305,7 @@ export default function ThemeEditor() {
                         render={({ field }) => (
                           <FormItem>
                             <ColorInput
-                              value={field.value || "#277677"}
+                              value={field.value || DEFAULT_THEME.accentText}
                               onChange={field.onChange}
                               title="Texto do Botão em destaque"
                               description="Cor do texto dos botões em destaque"
@@ -415,7 +322,7 @@ export default function ThemeEditor() {
                         render={({ field }) => (
                           <FormItem>
                             <ColorInput
-                              value={field.value || "#0f1419"}
+                              value={field.value || DEFAULT_THEME.secondaryBackground}
                               onChange={field.onChange}
                               title="Fundo do Botão Secundário"
                               description="Cor de fundo dos botões secundários"
@@ -432,7 +339,7 @@ export default function ThemeEditor() {
                         render={({ field }) => (
                           <FormItem>
                             <ColorInput
-                              value={field.value || "#ffffff"}
+                              value={field.value || DEFAULT_THEME.secondaryText}
                               onChange={field.onChange}
                               title="Texto do Botão Secundário"
                               description="Cor do texto dos botões secundários"
@@ -449,7 +356,7 @@ export default function ThemeEditor() {
                         render={({ field }) => (
                           <FormItem>
                             <ColorInput
-                              value={field.value || "#dc2626"}
+                              value={field.value || DEFAULT_THEME.destructiveBackground}
                               onChange={field.onChange}
                               title="Fundo do Botão Destrutivo"
                               description="Cor de fundo dos botões destrutivos"
@@ -466,7 +373,7 @@ export default function ThemeEditor() {
                         render={({ field }) => (
                           <FormItem>
                             <ColorInput
-                              value={field.value || "#ffffff"}
+                              value={field.value || DEFAULT_THEME.destructiveText}
                               onChange={field.onChange}
                               title="Texto do Botão Destrutivo"
                               description="Cor do texto dos botões destrutivos"
@@ -491,7 +398,7 @@ export default function ThemeEditor() {
                         render={({ field }) => (
                           <FormItem>
                             <ColorInput
-                              value={field.value || "#faf9f7"}
+                              value={field.value || DEFAULT_THEME.backgroundColor}
                               onChange={field.onChange}
                               title="Fundo da Página"
                               description="Cor de fundo da página principal"
@@ -508,7 +415,7 @@ export default function ThemeEditor() {
                         render={({ field }) => (
                           <FormItem>
                             <ColorInput
-                              value={field.value || "#1a1a1a"}
+                              value={field.value || DEFAULT_THEME.textColor}
                               onChange={field.onChange}
                               title="Texto Principal"
                               description="Cor do texto principal da página"
@@ -525,7 +432,7 @@ export default function ThemeEditor() {
                         render={({ field }) => (
                           <FormItem>
                             <ColorInput
-                              value={field.value || "#ffffff"}
+                              value={field.value || DEFAULT_THEME.cardBackground}
                               onChange={field.onChange}
                               title="Fundo dos Cards"
                               description="Cor de fundo dos cards e containers"
@@ -542,7 +449,7 @@ export default function ThemeEditor() {
                         render={({ field }) => (
                           <FormItem>
                             <ColorInput
-                              value={field.value || "#1a1a1a"}
+                              value={field.value || DEFAULT_THEME.cardText}
                               onChange={field.onChange}
                               title="Texto Secundário"
                               description="Cor do texto dentro dos cards"
@@ -559,7 +466,7 @@ export default function ThemeEditor() {
                         render={({ field }) => (
                           <FormItem>
                             <ColorInput
-                              value={field.value || "#ffffff"}
+                              value={field.value || DEFAULT_THEME.popoverBackground}
                               onChange={field.onChange}
                               title="Fundo das divs internas"
                               description="Cor de fundo das divs internas"
@@ -576,7 +483,7 @@ export default function ThemeEditor() {
                         render={({ field }) => (
                           <FormItem>
                             <ColorInput
-                              value={field.value || "#1a1a1a"}
+                              value={field.value || DEFAULT_THEME.popoverText}
                               onChange={field.onChange}
                               title="Texto das divs"
                               description="Cor do texto das divs internas"
@@ -601,7 +508,7 @@ export default function ThemeEditor() {
                         render={({ field }) => (
                           <FormItem>
                             <ColorInput
-                              value={field.value || "#277677"}
+                              value={field.value || DEFAULT_THEME.chart1Color}
                               onChange={field.onChange}
                               title="Visão Geral em Gráficos"
                               description="Cor principal dos gráficos de visão geral"
@@ -618,7 +525,7 @@ export default function ThemeEditor() {
                         render={({ field }) => (
                           <FormItem>
                             <ColorInput
-                              value={field.value || "#10b981"}
+                              value={field.value || DEFAULT_THEME.chart2Color}
                               onChange={field.onChange}
                               title="Distribuição de Planos"
                               description="Cor dos gráficos de distribuição de planos"
@@ -635,7 +542,7 @@ export default function ThemeEditor() {
                         render={({ field }) => (
                           <FormItem>
                             <ColorInput
-                              value={field.value || "#f59e0b"}
+                              value={field.value || DEFAULT_THEME.chart3Color}
                               onChange={field.onChange}
                               title="Icones"
                               description="Cor dos ícones nos gráficos"
@@ -660,7 +567,7 @@ export default function ThemeEditor() {
                         render={({ field }) => (
                           <FormItem>
                             <ColorInput
-                              value={field.value || "#22c55e"}
+                              value={field.value || DEFAULT_THEME.chart4Color}
                               onChange={field.onChange}
                               title="Positivo (verde)"
                               description="Cor para status positivos e sucessos"
@@ -677,7 +584,7 @@ export default function ThemeEditor() {
                         render={({ field }) => (
                           <FormItem>
                             <ColorInput
-                              value={field.value || "#eab308"}
+                              value={field.value || DEFAULT_THEME.chart3Color}
                               onChange={field.onChange}
                               title="Ausente (amarelo)"
                               description="Cor para status de ausência e avisos"
@@ -694,7 +601,7 @@ export default function ThemeEditor() {
                         render={({ field }) => (
                           <FormItem>
                             <ColorInput
-                              value={field.value || "#ef4444"}
+                              value={field.value || DEFAULT_THEME.chart5Color}
                               onChange={field.onChange}
                               title="Negativo (vermelho)"
                               description="Cor para status negativos e erros"
@@ -719,7 +626,7 @@ export default function ThemeEditor() {
                         render={({ field }) => (
                           <FormItem>
                             <ColorInput
-                              value={field.value || "#f7f9fa"}
+                              value={field.value || DEFAULT_THEME.inputBackground}
                               onChange={field.onChange}
                               title="Fundo"
                               description="Cor de fundo dos campos de texto"
@@ -736,7 +643,7 @@ export default function ThemeEditor() {
                         render={({ field }) => (
                           <FormItem>
                             <ColorInput
-                              value={field.value || "#1a1a1a"}
+                              value={field.value || DEFAULT_THEME.textColor}
                               onChange={field.onChange}
                               title="Texto Digitado"
                               description="Cor do texto escrito nos campos"
@@ -753,7 +660,7 @@ export default function ThemeEditor() {
                         render={({ field }) => (
                           <FormItem>
                             <ColorInput
-                              value={field.value || "#666666"}
+                              value={field.value || DEFAULT_THEME.mutedTextColor}
                               onChange={field.onChange}
                               title="Texto placeholder"
                               description="Cor do texto de exemplo nos campos"
@@ -770,7 +677,7 @@ export default function ThemeEditor() {
                         render={({ field }) => (
                           <FormItem>
                             <ColorInput
-                              value={field.value || "#e1eaef"}
+                              value={field.value || DEFAULT_THEME.inputBorder}
                               onChange={field.onChange}
                               title="Borda dos Campos"
                               description="Cor da borda dos campos de texto"
@@ -787,7 +694,7 @@ export default function ThemeEditor() {
                         render={({ field }) => (
                           <FormItem>
                             <ColorInput
-                              value={field.value || "#277677"}
+                              value={field.value || DEFAULT_THEME.focusBorder}
                               onChange={field.onChange}
                               title="Borda ao Focar"
                               description="Cor da borda quando o campo está focado"
