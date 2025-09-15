@@ -341,11 +341,11 @@ export default function Guides() {
                       </div>
                     </div>
                     
-                    <div className="flex flex-wrap gap-1 w-full sm:w-auto sm:ml-3">
+                    {/* Botões em linha horizontal */}
+                    <div className="flex items-center space-x-1 w-full sm:w-auto sm:ml-3">
                       <Button
                         variant="outline"
                         size="sm"
-                        className="w-full sm:w-auto"
                         onClick={() => handleViewDetails(guide)}
                         data-testid={`button-view-${guide.id}`}
                       >
@@ -354,7 +354,6 @@ export default function Guides() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="w-full sm:w-auto"
                         onClick={() => {
                           setSelectedGuide(guide);
                           handleCopyToClipboard();
@@ -366,7 +365,6 @@ export default function Guides() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="w-full sm:w-auto"
                         onClick={() => setLocation(`/guias/${guide.id}/editar`)}
                         data-testid={`button-edit-${guide.id}`}
                       >
@@ -375,7 +373,6 @@ export default function Guides() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="w-full sm:w-auto"
                         onClick={() => handleDelete(guide.id, guide.procedure)}
                         disabled={deleteGuideMutation.isPending}
                         data-testid={`button-delete-${guide.id}`}
