@@ -802,6 +802,135 @@ export default function ThemeEditor() {
 
                 </AccordionContent>
               </AccordionItem>
+
+              {/* Fontes do Sistema */}
+              <AccordionItem value="fonts" data-testid="accordion-fonts">
+                <AccordionTrigger className="flex items-center space-x-2">
+                  <Type className="h-4 w-4" />
+                  <div>
+                    <span>Fontes do Sistema</span>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="space-y-6">
+                  <FormField
+                    control={form.control}
+                    name="sansSerifFont"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Fonte Sans-Serif</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger data-testid="select-sans-serif-font">
+                              <SelectValue placeholder="Selecione uma fonte sans-serif" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="Inter">Inter</SelectItem>
+                            <SelectItem value="Roboto">Roboto</SelectItem>
+                            <SelectItem value="DM Sans">DM Sans</SelectItem>
+                            <SelectItem value="Open Sans">Open Sans</SelectItem>
+                            <SelectItem value="Lato">Lato</SelectItem>
+                            <SelectItem value="Poppins">Poppins</SelectItem>
+                            <SelectItem value="Montserrat">Montserrat</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="serifFont"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Fonte Serif</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger data-testid="select-serif-font">
+                              <SelectValue placeholder="Selecione uma fonte serif" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="Georgia">Georgia</SelectItem>
+                            <SelectItem value="Times New Roman">Times New Roman</SelectItem>
+                            <SelectItem value="Playfair Display">Playfair Display</SelectItem>
+                            <SelectItem value="Merriweather">Merriweather</SelectItem>
+                            <SelectItem value="Crimson Text">Crimson Text</SelectItem>
+                            <SelectItem value="Lora">Lora</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="monospaceFont"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Fonte Monospace</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger data-testid="select-monospace-font">
+                              <SelectValue placeholder="Selecione uma fonte monospace" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="Fira Code">Fira Code</SelectItem>
+                            <SelectItem value="JetBrains Mono">JetBrains Mono</SelectItem>
+                            <SelectItem value="Source Code Pro">Source Code Pro</SelectItem>
+                            <SelectItem value="Monaco">Monaco</SelectItem>
+                            <SelectItem value="Courier New">Courier New</SelectItem>
+                            <SelectItem value="Consolas">Consolas</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </AccordionContent>
+              </AccordionItem>
+
+              {/* Arredondamento dos Elementos */}
+              <AccordionItem value="radius" data-testid="accordion-radius">
+                <AccordionTrigger className="flex items-center space-x-2">
+                  <Layout className="h-4 w-4" />
+                  <div>
+                    <span>Arredondamento dos Elementos</span>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="space-y-6">
+                  <FormField
+                    control={form.control}
+                    name="borderRadius"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Raio da Borda</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger data-testid="select-border-radius">
+                              <SelectValue placeholder="Selecione o arredondamento" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="0">Sem arredondamento (0rem)</SelectItem>
+                            <SelectItem value="0.25">Pequeno (0.25rem)</SelectItem>
+                            <SelectItem value="0.375">Pequeno-médio (0.375rem)</SelectItem>
+                            <SelectItem value="0.5">Médio (0.5rem)</SelectItem>
+                            <SelectItem value="0.75">Médio-grande (0.75rem)</SelectItem>
+                            <SelectItem value="1">Grande (1rem)</SelectItem>
+                            <SelectItem value="1.5">Muito grande (1.5rem)</SelectItem>
+                            <SelectItem value="9999">Totalmente arredondado</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </AccordionContent>
+              </AccordionItem>
             </Accordion>
 
             <div className="flex justify-end pt-6">
