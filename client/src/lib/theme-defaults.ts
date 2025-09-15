@@ -82,7 +82,7 @@ export const applyThemeToCSSVariables = (themeSettings: Record<string, any>) => 
   root.style.setProperty('--ring', themeSettings.focusBorder || DEFAULT_THEME.focusBorder);
   
   // Containers
-  root.style.setProperty('--card', themeSettings.cardBackground || DEFAULT_THEME.cardBackground);
+  root.style.setProperty('--card', themeSettings.accentBackground || DEFAULT_THEME.accentBackground);
   root.style.setProperty('--card-foreground', themeSettings.cardText || DEFAULT_THEME.cardText);
   root.style.setProperty('--popover', themeSettings.popoverBackground || DEFAULT_THEME.popoverBackground);
   root.style.setProperty('--popover-foreground', themeSettings.popoverText || DEFAULT_THEME.popoverText);
