@@ -310,8 +310,8 @@ export default function Clients() {
                         </h3>
                       </div>
 
-                      {/* Informações em Grid Responsivo */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 text-sm text-muted-foreground">
+                      {/* Informações em Grid Responsivo - Ocultas em Mobile */}
+                      <div className="hidden sm:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 text-sm text-muted-foreground">
                         <div className="flex flex-col space-y-1">
                           <span className="font-medium">Email:</span>
                           <span className="break-all">{client.email || "Não informado"}</span>
