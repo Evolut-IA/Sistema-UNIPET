@@ -282,7 +282,7 @@ export default function GuideForm() {
             </CardContent>
           </Card>
 
-          <div className="flex justify-end space-x-4 md:space-x-4 space-x-2 md:flex-row flex-col md:space-y-0 space-y-3">
+          <div className="flex justify-center space-x-4 md:space-x-4 space-x-2 md:flex-row flex-col md:space-y-0 space-y-3">
             <Button
               type="button"
               variant="outline"
