@@ -347,7 +347,7 @@ export default function PetForm() {
                         </FormControl>
                         <SelectContent>
                           {plans?.flatMap((plan: any, index: number) => [
-                            <SelectItem key={plan.id} value={plan.id}>
+                            <SelectItem key={plan.id} value={plan.id} className="py-3 px-4">
                               {plan.name} - {new Intl.NumberFormat('pt-BR', { 
                                 style: 'currency', 
                                 currency: 'BRL' 
