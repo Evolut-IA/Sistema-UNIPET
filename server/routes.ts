@@ -1,7 +1,8 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertClientSchema, insertPetSchema, insertPlanSchema, insertNetworkUnitSchema, insertFaqItemSchema, insertContactSubmissionSchema, insertSiteSettingsSchema, insertThemeSettingsSchema, insertGuideSchema } from "@shared/schema";
+import { insertClientSchema, insertPetSchema, insertPlanSchema, insertNetworkUnitSchema, insertFaqItemSchema, insertContactSubmissionSchema, insertSiteSettingsSchema, insertThemeSettingsSchema, insertGuideSchema, insertUserSchema, updateNetworkUnitCredentialsSchema, type InsertUser } from "@shared/schema";
+import bcrypt from "bcrypt";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
@@ -281,6 +282,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Network unit credentials routes (must come before /:id route)
+  app.get("/api/network-units/credentials", async (req, res) => {
+    try {
+      const units = await storage.getNetworkUnitsWithCredentials();
+      res.json(units);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch network units with credentials" });
+    }
+  });
+
+  app.put("/api/network-units/:id/credentials", async (req, res) => {
+    try {
+      // Validate request data with zod schema
+      const credentialData = updateNetworkUnitCredentialsSchema.parse(req.body);
+      
+      // Hash the password
+      const saltRounds = 10;
+      const senhaHash = await bcrypt.hash(credentialData.password, saltRounds);
+
+      const updated = await storage.updateNetworkUnitCredentials(req.params.id, {
+        login: credentialData.login,
+        senhaHash,
+      });
+
+      if (!updated) {
+        return res.status(404).json({ message: "Network unit not found" });
+      }
+
+      res.json({ message: "Credentials updated successfully" });
+    } catch (error) {
+      if (error instanceof Error && error.message.includes("duplicate key")) {
+        res.status(400).json({ message: "Login already exists for another unit" });
+      } else if (error instanceof Error && error.name === "ZodError") {
+        res.status(400).json({ message: "Invalid credential data", details: error.message });
+      } else {
+        res.status(500).json({ message: "Failed to update credentials" });
+      }
+    }
+  });
+
   app.get("/api/network-units/:id", async (req, res) => {
     try {
       const unit = await storage.getNetworkUnit(req.params.id);
@@ -325,6 +366,101 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ message: "Failed to delete network unit" });
+    }
+  });
+
+
+  // User routes
+  app.get("/api/users", async (req, res) => {
+    try {
+      const users = await storage.getUsers();
+      res.json(users);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch users" });
+    }
+  });
+
+  app.get("/api/users/:id", async (req, res) => {
+    try {
+      const user = await storage.getUser(req.params.id);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      res.json(user);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
+  app.post("/api/users", async (req, res) => {
+    try {
+      const userData = insertUserSchema.parse(req.body);
+      
+      // Hash the password
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(userData.password, saltRounds);
+      
+      const userWithHashedPassword = {
+        ...userData,
+        password: hashedPassword,
+        permissions: Array.isArray(userData.permissions) ? userData.permissions as string[] : [] as string[],
+      };
+
+      const user = await storage.createUser(userWithHashedPassword);
+      res.status(201).json(user);
+    } catch (error) {
+      if (error instanceof Error && error.message.includes("duplicate key")) {
+        res.status(400).json({ message: "Username or email already exists" });
+      } else {
+        res.status(400).json({ message: "Invalid user data" });
+      }
+    }
+  });
+
+  app.put("/api/users/:id", async (req, res) => {
+    try {
+      const userData = insertUserSchema.partial().parse(req.body);
+      
+      // Hash password if provided
+      if (userData.password) {
+        const saltRounds = 10;
+        userData.password = await bcrypt.hash(userData.password, saltRounds);
+      }
+      
+      // Ensure permissions is an array and create properly typed update object
+      if (userData.permissions && !Array.isArray(userData.permissions)) {
+        userData.permissions = [] as string[];
+      }
+
+      // Create properly typed update object to avoid type inference issues
+      const updateData: Partial<InsertUser> = {
+        ...userData,
+        permissions: userData.permissions ? userData.permissions as string[] : undefined
+      };
+
+      const user = await storage.updateUser(req.params.id, updateData);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      res.json(user);
+    } catch (error) {
+      if (error instanceof Error && error.message.includes("duplicate key")) {
+        res.status(400).json({ message: "Username or email already exists" });
+      } else {
+        res.status(400).json({ message: "Invalid user data" });
+      }
+    }
+  });
+
+  app.delete("/api/users/:id", async (req, res) => {
+    try {
+      const deleted = await storage.deleteUser(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete user" });
     }
   });
 

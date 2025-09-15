@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,7 +17,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { insertUserSchema } from "@shared/schema";
-import { UserCog, Plus, Search, Edit, Trash2, Shield, User, Key } from "lucide-react";
+import { UserCog, Plus, Search, Edit, Trash2, Shield, User, Key, Network, Lock, Eye, EyeOff } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -36,11 +37,19 @@ export default function Administration() {
   const [searchQuery, setSearchQuery] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<any>(null);
+  const [credentialDialogOpen, setCredentialDialogOpen] = useState(false);
+  const [editingNetworkUnit, setEditingNetworkUnit] = useState<any>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
   const { data: users = [], isLoading } = useQuery<any[]>({
     queryKey: ["/api/users"],
+  });
+
+  const { data: networkUnits = [], isLoading: isLoadingNetworkUnits } = useQuery<any[]>({
+    queryKey: ["/api/network-units/credentials"],
   });
 
   const form = useForm({
@@ -54,6 +63,24 @@ export default function Administration() {
       role: "view",
       permissions: [] as string[],
       isActive: true,
+    },
+  });
+
+  const credentialForm = useForm({
+    resolver: zodResolver(
+      z.object({
+        login: z.string().min(3, "Login deve ter pelo menos 3 caracteres"),
+        password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres"),
+        confirmPassword: z.string(),
+      }).refine((data) => data.password === data.confirmPassword, {
+        message: "Senhas não coincidem",
+        path: ["confirmPassword"],
+      })
+    ),
+    defaultValues: {
+      login: "",
+      password: "",
+      confirmPassword: "",
     },
   });
 
@@ -99,6 +126,34 @@ export default function Administration() {
       toast({
         title: "Erro",
         description: "Falha ao remover usuário.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateCredentialsMutation = useMutation({
+    mutationFn: async (data: { id: string; login: string; password: string }) => {
+      await apiRequest("PUT", `/api/network-units/${data.id}/credentials`, {
+        login: data.login,
+        password: data.password,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/network-units/credentials"] });
+      toast({
+        title: "Credenciais atualizadas",
+        description: "Credenciais da unidade foram atualizadas com sucesso.",
+      });
+      setCredentialDialogOpen(false);
+      setEditingNetworkUnit(null);
+      credentialForm.reset();
+      setShowPassword(false);
+      setShowPasswordConfirm(false);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Erro",
+        description: error.message || "Falha ao atualizar credenciais.",
         variant: "destructive",
       });
     },
@@ -160,6 +215,33 @@ export default function Administration() {
     } else {
       createMutation.mutate(data);
     }
+  };
+
+  const handleEditCredentials = (networkUnit: any) => {
+    setEditingNetworkUnit(networkUnit);
+    credentialForm.reset({
+      login: networkUnit.login || "",
+      password: "",
+      confirmPassword: "",
+    });
+    setCredentialDialogOpen(true);
+  };
+
+  const onCredentialSubmit = (data: any) => {
+    if (editingNetworkUnit) {
+      updateCredentialsMutation.mutate({
+        id: editingNetworkUnit.id,
+        login: data.login,
+        password: data.password,
+      });
+    }
+  };
+
+  const getCredentialStatus = (unit: any) => {
+    if (unit.hasCredentials) {
+      return { text: "Configurado", color: "bg-chart-2/20 text-chart-2" };
+    }
+    return { text: "Não configurado", color: "bg-chart-5/20 text-chart-5" };
   };
 
   const getRoleColor = (role: string) => {
@@ -523,6 +605,218 @@ export default function Administration() {
           )}
         </CardContent>
       </Card>
+
+      {/* Separator between sections */}
+      <Separator className="my-8" />
+
+      {/* Network Credentials Section */}
+      <div className="space-y-4 sm:space-y-6">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+          <div className="flex-1">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground break-words">Rede Credenciada</h2>
+            <p className="text-sm text-muted-foreground">Gerencie credenciais de acesso das unidades da rede</p>
+          </div>
+        </div>
+
+        {/* Network Units List */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-foreground">
+              Unidades da Rede ({networkUnits?.length || 0})
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {isLoadingNetworkUnits ? (
+              <div className="space-y-4">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="border rounded-lg p-4 animate-pulse">
+                    <div className="h-4 bg-muted rounded w-1/4 mb-2"></div>
+                    <div className="h-3 bg-muted rounded w-1/2 mb-1"></div>
+                    <div className="h-3 bg-muted rounded w-1/3"></div>
+                  </div>
+                ))}
+              </div>
+            ) : networkUnits?.length ? (
+              <div className="space-y-4">
+                {networkUnits.map((unit: any) => {
+                  const status = getCredentialStatus(unit);
+                  return (
+                    <div key={unit.id} className="border rounded-lg p-4 hover:bg-muted/10 transition-colors">
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-3 mb-2">
+                            <Network className="h-5 w-5 text-primary" />
+                            <h3 className="font-semibold text-foreground">
+                              {unit.name}
+                            </h3>
+                            <Badge className={status.color}>
+                              {status.text}
+                            </Badge>
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 text-sm text-muted-foreground mb-3">
+                            <p><span className="font-medium">Endereço:</span> {unit.address}</p>
+                            <p><span className="font-medium">Telefone:</span> {unit.phone}</p>
+                            <p><span className="font-medium">URL Slug:</span> {unit.urlSlug || "Não definido"}</p>
+                          </div>
+
+                          {unit.login && (
+                            <div className="text-sm text-muted-foreground mb-3">
+                              <p><span className="font-medium">Login atual:</span> {unit.login}</p>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="flex flex-col space-y-2 ml-4">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleEditCredentials(unit)}
+                            className="flex items-center space-x-2"
+                          >
+                            <Key className="h-4 w-4" />
+                            <span>{unit.login ? "Editar Credenciais" : "Definir Credenciais"}</span>
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <Network className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <p className="text-muted-foreground">
+                  Nenhuma unidade da rede cadastrada ainda.
+                </p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Credential Dialog */}
+        <Dialog open={credentialDialogOpen} onOpenChange={(open) => {
+          setCredentialDialogOpen(open);
+          if (!open) {
+            setEditingNetworkUnit(null);
+            credentialForm.reset();
+            setShowPassword(false);
+            setShowPasswordConfirm(false);
+          }
+        }}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle className="text-foreground">
+                {editingNetworkUnit?.login ? "Editar" : "Definir"} Credenciais
+              </DialogTitle>
+              <p className="text-sm text-muted-foreground">
+                {editingNetworkUnit?.name}
+              </p>
+            </DialogHeader>
+            <Form {...credentialForm}>
+              <form onSubmit={credentialForm.handleSubmit(onCredentialSubmit)} className="space-y-4">
+                <FormField
+                  control={credentialForm.control}
+                  name="login"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Login *</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={credentialForm.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nova Senha *</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input 
+                            {...field} 
+                            type={showPassword ? "text" : "password"}
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                            onClick={() => setShowPassword(!showPassword)}
+                          >
+                            {showPassword ? (
+                              <EyeOff className="h-4 w-4" />
+                            ) : (
+                              <Eye className="h-4 w-4" />
+                            )}
+                          </Button>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={credentialForm.control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Confirmar Nova Senha *</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input 
+                            {...field} 
+                            type={showPasswordConfirm ? "text" : "password"}
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                            onClick={() => setShowPasswordConfirm(!showPasswordConfirm)}
+                          >
+                            {showPasswordConfirm ? (
+                              <EyeOff className="h-4 w-4" />
+                            ) : (
+                              <Eye className="h-4 w-4" />
+                            )}
+                          </Button>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="flex justify-end space-x-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setCredentialDialogOpen(false)}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button
+                    type="submit"
+                    className="btn-primary"
+                    disabled={updateCredentialsMutation.isPending}
+                  >
+                    {updateCredentialsMutation.isPending ? "Salvando..." : "Salvar Credenciais"}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      {/* Separator before statistics */}
+      <Separator className="my-8" />
 
       {/* Statistics */}
       {filteredUsers && filteredUsers.length > 0 && (

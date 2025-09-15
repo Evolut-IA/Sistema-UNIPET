@@ -8,7 +8,7 @@ import type {
   Client, InsertClient,
   Pet, InsertPet,
   Plan, InsertPlan,
-  NetworkUnit, InsertNetworkUnit,
+  NetworkUnit, InsertNetworkUnit, NetworkUnitWithCredentialStatus,
   FaqItem, InsertFaqItem,
   ContactSubmission, InsertContactSubmission,
   SiteSettings, InsertSiteSettings,
@@ -220,6 +220,10 @@ export interface IStorage {
     monthlyPrice: number;
     totalRevenue: number;
   }[]>;
+
+  // Network unit credentials methods
+  getNetworkUnitsWithCredentials(): Promise<NetworkUnitWithCredentialStatus[]>;
+  updateNetworkUnitCredentials(id: string, credentials: { login: string; senhaHash: string }): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -469,6 +473,30 @@ export class DatabaseStorage implements IStorage {
 
   async getNetworkUnits(): Promise<NetworkUnit[]> {
     return await db.select().from(schema.networkUnits).orderBy(desc(schema.networkUnits.createdAt));
+  }
+
+  async getNetworkUnitsWithCredentials(): Promise<NetworkUnitWithCredentialStatus[]> {
+    const units = await db.select().from(schema.networkUnits).orderBy(desc(schema.networkUnits.createdAt));
+    
+    // Transform to safe format excluding password hash
+    return units.map(unit => {
+      const { senhaHash, ...safeUnit } = unit;
+      return {
+        ...safeUnit,
+        hasCredentials: !!(unit.login && unit.senhaHash)
+      };
+    });
+  }
+
+  async updateNetworkUnitCredentials(id: string, credentials: { login: string; senhaHash: string }): Promise<boolean> {
+    const result = await db.update(schema.networkUnits)
+      .set({
+        login: credentials.login,
+        senhaHash: credentials.senhaHash,
+      })
+      .where(eq(schema.networkUnits.id, id))
+      .returning();
+    return result.length > 0;
   }
 
   // FAQ methods

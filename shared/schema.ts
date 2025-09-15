@@ -246,6 +246,12 @@ export const insertSiteSettingsSchema = createInsertSchema(siteSettings).omit({ 
 export const insertThemeSettingsSchema = createInsertSchema(themeSettings).omit({ id: true });
 export const insertGuideSchema = createInsertSchema(guides).omit({ id: true, createdAt: true, updatedAt: true });
 
+// Credential update schema for network units
+export const updateNetworkUnitCredentialsSchema = z.object({
+  login: z.string().min(3, "Login deve ter pelo menos 3 caracteres"),
+  password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres")
+});
+
 // Types - Using Drizzle's $inferInsert for storage compatibility
 export type InsertUser = typeof users.$inferInsert;
 export type InsertClient = typeof clients.$inferInsert;
@@ -270,3 +276,11 @@ export type ContactSubmission = typeof contactSubmissions.$inferSelect;
 export type SiteSettings = typeof siteSettings.$inferSelect;
 export type ThemeSettings = typeof themeSettings.$inferSelect;
 export type Guide = typeof guides.$inferSelect;
+
+// Safe type for network units with credential status (excludes password hash)
+export type NetworkUnitWithCredentialStatus = Omit<NetworkUnit, 'senhaHash'> & {
+  hasCredentials: boolean;
+};
+
+// Credential update type
+export type UpdateNetworkUnitCredentials = z.infer<typeof updateNetworkUnitCredentialsSchema>;
