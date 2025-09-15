@@ -142,7 +142,7 @@ export interface IStorage {
   createClient(client: InsertClient): Promise<Client>;
   updateClient(id: string, updates: Partial<InsertClient>): Promise<Client | undefined>;
   deleteClient(id: string): Promise<boolean>;
-  getClients(): Promise<Client[]>;
+  getClients(startDate?: string, endDate?: string): Promise<Client[]>;
 
   // Pet methods
   getPet(id: string): Promise<Pet | undefined>;
@@ -158,11 +158,11 @@ export interface IStorage {
   createPlan(plan: InsertPlan): Promise<Plan>;
   updatePlan(id: string, updates: Partial<InsertPlan>): Promise<Plan | undefined>;
   deletePlan(id: string): Promise<boolean>;
-  getPlans(): Promise<Plan[]>;
+  getPlans(startDate?: string, endDate?: string): Promise<Plan[]>;
 
   // Network unit methods
   getNetworkUnit(id: string): Promise<NetworkUnit | undefined>;
-  getActiveNetworkUnits(): Promise<NetworkUnit[]>;
+  getActiveNetworkUnits(startDate?: string, endDate?: string): Promise<NetworkUnit[]>;
   createNetworkUnit(unit: InsertNetworkUnit): Promise<NetworkUnit>;
   updateNetworkUnit(id: string, updates: Partial<InsertNetworkUnit>): Promise<NetworkUnit | undefined>;
   deleteNetworkUnit(id: string): Promise<boolean>;
@@ -179,7 +179,7 @@ export interface IStorage {
   // Contact submission methods
   getContactSubmission(id: string): Promise<ContactSubmission | undefined>;
   createContactSubmission(submission: InsertContactSubmission): Promise<ContactSubmission>;
-  getContactSubmissions(): Promise<ContactSubmission[]>;
+  getContactSubmissions(startDate?: string, endDate?: string): Promise<ContactSubmission[]>;
   deleteContactSubmission(id: string): Promise<boolean>;
 
   // Site settings methods
@@ -197,11 +197,11 @@ export interface IStorage {
   createGuide(guide: InsertGuide): Promise<Guide>;
   updateGuide(id: string, updates: Partial<InsertGuide>): Promise<Guide | undefined>;
   deleteGuide(id: string): Promise<boolean>;
-  getGuides(): Promise<Guide[]>;
+  getGuides(startDate?: string, endDate?: string): Promise<Guide[]>;
   getRecentGuides(limit?: number): Promise<Guide[]>;
 
   // Dashboard analytics
-  getDashboardStats(): Promise<{
+  getDashboardStats(startDate?: string, endDate?: string): Promise<{
     activeClients: number;
     registeredPets: number;
     openGuides: number;
@@ -210,6 +210,15 @@ export interface IStorage {
     activePlans: number;
     inactivePlans: number;
   }>;
+
+  // Plan revenue analytics
+  getPlanRevenue(startDate?: string, endDate?: string): Promise<{
+    planId: string;
+    planName: string;
+    petCount: number;
+    monthlyPrice: number;
+    totalRevenue: number;
+  }[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -289,8 +298,26 @@ export class DatabaseStorage implements IStorage {
     return result.length > 0;
   }
 
-  async getClients(): Promise<Client[]> {
-    return await db.select().from(schema.clients).orderBy(desc(schema.clients.createdAt));
+  async getClients(startDate?: string, endDate?: string): Promise<Client[]> {
+    let query = db.select().from(schema.clients);
+    
+    // Build date filter conditions
+    const dateConditions = [];
+    if (startDate) {
+      dateConditions.push(gte(schema.clients.createdAt, new Date(startDate)));
+    }
+    if (endDate) {
+      // Add one day to endDate to include the entire end date
+      const endDateTime = new Date(endDate);
+      endDateTime.setDate(endDateTime.getDate() + 1);
+      dateConditions.push(lt(schema.clients.createdAt, endDateTime));
+    }
+    
+    if (dateConditions.length > 0) {
+      query = query.where(and(...dateConditions));
+    }
+    
+    return await query.orderBy(desc(schema.clients.createdAt));
   }
 
   // Pet methods
@@ -358,9 +385,27 @@ export class DatabaseStorage implements IStorage {
     return result.length > 0;
   }
 
-  async getPlans(): Promise<Plan[]> {
+  async getPlans(startDate?: string, endDate?: string): Promise<Plan[]> {
     try {
-      return await db.select().from(schema.plans);
+      let query = db.select().from(schema.plans);
+      
+      // Build date filter conditions
+      const dateConditions = [];
+      if (startDate) {
+        dateConditions.push(gte(schema.plans.createdAt, new Date(startDate)));
+      }
+      if (endDate) {
+        // Add one day to endDate to include the entire end date
+        const endDateTime = new Date(endDate);
+        endDateTime.setDate(endDateTime.getDate() + 1);
+        dateConditions.push(lt(schema.plans.createdAt, endDateTime));
+      }
+      
+      if (dateConditions.length > 0) {
+        query = query.where(and(...dateConditions));
+      }
+      
+      return await query;
     } catch (error) {
       console.error("Error in getPlans():", error);
       throw error;
@@ -388,8 +433,22 @@ export class DatabaseStorage implements IStorage {
     return result[0];
   }
 
-  async getActiveNetworkUnits(): Promise<NetworkUnit[]> {
-    return await db.select().from(schema.networkUnits).where(eq(schema.networkUnits.isActive, true));
+  async getActiveNetworkUnits(startDate?: string, endDate?: string): Promise<NetworkUnit[]> {
+    let query = db.select().from(schema.networkUnits).where(eq(schema.networkUnits.isActive, true));
+    
+    // Build date filter conditions
+    const dateConditions = [eq(schema.networkUnits.isActive, true)];
+    if (startDate) {
+      dateConditions.push(gte(schema.networkUnits.createdAt, new Date(startDate)));
+    }
+    if (endDate) {
+      // Add one day to endDate to include the entire end date
+      const endDateTime = new Date(endDate);
+      endDateTime.setDate(endDateTime.getDate() + 1);
+      dateConditions.push(lt(schema.networkUnits.createdAt, endDateTime));
+    }
+    
+    return await db.select().from(schema.networkUnits).where(and(...dateConditions));
   }
 
   async createNetworkUnit(unit: InsertNetworkUnit): Promise<NetworkUnit> {
@@ -451,8 +510,26 @@ export class DatabaseStorage implements IStorage {
     return result[0];
   }
 
-  async getContactSubmissions(): Promise<ContactSubmission[]> {
-    return await db.select().from(schema.contactSubmissions).orderBy(desc(schema.contactSubmissions.createdAt));
+  async getContactSubmissions(startDate?: string, endDate?: string): Promise<ContactSubmission[]> {
+    let query = db.select().from(schema.contactSubmissions);
+    
+    // Build date filter conditions
+    const dateConditions = [];
+    if (startDate) {
+      dateConditions.push(gte(schema.contactSubmissions.createdAt, new Date(startDate)));
+    }
+    if (endDate) {
+      // Add one day to endDate to include the entire end date
+      const endDateTime = new Date(endDate);
+      endDateTime.setDate(endDateTime.getDate() + 1);
+      dateConditions.push(lt(schema.contactSubmissions.createdAt, endDateTime));
+    }
+    
+    if (dateConditions.length > 0) {
+      query = query.where(and(...dateConditions));
+    }
+    
+    return await query.orderBy(desc(schema.contactSubmissions.createdAt));
   }
 
   async deleteContactSubmission(id: string): Promise<boolean> {
@@ -545,8 +622,26 @@ export class DatabaseStorage implements IStorage {
     return result.length > 0;
   }
 
-  async getGuides(): Promise<Guide[]> {
-    return await db.select().from(schema.guides).orderBy(desc(schema.guides.createdAt));
+  async getGuides(startDate?: string, endDate?: string): Promise<Guide[]> {
+    let query = db.select().from(schema.guides);
+    
+    // Build date filter conditions
+    const dateConditions = [];
+    if (startDate) {
+      dateConditions.push(gte(schema.guides.createdAt, new Date(startDate)));
+    }
+    if (endDate) {
+      // Add one day to endDate to include the entire end date
+      const endDateTime = new Date(endDate);
+      endDateTime.setDate(endDateTime.getDate() + 1);
+      dateConditions.push(lt(schema.guides.createdAt, endDateTime));
+    }
+    
+    if (dateConditions.length > 0) {
+      query = query.where(and(...dateConditions));
+    }
+    
+    return await query.orderBy(desc(schema.guides.createdAt));
   }
 
   async getRecentGuides(limit: number = 10): Promise<Guide[]> {
@@ -554,7 +649,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Dashboard analytics
-  async getDashboardStats(): Promise<{
+  async getDashboardStats(startDate?: string, endDate?: string): Promise<{
     activeClients: number;
     registeredPets: number;
     openGuides: number;
@@ -563,36 +658,79 @@ export class DatabaseStorage implements IStorage {
     activePlans: number;
     inactivePlans: number;
   }> {
-    // Count active clients (clients that have at least one guide)
-    const activeClientsCount = await db
+    // Build date filter conditions
+    const dateConditions = [];
+    if (startDate) {
+      dateConditions.push(gte(schema.guides.createdAt, new Date(startDate)));
+    }
+    if (endDate) {
+      // Add one day to endDate to include the entire end date
+      const endDateTime = new Date(endDate);
+      endDateTime.setDate(endDateTime.getDate() + 1);
+      dateConditions.push(lt(schema.guides.createdAt, endDateTime));
+    }
+
+    // Count active clients (clients that have at least one guide in the date range)
+    let activeClientsQuery = db
       .selectDistinct({ clientId: schema.guides.clientId })
       .from(schema.guides);
     
-    // Count all pets (temporary - reverting to working version)
-    const petsCount = await db.select({ count: count() }).from(schema.pets);
+    if (dateConditions.length > 0) {
+      activeClientsQuery = activeClientsQuery.where(and(...dateConditions));
+    }
     
-    // Count open guides (already correct)
-    const openGuidesCount = await db.select({ count: count() }).from(schema.guides).where(eq(schema.guides.status, 'open'));
+    const activeClientsCount = await activeClientsQuery;
     
-    // Calculate monthly revenue from guides in current month (September 2025)
-    const currentDate = new Date();
-    const currentYear = currentDate.getFullYear();
-    const currentMonth = currentDate.getMonth(); // 8 for September (0-based)
+    // Count pets (filter by creation date if date range is specified)
+    let petsQuery = db.select({ count: count() }).from(schema.pets);
+    if (startDate || endDate) {
+      const petDateConditions = [];
+      if (startDate) {
+        petDateConditions.push(gte(schema.pets.createdAt, new Date(startDate)));
+      }
+      if (endDate) {
+        const endDateTime = new Date(endDate);
+        endDateTime.setDate(endDateTime.getDate() + 1);
+        petDateConditions.push(lt(schema.pets.createdAt, endDateTime));
+      }
+      if (petDateConditions.length > 0) {
+        petsQuery = petsQuery.where(and(...petDateConditions));
+      }
+    }
+    const petsCount = await petsQuery;
     
-    // Create date range for current month
-    const startOfMonth = new Date(currentYear, currentMonth, 1);
-    const endOfMonth = new Date(currentYear, currentMonth + 1, 1);
+    // Count open guides (filter by date range if specified)
+    let openGuidesQuery = db.select({ count: count() }).from(schema.guides).where(eq(schema.guides.status, 'open'));
+    if (dateConditions.length > 0) {
+      openGuidesQuery = openGuidesQuery.where(and(eq(schema.guides.status, 'open'), ...dateConditions));
+    }
+    const openGuidesCount = await openGuidesQuery;
     
-    const monthlyGuides = await db
+    // Calculate revenue from guides in the specified date range
+    let revenueQuery = db
       .select({ value: schema.guides.value })
-      .from(schema.guides)
-      .where(and(
+      .from(schema.guides);
+    
+    if (dateConditions.length > 0) {
+      revenueQuery = revenueQuery.where(and(...dateConditions));
+    } else {
+      // If no date filter, use current month as default
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      const currentMonth = currentDate.getMonth();
+      const startOfMonth = new Date(currentYear, currentMonth, 1);
+      const endOfMonth = new Date(currentYear, currentMonth + 1, 1);
+      
+      revenueQuery = revenueQuery.where(and(
         gte(schema.guides.createdAt, startOfMonth),
         lt(schema.guides.createdAt, endOfMonth)
       ));
+    }
     
-    const monthlyRevenue = monthlyGuides.reduce((sum, guide) => {
-      const value = parseFloat(guide.value.toString()) || 0;
+    const revenueGuides = await revenueQuery;
+    
+    const monthlyRevenue = revenueGuides.reduce((sum, guide) => {
+      const value = parseFloat(guide.value?.toString() || '0') || 0;
       return sum + value;
     }, 0);
     
@@ -612,7 +750,7 @@ export class DatabaseStorage implements IStorage {
     };
   }
 
-  async getPlanDistribution(): Promise<{
+  async getPlanDistribution(startDate?: string, endDate?: string): Promise<{
     planId: string;
     planName: string;
     petCount: number;
@@ -643,34 +781,138 @@ export class DatabaseStorage implements IStorage {
       }));
     }
     
+    // Build date filter conditions for pets
+    const petDateConditions = [
+      inArray(schema.pets.clientId, clientIdsArray),
+      sqlTemplate`${schema.pets.planId} IS NOT NULL`
+    ];
+    
+    if (startDate) {
+      petDateConditions.push(gte(schema.pets.createdAt, new Date(startDate)));
+    }
+    if (endDate) {
+      // Add one day to endDate to include the entire end date
+      const endDateTime = new Date(endDate);
+      endDateTime.setDate(endDateTime.getDate() + 1);
+      petDateConditions.push(lt(schema.pets.createdAt, endDateTime));
+    }
+
     // Get pets with plans for active clients (excluding pets without plans)
     const petsWithPlans = await db
       .select({
         planId: schema.pets.planId
       })
       .from(schema.pets)
-      .where(and(
-        inArray(schema.pets.clientId, clientIdsArray),
-        sqlTemplate`${schema.pets.planId} IS NOT NULL`
-      ));
+      .where(and(...petDateConditions));
     
     // Count total pets with plans (all have plans due to WHERE filter)
     const totalPetsWithPlans = petsWithPlans.length;
     
-    // Calculate distribution
+    // Calculate distribution with accurate percentages that sum to 100%
     const distribution = allPlans.map(plan => {
       const petCount = petsWithPlans.filter(pet => pet.planId === plan.id).length;
-      const percentage = totalPetsWithPlans > 0 ? Math.round((petCount / totalPetsWithPlans) * 100) : 0;
+      const exactPercentage = totalPetsWithPlans > 0 ? (petCount / totalPetsWithPlans) * 100 : 0;
       
       return {
         planId: plan.id,
         planName: plan.name,
         petCount,
-        percentage
+        exactPercentage // Usar porcentagem exata primeiro
       };
     });
+
+    // Arredondar as porcentagens garantindo que a soma seja 100%
+    if (totalPetsWithPlans > 0) {
+      // Calcular porcentagens arredondadas
+      const roundedDistribution = distribution.map(item => ({
+        ...item,
+        percentage: Math.floor(item.exactPercentage),
+        remainder: item.exactPercentage - Math.floor(item.exactPercentage)
+      }));
+
+      // Calcular quantos pontos percentuais faltam para 100%
+      const totalRounded = roundedDistribution.reduce((sum, item) => sum + item.percentage, 0);
+      const remainingPercentage = 100 - totalRounded;
+
+      // Distribuir os pontos percentuais restantes para os itens com maior resto
+      if (remainingPercentage > 0) {
+        roundedDistribution
+          .sort((a, b) => b.remainder - a.remainder)
+          .slice(0, remainingPercentage)
+          .forEach(item => item.percentage += 1);
+      }
+
+      return roundedDistribution.map(item => ({
+        planId: item.planId,
+        planName: item.planName,
+        petCount: item.petCount,
+        percentage: item.percentage
+      }));
+    }
+
+    // Se não há pets, retornar 0% para todos
+    return distribution.map(item => ({
+      planId: item.planId,
+      planName: item.planName,
+      petCount: item.petCount,
+      percentage: 0
+    }));
+  }
+
+  async getPlanRevenue(startDate?: string, endDate?: string): Promise<{
+    planId: string;
+    planName: string;
+    petCount: number;
+    monthlyPrice: number;
+    totalRevenue: number;
+  }[]> {
+    // Get all active plans
+    const allPlans = await db.select({ 
+      id: schema.plans.id, 
+      name: schema.plans.name,
+      price: schema.plans.price
+    }).from(schema.plans).where(eq(schema.plans.isActive, true));
     
-    return distribution;
+    // Build date filter conditions for pets
+    const petDateConditions = [
+      sqlTemplate`${schema.pets.planId} IS NOT NULL`
+    ];
+    
+    if (startDate) {
+      petDateConditions.push(gte(schema.pets.createdAt, new Date(startDate)));
+    }
+    if (endDate) {
+      // Add one day to endDate to include the entire end date
+      const endDateTime = new Date(endDate);
+      endDateTime.setDate(endDateTime.getDate() + 1);
+      petDateConditions.push(lt(schema.pets.createdAt, endDateTime));
+    }
+
+    // Get pets with plans in the date range
+    const petsWithPlans = await db
+      .select({
+        planId: schema.pets.planId
+      })
+      .from(schema.pets)
+      .where(and(...petDateConditions));
+    
+    // Calculate revenue for each plan
+    const planRevenue = allPlans.map(plan => {
+      const petCount = petsWithPlans.filter(pet => pet.planId === plan.id).length;
+      const monthlyPrice = Number(plan.price) / 100; // Convert from cents to decimal
+      const totalRevenue = petCount * monthlyPrice;
+      
+      return {
+        planId: plan.id,
+        planName: plan.name,
+        petCount,
+        monthlyPrice,
+        totalRevenue
+      };
+    });
+
+    // Sort by total revenue descending
+    return planRevenue.sort((a, b) => b.totalRevenue - a.totalRevenue);
   }
 }
 

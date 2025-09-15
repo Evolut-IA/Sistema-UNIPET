@@ -398,7 +398,13 @@ export default function Clients() {
           </DialogHeader>
           
           {selectedClient && (
-            <div className="space-y-4 overflow-y-auto flex-1 pr-2">
+            <div 
+              className="space-y-4 overflow-y-auto flex-1 pr-2 custom-scrollbar no-rounded-scrollbar" 
+              style={{
+                scrollbarWidth: 'thin',
+                scrollbarColor: '#6b7280 #e5e7eb'
+              }}
+            >
               <div className="grid grid-cols-1 gap-4">
                 <div>
                   <h4 className="font-semibold text-foreground mb-2">Informações Pessoais</h4>

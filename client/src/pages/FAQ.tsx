@@ -265,37 +265,7 @@ export default function FAQ() {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Public FAQ Preview */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-foreground flex items-center">
-              <HelpCircle className="h-5 w-5 mr-2" />
-              Visualização Pública ({activeItems.length} itens)
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {activeItems.length > 0 ? (
-              <Accordion type="single" collapsible className="w-full">
-                {activeItems.map((item: any, index: number) => (
-                  <AccordionItem key={item.id} value={`item-${index}`}>
-                    <AccordionTrigger className="text-left">
-                      {item.question}
-                    </AccordionTrigger>
-                    <AccordionContent className="text-muted-foreground">
-                      {item.answer}
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            ) : (
-              <p className="text-muted-foreground text-center py-8">
-                Nenhum item ativo para exibição pública.
-              </p>
-            )}
-          </CardContent>
-        </Card>
-
+      <div className="grid grid-cols-1 gap-6">
         {/* Management Panel */}
         <Card>
           <CardHeader>

@@ -440,7 +440,6 @@ export default function ThemeEditor() {
                   <Layout className="h-4 w-4" />
                   <div>
                     <span>Fundo e Texto Principal</span>
-                    <p className="text-sm text-muted-foreground mt-1">Configure as cores de fundo e texto que aparecem em todo o sistema</p>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-6">
@@ -522,7 +521,6 @@ export default function ThemeEditor() {
                   <Type className="h-4 w-4" />
                   <div>
                     <span>Fontes do Sistema</span>
-                    <p className="text-sm text-muted-foreground mt-1">Escolha as fontes que aparecerão em todo o sistema</p>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-6">
@@ -590,7 +588,6 @@ export default function ThemeEditor() {
                   <Layout className="h-4 w-4" />
                   <div>
                     <span>Arredondamento dos Elementos</span>
-                    <p className="text-sm text-muted-foreground mt-1">Configure o arredondamento dos cantos dos botões e cards</p>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent>
@@ -623,7 +620,6 @@ export default function ThemeEditor() {
                   <MousePointer className="h-4 w-4" />
                   <div>
                     <span>Cores dos Botões</span>
-                    <p className="text-sm text-muted-foreground mt-1">Configure as cores dos botões e elementos clicáveis</p>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-6">
@@ -709,7 +705,6 @@ export default function ThemeEditor() {
                   <FormInput className="h-4 w-4" />
                   <div>
                     <span>Cores dos Campos</span>
-                    <p className="text-sm text-muted-foreground mt-1">Configure as cores dos campos de texto e contornos</p>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-6">
@@ -758,7 +753,6 @@ export default function ThemeEditor() {
                   <Package className="h-4 w-4" />
                   <div>
                     <span>Cores dos Cards</span>
-                    <p className="text-sm text-muted-foreground mt-1">Configure as cores dos cartões e janelas do sistema</p>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-6">
@@ -840,7 +834,6 @@ export default function ThemeEditor() {
                   <BarChart3 className="h-4 w-4" />
                   <div>
                     <span>Gráficos e Estatísticas</span>
-                    <p className="text-sm text-muted-foreground mt-1">Cores das barras, linhas e elementos dos gráficos</p>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-6">

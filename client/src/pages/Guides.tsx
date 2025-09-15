@@ -317,57 +317,104 @@ export default function Guides() {
             <div className="space-y-2">
               {filteredGuides.map((guide: any) => (
                 <div key={guide.id} className="border rounded-lg p-3 hover:bg-gray-50 transition-colors">
-                  <div className="flex flex-col lg:flex-row lg:justify-between gap-3">
+                  <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-3">
                     <div className="flex-1 min-w-0">
                       {/* Nome da Guia */}
-                      <div className="mb-2">
+                      <div className="mb-2 lg:mb-0">
                         <h3 className="font-semibold text-foreground break-words" data-testid={`guide-procedure-${guide.id}`}>
                           {guide.procedure}
                         </h3>
-                        <Badge className={`${getStatusColor(guide.status)} lg:hidden`} data-testid={`badge-status-${guide.id}`}>
-                          {getStatusLabel(guide.status)}
-                        </Badge>
                       </div>
                     </div>
                     
-                    {/* Botões em linha horizontal */}
-                    <div className="flex items-center space-x-1 w-full sm:w-auto sm:ml-3">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleViewDetails(guide)}
-                        data-testid={`button-view-${guide.id}`}
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          setSelectedGuide(guide);
-                          handleCopyToClipboard();
-                        }}
-                        data-testid={`button-copy-${guide.id}`}
-                      >
-                        <Copy className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setLocation(`/guias/${guide.id}/editar`)}
-                        data-testid={`button-edit-${guide.id}`}
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDelete(guide.id, guide.procedure)}
-                        disabled={deleteGuideMutation.isPending}
-                        data-testid={`button-delete-${guide.id}`}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                    {/* Desktop: Status + Botões */}
+                    <div className="hidden lg:flex lg:items-center lg:space-x-3">
+                      <Badge className={getStatusColor(guide.status)} data-testid={`badge-status-desktop-${guide.id}`}>
+                        {getStatusLabel(guide.status)}
+                      </Badge>
+                      <div className="flex items-center space-x-1">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleViewDetails(guide)}
+                          data-testid={`button-view-${guide.id}`}
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setSelectedGuide(guide);
+                            handleCopyToClipboard();
+                          }}
+                          data-testid={`button-copy-${guide.id}`}
+                        >
+                          <Copy className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setLocation(`/guias/${guide.id}/editar`)}
+                          data-testid={`button-edit-${guide.id}`}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDelete(guide.id, guide.procedure)}
+                          disabled={deleteGuideMutation.isPending}
+                          data-testid={`button-delete-${guide.id}`}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                    
+                    {/* Mobile: Botões + Status */}
+                    <div className="flex lg:hidden items-center justify-between w-full">
+                      <div className="flex items-center space-x-1">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleViewDetails(guide)}
+                          data-testid={`button-view-mobile-${guide.id}`}
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setSelectedGuide(guide);
+                            handleCopyToClipboard();
+                          }}
+                          data-testid={`button-copy-mobile-${guide.id}`}
+                        >
+                          <Copy className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setLocation(`/guias/${guide.id}/editar`)}
+                          data-testid={`button-edit-mobile-${guide.id}`}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDelete(guide.id, guide.procedure)}
+                          disabled={deleteGuideMutation.isPending}
+                          data-testid={`button-delete-mobile-${guide.id}`}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      <Badge className={getStatusColor(guide.status)} data-testid={`badge-status-mobile-${guide.id}`}>
+                        {getStatusLabel(guide.status)}
+                      </Badge>
                     </div>
                   </div>
                 </div>

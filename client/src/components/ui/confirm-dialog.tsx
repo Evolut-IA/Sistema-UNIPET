@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle } from "lucide-react";
+import { useMobileViewport } from "@/hooks/use-mobile";
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -31,15 +32,29 @@ export function ConfirmDialog({
   cancelText = "Cancelar",
   isLoading = false,
 }: ConfirmDialogProps) {
+  const { isMobile } = useMobileViewport()
+  
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent 
+        className="sm:max-w-md"
+        maxHeightMobile="max-h-[50vh]"
+      >
         <DialogHeader>
-          <div className="flex items-center space-x-3">
-            <div className="flex-shrink-0">
-              <AlertTriangle className="h-6 w-6 text-destructive" />
+          <div className={isMobile 
+            ? "flex flex-col space-y-3" 
+            : "flex items-center space-x-3"
+          }>
+            <div className={isMobile 
+              ? "flex justify-center" 
+              : "flex-shrink-0"
+            }>
+              <AlertTriangle className={isMobile 
+                ? "h-8 w-8 text-destructive" 
+                : "h-6 w-6 text-destructive"
+              } />
             </div>
-            <div>
+            <div className={isMobile ? "text-center" : ""}>
               <DialogTitle className="text-foreground">{title}</DialogTitle>
               <DialogDescription className="text-muted-foreground mt-1">
                 {description}
@@ -48,11 +63,15 @@ export function ConfirmDialog({
           </div>
         </DialogHeader>
         
-        <DialogFooter className="flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2">
+        <DialogFooter className={isMobile 
+          ? "flex flex-col-reverse gap-3 mt-6" 
+          : "flex-row justify-end space-x-2"
+        }>
           <Button
             variant="outline"
             onClick={() => onOpenChange(false)}
             disabled={isLoading}
+            className={isMobile ? "w-full" : ""}
           >
             {cancelText}
           </Button>
@@ -60,7 +79,9 @@ export function ConfirmDialog({
             variant="destructive"
             onClick={onConfirm}
             disabled={isLoading}
-            className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+            className={`bg-destructive hover:bg-destructive/90 text-destructive-foreground ${
+              isMobile ? "w-full" : ""
+            }`}
           >
             {isLoading ? "Excluindo..." : confirmText}
           </Button>

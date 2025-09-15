@@ -25,7 +25,6 @@ const navigation = [
     items: [
       { name: "Clientes & Pets", href: "/clientes", icon: Users },
       { name: "Guias de Atendimento", href: "/guias", icon: FileText },
-      { name: "Planos de Saúde", href: "/planos", icon: CreditCard },
       { name: "Rede Credenciada", href: "/rede", icon: Building2 },
       { name: "Formulários", href: "/formularios", icon: Mail }
     ]
@@ -33,6 +32,7 @@ const navigation = [
   {
     name: "Sistema",
     items: [
+      { name: "Planos de Saúde", href: "/planos", icon: CreditCard },
       { name: "FAQ", href: "/perguntas-frequentes", icon: HelpCircle },
       { name: "Administração", href: "/administracao", icon: UserCog },
       { name: "Configurações", href: "/configuracoes", icon: Settings }

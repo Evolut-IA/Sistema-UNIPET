@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { Drawer as DrawerPrimitive } from "vaul"
+import { useMobileViewport, useSafeArea } from "@/hooks/use-mobile"
 
 import { cn } from "@/lib/utils"
 
@@ -36,45 +37,95 @@ DrawerOverlay.displayName = DrawerPrimitive.Overlay.displayName
 
 const DrawerContent = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Content>
->(({ className, children, ...props }, ref) => (
-  <DrawerPortal>
-    <DrawerOverlay />
-    <DrawerPrimitive.Content
-      ref={ref}
-      className={cn(
-        "fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto flex-col rounded-t-[10px] border bg-background",
-        className
-      )}
-      {...props}
-    >
-      <div className="mx-auto mt-4 h-2 w-[100px] rounded-full bg-muted" />
-      {children}
-    </DrawerPrimitive.Content>
-  </DrawerPortal>
-))
+  React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Content> & {
+    maxHeight?: string
+    showHandle?: boolean
+  }
+>(({ className, children, maxHeight, showHandle = true, ...props }, ref) => {
+  const { isMobile, viewport } = useMobileViewport()
+  const safeArea = useSafeArea()
+  
+  const getMaxHeight = () => {
+    if (maxHeight) return maxHeight
+    
+    if (viewport === 'mobile') {
+      // Consider safe area for mobile devices with notches
+      const bottomSafeArea = safeArea.bottom > 0 ? safeArea.bottom : 0
+      return `calc(90vh - ${bottomSafeArea}px)`
+    } else if (viewport === 'tablet') {
+      return '80vh'
+    } else {
+      return '70vh'
+    }
+  }
+  
+  return (
+    <DrawerPortal>
+      <DrawerOverlay />
+      <DrawerPrimitive.Content
+        ref={ref}
+        className={cn(
+          "fixed inset-x-0 bottom-0 z-50 flex flex-col rounded-t-[10px] border bg-background",
+          // Responsive max height
+          "transition-all duration-300 ease-in-out",
+          // Add safe area padding if needed
+          safeArea.bottom > 0 ? `pb-[${safeArea.bottom}px]` : "",
+          className
+        )}
+        style={{
+          maxHeight: getMaxHeight(),
+          ...props.style
+        }}
+        {...props}
+      >
+        {showHandle && (
+          <div className="mx-auto mt-4 h-2 w-[100px] rounded-full bg-muted flex-shrink-0" />
+        )}
+        <div className="flex-1 overflow-y-auto">
+          {children}
+        </div>
+      </DrawerPrimitive.Content>
+    </DrawerPortal>
+  )
+})
 DrawerContent.displayName = "DrawerContent"
 
 const DrawerHeader = ({
   className,
   ...props
-}: React.HTMLAttributes<HTMLDivElement>) => (
-  <div
-    className={cn("grid gap-1.5 p-4 text-center sm:text-left", className)}
-    {...props}
-  />
-)
+}: React.HTMLAttributes<HTMLDivElement>) => {
+  const { isMobile } = useMobileViewport()
+  
+  return (
+    <div
+      className={cn(
+        "grid gap-1.5 text-center sm:text-left flex-shrink-0",
+        isMobile ? "p-4" : "p-6",
+        className
+      )}
+      {...props}
+    />
+  )
+}
 DrawerHeader.displayName = "DrawerHeader"
 
 const DrawerFooter = ({
   className,
   ...props
-}: React.HTMLAttributes<HTMLDivElement>) => (
-  <div
-    className={cn("mt-auto flex flex-col gap-2 p-4", className)}
-    {...props}
-  />
-)
+}: React.HTMLAttributes<HTMLDivElement>) => {
+  const { isMobile } = useMobileViewport()
+  
+  return (
+    <div
+      className={cn(
+        "flex flex-col gap-2 flex-shrink-0",
+        isMobile ? "p-4" : "p-6",
+        className
+      )}
+      {...props}
+    />
+  )
+}
 DrawerFooter.displayName = "DrawerFooter"
 
 const DrawerTitle = React.forwardRef<

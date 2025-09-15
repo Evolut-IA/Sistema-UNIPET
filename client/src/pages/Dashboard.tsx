@@ -1,9 +1,12 @@
+import { useState, useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { DateFilterComponent } from "@/components/DateFilterComponent";
 import { useLocation } from "wouter";
 import type { Client, Guide, NetworkUnit, ContactSubmission } from "@shared/schema";
 import {
@@ -17,32 +20,97 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
+import { CalendarDate } from "@internationalized/date";
+import { getDateRangeParams } from "@/lib/date-utils";
 
 export default function Dashboard() {
   const [, setLocation] = useLocation();
+  const [dateFilter, setDateFilter] = useState<{
+    startDate: CalendarDate | null;
+    endDate: CalendarDate | null;
+  }>({ startDate: null, endDate: null });
+
+  const [debouncedDateFilter, setDebouncedDateFilter] = useState<{
+    startDate: CalendarDate | null;
+    endDate: CalendarDate | null;
+  }>({ startDate: null, endDate: null });
+
+  // Debounce date filter changes
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedDateFilter(dateFilter);
+    }, 500); // 500ms debounce
+
+    return () => clearTimeout(timer);
+  }, [dateFilter]);
+
+  const handleDateRangeChange = (startDate: CalendarDate | null, endDate: CalendarDate | null) => {
+    setDateFilter({ startDate, endDate });
+  };
+
+  // Get date range parameters for API calls using debounced values
+  const dateParams = getDateRangeParams(debouncedDateFilter.startDate, debouncedDateFilter.endDate);
+  const hasDateFilter = Object.keys(dateParams).length > 0;
 
   const { data: stats = {} as any, isLoading: statsLoading, isError: statsError } = useQuery({
-    queryKey: ["/api/dashboard/stats"],
+    queryKey: ["/api/dashboard/stats", dateParams],
+    queryFn: async () => {
+      const params = new URLSearchParams(dateParams);
+      const response = await fetch(`/api/dashboard/stats?${params}`);
+      if (!response.ok) throw new Error('Failed to fetch stats');
+      return response.json();
+    },
   });
 
   const { data: allGuides = [], isLoading: guidesLoading, isError: guidesError } = useQuery<Guide[]>({
-    queryKey: ["/api/guides"],
+    queryKey: ["/api/guides", dateParams],
+    queryFn: async () => {
+      const params = new URLSearchParams(dateParams);
+      const response = await fetch(`/api/guides?${params}`);
+      if (!response.ok) throw new Error('Failed to fetch guides');
+      return response.json();
+    },
   });
 
   const { data: networkUnits = [], isLoading: networkLoading, isError: networkError } = useQuery<NetworkUnit[]>({
-    queryKey: ["/api/network-units/active"],
+    queryKey: ["/api/network-units/active", dateParams],
+    queryFn: async () => {
+      const params = new URLSearchParams(dateParams);
+      const response = await fetch(`/api/network-units/active?${params}`);
+      if (!response.ok) throw new Error('Failed to fetch network units');
+      return response.json();
+    },
   });
 
   const { data: clients = [], isLoading: clientsLoading, isError: clientsError } = useQuery<Client[]>({
-    queryKey: ["/api/clients"],
+    queryKey: ["/api/clients", dateParams],
+    queryFn: async () => {
+      const params = new URLSearchParams(dateParams);
+      const response = await fetch(`/api/clients?${params}`);
+      if (!response.ok) throw new Error('Failed to fetch clients');
+      return response.json();
+    },
   });
 
   const { data: contactSubmissions = [], isLoading: submissionsLoading, isError: submissionsError } = useQuery<ContactSubmission[]>({
-    queryKey: ["/api/contact-submissions"],
+    queryKey: ["/api/contact-submissions", dateParams],
+    queryFn: async () => {
+      const params = new URLSearchParams(dateParams);
+      const response = await fetch(`/api/contact-submissions?${params}`);
+      if (!response.ok) throw new Error('Failed to fetch contact submissions');
+      return response.json();
+    },
   });
 
   const { data: plans = [], isLoading: plansLoading, isError: plansError } = useQuery<any[]>({
-    queryKey: ["/api/plans"],
+    queryKey: ["/api/plans", dateParams],
+    queryFn: async () => {
+      const params = new URLSearchParams(dateParams);
+      const response = await fetch(`/api/plans?${params}`);
+      if (!response.ok) throw new Error('Failed to fetch plans');
+      return response.json();
+    },
   });
 
   const { data: planDistribution = [], isLoading: distributionLoading, isError: distributionError } = useQuery<{
@@ -51,11 +119,50 @@ export default function Dashboard() {
     petCount: number;
     percentage: number;
   }[]>({
-    queryKey: ["/api/dashboard/plan-distribution"],
+    queryKey: ["/api/dashboard/plan-distribution", dateParams],
+    queryFn: async () => {
+      const params = new URLSearchParams(dateParams);
+      const response = await fetch(`/api/dashboard/plan-distribution?${params}`);
+      if (!response.ok) throw new Error('Failed to fetch plan distribution');
+      return response.json();
+    },
   });
 
-  const recentClients = clients.slice(0, 3);
-  const recentSubmissions = contactSubmissions.slice(0, 3);
+  const { data: planRevenue = [], isLoading: revenueLoading, isError: revenueError } = useQuery<{
+    planId: string;
+    planName: string;
+    petCount: number;
+    monthlyPrice: number;
+    totalRevenue: number;
+  }[]>({
+    queryKey: ["/api/dashboard/plan-revenue", dateParams],
+    queryFn: async () => {
+      const params = new URLSearchParams(dateParams);
+      const response = await fetch(`/api/dashboard/plan-revenue?${params}`);
+      if (!response.ok) throw new Error('Failed to fetch plan revenue');
+      return response.json();
+    },
+  });
+
+  // Memoize expensive calculations
+  const recentClients = useMemo(() => clients.slice(0, 3), [clients]);
+  const recentSubmissions = useMemo(() => contactSubmissions.slice(0, 3), [contactSubmissions]);
+
+  // Memoize loading states
+  const isAnyLoading = useMemo(() =>
+    statsLoading || guidesLoading || distributionLoading || clientsLoading ||
+    submissionsLoading || plansLoading || networkLoading || revenueLoading,
+    [statsLoading, guidesLoading, distributionLoading, clientsLoading,
+      submissionsLoading, plansLoading, networkLoading, revenueLoading]
+  );
+
+  // Memoize error states
+  const hasErrors = useMemo(() =>
+    statsError || guidesError || distributionError || clientsError ||
+    submissionsError || plansError || networkError || revenueError,
+    [statsError, guidesError, distributionError, clientsError,
+      submissionsError, plansError, networkError, revenueError]
+  );
 
   return (
     <div className="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
@@ -66,7 +173,7 @@ export default function Dashboard() {
           <p className="text-sm text-muted-foreground">Visão geral do sistema de gestão</p>
         </div>
         <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-3 xs:gap-4">
-          <Button 
+          <Button
             className="btn-primary w-full xs:w-auto"
             onClick={() => setLocation("/guias/novo")}
             data-testid="button-new-guide"
@@ -84,48 +191,36 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {/* Date Filter */}
+      <DateFilterComponent
+        onDateRangeChange={handleDateRangeChange}
+        isLoading={isAnyLoading ||
+          (dateFilter.startDate !== debouncedDateFilter.startDate ||
+            dateFilter.endDate !== debouncedDateFilter.endDate)}
+        initialRange={dateFilter}
+      />
+
+      {/* Error States */}
+      {hasErrors && hasDateFilter && (
+        <Alert variant="destructive">
+          <AlertDescription>
+            Erro ao aplicar filtro de data. Tente novamente ou remova o filtro.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {/* Empty Results Warning */}
+      {hasDateFilter && !isAnyLoading &&
+        stats?.activeClients === 0 && allGuides?.length === 0 && (
+          <Alert>
+            <AlertDescription>
+              Nenhum dado encontrado para o período selecionado. Tente expandir o intervalo de datas.
+            </AlertDescription>
+          </Alert>
+        )}
+
       {/* Metrics Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-start justify-between gap-2">
-              <div className="flex-1 min-w-0">
-                <p className="text-xs sm:text-sm text-muted-foreground">Clientes Ativos</p>
-                {statsLoading ? (
-                  <Skeleton className="h-6 sm:h-8 w-12 sm:w-16 mt-1" />
-                ) : (
-                  <>
-                    <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground truncate" data-testid="metric-active-clients">
-                      {stats?.activeClients?.toLocaleString() || 0}
-                    </p>
-                  </>
-                )}
-              </div>
-              <Users className="h-6 w-6 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-start justify-between gap-2">
-              <div className="flex-1 min-w-0">
-                <p className="text-xs sm:text-sm text-muted-foreground">Pets Cadastrados</p>
-                {statsLoading ? (
-                  <Skeleton className="h-6 sm:h-8 w-12 sm:w-16 mt-1" />
-                ) : (
-                  <>
-                    <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground truncate" data-testid="metric-registered-pets">
-                      {stats?.registeredPets?.toLocaleString() || 0}
-                    </p>
-                  </>
-                )}
-              </div>
-              <PawPrint className="h-6 w-6 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
-            </div>
-          </CardContent>
-        </Card>
-
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
         <Card>
           <CardContent className="p-6">
             <div className="flex items-start justify-between gap-2">
@@ -146,333 +241,186 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        <Card className="lg:col-span-2">
-          <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-            <CardTitle className="text-foreground min-w-0">Todas as Guias</CardTitle>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="text-primary"
-              onClick={() => setLocation("/guias")}
-              data-testid="button-view-all-guides"
-            >
-              Ver todos
-            </Button>
-          </CardHeader>
-          <CardContent>
-            {guidesLoading ? (
-              <div className="space-y-3">
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                    <div className="flex-1 space-y-1">
-                      <Skeleton className="h-4 w-32" />
-                      <Skeleton className="h-3 w-24" />
-                    </div>
-                    <Skeleton className="h-6 w-16" />
-                  </div>
-                ))}
-              </div>
-            ) : guidesError ? (
-              <div className="text-center py-8">
-                <p className="text-muted-foreground">Erro ao carregar guias</p>
-              </div>
-            ) : allGuides?.length ? (
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                  <span className="text-sm text-muted-foreground">Total de Guias</span>
-                  <span className="text-xl font-bold text-foreground">{allGuides.length}</span>
-                </div>
-                {allGuides.slice(0, 5).map((guide: any) => (
-                  <div key={guide.id} className="flex items-center justify-between p-3 bg-background border rounded-lg hover:bg-accent/50 transition-colors">
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-foreground truncate">
-                        {guide.procedure}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        Cliente: {guide.clientName || 'N/A'} • Pet: {guide.petName || 'N/A'}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className={`text-xs px-2 py-1 rounded-full ${
-                        guide.status === 'open' 
-                          ? 'bg-green-100 text-green-800' 
-                          : guide.status === 'closed'
-                          ? 'bg-gray-100 text-gray-800'
-                          : 'bg-red-100 text-red-800'
-                      }`}>
-                        {guide.status === 'open' ? 'Aberta' : guide.status === 'closed' ? 'Fechada' : 'Cancelada'}
-                      </span>
-                      {guide.value && (
-                        <span className="text-sm font-medium text-foreground">
-                          R$ {parseFloat(guide.value).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex-1 min-w-0">
+                <p className="text-xs sm:text-sm text-muted-foreground">Receita por Plano</p>
+                {revenueLoading ? (
+                  <Skeleton className="h-6 sm:h-8 w-full mt-1" />
+                ) : revenueError ? (
+                  <Alert className="mt-2">
+                    <AlertDescription className="text-xs">
+                      Erro ao carregar receita por plano
+                    </AlertDescription>
+                  </Alert>
+                ) : planRevenue?.length && planRevenue.some(plan => plan.totalRevenue > 0) ? (
+                  <div className="space-y-2 mt-2">
+                    {planRevenue.map(plan => (
+                      <div key={plan.planId} className="flex justify-between items-center">
+                        <span className="text-sm font-medium text-foreground truncate">{plan.planName}</span>
+                        <span className="text-sm font-bold text-primary ml-2">
+                          R$ {plan.totalRevenue.toLocaleString('pt-BR', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                          })}
                         </span>
-                      )}
-                    </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
-                {allGuides.length > 5 && (
-                  <div className="text-center pt-2">
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => setLocation("/guias")}
-                    >
-                      Ver mais {allGuides.length - 5} guias
-                    </Button>
+                ) : (
+                  <div className="text-center py-2 mt-2">
+                    <p className="text-xs text-muted-foreground">
+                      Nenhuma receita encontrada
+                    </p>
                   </div>
                 )}
               </div>
-            ) : (
-              <p className="text-muted-foreground text-center py-8">Nenhuma guia encontrada</p>
-            )}
+              <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
+            </div>
           </CardContent>
         </Card>
+
       </div>
 
-      {/* Resumos das Páginas */}
-      <div className="space-y-6">
-        {/* Primeiro Par: Formulários e Planos */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Resumo de Formulários */}
-          <Card>
-          <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-            <CardTitle className="text-foreground min-w-0">Resumo de Formulários</CardTitle>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="text-primary"
-              onClick={() => setLocation("/formularios")}
-              data-testid="button-view-all-submissions"
-            >
-              Ver todos
-            </Button>
-          </CardHeader>
-          <CardContent>
-            {submissionsLoading || plansLoading ? (
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                  <Skeleton className="h-4 w-32" />
-                  <Skeleton className="h-6 w-12" />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {[...Array(4)].map((_, i) => (
-                    <div key={i} className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                      <Skeleton className="h-4 w-24" />
-                      <Skeleton className="h-6 w-8" />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : contactSubmissions?.length ? (
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                  <span className="text-sm text-muted-foreground">Total de Formulários</span>
-                  <span className="text-xl font-bold text-foreground">{contactSubmissions.length}</span>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {plans.map((plan: any) => {
-                    const count = contactSubmissions.filter((s: any) => 
-                      s.planInterest?.toLowerCase() === plan.name?.toLowerCase()
-                    ).length;
-                    return (
-                      <div key={plan.id} className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                        <span className="text-sm text-muted-foreground">Interesse no plano {plan.name}</span>
-                        <span className="text-xl font-bold text-primary">{count}</span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            ) : (
-              <p className="text-muted-foreground text-center py-8">Nenhum formulário encontrado</p>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Resumo de Planos */}
-        <Card>
-          <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-            <CardTitle className="text-foreground min-w-0">Resumo de Planos</CardTitle>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="text-primary"
-              onClick={() => setLocation("/planos")}
-              data-testid="button-view-all-plans"
-            >
-              Ver todos
-            </Button>
-          </CardHeader>
-          <CardContent>
-            {statsLoading ? (
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                  <Skeleton className="h-4 w-32" />
-                  <Skeleton className="h-6 w-12" />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {[...Array(2)].map((_, i) => (
-                    <div key={i} className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                      <Skeleton className="h-4 w-24" />
-                      <Skeleton className="h-6 w-8" />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                  <span className="text-sm text-muted-foreground">Total de Planos</span>
-                  <span className="text-xl font-bold text-foreground">{stats?.totalPlans || 0}</span>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                    <span className="text-sm text-muted-foreground">Planos Ativos</span>
-                    <span className="text-xl font-bold text-primary">{stats?.activePlans || 0}</span>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                    <span className="text-sm text-muted-foreground">Planos Inativos</span>
-                    <span className="text-xl font-bold text-destructive">{stats?.inactivePlans || 0}</span>
-                  </div>
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-        </div>
-
-        {/* Segundo Par: Rede e Clientes */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Resumo da Rede */}
-        <Card>
-          <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-            <CardTitle className="text-foreground min-w-0">Resumo da Rede</CardTitle>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="text-primary"
-              onClick={() => setLocation("/rede")}
-              data-testid="button-view-all-network"
-            >
-              Ver todos
-            </Button>
-          </CardHeader>
-          <CardContent>
-            {networkLoading ? (
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                  <Skeleton className="h-4 w-32" />
-                  <Skeleton className="h-6 w-12" />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {[...Array(2)].map((_, i) => (
-                    <div key={i} className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                      <Skeleton className="h-4 w-24" />
-                      <Skeleton className="h-6 w-8" />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : networkUnits?.length ? (
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                  <span className="text-sm text-muted-foreground">Total de Unidades</span>
-                  <span className="text-xl font-bold text-foreground">{networkUnits.length}</span>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                    <span className="text-sm text-muted-foreground">Unidades Ativas</span>
-                    <span className="text-xl font-bold text-primary">
-                      {networkUnits.filter((u: any) => u.isActive).length}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                    <span className="text-sm text-muted-foreground">Unidades Inativas</span>
-                    <span className="text-xl font-bold text-destructive">
-                      {networkUnits.filter((u: any) => !u.isActive).length}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <p className="text-muted-foreground text-center py-8">Nenhuma unidade encontrada</p>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Resumo de Clientes */}
-        <Card>
-          <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-            <CardTitle className="text-foreground min-w-0">Resumo de Clientes</CardTitle>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="text-primary"
-              onClick={() => setLocation("/clientes")}
-              data-testid="button-view-all-clients"
-            >
-              Ver todos
-            </Button>
-          </CardHeader>
-          <CardContent>
-            {clientsLoading ? (
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                  <Skeleton className="h-4 w-32" />
-                  <Skeleton className="h-6 w-12" />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {[...Array(2)].map((_, i) => (
-                    <div key={i} className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                      <Skeleton className="h-4 w-24" />
-                      <Skeleton className="h-6 w-8" />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : clients?.length ? (
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                  <span className="text-sm text-muted-foreground">Total de Clientes</span>
-                  <span className="text-xl font-bold text-foreground">{clients.length}</span>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                    <span className="text-sm text-muted-foreground">Clientes Ativos</span>
-                    <span className="text-xl font-bold text-primary">
-                      {clients.filter((c: any) => c.isActive !== false).length}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                    <span className="text-sm text-muted-foreground">Com Pets Cadastrados</span>
-                    <span className="text-xl font-bold text-muted-foreground">
-                      {clients.filter((c: any) => c.pets && c.pets.length > 0).length}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <p className="text-muted-foreground text-center py-8">Nenhum cliente encontrado</p>
-            )}
-          </CardContent>
-        </Card>
-        </div>
-      </div>
-
-      {/* Additional sections */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Plan Distribution */}
+      {/* Charts Grid - Two columns */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
+        {/* Visão Geral em Gráficos */}
         <Card>
           <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-foreground min-w-0">Distribuição de Planos</CardTitle>
-              {!distributionLoading && !distributionError && (
-                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  Atualizado
-                </div>
-              )}
-            </div>
+            <CardTitle className="text-foreground min-w-0">Visão Geral em Gráficos</CardTitle>
+            <p className="text-sm text-muted-foreground">Distribuição visual dos dados do sistema</p>
+          </CardHeader>
+          <CardContent className="flex justify-center">
+            {isAnyLoading ? (
+              <div className="flex items-center justify-center h-64 w-full">
+                <Skeleton className="h-full w-full" />
+              </div>
+            ) : (
+              <div className="w-full max-w-4xl">
+                <ChartContainer
+                config={{
+                  formularios: {
+                    label: "Formulários",
+                    color: "hsl(var(--chart-1))",
+                  },
+                  planos: {
+                    label: "Planos",
+                    color: "hsl(var(--chart-2))",
+                  },
+                  rede: {
+                    label: "Unidades de Rede",
+                    color: "hsl(var(--chart-3))",
+                  },
+                  clientes: {
+                    label: "Clientes",
+                    color: "hsl(var(--chart-4))",
+                  },
+                  pets: {
+                    label: "Pets",
+                    color: "hsl(var(--chart-5))",
+                  },
+                  guias: {
+                    label: "Guias",
+                    color: "hsl(var(--chart-1))",
+                  },
+                }}
+                className="h-72 w-full"
+              >
+                <BarChart
+                  data={[
+                    {
+                      categoria: "Formulários",
+                      categoriaShort: "Formulários",
+                      total: contactSubmissions?.length || 0,
+                      fill: "var(--color-formularios)",
+                    },
+                    {
+                      categoria: "Planos",
+                      categoriaShort: "Planos",
+                      total: stats?.totalPlans || 0,
+                      fill: "var(--color-planos)",
+                    },
+                    {
+                      categoria: "Unidades",
+                      categoriaShort: "Unidades",
+                      total: networkUnits?.length || 0,
+                      fill: "var(--color-rede)",
+                    },
+                    {
+                      categoria: "Clientes",
+                      categoriaShort: "Clientes",
+                      total: clients?.length || 0,
+                      fill: "var(--color-clientes)",
+                    },
+                    {
+                      categoria: "Pets",
+                      categoriaShort: "Pets",
+                      total: stats?.registeredPets || 0,
+                      fill: "var(--color-pets)",
+                    },
+                    {
+                      categoria: "Guias",
+                      categoriaShort: "Guias",
+                      total: allGuides?.length || 0,
+                      fill: "var(--color-guias)",
+                    },
+                  ]}
+                  margin={{
+                    top: 20,
+                    right: 20,
+                    left: 20,
+                    bottom: 60,
+                  }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis
+                    dataKey="categoriaShort"
+                    tick={{ fontSize: 9 }}
+                    tickLine={false}
+                    axisLine={false}
+                    interval={0}
+                    angle={-45}
+                    textAnchor="end"
+                    height={55}
+                  />
+                  <YAxis
+                    tick={{ fontSize: 10 }}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <ChartTooltip
+                    content={({ active, payload, label }) => {
+                      if (active && payload && payload.length) {
+                        const data = payload[0].payload;
+                        return (
+                          <div className="bg-background border border-border rounded-lg shadow-lg p-3">
+                            <p className="font-medium text-foreground">{data.categoria}</p>
+                            <p className="text-sm text-muted-foreground">
+                              Total: <span className="font-medium text-foreground">{data.total}</span>
+                            </p>
+                          </div>
+                        );
+                      }
+                      return null;
+                    }}
+                    cursor={{ fill: 'rgba(0, 0, 0, 0.1)' }}
+                  />
+                  <Bar
+                    dataKey="total"
+                    radius={[4, 4, 0, 0]}
+                  />
+                </BarChart>
+              </ChartContainer>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Distribuição de Planos */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-foreground min-w-0">Distribuição de Planos</CardTitle>
           </CardHeader>
           <CardContent>
             {distributionLoading ? (
@@ -485,7 +433,7 @@ export default function Dashboard() {
                     <Skeleton className="h-3 w-12" />
                   </div>
                 </div>
-                
+
                 {/* Loading dos planos */}
                 {[...Array(4)].map((_, i) => (
                   <div key={i} className="space-y-2">
@@ -528,7 +476,7 @@ export default function Dashboard() {
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Distribuição por plano */}
                 {planDistribution.map((plan, index: number) => {
                   // Cores específicas para cada plano
@@ -539,10 +487,10 @@ export default function Dashboard() {
                     'INFINITY': { bg: 'bg-orange-500', text: 'text-orange-700', light: 'bg-orange-100' },
                     'PREMIUM': { bg: 'bg-red-500', text: 'text-red-700', light: 'bg-red-100' }
                   };
-                  
-                  const colors = planColors[plan.planName as keyof typeof planColors] || 
+
+                  const colors = planColors[plan.planName as keyof typeof planColors] ||
                     { bg: 'bg-gray-500', text: 'text-gray-700', light: 'bg-gray-100' };
-                  
+
                   return (
                     <div key={plan.planId} className="space-y-2">
                       <div className="flex justify-between items-center">
@@ -560,9 +508,9 @@ export default function Dashboard() {
                         </div>
                       </div>
                       <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
-                        <div 
-                          className={`${colors.bg} h-3 rounded-full transition-all duration-500 ease-in-out`} 
-                          style={{width: `${plan.percentage}%`}}
+                        <div
+                          className={`${colors.bg} h-3 rounded-full transition-all duration-500 ease-in-out`}
+                          style={{ width: `${plan.percentage}%` }}
                           role="progressbar"
                           aria-valuenow={plan.percentage}
                           aria-valuemin={0}
@@ -583,7 +531,7 @@ export default function Dashboard() {
                     Planos disponíveis, mas nenhum pet associado
                   </p>
                 </div>
-                
+
                 {/* Mostrar planos mesmo sem pets */}
                 {planDistribution.map((plan) => {
                   const planColors = {
@@ -593,10 +541,10 @@ export default function Dashboard() {
                     'INFINITY': { bg: 'bg-orange-500', text: 'text-orange-700', light: 'bg-orange-100' },
                     'PREMIUM': { bg: 'bg-red-500', text: 'text-red-700', light: 'bg-red-100' }
                   };
-                  
-                  const colors = planColors[plan.planName as keyof typeof planColors] || 
+
+                  const colors = planColors[plan.planName as keyof typeof planColors] ||
                     { bg: 'bg-gray-500', text: 'text-gray-700', light: 'bg-gray-100' };
-                  
+
                   return (
                     <div key={plan.planId} className="flex items-center justify-between p-2 bg-muted/50 rounded-lg">
                       <div className="flex items-center gap-2">
@@ -622,6 +570,7 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
+
     </div>
   );
 }

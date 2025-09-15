@@ -8,7 +8,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Client routes
   app.get("/api/clients", async (req, res) => {
     try {
-      const clients = await storage.getClients();
+      const { startDate, endDate } = req.query;
+      const clients = await storage.getClients(
+        startDate as string | undefined,
+        endDate as string | undefined
+      );
       res.json(clients);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch clients" });
@@ -156,7 +160,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Plan routes
   app.get("/api/plans", async (req, res) => {
     try {
-      const plans = await storage.getPlans();
+      const { startDate, endDate } = req.query;
+      const plans = await storage.getPlans(
+        startDate as string | undefined,
+        endDate as string | undefined
+      );
       res.json(plans);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch plans" });
@@ -262,7 +270,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/network-units/active", async (req, res) => {
     try {
-      const units = await storage.getActiveNetworkUnits();
+      const { startDate, endDate } = req.query;
+      const units = await storage.getActiveNetworkUnits(
+        startDate as string | undefined,
+        endDate as string | undefined
+      );
       res.json(units);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch active network units" });
@@ -373,7 +385,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Contact submission routes
   app.get("/api/contact-submissions", async (req, res) => {
     try {
-      const submissions = await storage.getContactSubmissions();
+      const { startDate, endDate } = req.query;
+      const submissions = await storage.getContactSubmissions(
+        startDate as string | undefined,
+        endDate as string | undefined
+      );
       res.json(submissions);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch contact submissions" });
@@ -405,7 +421,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Guide routes
   app.get("/api/guides", async (req, res) => {
     try {
-      const guides = await storage.getGuides();
+      const { startDate, endDate } = req.query;
+      const guides = await storage.getGuides(
+        startDate as string | undefined,
+        endDate as string | undefined
+      );
       res.json(guides);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch guides" });
@@ -576,7 +596,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Dashboard routes
   app.get("/api/dashboard/stats", async (req, res) => {
     try {
-      const stats = await storage.getDashboardStats();
+      const { startDate, endDate } = req.query;
+      const stats = await storage.getDashboardStats(
+        startDate as string | undefined,
+        endDate as string | undefined
+      );
       res.json(stats);
     } catch (error) {
       console.error("Dashboard stats error:", error);
@@ -586,11 +610,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/dashboard/plan-distribution", async (req, res) => {
     try {
-      const distribution = await storage.getPlanDistribution();
+      const { startDate, endDate } = req.query;
+      const distribution = await storage.getPlanDistribution(
+        startDate as string | undefined,
+        endDate as string | undefined
+      );
       res.json(distribution);
     } catch (error) {
       console.error("Plan distribution error:", error);
       res.status(500).json({ message: "Failed to fetch plan distribution" });
+    }
+  });
+
+  app.get("/api/dashboard/plan-revenue", async (req, res) => {
+    try {
+      const { startDate, endDate } = req.query;
+      const revenue = await storage.getPlanRevenue(
+        startDate as string | undefined,
+        endDate as string | undefined
+      );
+      res.json(revenue);
+    } catch (error) {
+      console.error("Plan revenue error:", error);
+      res.status(500).json({ message: "Failed to fetch plan revenue" });
     }
   });
 
