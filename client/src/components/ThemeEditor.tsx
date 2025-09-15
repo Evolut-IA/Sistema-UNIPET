@@ -411,15 +411,66 @@ export default function ThemeEditor() {
                       
                       <FormField
                         control={form.control}
-                        name="mutedTextColor"
+                        name="secondaryBackground"
                         render={({ field }) => (
                           <FormItem>
                             <ColorInput
-                              value={field.value || "#666666"}
+                              value={field.value || "#0f1419"}
                               onChange={field.onChange}
-                              title="Icones"
-                              description="Cor dos ícones dos botões"
-                              testId="color-button-icons"
+                              title="Fundo do Botão Secundário"
+                              description="Cor de fundo dos botões secundários"
+                              testId="color-secondary-button-bg"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="secondaryText"
+                        render={({ field }) => (
+                          <FormItem>
+                            <ColorInput
+                              value={field.value || "#ffffff"}
+                              onChange={field.onChange}
+                              title="Texto do Botão Secundário"
+                              description="Cor do texto dos botões secundários"
+                              testId="color-secondary-button-text"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="destructiveBackground"
+                        render={({ field }) => (
+                          <FormItem>
+                            <ColorInput
+                              value={field.value || "#dc2626"}
+                              onChange={field.onChange}
+                              title="Fundo do Botão Destrutivo"
+                              description="Cor de fundo dos botões destrutivos"
+                              testId="color-destructive-button-bg"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="destructiveText"
+                        render={({ field }) => (
+                          <FormItem>
+                            <ColorInput
+                              value={field.value || "#ffffff"}
+                              onChange={field.onChange}
+                              title="Texto do Botão Destrutivo"
+                              description="Cor do texto dos botões destrutivos"
+                              testId="color-destructive-button-text"
                             />
                             <FormMessage />
                           </FormItem>
@@ -687,8 +738,8 @@ export default function ThemeEditor() {
                             <ColorInput
                               value={field.value || "#1a1a1a"}
                               onChange={field.onChange}
-                              title="Texto escrito"
-                              description="Cor do texto digitado nos campos"
+                              title="Texto Digitado"
+                              description="Cor do texto escrito nos campos"
                               testId="color-textarea-text"
                             />
                             <FormMessage />
@@ -715,15 +766,32 @@ export default function ThemeEditor() {
                       
                       <FormField
                         control={form.control}
+                        name="inputBorder"
+                        render={({ field }) => (
+                          <FormItem>
+                            <ColorInput
+                              value={field.value || "#e1eaef"}
+                              onChange={field.onChange}
+                              title="Borda dos Campos"
+                              description="Cor da borda dos campos de texto"
+                              testId="color-input-border"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
                         name="focusBorder"
                         render={({ field }) => (
                           <FormItem>
                             <ColorInput
                               value={field.value || "#277677"}
                               onChange={field.onChange}
-                              title="Icones"
-                              description="Cor dos ícones nos campos de texto"
-                              testId="color-textarea-icons"
+                              title="Borda ao Focar"
+                              description="Cor da borda quando o campo está focado"
+                              testId="color-focus-border"
                             />
                             <FormMessage />
                           </FormItem>
