@@ -228,17 +228,14 @@ export const insertPetSchema = createInsertSchema(pets).omit({ id: true, created
 export const insertPlanSchema = createInsertSchema(plans).omit({ id: true, createdAt: true });
 export const insertPlanProcedureSchema = createInsertSchema(planProcedures).omit({ id: true, createdAt: true });
 export const insertNetworkUnitSchema = createInsertSchema(networkUnits).omit({ id: true, createdAt: true }).extend({
-  imageUrl: z.union([
-    z.string().min(1, "Imagem da unidade é obrigatória"), 
-    z.instanceof(File)
-  ]),
+  imageUrl: z.string().min(1, "Imagem da unidade é obrigatória"),
 });
 export const insertFaqItemSchema = createInsertSchema(faqItems).omit({ id: true, createdAt: true });
 export const insertContactSubmissionSchema = createInsertSchema(contactSubmissions).omit({ id: true, createdAt: true });
 export const insertSiteSettingsSchema = createInsertSchema(siteSettings).omit({ id: true }).extend({
-  mainImage: z.union([z.string(), z.instanceof(File)]).optional(),
-  networkImage: z.union([z.string(), z.instanceof(File)]).optional(),
-  aboutImage: z.union([z.string(), z.instanceof(File)]).optional(),
+  mainImage: z.string().optional(),
+  networkImage: z.string().optional(),
+  aboutImage: z.string().optional(),
 });
 export const insertThemeSettingsSchema = createInsertSchema(themeSettings).omit({ id: true });
 export const insertGuideSchema = createInsertSchema(guides).omit({ id: true, createdAt: true, updatedAt: true });
