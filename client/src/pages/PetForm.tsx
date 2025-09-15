@@ -347,7 +347,10 @@ export default function PetForm() {
                         <SelectContent>
                           {plans?.map((plan: any) => (
                             <SelectItem key={plan.id} value={plan.id}>
-                              {plan.name} - R$ {parseFloat(plan.price).toFixed(2)}
+                              {plan.name} - {new Intl.NumberFormat('pt-BR', { 
+                                style: 'currency', 
+                                currency: 'BRL' 
+                              }).format(parseFloat(plan.price))}
                             </SelectItem>
                           ))}
                         </SelectContent>
