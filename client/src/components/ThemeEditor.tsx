@@ -922,7 +922,6 @@ export default function ThemeEditor() {
                             <SelectItem value="0.75">Médio-grande (0.75rem)</SelectItem>
                             <SelectItem value="1">Grande (1rem)</SelectItem>
                             <SelectItem value="1.5">Muito grande (1.5rem)</SelectItem>
-                            <SelectItem value="9999">Totalmente arredondado</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
