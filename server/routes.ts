@@ -854,11 +854,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         issuer: 'unipet-units'
       });
 
-      // Set secure cookie
+      // Set secure cookie with proper flags
       res.cookie('unit_token', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
+        sameSite: 'strict',
         maxAge: 24 * 60 * 60 * 1000 // 24 hours
       });
 
@@ -970,14 +970,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   };
 
-  // Get guides for a specific unit
+  // Get guides for authenticated unit (unitId derived from JWT)
   app.get("/api/unit/:unitId/guides", authenticateUnit, async (req: any, res) => {
     try {
       const { unitId } = req.params;
       
-      // Verify unit is authorized to access these guides
+      // Critical security check: unit can only access its own guides
       if (req.unit.id !== unitId) {
-        return res.status(403).json({ message: "Acesso negado" });
+        return res.status(403).json({ message: "Acesso negado - unidade não autorizada" });
       }
 
       const guides = await storage.getGuidesByNetworkUnit(unitId);
@@ -988,7 +988,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Update guide status by unit
+  // Update guide status by unit - critical security isolation
   app.put("/api/unit/guides/:guideId/status", authenticateUnit, async (req: any, res) => {
     try {
       const { guideId } = req.params;
@@ -998,15 +998,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Status inválido" });
       }
 
-      // Verify guide belongs to this unit
+      // Critical security check: verify guide belongs to authenticated unit
       const guide = await storage.getGuide(guideId);
-      if (!guide || guide.networkUnitId !== req.unit.id) {
-        return res.status(404).json({ message: "Guia não encontrada ou acesso negado" });
+      if (!guide) {
+        return res.status(404).json({ message: "Guia não encontrada" });
+      }
+      
+      if (guide.networkUnitId !== req.unit.id) {
+        return res.status(403).json({ message: "Acesso negado - guia não pertence a esta unidade" });
       }
 
       const updated = await storage.updateGuideUnitStatus(guideId, unitStatus);
       if (!updated) {
-        return res.status(404).json({ message: "Guia não encontrada" });
+        return res.status(500).json({ message: "Erro ao atualizar status da guia" });
       }
 
       res.json({ success: true });
@@ -1024,10 +1028,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Check if unit exists with this slug
       const unit = await storage.getNetworkUnitBySlug(slug);
       if (!unit) {
-        return res.status(404).json({ message: "Unidade não encontrada", exists: false });
+        return res.status(404).json({ message: "Unidade não encontrada", exists: false, isActive: false });
       }
 
-      // Return public unit data (no sensitive information)
+      // Return public unit data with exists and isActive flags
       res.json({
         exists: true,
         isActive: unit.isActive,
@@ -1039,7 +1043,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       });
     } catch (error) {
-      res.status(500).json({ message: "Erro interno do servidor", exists: false });
+      res.status(500).json({ message: "Erro interno do servidor", exists: false, isActive: false });
     }
   });
 
