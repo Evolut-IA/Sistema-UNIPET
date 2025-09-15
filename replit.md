@@ -8,6 +8,19 @@ Preferred communication style: Simple, everyday language.
 
 # Recent Changes
 
+## Pet Form planId Validation Fix (September 15, 2025)
+Fixed validation error when saving pets with empty health plan (planId) field:
+
+### Problem Resolved:
+- **Issue**: Error 400 when saving pets with empty planId field in the form
+- **Cause**: Empty string ("") planId was failing validation as it expected null/undefined for optional fields
+- **Solution**: Remove empty string planId from request data before validation
+
+### Technical Implementation:
+- Modified `PUT /api/pets/:id` and `POST /api/pets` endpoints in `server/routes.ts`
+- Added logic to delete planId from request data when it's an empty string
+- This allows proper handling of optional plan selection in the pet form
+
 ## Dashboard Statistics Fix (September 15, 2025)
 Fixed critical issue where Dashboard page was displaying incorrect statistics that didn't reflect real database data:
 
