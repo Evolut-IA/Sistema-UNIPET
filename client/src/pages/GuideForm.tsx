@@ -282,18 +282,19 @@ export default function GuideForm() {
             </CardContent>
           </Card>
 
-          <div className="flex justify-end space-x-4">
+          <div className="flex justify-end space-x-4 md:space-x-4 space-x-2 md:flex-row flex-col md:space-y-0 space-y-3">
             <Button
               type="button"
               variant="outline"
               onClick={() => setLocation("/guias")}
               data-testid="button-cancel"
+              className="md:w-auto w-full md:h-10 h-12 md:text-sm text-base"
             >
               Cancelar
             </Button>
             <Button
               type="submit"
-              className="btn-primary"
+              className="btn-primary md:w-auto w-full md:h-10 h-12 md:text-sm text-base"
               disabled={mutation.isPending}
               data-testid="button-save"
             >
