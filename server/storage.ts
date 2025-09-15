@@ -771,32 +771,14 @@ export class DatabaseStorage implements IStorage {
   }[]> {
     // TODO: Consider adding cache for this query if performance becomes an issue
     // Cache could be invalidated when pets or plans are modified
-    // Get all active plans
+    // Get all plans (both active and inactive) that exist in the system
     const allPlans = await db.select({ 
       id: schema.plans.id, 
       name: schema.plans.name 
-    }).from(schema.plans).where(eq(schema.plans.isActive, true));
-    
-    // Get all pets from active clients (clients with guides) with their plans
-    const activeClientIds = await db
-      .selectDistinct({ clientId: schema.guides.clientId })
-      .from(schema.guides);
-    
-    const clientIdsArray = activeClientIds.map(client => client.clientId);
-    
-    if (clientIdsArray.length === 0) {
-      console.log("No active clients found for plan distribution");
-      return allPlans.map(plan => ({
-        planId: plan.id,
-        planName: plan.name,
-        petCount: 0,
-        percentage: 0
-      }));
-    }
+    }).from(schema.plans);
     
     // Build date filter conditions for pets
     const petDateConditions = [
-      inArray(schema.pets.clientId, clientIdsArray),
       sqlTemplate`${schema.pets.planId} IS NOT NULL`
     ];
     
@@ -810,7 +792,7 @@ export class DatabaseStorage implements IStorage {
       petDateConditions.push(lt(schema.pets.createdAt, endDateTime));
     }
 
-    // Get pets with plans for active clients (excluding pets without plans)
+    // Get all pets with plans (excluding pets without plans)
     const petsWithPlans = await db
       .select({
         planId: schema.pets.planId
@@ -821,8 +803,24 @@ export class DatabaseStorage implements IStorage {
     // Count total pets with plans (all have plans due to WHERE filter)
     const totalPetsWithPlans = petsWithPlans.length;
     
+    // If no pets with plans, return empty distribution for all plans
+    if (totalPetsWithPlans === 0) {
+      console.log("No pets with plans found for distribution");
+      return allPlans.map(plan => ({
+        planId: plan.id,
+        planName: plan.name,
+        petCount: 0,
+        percentage: 0
+      }));
+    }
+    
+    // Filter plans to only include those that actually have pets
+    const plansWithPets = allPlans.filter(plan => 
+      petsWithPlans.some(pet => pet.planId === plan.id)
+    );
+    
     // Calculate distribution with accurate percentages that sum to 100%
-    const distribution = allPlans.map(plan => {
+    const distribution = plansWithPets.map(plan => {
       const petCount = petsWithPlans.filter(pet => pet.planId === plan.id).length;
       const exactPercentage = totalPetsWithPlans > 0 ? (petCount / totalPetsWithPlans) * 100 : 0;
       
@@ -879,12 +877,12 @@ export class DatabaseStorage implements IStorage {
     monthlyPrice: number;
     totalRevenue: number;
   }[]> {
-    // Get all active plans
+    // Get all plans (both active and inactive) that exist in the system
     const allPlans = await db.select({ 
       id: schema.plans.id, 
       name: schema.plans.name,
       price: schema.plans.price
-    }).from(schema.plans).where(eq(schema.plans.isActive, true));
+    }).from(schema.plans);
     
     // Build date filter conditions for pets
     const petDateConditions = [
@@ -909,8 +907,13 @@ export class DatabaseStorage implements IStorage {
       .from(schema.pets)
       .where(and(...petDateConditions));
     
-    // Calculate revenue for each plan
-    const planRevenue = allPlans.map(plan => {
+    // Filter plans to only include those that actually have pets
+    const plansWithPets = allPlans.filter(plan => 
+      petsWithPlans.some(pet => pet.planId === plan.id)
+    );
+    
+    // Calculate revenue for each plan that has pets
+    const planRevenue = plansWithPets.map(plan => {
       const petCount = petsWithPlans.filter(pet => pet.planId === plan.id).length;
       const monthlyPrice = Number(plan.price) / 100; // Convert from cents to decimal
       const totalRevenue = petCount * monthlyPrice;
