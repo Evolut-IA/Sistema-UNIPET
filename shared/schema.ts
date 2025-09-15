@@ -212,12 +212,14 @@ export const guides = pgTable("guides", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   clientId: varchar("client_id").notNull().references(() => clients.id),
   petId: varchar("pet_id").notNull().references(() => pets.id),
+  networkUnitId: varchar("network_unit_id").references(() => networkUnits.id),
   type: text("type").notNull(), // 'consulta', 'exames', 'internacao', 'reembolso'
   procedure: text("procedure").notNull(),
   procedureNotes: text("procedure_notes"),
   generalNotes: text("general_notes"),
   value: decimal("value"),
-  status: text("status").default("open"), // 'open', 'closed', 'cancelled'
+  status: text("status").default("pending"), // 'pending', 'accepted', 'rejected', 'completed'
+  unitStatus: text("unit_status").default("pending"), // 'pending', 'accepted', 'rejected' - status specific for network units
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
   updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`),
 });

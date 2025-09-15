@@ -167,6 +167,10 @@ export interface IStorage {
   updateNetworkUnit(id: string, updates: Partial<InsertNetworkUnit>): Promise<NetworkUnit | undefined>;
   deleteNetworkUnit(id: string): Promise<boolean>;
   getNetworkUnits(): Promise<NetworkUnit[]>;
+  getNetworkUnitsWithCredentials(): Promise<NetworkUnitWithCredentialStatus[]>;
+  updateNetworkUnitCredentials(id: string, credentials: { login: string; senhaHash: string }): Promise<boolean>;
+  getNetworkUnitByLogin(login: string): Promise<NetworkUnit | undefined>;
+  getNetworkUnitBySlug(slug: string): Promise<NetworkUnit | undefined>;
 
   // FAQ methods
   getFaqItem(id: string): Promise<FaqItem | undefined>;
@@ -199,6 +203,8 @@ export interface IStorage {
   deleteGuide(id: string): Promise<boolean>;
   getGuides(startDate?: string, endDate?: string): Promise<Guide[]>;
   getRecentGuides(limit?: number): Promise<Guide[]>;
+  getGuidesByNetworkUnit(networkUnitId: string): Promise<Guide[]>;
+  updateGuideUnitStatus(id: string, unitStatus: string): Promise<Guide | undefined>;
 
   // Dashboard analytics
   getDashboardStats(startDate?: string, endDate?: string): Promise<{
@@ -726,6 +732,52 @@ export class DatabaseStorage implements IStorage {
 
   async getRecentGuides(limit: number = 10): Promise<Guide[]> {
     return await db.select().from(schema.guides).orderBy(desc(schema.guides.createdAt)).limit(limit);
+  }
+
+  async getGuidesByNetworkUnit(networkUnitId: string): Promise<Guide[]> {
+    return await db
+      .select({
+        id: schema.guides.id,
+        clientId: schema.guides.clientId,
+        petId: schema.guides.petId,
+        networkUnitId: schema.guides.networkUnitId,
+        type: schema.guides.type,
+        procedure: schema.guides.procedure,
+        procedureNotes: schema.guides.procedureNotes,
+        generalNotes: schema.guides.generalNotes,
+        value: schema.guides.value,
+        status: schema.guides.status,
+        unitStatus: schema.guides.unitStatus,
+        createdAt: schema.guides.createdAt,
+        updatedAt: schema.guides.updatedAt,
+        client: {
+          name: schema.clients.name,
+          email: schema.clients.email,
+          phone: schema.clients.phone,
+        },
+        pet: {
+          name: schema.pets.name,
+          species: schema.pets.species,
+          breed: schema.pets.breed,
+        }
+      })
+      .from(schema.guides)
+      .leftJoin(schema.clients, eq(schema.guides.clientId, schema.clients.id))
+      .leftJoin(schema.pets, eq(schema.guides.petId, schema.pets.id))
+      .where(eq(schema.guides.networkUnitId, networkUnitId))
+      .orderBy(desc(schema.guides.createdAt));
+  }
+
+  async updateGuideUnitStatus(id: string, unitStatus: string): Promise<Guide | undefined> {
+    const result = await db
+      .update(schema.guides)
+      .set({ 
+        unitStatus,
+        updatedAt: sql`CURRENT_TIMESTAMP`
+      })
+      .where(eq(schema.guides.id, id))
+      .returning();
+    return result[0];
   }
 
   // Dashboard analytics

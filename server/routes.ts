@@ -936,6 +936,113 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Middleware to authenticate unit requests
+  const authenticateUnit = async (req: any, res: any, next: any) => {
+    try {
+      let token = null;
+      
+      const authHeader = req.headers.authorization;
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        token = authHeader.substring(7);
+      } else if (req.cookies && req.cookies.unit_token) {
+        token = req.cookies.unit_token;
+      }
+
+      if (!token) {
+        return res.status(401).json({ message: "Token de autorização necessário" });
+      }
+
+      const decoded = jwt.verify(token, JWT_SECRET) as any;
+      
+      if (decoded.type !== 'unit') {
+        return res.status(401).json({ message: "Token inválido" });
+      }
+      
+      const unit = await storage.getNetworkUnit(decoded.unitId);
+      if (!unit || !unit.isActive) {
+        return res.status(401).json({ message: "Unidade inativa ou não encontrada" });
+      }
+
+      req.unit = unit;
+      next();
+    } catch (error) {
+      return res.status(401).json({ message: "Token inválido ou expirado" });
+    }
+  };
+
+  // Get guides for a specific unit
+  app.get("/api/unit/:unitId/guides", authenticateUnit, async (req: any, res) => {
+    try {
+      const { unitId } = req.params;
+      
+      // Verify unit is authorized to access these guides
+      if (req.unit.id !== unitId) {
+        return res.status(403).json({ message: "Acesso negado" });
+      }
+
+      const guides = await storage.getGuidesByNetworkUnit(unitId);
+      res.json(guides);
+    } catch (error) {
+      console.error("Error fetching unit guides:", error);
+      res.status(500).json({ message: "Erro ao buscar guias" });
+    }
+  });
+
+  // Update guide status by unit
+  app.put("/api/unit/guides/:guideId/status", authenticateUnit, async (req: any, res) => {
+    try {
+      const { guideId } = req.params;
+      const { unitStatus } = req.body;
+
+      if (!unitStatus || !['pending', 'accepted', 'rejected', 'completed'].includes(unitStatus)) {
+        return res.status(400).json({ message: "Status inválido" });
+      }
+
+      // Verify guide belongs to this unit
+      const guide = await storage.getGuide(guideId);
+      if (!guide || guide.networkUnitId !== req.unit.id) {
+        return res.status(404).json({ message: "Guia não encontrada ou acesso negado" });
+      }
+
+      const updated = await storage.updateGuideUnitStatus(guideId, unitStatus);
+      if (!updated) {
+        return res.status(404).json({ message: "Guia não encontrada" });
+      }
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error updating guide status:", error);
+      res.status(500).json({ message: "Erro ao atualizar status da guia" });
+    }
+  });
+
+  // API route to check if slug corresponds to a valid network unit
+  app.get("/api/unit/:slug", async (req, res) => {
+    try {
+      const { slug } = req.params;
+      
+      // Check if unit exists with this slug
+      const unit = await storage.getNetworkUnitBySlug(slug);
+      if (!unit) {
+        return res.status(404).json({ message: "Unidade não encontrada", exists: false });
+      }
+
+      // Return public unit data (no sensitive information)
+      res.json({
+        exists: true,
+        isActive: unit.isActive,
+        unit: {
+          id: unit.id,
+          name: unit.name,
+          address: unit.address,
+          urlSlug: unit.urlSlug
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Erro interno do servidor", exists: false });
+    }
+  });
+
   // Dynamic unit routes - must be after all API routes but before static files
   app.get("/:slug", async (req, res, next) => {
     try {
@@ -971,35 +1078,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.sendFile(path.resolve(__dirname, '../dist/public/index.html'));
       } else {
         // In development, mark this as a unit page for frontend handling
-        req.params.isUnitPage = 'true';
+        (req as any).isUnitPage = true;
         return next();
       }
     } catch (error) {
       console.error("Dynamic route error:", error);
       return next(); // Let error middleware handle it
-    }
-  });
-
-  // API route to get unit data by slug
-  app.get("/api/unit/:slug", async (req, res) => {
-    try {
-      const { slug } = req.params;
-      
-      const unit = await storage.getNetworkUnitBySlug(slug);
-      if (!unit) {
-        return res.status(404).json({ message: "Unidade não encontrada" });
-      }
-
-      if (!unit.isActive) {
-        return res.status(404).json({ message: "Unidade inativa" });
-      }
-
-      // Return safe unit data (without sensitive information)
-      const { senhaHash, login, ...safeUnit } = unit;
-      res.json(safeUnit);
-    } catch (error) {
-      console.error("Get unit by slug error:", error);
-      res.status(500).json({ message: "Erro interno do servidor" });
     }
   });
 

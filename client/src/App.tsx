@@ -18,37 +18,48 @@ import FAQ from "@/pages/FAQ";
 import ContactSubmissions from "@/pages/ContactSubmissions";
 import Settings from "@/pages/Settings";
 import Administration from "@/pages/Administration";
+import UnitDashboard from "@/pages/UnitDashboard";
+import UnitRoute from "@/components/UnitRoute";
 import NotFound from "@/pages/not-found";
 import { useEffect } from "react";
+import { useLocation } from "wouter";
 import type { ThemeSettings } from "@shared/schema";
 import { applyThemeToCSSVariables } from "@/lib/theme-defaults";
 
 function Router() {
   return (
-    <Layout>
-      <Switch>
-        <Route path="/" component={Dashboard} />
-        <Route path="/clientes" component={Clients} />
-        <Route path="/clientes/novo" component={ClientForm} />
-        <Route path="/clientes/:id/editar" component={ClientForm} />
-        <Route path="/clientes/:clientId/pets/novo" component={PetForm} />
-        <Route path="/pets/:id/editar" component={PetForm} />
-        <Route path="/guias" component={Guides} />
-        <Route path="/guias/novo" component={GuideForm} />
-        <Route path="/guias/:id/editar" component={GuideForm} />
-        <Route path="/planos" component={Plans} />
-        <Route path="/planos/novo" component={PlanForm} />
-        <Route path="/planos/:id/editar" component={PlanForm} />
-        <Route path="/rede" component={Network} />
-        <Route path="/rede/novo" component={NetworkForm} />
-        <Route path="/rede/:id/editar" component={NetworkForm} />
-        <Route path="/perguntas-frequentes" component={FAQ} />
-        <Route path="/formularios" component={ContactSubmissions} />
-        <Route path="/configuracoes" component={Settings} />
-        <Route path="/administracao" component={Administration} />
-        <Route component={NotFound} />
-      </Switch>
-    </Layout>
+    <Switch>
+      {/* Admin routes with Layout */}
+      <Route path="/" nest>
+        <Layout>
+          <Switch>
+            <Route path="/" component={Dashboard} />
+            <Route path="/clientes" component={Clients} />
+            <Route path="/clientes/novo" component={ClientForm} />
+            <Route path="/clientes/:id/editar" component={ClientForm} />
+            <Route path="/clientes/:clientId/pets/novo" component={PetForm} />
+            <Route path="/pets/:id/editar" component={PetForm} />
+            <Route path="/guias" component={Guides} />
+            <Route path="/guias/novo" component={GuideForm} />
+            <Route path="/guias/:id/editar" component={GuideForm} />
+            <Route path="/planos" component={Plans} />
+            <Route path="/planos/novo" component={PlanForm} />
+            <Route path="/planos/:id/editar" component={PlanForm} />
+            <Route path="/rede" component={Network} />
+            <Route path="/rede/novo" component={NetworkForm} />
+            <Route path="/rede/:id/editar" component={NetworkForm} />
+            <Route path="/perguntas-frequentes" component={FAQ} />
+            <Route path="/formularios" component={ContactSubmissions} />
+            <Route path="/configuracoes" component={Settings} />
+            <Route path="/administracao" component={Administration} />
+            <Route component={NotFound} />
+          </Switch>
+        </Layout>
+      </Route>
+      
+      {/* Unit routes without admin Layout - catch-all for dynamic slugs */}
+      <Route component={UnitRoute} />
+    </Switch>
   );
 }
 
