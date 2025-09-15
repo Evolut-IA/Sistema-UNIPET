@@ -172,21 +172,11 @@ export default function Dashboard() {
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground break-words">Dashboard Geral</h1>
           <p className="text-sm text-muted-foreground">Visão geral do sistema de gestão</p>
         </div>
-        <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-3 xs:gap-4">
-          <Button
-            className="btn-primary w-full xs:w-auto"
-            onClick={() => setLocation("/guias/novo")}
-            data-testid="button-new-guide"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Nova Guia
-          </Button>
-          <div className="flex items-center gap-2 p-2 xs:p-0">
-            <User className="h-6 w-6 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
-            <div className="min-w-0">
-              <p className="text-xs sm:text-sm font-medium text-foreground truncate">Administrador</p>
-              <p className="text-xs text-muted-foreground">Sistema</p>
-            </div>
+        <div className="flex items-center gap-2 p-2 xs:p-0">
+          <User className="h-6 w-6 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
+          <div className="min-w-0">
+            <p className="text-xs sm:text-sm font-medium text-foreground truncate">Administrador</p>
+            <p className="text-xs text-muted-foreground">Sistema</p>
           </div>
         </div>
       </div>
