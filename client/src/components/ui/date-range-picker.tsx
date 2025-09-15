@@ -4,6 +4,8 @@ import { Calendar as CalendarIcon, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer"
+import { useMobileViewport } from "@/hooks/use-mobile"
 import { DateField } from "@/components/ui/datefield"
 import { Field } from "@/components/ui/field"
 import { cn } from "@/lib/utils"
@@ -31,6 +33,7 @@ const DateRangePicker = React.forwardRef<
   const [tempRange, setTempRange] = React.useState<DateRange>(
     value || { startDate: null, endDate: null }
   )
+  const { isMobile } = useMobileViewport()
 
   const formatDateRange = (range: DateRange) => {
     if (!range.startDate && !range.endDate) {
@@ -80,60 +83,83 @@ const DateRangePicker = React.forwardRef<
     }
   }, [value])
 
+  const renderContent = () => (
+    <div className="p-4 space-y-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <Field label="Data inicial">
+          <DateField
+            value={tempRange.startDate}
+            onChange={handleStartDateChange}
+            placeholder="dd/mm/aaaa"
+          />
+        </Field>
+        <Field label="Data final">
+          <DateField
+            value={tempRange.endDate}
+            onChange={handleEndDateChange}
+            placeholder="dd/mm/aaaa"
+          />
+        </Field>
+      </div>
+      
+      <div className="flex justify-between gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleClear}
+          className="flex-1"
+        >
+          <X className="mr-2 h-4 w-4" />
+          Limpar
+        </Button>
+        <Button
+          size="sm"
+          onClick={handleApply}
+          className="flex-1"
+        >
+          Aplicar
+        </Button>
+      </div>
+    </div>
+  )
+
+  const triggerButton = (
+    <Button
+      variant="outline"
+      className={cn(
+        "w-full justify-start text-left font-normal",
+        (!value?.startDate && !value?.endDate) && "text-muted-foreground"
+      )}
+      disabled={disabled}
+    >
+      <CalendarIcon className="mr-2 h-4 w-4" />
+      {formatDateRange(value || { startDate: null, endDate: null })}
+    </Button>
+  )
+
+  if (isMobile) {
+    return (
+      <div ref={ref} className={cn("grid gap-2", className)}>
+        <Drawer open={isOpen} onOpenChange={setIsOpen}>
+          <DrawerTrigger asChild>
+            {triggerButton}
+          </DrawerTrigger>
+          <DrawerContent>
+            {renderContent()}
+          </DrawerContent>
+        </Drawer>
+      </div>
+    )
+  }
+
   return (
     <div ref={ref} className={cn("grid gap-2", className)}>
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            className={cn(
-              "w-full justify-start text-left font-normal",
-              (!value?.startDate && !value?.endDate) && "text-muted-foreground"
-            )}
-            disabled={disabled}
-          >
-            <CalendarIcon className="mr-2 h-4 w-4" />
-            {formatDateRange(value || { startDate: null, endDate: null })}
-          </Button>
+          {triggerButton}
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
-          <div className="p-4 space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <Field label="Data inicial">
-                <DateField
-                  value={tempRange.startDate}
-                  onChange={handleStartDateChange}
-                  placeholder="dd/mm/aaaa"
-                />
-              </Field>
-              <Field label="Data final">
-                <DateField
-                  value={tempRange.endDate}
-                  onChange={handleEndDateChange}
-                  placeholder="dd/mm/aaaa"
-                />
-              </Field>
-            </div>
-            
-            <div className="flex justify-between gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleClear}
-                className="flex-1"
-              >
-                <X className="mr-2 h-4 w-4" />
-                Limpar
-              </Button>
-              <Button
-                size="sm"
-                onClick={handleApply}
-                className="flex-1"
-              >
-                Aplicar
-              </Button>
-            </div>
-          </div>
+          {renderContent()}
         </PopoverContent>
       </Popover>
     </div>
