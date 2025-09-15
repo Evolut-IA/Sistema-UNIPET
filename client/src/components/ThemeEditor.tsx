@@ -589,11 +589,11 @@ export default function ThemeEditor() {
                       
                       <FormField
                         control={form.control}
-                        name="chart3Color"
+                        name="warningColor"
                         render={({ field }) => (
                           <FormItem>
                             <ColorInput
-                              value={field.value || DEFAULT_THEME.chart3Color}
+                              value={field.value || DEFAULT_THEME.warningColor}
                               onChange={field.onChange}
                               title="Ausente (amarelo)"
                               description="Cor para status de ausência e avisos"

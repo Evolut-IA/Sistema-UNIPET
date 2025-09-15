@@ -43,6 +43,9 @@
     chart3Color: "#f59e0b",
     chart4Color: "#22c55e",
     chart5Color: "#ef4444",
+    
+    // Status Colors
+    warningColor: "#f59e0b",
   };
 
   // Function to apply theme settings to CSS variables
@@ -100,6 +103,9 @@
     root.style.setProperty('--chart-3', themeSettings.chart3Color || DEFAULT_THEME.chart3Color);
     root.style.setProperty('--chart-4', themeSettings.chart4Color || DEFAULT_THEME.chart4Color);
     root.style.setProperty('--chart-5', themeSettings.chart5Color || DEFAULT_THEME.chart5Color);
+    
+    // Status Colors
+    root.style.setProperty('--warning', themeSettings.warningColor || DEFAULT_THEME.warningColor);
   }
 
   // Try to load saved theme from localStorage first (for instant application)

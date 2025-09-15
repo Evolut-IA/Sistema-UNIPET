@@ -198,6 +198,9 @@ export const themeSettings = pgTable("theme_settings", {
   chart3Color: text("chart3_color").default("#277677"),
   chart4Color: text("chart4_color").default("#277677"),
   chart5Color: text("chart5_color").default("#277677"),
+  
+  // Status Colors
+  warningColor: text("warning_color").default("#f59e0b"),
 
 });
 
