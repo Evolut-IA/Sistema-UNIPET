@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as schema from "@shared/schema";
-import { eq, like, or, desc, count } from "drizzle-orm";
+import { eq, like, or, desc, count, sum, sql as sqlTemplate } from "drizzle-orm";
 import type {
   User, InsertUser,
   Client, InsertClient,
@@ -563,18 +563,39 @@ export class DatabaseStorage implements IStorage {
     activePlans: number;
     inactivePlans: number;
   }> {
-    const clientsCount = await db.select({ count: count() }).from(schema.clients);
+    // Count active clients (clients that have at least one guide)
+    const activeClientsCount = await db
+      .selectDistinct({ clientId: schema.guides.clientId })
+      .from(schema.guides);
+    
+    // Count all pets (keeping current behavior)
     const petsCount = await db.select({ count: count() }).from(schema.pets);
+    
+    // Count open guides (already correct)
     const openGuidesCount = await db.select({ count: count() }).from(schema.guides).where(eq(schema.guides.status, 'open'));
+    
+    // Calculate monthly revenue from guides in current month
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth() + 1; // JavaScript months are 0-based
+    const currentYear = currentDate.getFullYear();
+    
+    const monthlyRevenueResult = await db
+      .select({ total: sum(schema.guides.value) })
+      .from(schema.guides)
+      .where(
+        sqlTemplate`EXTRACT(MONTH FROM ${schema.guides.createdAt}) = ${currentMonth} AND EXTRACT(YEAR FROM ${schema.guides.createdAt}) = ${currentYear}`
+      );
+    
+    // Count plans
     const totalPlansCount = await db.select({ count: count() }).from(schema.plans);
     const activePlansCount = await db.select({ count: count() }).from(schema.plans).where(eq(schema.plans.isActive, true));
     const inactivePlansCount = await db.select({ count: count() }).from(schema.plans).where(eq(schema.plans.isActive, false));
     
     return {
-      activeClients: clientsCount[0]?.count || 0,
+      activeClients: activeClientsCount.length || 0,
       registeredPets: petsCount[0]?.count || 0,
       openGuides: openGuidesCount[0]?.count || 0,
-      monthlyRevenue: 0, // TODO: Calculate based on guide values and plan payments
+      monthlyRevenue: Number(monthlyRevenueResult[0]?.total || 0),
       totalPlans: totalPlansCount[0]?.count || 0,
       activePlans: activePlansCount[0]?.count || 0,
       inactivePlans: inactivePlansCount[0]?.count || 0,
