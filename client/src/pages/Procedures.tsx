@@ -54,7 +54,7 @@ export default function Procedures() {
 
       // Save plan values
       const activePlans = Object.entries(planValues)
-        .filter(([_, value]) => value.isIncluded && value.price > 0);
+        .filter(([_, value]) => value.isIncluded);
       
       for (const [planId, value] of activePlans) {
         const planProcedureData = {
@@ -78,7 +78,7 @@ export default function Procedures() {
         const existingPlanProcedures = await apiRequest("GET", `/api/procedures/${procedure.id}/plan-procedures`);
         for (const pp of existingPlanProcedures) {
           const currentValue = planValues[pp.planId];
-          if (!currentValue || !currentValue.isIncluded || currentValue.price <= 0) {
+          if (!currentValue || !currentValue.isIncluded) {
             await apiRequest("DELETE", `/api/plan-procedures/${pp.id}`);
           }
         }
