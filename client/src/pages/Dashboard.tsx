@@ -305,19 +305,19 @@ export default function Dashboard() {
                   },
                   planos: {
                     label: "Planos",
-                    color: "hsl(var(--chart-2))",
+                    color: "hsl(var(--chart-1))",
                   },
                   rede: {
                     label: "Unidades de Rede",
-                    color: "hsl(var(--chart-3))",
+                    color: "hsl(var(--chart-1))",
                   },
                   clientes: {
                     label: "Clientes",
-                    color: "hsl(var(--chart-4))",
+                    color: "hsl(var(--chart-1))",
                   },
                   pets: {
                     label: "Pets",
-                    color: "hsl(var(--chart-5))",
+                    color: "hsl(var(--chart-1))",
                   },
                   guias: {
                     label: "Guias",
