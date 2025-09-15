@@ -309,34 +309,6 @@ export default function Clients() {
                           {client.fullName}
                         </h3>
                       </div>
-
-                      {/* Informações em Grid Responsivo - Ocultas em Mobile */}
-                      <div className="hidden sm:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 text-sm text-muted-foreground">
-                        <div className="flex flex-col space-y-1">
-                          <span className="font-medium">Email:</span>
-                          <span className="break-all">{client.email || "Não informado"}</span>
-                        </div>
-
-                        <div className="flex flex-col space-y-1">
-                          <span className="font-medium">Telefone:</span>
-                          <span className="break-all">{client.phone}</span>
-                        </div>
-
-                        <div className="flex flex-col space-y-1">
-                          <span className="font-medium">CPF:</span>
-                          <span>{client.cpf}</span>
-                        </div>
-
-                        <div className="flex flex-col space-y-1">
-                          <span className="font-medium">Cidade:</span>
-                          <span className="break-words">{client.city || "Não informado"}</span>
-                        </div>
-
-                        <div className="flex flex-col space-y-1">
-                          <span className="font-medium">Cadastrado:</span>
-                          <span>{client.createdAt && format(new Date(client.createdAt), "dd/MM/yyyy", { locale: ptBR })}</span>
-                        </div>
-                      </div>
                     </div>
                     
                     {/* Botões em linha horizontal */}
