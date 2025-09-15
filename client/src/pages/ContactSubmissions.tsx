@@ -281,45 +281,16 @@ export default function ContactSubmissions() {
             <div className="space-y-2">
               {filteredSubmissions.map((submission: any) => (
                 <div key={submission.id} className="border rounded-lg p-3 hover:bg-gray-50 transition-colors">
-                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-                    <div className="flex-1">
-                      {/* Título Principal */}
-                      <div className="flex items-center space-x-2 mb-2">
-                        <User className="h-4 w-4 text-primary" />
-                        <h3 className="font-semibold text-foreground" data-testid={`submission-name-${submission.id}`}>
+                  <div className="flex flex-col lg:flex-row lg:justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      {/* Nome do Formulário */}
+                      <div className="mb-2">
+                        <h3 className="font-semibold text-foreground break-words" data-testid={`submission-name-${submission.id}`}>
                           {submission.name}
                         </h3>
-                        <Badge className={getPlanInterestColor(submission.planInterest)}>
+                        <Badge className={`${getPlanInterestColor(submission.planInterest)} lg:hidden`} data-testid={`badge-plan-interest-${submission.id}`}>
                           {submission.planInterest}
                         </Badge>
-                      </div>
-
-                      {/* Informações Detalhadas - Ocultas em Mobile */}
-                      <div className="hidden sm:block">
-                        <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                          <Mail className="h-3 w-3" />
-                          <span>{submission.email}</span>
-                        </div>
-
-                        <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                          <Phone className="h-3 w-3" />
-                          <span>{submission.phone}</span>
-                        </div>
-
-                        <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                          <MapPin className="h-3 w-3" />
-                          <span>{submission.city}</span>
-                        </div>
-
-                        <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                          <PawPrint className="h-3 w-3" />
-                          <span>{submission.petName} ({submission.animalType}, {submission.petAge})</span>
-                        </div>
-
-                        <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                          <Calendar className="h-3 w-3" />
-                          <span>{submission.createdAt && format(new Date(submission.createdAt), "dd/MM/yyyy", { locale: ptBR })}</span>
-                        </div>
                       </div>
                     </div>
 

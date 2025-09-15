@@ -317,37 +317,16 @@ export default function Guides() {
             <div className="space-y-2">
               {filteredGuides.map((guide: any) => (
                 <div key={guide.id} className="border rounded-lg p-3 hover:bg-gray-50 transition-colors">
-                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-                    <div className="flex-1">
-                      {/* Título Principal */}
+                  <div className="flex flex-col lg:flex-row lg:justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      {/* Nome da Guia */}
                       <div className="mb-2">
-                        <div className="flex items-center space-x-2 mb-1">
-                          <FileText className="h-4 w-4 text-primary" />
-                          <h3 className="font-semibold text-foreground" data-testid={`guide-procedure-${guide.id}`}>
-                            {guide.procedure}
-                          </h3>
-                        </div>
-                        <Badge className={getStatusColor(guide.status)}>
+                        <h3 className="font-semibold text-foreground break-words" data-testid={`guide-procedure-${guide.id}`}>
+                          {guide.procedure}
+                        </h3>
+                        <Badge className={`${getStatusColor(guide.status)} lg:hidden`} data-testid={`badge-status-${guide.id}`}>
                           {getStatusLabel(guide.status)}
                         </Badge>
-                      </div>
-
-                      {/* Informações Detalhadas - Ocultas em Mobile */}
-                      <div className="hidden sm:block">
-                        <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                          <span className="font-medium">Tipo:</span>
-                          <span>{getTypeLabel(guide.type)}</span>
-                        </div>
-
-                        <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                          <span className="font-medium">Valor:</span>
-                          <span>R$ {parseFloat(guide.value || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                        </div>
-
-                        <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                          <span className="font-medium">Criada:</span>
-                          <span>{guide.createdAt && format(new Date(guide.createdAt), "dd/MM/yyyy", { locale: ptBR })}</span>
-                        </div>
                       </div>
                     </div>
                     
