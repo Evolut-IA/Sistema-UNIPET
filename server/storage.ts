@@ -499,6 +499,16 @@ export class DatabaseStorage implements IStorage {
     return result.length > 0;
   }
 
+  async getNetworkUnitByLogin(login: string): Promise<NetworkUnit | undefined> {
+    const result = await db.select().from(schema.networkUnits).where(eq(schema.networkUnits.login, login));
+    return result[0];
+  }
+
+  async getNetworkUnitBySlug(slug: string): Promise<NetworkUnit | undefined> {
+    const result = await db.select().from(schema.networkUnits).where(eq(schema.networkUnits.urlSlug, slug));
+    return result[0];
+  }
+
   // FAQ methods
   async getFaqItem(id: string): Promise<FaqItem | undefined> {
     const result = await db.select().from(schema.faqItems).where(eq(schema.faqItems.id, id));

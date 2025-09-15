@@ -1,8 +1,10 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import path from "path";
 import { storage } from "./storage";
 import { insertClientSchema, insertPetSchema, insertPlanSchema, insertNetworkUnitSchema, insertFaqItemSchema, insertContactSubmissionSchema, insertSiteSettingsSchema, insertThemeSettingsSchema, insertGuideSchema, insertUserSchema, updateNetworkUnitCredentialsSchema, type InsertUser } from "@shared/schema";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import { generateUniqueSlug } from "./utils";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -808,6 +810,196 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     } catch (error) {
       res.status(500).json({ message: "Erro ao verificar senha" });
+    }
+  });
+
+  // JWT secret key for unit authentication
+  const JWT_SECRET = process.env.JWT_SECRET || 'unit-secret-key-change-in-production';
+
+  // Network unit authentication routes
+  app.post("/api/unit/login", async (req, res) => {
+    try {
+      const { login, password } = req.body;
+      
+      if (!login || !password) {
+        return res.status(400).json({ message: "Login e senha são obrigatórios" });
+      }
+
+      // Find unit by login
+      const unit = await storage.getNetworkUnitByLogin(login);
+      if (!unit || !unit.senhaHash) {
+        return res.status(401).json({ message: "Credenciais inválidas" });
+      }
+
+      // Check if unit is active
+      if (!unit.isActive) {
+        return res.status(401).json({ message: "Unidade inativa" });
+      }
+
+      // Verify password
+      const isValidPassword = await bcrypt.compare(password, unit.senhaHash);
+      if (!isValidPassword) {
+        return res.status(401).json({ message: "Credenciais inválidas" });
+      }
+
+      // Create JWT token
+      const tokenPayload = {
+        unitId: unit.id,
+        urlSlug: unit.urlSlug,
+        type: 'unit'
+      };
+
+      const token = jwt.sign(tokenPayload, JWT_SECRET, { 
+        expiresIn: '24h',
+        issuer: 'unipet-units'
+      });
+
+      // Set secure cookie
+      res.cookie('unit_token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+      });
+
+      res.json({
+        success: true,
+        token,
+        unit: {
+          id: unit.id,
+          name: unit.name,
+          urlSlug: unit.urlSlug,
+          address: unit.address
+        }
+      });
+    } catch (error) {
+      console.error("Unit login error:", error);
+      res.status(500).json({ message: "Erro interno do servidor" });
+    }
+  });
+
+  app.post("/api/unit/logout", async (req, res) => {
+    try {
+      // Clear cookie
+      res.clearCookie('unit_token');
+      res.json({ success: true, message: "Logout realizado com sucesso" });
+    } catch (error) {
+      res.status(500).json({ message: "Erro ao fazer logout" });
+    }
+  });
+
+  app.get("/api/unit/verify-session", async (req, res) => {
+    try {
+      // Check for token in Authorization header or cookie
+      let token = null;
+      
+      const authHeader = req.headers.authorization;
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        token = authHeader.substring(7);
+      } else if (req.cookies && req.cookies.unit_token) {
+        token = req.cookies.unit_token;
+      }
+
+      if (!token) {
+        return res.status(401).json({ message: "Token de autorização necessário" });
+      }
+
+      try {
+        // Verify JWT token
+        const decoded = jwt.verify(token, JWT_SECRET) as any;
+        
+        // Verify it's a unit token
+        if (decoded.type !== 'unit') {
+          return res.status(401).json({ message: "Token inválido" });
+        }
+        
+        // Verify unit still exists and is active
+        const unit = await storage.getNetworkUnit(decoded.unitId);
+        if (!unit || !unit.isActive) {
+          return res.status(401).json({ message: "Sessão inválida" });
+        }
+
+        res.json({
+          valid: true,
+          unit: {
+            id: unit.id,
+            name: unit.name,
+            urlSlug: unit.urlSlug,
+            address: unit.address
+          }
+        });
+      } catch (jwtError) {
+        return res.status(401).json({ message: "Token inválido ou expirado" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Erro ao verificar sessão" });
+    }
+  });
+
+  // Dynamic unit routes - must be after all API routes but before static files
+  app.get("/:slug", async (req, res, next) => {
+    try {
+      const { slug } = req.params;
+      
+      // Comprehensive filtering of known routes/paths that should NOT be handled as unit slugs
+      const staticPaths = [
+        'api', 'assets', 'favicon.ico', 'favicon.png', 'robots.txt', 'sitemap.xml',
+        '@vite', '@fs', '__vite_ping', 'src', 'node_modules', 'public',
+        'admin', 'rede', 'clientes', 'pets', 'guias', 'planos', 
+        'perguntas-frequentes', 'formularios', 'configuracoes', 'administracao',
+        'health', 'login', 'logout'
+      ];
+      
+      // Skip known paths and any path with file extensions
+      if (staticPaths.includes(slug) || 
+          slug.includes('.') || 
+          slug.startsWith('_') || 
+          slug.startsWith('@')) {
+        return next(); // Let other middleware handle it
+      }
+
+      // Check if unit exists with this slug and is active
+      const unit = await storage.getNetworkUnitBySlug(slug);
+      if (!unit || !unit.isActive) {
+        return next(); // Let other middleware handle 404
+      }
+
+      // Valid unit found - serve the white-label page
+      // In development, let Vite handle the frontend routing
+      // In production, serve the static index.html
+      if (process.env.NODE_ENV === 'production') {
+        return res.sendFile(path.resolve(__dirname, '../dist/public/index.html'));
+      } else {
+        // In development, mark this as a unit page for frontend handling
+        req.params.isUnitPage = 'true';
+        return next();
+      }
+    } catch (error) {
+      console.error("Dynamic route error:", error);
+      return next(); // Let error middleware handle it
+    }
+  });
+
+  // API route to get unit data by slug
+  app.get("/api/unit/:slug", async (req, res) => {
+    try {
+      const { slug } = req.params;
+      
+      const unit = await storage.getNetworkUnitBySlug(slug);
+      if (!unit) {
+        return res.status(404).json({ message: "Unidade não encontrada" });
+      }
+
+      if (!unit.isActive) {
+        return res.status(404).json({ message: "Unidade inativa" });
+      }
+
+      // Return safe unit data (without sensitive information)
+      const { senhaHash, login, ...safeUnit } = unit;
+      res.json(safeUnit);
+    } catch (error) {
+      console.error("Get unit by slug error:", error);
+      res.status(500).json({ message: "Erro interno do servidor" });
     }
   });
 
