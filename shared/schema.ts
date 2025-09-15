@@ -103,6 +103,9 @@ export const networkUnits = pgTable("network_units", {
   whatsapp: text("whatsapp"),
   googleMapsUrl: text("google_maps_url"),
   imageData: text("image_data"),
+  urlSlug: text("url_slug").unique(),
+  login: text("login").unique(),
+  senhaHash: text("senha_hash"),
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
