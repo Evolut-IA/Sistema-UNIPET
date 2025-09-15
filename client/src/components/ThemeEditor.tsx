@@ -15,115 +15,6 @@ import { apiRequest } from "@/lib/queryClient";
 import { insertThemeSettingsSchema } from "@shared/schema";
 import { Palette, Type, Layout, MousePointer, FormInput, Package, BarChart3, Save, Pipette } from "lucide-react";
 
-// Predefined font options
-const fontOptions = [
-  { value: "Inter", label: "Inter" },
-  { value: "DM Sans", label: "DM Sans" },
-  { value: "Roboto", label: "Roboto" },
-  { value: "Open Sans", label: "Open Sans" },
-  { value: "Lato", label: "Lato" },
-  { value: "Poppins", label: "Poppins" },
-  { value: "Montserrat", label: "Montserrat" },
-  { value: "Source Sans Pro", label: "Source Sans Pro" },
-];
-
-const serifFontOptions = [
-  { value: "Georgia", label: "Georgia" },
-  { value: "Times New Roman", label: "Times New Roman" },
-  { value: "Crimson Text", label: "Crimson Text" },
-  { value: "Playfair Display", label: "Playfair Display" },
-  { value: "Merriweather", label: "Merriweather" },
-  { value: "PT Serif", label: "PT Serif" },
-];
-
-const monospaceFontOptions = [
-  { value: "Fira Code", label: "Fira Code" },
-  { value: "JetBrains Mono", label: "JetBrains Mono" },
-  { value: "Monaco", label: "Monaco" },
-  { value: "Menlo", label: "Menlo" },
-  { value: "Courier New", label: "Courier New" },
-  { value: "Source Code Pro", label: "Source Code Pro" },
-];
-
-// Select input component with same style as ColorInput
-const SelectInput = ({ value, onChange, title, description, testId, options }: {
-  value: string;
-  onChange: (value: string) => void;
-  title: string;
-  description: string;
-  testId: string;
-  options: { value: string; label: string }[];
-}) => {
-  return (
-    <div className="flex items-center space-x-3">
-      <div className="w-10 h-10 rounded-lg border-2 border-muted flex items-center justify-center flex-shrink-0 bg-muted">
-        <Type className="h-4 w-4 text-muted-foreground" />
-      </div>
-      
-      <div className="flex-1">
-        <div className="text-sm font-semibold text-foreground">{title}</div>
-        <div className="text-xs text-muted-foreground mt-0.5">{description}</div>
-      </div>
-      
-      <div className="w-32">
-        <Select onValueChange={onChange} value={value} data-testid={testId}>
-          <SelectTrigger className="h-8">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {options.flatMap((option, index) => [
-              <SelectItem key={option.value} value={option.value} className="py-3 pl-10 pr-4">
-                {option.label}
-              </SelectItem>,
-              ...(index < options.length - 1 ? [<Separator key={`separator-${option.value}`} />] : [])
-            ])}
-          </SelectContent>
-        </Select>
-      </div>
-    </div>
-  );
-};
-
-// Number input component with same style as ColorInput
-const NumberInput = ({ value, onChange, title, description, testId, unit, min, max, step }: {
-  value: string;
-  onChange: (value: string) => void;
-  title: string;
-  description: string;
-  testId: string;
-  unit: string;
-  min?: number;
-  max?: number;
-  step?: number;
-}) => {
-  return (
-    <div className="flex items-center space-x-3">
-      <div className="w-10 h-10 rounded-lg border-2 border-muted flex items-center justify-center flex-shrink-0 bg-muted">
-        <Layout className="h-4 w-4 text-muted-foreground" />
-      </div>
-      
-      <div className="flex-1">
-        <div className="text-sm font-semibold text-foreground">{title}</div>
-        <div className="text-xs text-muted-foreground mt-0.5">{description}</div>
-      </div>
-      
-      <div className="flex items-center space-x-2 w-32">
-        <Input
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          type="number"
-          step={step}
-          min={min}
-          max={max}
-          data-testid={testId}
-          className="h-8"
-        />
-        <span className="text-xs text-muted-foreground">{unit}</span>
-      </div>
-    </div>
-  );
-};
-
 // Color input component with clean picker
 const ColorInput = ({ value, onChange, title, description, testId }: {
   value: string;
@@ -432,497 +323,415 @@ export default function ThemeEditor() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <Accordion type="multiple" className="w-full">
+            <Accordion type="single" collapsible className="w-full">
               
-              {/* Foundation */}
-              <AccordionItem value="foundation" data-testid="accordion-foundation">
+              {/* Cores */}
+              <AccordionItem value="colors" data-testid="accordion-colors">
                 <AccordionTrigger className="flex items-center space-x-2">
-                  <Layout className="h-4 w-4" />
+                  <Palette className="h-4 w-4" />
                   <div>
-                    <span>Fundo e Texto Principal</span>
+                    <span>Cores</span>
                   </div>
                 </AccordionTrigger>
-                <AccordionContent className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormField
-                      control={form.control}
-                      name="backgroundColor"
-                      render={({ field }) => (
-                        <FormItem>
-                          <ColorInput
-                            value={field.value || "#faf9f7"}
-                            onChange={field.onChange}
-                            title="Fundo da Página"
-                            description="Cor de fundo que aparece atrás de todo o conteúdo da página"
-                            testId="color-background"
-                          />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="textColor"
-                      render={({ field }) => (
-                        <FormItem>
-                          <ColorInput
-                            value={field.value || "#1a1a1a"}
-                            onChange={field.onChange}
-                            title="Texto Principal"
-                            description="Cor dos títulos, cabeçalhos e textos mais importantes"
-                            testId="color-text"
-                          />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="mutedBackgroundColor"
-                      render={({ field }) => (
-                        <FormItem>
-                          <ColorInput
-                            value={field.value || "#e0e0e0"}
-                            onChange={field.onChange}
-                            title="Fundo dos Cards"
-                            description="Cor de fundo dos cartões, caixas e seções de conteúdo"
-                            testId="color-muted-bg"
-                          />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="mutedTextColor"
-                      render={({ field }) => (
-                        <FormItem>
-                          <ColorInput
-                            value={field.value || "#1a1a1a"}
-                            onChange={field.onChange}
-                            title="Texto Secundário"
-                            description="Cor de subtítulos, descrições e textos menos importantes"
-                            testId="color-muted-text"
-                          />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                <AccordionContent className="space-y-8">
+                  
+                  {/* Cores dos Botões */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">
+                      Cores dos Botões
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="primaryBackground"
+                        render={({ field }) => (
+                          <FormItem>
+                            <ColorInput
+                              value={field.value || "#277677"}
+                              onChange={field.onChange}
+                              title="Fundo do Botão"
+                              description="Cor de fundo dos botões principais"
+                              testId="color-button-bg"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="primaryText"
+                        render={({ field }) => (
+                          <FormItem>
+                            <ColorInput
+                              value={field.value || "#ffffff"}
+                              onChange={field.onChange}
+                              title="Texto do Botão"
+                              description="Cor do texto dentro dos botões"
+                              testId="color-button-text"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="accentBackground"
+                        render={({ field }) => (
+                          <FormItem>
+                            <ColorInput
+                              value={field.value || "#e3ecf6"}
+                              onChange={field.onChange}
+                              title="Fundo do botão em destaque"
+                              description="Cor de fundo dos botões em destaque"
+                              testId="color-button-highlight-bg"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="accentText"
+                        render={({ field }) => (
+                          <FormItem>
+                            <ColorInput
+                              value={field.value || "#277677"}
+                              onChange={field.onChange}
+                              title="Texto do Botão em destaque"
+                              description="Cor do texto dos botões em destaque"
+                              testId="color-button-highlight-text"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="mutedTextColor"
+                        render={({ field }) => (
+                          <FormItem>
+                            <ColorInput
+                              value={field.value || "#666666"}
+                              onChange={field.onChange}
+                              title="Icones"
+                              description="Cor dos ícones dos botões"
+                              testId="color-button-icons"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
-                </AccordionContent>
-              </AccordionItem>
 
-              {/* Typography */}
-              <AccordionItem value="typography" data-testid="accordion-typography">
-                <AccordionTrigger className="flex items-center space-x-2">
-                  <Type className="h-4 w-4" />
-                  <div>
-                    <span>Fontes do Sistema</span>
+                  {/* Fundo e texto principal */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">
+                      Fundo e texto principal
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="backgroundColor"
+                        render={({ field }) => (
+                          <FormItem>
+                            <ColorInput
+                              value={field.value || "#faf9f7"}
+                              onChange={field.onChange}
+                              title="Fundo da Página"
+                              description="Cor de fundo da página principal"
+                              testId="color-page-bg"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="textColor"
+                        render={({ field }) => (
+                          <FormItem>
+                            <ColorInput
+                              value={field.value || "#1a1a1a"}
+                              onChange={field.onChange}
+                              title="Texto Principal"
+                              description="Cor do texto principal da página"
+                              testId="color-main-text"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="cardBackground"
+                        render={({ field }) => (
+                          <FormItem>
+                            <ColorInput
+                              value={field.value || "#ffffff"}
+                              onChange={field.onChange}
+                              title="Fundo dos Cards"
+                              description="Cor de fundo dos cards e containers"
+                              testId="color-cards-bg"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="cardText"
+                        render={({ field }) => (
+                          <FormItem>
+                            <ColorInput
+                              value={field.value || "#1a1a1a"}
+                              onChange={field.onChange}
+                              title="Texto Secundário"
+                              description="Cor do texto dentro dos cards"
+                              testId="color-secondary-text"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="popoverBackground"
+                        render={({ field }) => (
+                          <FormItem>
+                            <ColorInput
+                              value={field.value || "#ffffff"}
+                              onChange={field.onChange}
+                              title="Fundo das divs internas"
+                              description="Cor de fundo das divs internas"
+                              testId="color-internal-divs-bg"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="popoverText"
+                        render={({ field }) => (
+                          <FormItem>
+                            <ColorInput
+                              value={field.value || "#1a1a1a"}
+                              onChange={field.onChange}
+                              title="Texto das divs"
+                              description="Cor do texto das divs internas"
+                              testId="color-internal-divs-text"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
-                </AccordionTrigger>
-                <AccordionContent className="space-y-6">
-                  <div className="space-y-6">
-                    <FormField
-                      control={form.control}
-                      name="sansSerifFont"
-                      render={({ field }) => (
-                        <FormItem>
-                          <SelectInput
-                            value={field.value || "DM Sans"}
-                            onChange={field.onChange}
-                            title="Fonte Principal"
-                            description="Para títulos, botões e textos importantes"
-                            testId="select-sans-serif"
-                            options={fontOptions}
-                          />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="serifFont"
-                      render={({ field }) => (
-                        <FormItem>
-                          <SelectInput
-                            value={field.value || "Georgia"}
-                            onChange={field.onChange}
-                            title="Fonte Elegante"
-                            description="Para textos longos e conteúdo especial"
-                            testId="select-serif"
-                            options={serifFontOptions}
-                          />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="monospaceFont"
-                      render={({ field }) => (
-                        <FormItem>
-                          <SelectInput
-                            value={field.value || "Fira Code"}
-                            onChange={field.onChange}
-                            title="Fonte de Código"
-                            description="Para números, códigos e dados técnicos"
-                            testId="select-monospace"
-                            options={monospaceFontOptions}
-                          />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
 
-              {/* Shape & Spacing */}
-              <AccordionItem value="spacing" data-testid="accordion-spacing">
-                <AccordionTrigger className="flex items-center space-x-2">
-                  <Layout className="h-4 w-4" />
-                  <div>
-                    <span>Arredondamento dos Elementos</span>
+                  {/* Cores dos Gráficos */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">
+                      Cores dos Gráficos
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="chart1Color"
+                        render={({ field }) => (
+                          <FormItem>
+                            <ColorInput
+                              value={field.value || "#277677"}
+                              onChange={field.onChange}
+                              title="Visão Geral em Gráficos"
+                              description="Cor principal dos gráficos de visão geral"
+                              testId="color-overview-charts"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="chart2Color"
+                        render={({ field }) => (
+                          <FormItem>
+                            <ColorInput
+                              value={field.value || "#10b981"}
+                              onChange={field.onChange}
+                              title="Distribuição de Planos"
+                              description="Cor dos gráficos de distribuição de planos"
+                              testId="color-plans-distribution"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="chart3Color"
+                        render={({ field }) => (
+                          <FormItem>
+                            <ColorInput
+                              value={field.value || "#f59e0b"}
+                              onChange={field.onChange}
+                              title="Icones"
+                              description="Cor dos ícones nos gráficos"
+                              testId="color-charts-icons"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
-                </AccordionTrigger>
-                <AccordionContent>
-                  <FormField
-                    control={form.control}
-                    name="borderRadius"
-                    render={({ field }) => (
-                      <FormItem>
-                        <NumberInput
-                          value={field.value || "0.5"}
-                          onChange={field.onChange}
-                          title="Nível de Arredondamento"
-                          description="Quanto maior o valor, mais arredondados ficam os elementos"
-                          testId="input-border-radius"
-                          unit="rem"
-                          min={0}
-                          max={1.3}
-                          step={0.1}
-                        />
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </AccordionContent>
-              </AccordionItem>
 
-              {/* Actions */}
-              <AccordionItem value="actions" data-testid="accordion-actions">
-                <AccordionTrigger className="flex items-center space-x-2">
-                  <MousePointer className="h-4 w-4" />
-                  <div>
-                    <span>Cores dos Botões</span>
+                  {/* Cores de Status */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">
+                      Cores de Status
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="chart4Color"
+                        render={({ field }) => (
+                          <FormItem>
+                            <ColorInput
+                              value={field.value || "#22c55e"}
+                              onChange={field.onChange}
+                              title="Positivo (verde)"
+                              description="Cor para status positivos e sucessos"
+                              testId="color-status-positive"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="chart3Color"
+                        render={({ field }) => (
+                          <FormItem>
+                            <ColorInput
+                              value={field.value || "#eab308"}
+                              onChange={field.onChange}
+                              title="Ausente (amarelo)"
+                              description="Cor para status de ausência e avisos"
+                              testId="color-status-warning"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="chart5Color"
+                        render={({ field }) => (
+                          <FormItem>
+                            <ColorInput
+                              value={field.value || "#ef4444"}
+                              onChange={field.onChange}
+                              title="Negativo (vermelho)"
+                              description="Cor para status negativos e erros"
+                              testId="color-status-negative"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
-                </AccordionTrigger>
-                <AccordionContent className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Primary */}
-                    <FormField
-                      control={form.control}
-                      name="primaryBackground"
-                      render={({ field }) => (
-                        <FormItem>
-                          <ColorInput
-                            value={field.value || "#277677"}
-                            onChange={field.onChange}
-                            title="Fundo do Botão Principal"
-                            description="Cor de fundo dos botões mais importantes como 'Salvar'"
-                            testId="color-primary-bg"
-                          />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="primaryText"
-                      render={({ field }) => (
-                        <FormItem>
-                          <ColorInput
-                            value={field.value || "#ffffff"}
-                            onChange={field.onChange}
-                            title="Texto do Botão Principal"
-                            description="Cor do texto dentro dos botões principais"
-                            testId="color-primary-text"
-                          />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    
-                    {/* Accent */}
-                    <FormField
-                      control={form.control}
-                      name="accentBackground"
-                      render={({ field }) => (
-                        <FormItem>
-                          <ColorInput
-                            value={field.value || "#e3ecf6"}
-                            onChange={field.onChange}
-                            title="Fundo dos Elementos em Destaque"
-                            description="Cor de fundo dos elementos em destaque como links e selecionados"
-                            testId="color-accent-bg"
-                          />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="accentText"
-                      render={({ field }) => (
-                        <FormItem>
-                          <ColorInput
-                            value={field.value || "#277677"}
-                            onChange={field.onChange}
-                            title="Contorno dos Elementos em Destaque"
-                            description="Cor do contorno dos elementos em destaque"
-                            testId="color-accent-text"
-                          />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
 
-              {/* Forms */}
-              <AccordionItem value="forms" data-testid="accordion-forms">
-                <AccordionTrigger className="flex items-center space-x-2">
-                  <FormInput className="h-4 w-4" />
-                  <div>
-                    <span>Cores dos Campos</span>
+                  {/* Cores de textarea */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">
+                      Cores de textarea
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="inputBackground"
+                        render={({ field }) => (
+                          <FormItem>
+                            <ColorInput
+                              value={field.value || "#f7f9fa"}
+                              onChange={field.onChange}
+                              title="Fundo"
+                              description="Cor de fundo dos campos de texto"
+                              testId="color-textarea-bg"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="textColor"
+                        render={({ field }) => (
+                          <FormItem>
+                            <ColorInput
+                              value={field.value || "#1a1a1a"}
+                              onChange={field.onChange}
+                              title="Texto escrito"
+                              description="Cor do texto digitado nos campos"
+                              testId="color-textarea-text"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="mutedTextColor"
+                        render={({ field }) => (
+                          <FormItem>
+                            <ColorInput
+                              value={field.value || "#666666"}
+                              onChange={field.onChange}
+                              title="Texto placeholder"
+                              description="Cor do texto de exemplo nos campos"
+                              testId="color-textarea-placeholder"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="focusBorder"
+                        render={({ field }) => (
+                          <FormItem>
+                            <ColorInput
+                              value={field.value || "#277677"}
+                              onChange={field.onChange}
+                              title="Icones"
+                              description="Cor dos ícones nos campos de texto"
+                              testId="color-textarea-icons"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
-                </AccordionTrigger>
-                <AccordionContent className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormField
-                      control={form.control}
-                      name="inputBackground"
-                      render={({ field }) => (
-                        <FormItem>
-                          <ColorInput
-                            value={field.value || "#f7f9fa"}
-                            onChange={field.onChange}
-                            title="Contorno dos Campos"
-                            description="Cor do contorno das caixas de texto e campos de entrada"
-                            testId="color-input-bg"
-                          />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="inputBorder"
-                      render={({ field }) => (
-                        <FormItem>
-                          <ColorInput
-                            value={field.value || "#e1eaef"}
-                            onChange={field.onChange}
-                            title="Contorno dos Containers"
-                            description="Cor do contorno ao redor dos containers e seções"
-                            testId="color-input-border"
-                          />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
 
-              {/* Containers */}
-              <AccordionItem value="containers" data-testid="accordion-containers">
-                <AccordionTrigger className="flex items-center space-x-2">
-                  <Package className="h-4 w-4" />
-                  <div>
-                    <span>Cores dos Cards</span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormField
-                      control={form.control}
-                      name="cardBackground"
-                      render={({ field }) => (
-                        <FormItem>
-                          <ColorInput
-                            value={field.value || "#ffffff"}
-                            onChange={field.onChange}
-                            title="Fundo dos Cards"
-                            description="Cor de fundo dos cartões e caixas de informação"
-                            testId="color-card-bg"
-                          />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="cardText"
-                      render={({ field }) => (
-                        <FormItem>
-                          <ColorInput
-                            value={field.value || "#1a1a1a"}
-                            onChange={field.onChange}
-                            title="Texto dos Cards"
-                            description="Cor do texto dentro dos cards"
-                            testId="color-card-text"
-                          />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="popoverBackground"
-                      render={({ field }) => (
-                        <FormItem>
-                          <ColorInput
-                            value={field.value || "#ffffff"}
-                            onChange={field.onChange}
-                            title="Fundo das Janelas"
-                            description="Cor das janelas que aparecem sobre o conteúdo"
-                            testId="color-popover-bg"
-                          />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="popoverText"
-                      render={({ field }) => (
-                        <FormItem>
-                          <ColorInput
-                            value={field.value || "#1a1a1a"}
-                            onChange={field.onChange}
-                            title="Texto das Janelas"
-                            description="Cor do texto das janelas flutuantes"
-                            testId="color-popover-text"
-                          />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-
-              {/* Charts */}
-              <AccordionItem value="charts" data-testid="accordion-charts">
-                <AccordionTrigger className="flex items-center space-x-2">
-                  <BarChart3 className="h-4 w-4" />
-                  <div>
-                    <span>Gráficos e Estatísticas</span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormField
-                      control={form.control}
-                      name="chart1Color"
-                      render={({ field }) => (
-                        <FormItem>
-                          <ColorInput
-                            value={field.value || "#277677"}
-                            onChange={field.onChange}
-                            title="Gráfico Cor 1"
-                            description="Primeira cor usada em gráficos e estatísticas"
-                            testId="color-chart-1"
-                          />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="chart2Color"
-                      render={({ field }) => (
-                        <FormItem>
-                          <ColorInput
-                            value={field.value || "#10b981"}
-                            onChange={field.onChange}
-                            title="Gráfico Cor 2"
-                            description="Segunda cor usada em gráficos"
-                            testId="color-chart-2"
-                          />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="chart3Color"
-                      render={({ field }) => (
-                        <FormItem>
-                          <ColorInput
-                            value={field.value || "#f59e0b"}
-                            onChange={field.onChange}
-                            title="Gráfico Cor 3"
-                            description="Terceira cor usada em gráficos"
-                            testId="color-chart-3"
-                          />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="chart4Color"
-                      render={({ field }) => (
-                        <FormItem>
-                          <ColorInput
-                            value={field.value || "#22c55e"}
-                            onChange={field.onChange}
-                            title="Gráfico Cor 4"
-                            description="Quarta cor usada em gráficos"
-                            testId="color-chart-4"
-                          />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="chart5Color"
-                      render={({ field }) => (
-                        <FormItem>
-                          <ColorInput
-                            value={field.value || "#ef4444"}
-                            onChange={field.onChange}
-                            title="Gráfico Cor 5"
-                            description="Quinta cor usada em gráficos"
-                            testId="color-chart-5"
-                          />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
