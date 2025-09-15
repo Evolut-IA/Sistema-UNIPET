@@ -8,6 +8,22 @@ Preferred communication style: Simple, everyday language.
 
 # Recent Changes
 
+## Dashboard Guides Section Update (September 15, 2025)
+Modified the "Guias Abertas" section on the Dashboard to show all guides instead of just the count:
+
+### Changes Made:
+- **Section Title**: Changed from "Guias Abertas" to "Todas as Guias"
+- **Data Source**: Now fetches all guides using `/api/guides` endpoint instead of just open guides count
+- **Display Format**: Shows a list of up to 5 guides with details (procedure, client, pet, status, value)
+- **Layout**: Expanded to take 2 columns on large screens (lg:col-span-2)
+- **Features**: Added "Ver todos" button to navigate to full guides page, status badges, and "Ver mais" option for additional guides
+
+### Technical Implementation:
+- Modified `client/src/pages/Dashboard.tsx` to use `/api/guides` endpoint
+- Updated grid layout from 4 to 3 columns to accommodate expanded guides section
+- Added guide status indicators and value formatting
+- Implemented responsive design for better mobile experience
+
 ## Pet Form planId Validation Fix (September 15, 2025)
 Fixed validation error when saving pets with empty health plan (planId) field:
 
