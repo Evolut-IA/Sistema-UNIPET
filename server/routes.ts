@@ -120,8 +120,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/pets/:id", async (req, res) => {
     try {
-      console.log("Received pet update data:", JSON.stringify(req.body, null, 2));
-      
       // Handle empty string planId
       const requestData = { ...req.body };
       if (requestData.planId === "") {
@@ -129,14 +127,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const petData = insertPetSchema.partial().parse(requestData);
-      console.log("Parsed pet data:", JSON.stringify(petData, null, 2));
       const pet = await storage.updatePet(req.params.id, petData);
       if (!pet) {
         return res.status(404).json({ message: "Pet not found" });
       }
       res.json(pet);
     } catch (error) {
-      console.error("Pet update error:", error);
       if (error instanceof Error) {
         res.status(400).json({ message: error.message });
       } else {
