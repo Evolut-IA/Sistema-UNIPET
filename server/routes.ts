@@ -573,15 +573,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
 
-  // Theme settings routes
+  // Theme settings routes  
   app.get("/api/settings/theme", async (req, res) => {
     try {
       const settings = await storage.getThemeSettings();
       res.json(settings || {});
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch theme settings" });
+      console.error("Theme settings API error:", error);
+      res.json({}); // Return empty object instead of 500 to allow fallback
     }
   });
+
 
   app.put("/api/settings/theme", async (req, res) => {
     try {

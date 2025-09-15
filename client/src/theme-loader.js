@@ -108,22 +108,7 @@
     root.style.setProperty('--warning', themeSettings.warningColor || DEFAULT_THEME.warningColor);
   }
 
-  // Try to load saved theme from localStorage first (for instant application)
-  const cachedTheme = localStorage.getItem('cached-theme');
-  if (cachedTheme) {
-    try {
-      const theme = JSON.parse(cachedTheme);
-      applyTheme(theme);
-    } catch (e) {
-      // If cached theme is invalid, apply default
-      applyTheme(DEFAULT_THEME);
-    }
-  } else {
-    // Apply default theme immediately
-    applyTheme(DEFAULT_THEME);
-  }
-
-  // Then fetch the latest theme from the server
+  // Fetch theme from server immediately - always use saved settings
   fetch('/api/settings/theme')
     .then(response => {
       if (response.ok) {
@@ -132,14 +117,23 @@
       throw new Error('Failed to fetch theme');
     })
     .then(themeSettings => {
-      // Apply the fetched theme
+      // Apply the fetched theme (always use saved settings)
       applyTheme(themeSettings);
       // Cache it for next time
       localStorage.setItem('cached-theme', JSON.stringify(themeSettings));
     })
     .catch(error => {
-      // On error, ensure default theme is applied
-      console.log('Using default theme');
-      applyTheme(DEFAULT_THEME);
+      // Try to load from localStorage as fallback
+      const cachedTheme = localStorage.getItem('cached-theme');
+      if (cachedTheme) {
+        try {
+          const theme = JSON.parse(cachedTheme);
+          applyTheme(theme);
+        } catch (e) {
+          console.log('Error loading cached theme, using current CSS variables');
+        }
+      } else {
+        console.log('No theme data available, keeping current CSS variables');
+      }
     });
 })();

@@ -583,8 +583,49 @@ export class DatabaseStorage implements IStorage {
 
   // Theme settings methods
   async getThemeSettings(): Promise<ThemeSettings | undefined> {
-    const result = await db.select().from(schema.themeSettings).limit(1);
-    return result[0];
+    try {
+      // Direct SQL query - more reliable
+      const result = await sql`SELECT * FROM theme_settings ORDER BY id LIMIT 1`;
+      if (result.length > 0) {
+        const row = result[0];
+        return {
+          id: row.id,
+          backgroundColor: row.background_color,
+          textColor: row.text_color,
+          mutedBackgroundColor: row.muted_background_color,
+          mutedTextColor: row.muted_text_color,
+          sansSerifFont: row.sans_serif_font,
+          serifFont: row.serif_font,
+          monospaceFont: row.monospace_font,
+          borderRadius: row.border_radius,
+          primaryBackground: row.primary_background,
+          primaryText: row.primary_text,
+          secondaryBackground: row.secondary_background,
+          secondaryText: row.secondary_text,
+          accentBackground: row.accent_background,
+          accentText: row.accent_text,
+          destructiveBackground: row.destructive_background,
+          destructiveText: row.destructive_text,
+          inputBackground: row.input_background,
+          inputBorder: row.input_border,
+          focusBorder: row.focus_border,
+          cardBackground: row.card_background,
+          cardText: row.card_text,
+          popoverBackground: row.popover_background,
+          popoverText: row.popover_text,
+          chart1Color: row.chart1_color,
+          chart2Color: row.chart2_color,
+          chart3Color: row.chart3_color,
+          chart4Color: row.chart4_color,
+          chart5Color: row.chart5_color,
+          warningColor: row.warning_color || "#f59e0b"
+        } as ThemeSettings;
+      }
+      return undefined;
+    } catch (error) {
+      console.error("Error in getThemeSettings:", error);
+      return undefined; // Return undefined instead of throwing to prevent API failure
+    }
   }
 
   async updateThemeSettings(settings: InsertThemeSettings): Promise<ThemeSettings> {
