@@ -282,8 +282,9 @@ export default function ContactSubmissions() {
               {filteredSubmissions.map((submission: any) => (
                 <div key={submission.id} className="border rounded-lg p-3 hover:bg-gray-50 transition-colors">
                   <div className="flex justify-between items-center">
-                    <div className="flex-1 flex items-center space-x-4">
-                      <div className="flex items-center space-x-2">
+                    <div className="flex-1">
+                      {/* Título Principal */}
+                      <div className="flex items-center space-x-2 mb-2">
                         <User className="h-4 w-4 text-primary" />
                         <h3 className="font-semibold text-foreground" data-testid={`submission-name-${submission.id}`}>
                           {submission.name}
@@ -293,29 +294,32 @@ export default function ContactSubmissions() {
                         </Badge>
                       </div>
 
-                      <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                        <Mail className="h-3 w-3" />
-                        <span>{submission.email}</span>
-                      </div>
+                      {/* Informações Detalhadas - Ocultas em Mobile */}
+                      <div className="hidden sm:flex items-center space-x-4">
+                        <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+                          <Mail className="h-3 w-3" />
+                          <span>{submission.email}</span>
+                        </div>
 
-                      <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                        <Phone className="h-3 w-3" />
-                        <span>{submission.phone}</span>
-                      </div>
+                        <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+                          <Phone className="h-3 w-3" />
+                          <span>{submission.phone}</span>
+                        </div>
 
-                      <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                        <MapPin className="h-3 w-3" />
-                        <span>{submission.city}</span>
-                      </div>
+                        <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+                          <MapPin className="h-3 w-3" />
+                          <span>{submission.city}</span>
+                        </div>
 
-                      <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                        <PawPrint className="h-3 w-3" />
-                        <span>{submission.petName} ({submission.animalType}, {submission.petAge})</span>
-                      </div>
+                        <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+                          <PawPrint className="h-3 w-3" />
+                          <span>{submission.petName} ({submission.animalType}, {submission.petAge})</span>
+                        </div>
 
-                      <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                        <Calendar className="h-3 w-3" />
-                        <span>{submission.createdAt && format(new Date(submission.createdAt), "dd/MM/yyyy", { locale: ptBR })}</span>
+                        <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+                          <Calendar className="h-3 w-3" />
+                          <span>{submission.createdAt && format(new Date(submission.createdAt), "dd/MM/yyyy", { locale: ptBR })}</span>
+                        </div>
                       </div>
                     </div>
 

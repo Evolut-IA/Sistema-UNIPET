@@ -54,14 +54,14 @@ export default function Guides() {
     },
   });
 
-  const filteredGuides = guides?.filter((guide: any) => {
+  const filteredGuides = Array.isArray(guides) ? guides?.filter((guide: any) => {
     const matchesSearch = guide.procedure?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          guide.type?.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === "all" || guide.status === statusFilter;
     const matchesType = typeFilter === "all" || guide.type === typeFilter;
     
     return matchesSearch && matchesStatus && matchesType;
-  });
+  }) : [];
 
   const handleDelete = (id: string, procedureName: string) => {
     passwordDialog.openDialog({
@@ -310,8 +310,9 @@ export default function Guides() {
               {filteredGuides.map((guide: any) => (
                 <div key={guide.id} className="border rounded-lg p-3 hover:bg-gray-50 transition-colors">
                   <div className="flex justify-between items-center">
-                    <div className="flex-1 flex items-center space-x-4">
-                      <div className="flex items-center space-x-2">
+                    <div className="flex-1">
+                      {/* Título Principal */}
+                      <div className="flex items-center space-x-2 mb-2">
                         <FileText className="h-4 w-4 text-primary" />
                         <h3 className="font-semibold text-foreground" data-testid={`guide-procedure-${guide.id}`}>
                           {guide.procedure}
@@ -321,19 +322,22 @@ export default function Guides() {
                         </Badge>
                       </div>
 
-                      <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                        <span className="font-medium">Tipo:</span>
-                        <span>{getTypeLabel(guide.type)}</span>
-                      </div>
+                      {/* Informações Detalhadas - Ocultas em Mobile */}
+                      <div className="hidden sm:flex items-center space-x-4">
+                        <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+                          <span className="font-medium">Tipo:</span>
+                          <span>{getTypeLabel(guide.type)}</span>
+                        </div>
 
-                      <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                        <span className="font-medium">Valor:</span>
-                        <span>R$ {parseFloat(guide.value || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                      </div>
+                        <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+                          <span className="font-medium">Valor:</span>
+                          <span>R$ {parseFloat(guide.value || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                        </div>
 
-                      <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                        <span className="font-medium">Criada:</span>
-                        <span>{guide.createdAt && format(new Date(guide.createdAt), "dd/MM/yyyy", { locale: ptBR })}</span>
+                        <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+                          <span className="font-medium">Criada:</span>
+                          <span>{guide.createdAt && format(new Date(guide.createdAt), "dd/MM/yyyy", { locale: ptBR })}</span>
+                        </div>
                       </div>
                     </div>
                     

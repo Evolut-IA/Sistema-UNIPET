@@ -256,8 +256,9 @@ export default function Network() {
             <Card key={unit.id} className="hover:shadow-md transition-shadow">
               <CardContent className="p-3">
                 <div className="flex justify-between items-center">
-                  <div className="flex-1 flex items-center space-x-4">
-                    <div className="flex items-center space-x-2">
+                  <div className="flex-1">
+                    {/* Título Principal */}
+                    <div className="flex items-center space-x-2 mb-2">
                       <Building2 className="h-4 w-4 text-primary" />
                       <h3 className="font-semibold text-foreground" data-testid={`unit-name-${unit.id}`}>
                         {unit.name}
@@ -267,33 +268,36 @@ export default function Network() {
                       </Badge>
                     </div>
 
-                    <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                      <MapPin className="h-3 w-3" />
-                      <span>{unit.address}</span>
-                    </div>
-
-                    <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                      <Phone className="h-3 w-3" />
-                      <span>{unit.phone}</span>
-                    </div>
-
-                    {unit.services && unit.services.length > 0 && (
+                    {/* Informações Detalhadas - Ocultas em Mobile */}
+                    <div className="hidden sm:flex items-center space-x-4">
                       <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                        <span className="text-xs font-medium">Serviços:</span>
-                        <div className="flex space-x-1">
-                          {unit.services.slice(0, 2).map((service: string, index: number) => (
-                            <Badge key={index} variant="outline" className="text-xs">
-                              {service}
-                            </Badge>
-                          ))}
-                          {unit.services.length > 2 && (
-                            <Badge variant="outline" className="text-xs">
-                              +{unit.services.length - 2}
-                            </Badge>
-                          )}
-                        </div>
+                        <MapPin className="h-3 w-3" />
+                        <span>{unit.address}</span>
                       </div>
-                    )}
+
+                      <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+                        <Phone className="h-3 w-3" />
+                        <span>{unit.phone}</span>
+                      </div>
+
+                      {unit.services && unit.services.length > 0 && (
+                        <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+                          <span className="text-xs font-medium">Serviços:</span>
+                          <div className="flex space-x-1">
+                            {unit.services.slice(0, 2).map((service: string, index: number) => (
+                              <Badge key={index} variant="outline" className="text-xs">
+                                {service}
+                              </Badge>
+                            ))}
+                            {unit.services.length > 2 && (
+                              <Badge variant="outline" className="text-xs">
+                                +{unit.services.length - 2}
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   <div className="flex items-center space-x-1 ml-3">
