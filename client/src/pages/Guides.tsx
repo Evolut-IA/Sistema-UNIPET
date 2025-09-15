@@ -205,9 +205,9 @@ export default function Guides() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "open": return "bg-chart-4/20 text-chart-4";
-      case "closed": return "bg-muted text-muted-foreground";
-      case "cancelled": return "bg-chart-5/20 text-chart-5";
-      default: return "bg-muted text-muted-foreground";
+      case "closed": return "bg-chart-4/20 text-chart-4";
+      case "cancelled": return "bg-chart-4/20 text-chart-4";
+      default: return "bg-chart-4/20 text-chart-4";
     }
   };
 
