@@ -10,7 +10,8 @@ import {
   Mail,
   UserCog,
   Settings,
-  Stethoscope
+  Stethoscope,
+  ClipboardList
 } from "lucide-react";
 
 const navigation = [
@@ -33,6 +34,7 @@ const navigation = [
     name: "Sistema",
     items: [
       { name: "Planos de Saúde", href: "/planos", icon: CreditCard },
+      { name: "Procedimentos", href: "/procedimentos", icon: ClipboardList },
       { name: "FAQ", href: "/perguntas-frequentes", icon: HelpCircle },
       { name: "Administração", href: "/administracao", icon: UserCog },
       { name: "Configurações", href: "/configuracoes", icon: Settings }
