@@ -436,9 +436,6 @@ export default function Administration() {
                         <Badge className={getRoleColor(user.role)}>
                           {getRoleLabel(user.role)}
                         </Badge>
-                        <Badge variant={user.isActive ? "default" : "secondary"}>
-                          {user.isActive ? "Ativo" : "Inativo"}
-                        </Badge>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 text-sm text-muted-foreground mb-3">

@@ -291,9 +291,6 @@ export default function FAQ() {
                       <h4 className="font-medium text-foreground text-sm" data-testid={`faq-question-${item.id}`}>
                         {item.question}
                       </h4>
-                      <Badge variant={item.isActive ? "default" : "secondary"}>
-                        {item.isActive ? "Ativo" : "Inativo"}
-                      </Badge>
                     </div>
                     
                     <p className="text-xs text-muted-foreground mb-3 line-clamp-2">

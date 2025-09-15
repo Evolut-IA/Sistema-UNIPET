@@ -265,16 +265,13 @@ export default function Network() {
 
                   <div className="flex flex-col sm:flex-row sm:items-center gap-3 w-full sm:w-auto sm:ml-3">
                     {/* Switch com Badge do lado direito */}
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center">
                       <Switch
                         checked={unit.isActive}
                         onCheckedChange={() => handleToggleStatus(unit.id, unit.isActive)}
                         disabled={toggleUnitMutation.isPending}
                         data-testid={`switch-unit-status-${unit.id}`}
                       />
-                      <Badge variant={unit.isActive ? "default" : "secondary"}>
-                        {unit.isActive ? "Ativo" : "Inativo"}
-                      </Badge>
                     </div>
                     
                     {/* Botões em linha horizontal */}
@@ -393,10 +390,7 @@ export default function Network() {
                       </div>
                     )}
                     <div className="flex items-center space-x-2">
-                      <span><strong>Status:</strong></span>
-                      <Badge variant={selectedUnit.isActive ? "default" : "secondary"}>
-                        {selectedUnit.isActive ? "Ativo" : "Inativo"}
-                      </Badge>
+                      <span><strong>Status:</strong> {selectedUnit.isActive ? "Ativo" : "Inativo"}</span>
                     </div>
                   </div>
                 </div>
