@@ -13,9 +13,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { insertNetworkUnitSchema } from "@shared/schema";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ExternalLink } from "lucide-react";
 import { AVAILABLE_SERVICES } from "@/lib/constants";
 import { ImageUpload } from "@/components/ui/image-upload";
+import { generateSlug } from "@/lib/utils";
 
 export default function NetworkForm() {
   const [, setLocation] = useLocation();
@@ -23,6 +24,8 @@ export default function NetworkForm() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [generatedSlug, setGeneratedSlug] = useState<string>("");
+  const [originalName, setOriginalName] = useState<string>("");
 
   const isEdit = Boolean(params.id);
 
@@ -42,25 +45,52 @@ export default function NetworkForm() {
       isActive: true,
       whatsapp: "",
       googleMapsUrl: "",
+      urlSlug: "",
     },
   });
 
   useEffect(() => {
-    if (unit) {
-      const services = unit.services || [];
+    if (unit && typeof unit === 'object') {
+      const services = (unit as any).services || [];
+      const unitName = (unit as any).name || "";
+      const slug = (unit as any).urlSlug || generateSlug(unitName);
+      
       setSelectedServices(services);
+      setGeneratedSlug(slug);
+      setOriginalName(unitName); // Track original name for comparison
+      
       form.reset({
-        name: unit.name || "",
-        address: unit.address || "",
-        phone: unit.phone || "",
+        name: unitName,
+        address: (unit as any).address || "",
+        phone: (unit as any).phone || "",
         services: services,
-        imageUrl: unit.imageUrl || "",
-        isActive: unit.isActive ?? true,
-        whatsapp: unit.whatsapp || "",
-        googleMapsUrl: unit.googleMapsUrl || "",
+        imageUrl: (unit as any).imageUrl || "",
+        isActive: (unit as any).isActive ?? true,
+        whatsapp: (unit as any).whatsapp || "",
+        googleMapsUrl: (unit as any).googleMapsUrl || "",
+        urlSlug: slug,
       });
     }
   }, [unit, form]);
+
+  // Auto-generate slug when name changes
+  const watchedName = form.watch("name");
+  useEffect(() => {
+    if (watchedName) {
+      if (isEdit) {
+        // In edit mode, show what the slug would be if the name changed
+        if (watchedName !== originalName) {
+          const newSlug = generateSlug(watchedName);
+          setGeneratedSlug(newSlug);
+        }
+      } else {
+        // In create mode, always generate slug from name
+        const newSlug = generateSlug(watchedName);
+        setGeneratedSlug(newSlug);
+        form.setValue("urlSlug", newSlug);
+      }
+    }
+  }, [watchedName, form, isEdit, originalName]);
 
   const mutation = useMutation({
     mutationFn: async (data: any) => {
@@ -88,10 +118,27 @@ export default function NetworkForm() {
   });
 
   const onSubmit = (data: any) => {
-    mutation.mutate({
+    const submissionData = {
       ...data,
       services: selectedServices,
-    });
+    };
+    
+    // Handle URL slug logic:
+    // - For new units: always include the generated slug
+    // - For editing: only include urlSlug if the name hasn't changed
+    //   This allows the server to regenerate the slug when the name changes
+    if (isEdit) {
+      if (data.name === originalName) {
+        // Name didn't change, keep the original slug
+        submissionData.urlSlug = form.getValues("urlSlug");
+      }
+      // If name changed, omit urlSlug to let server regenerate it
+    } else {
+      // New unit, include the generated slug
+      submissionData.urlSlug = generatedSlug;
+    }
+    
+    mutation.mutate(submissionData);
   };
 
   const handleServiceChange = (service: string, checked: boolean) => {
@@ -158,6 +205,30 @@ export default function NetworkForm() {
                     </FormItem>
                   )}
                 />
+
+                {/* URL Slug Preview */}
+                <div className="col-span-full">
+                  <FormLabel className="text-sm font-medium">URL da Unidade</FormLabel>
+                  <div className="mt-1 p-3 bg-muted/50 border border-border rounded-md">
+                    <div className="flex items-center gap-2">
+                      <ExternalLink className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground">
+                        {window.location.origin}/unidade/
+                      </span>
+                      <span className="text-sm font-medium text-foreground">
+                        {generatedSlug || "nome-da-unidade"}
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {!isEdit 
+                        ? "A URL é gerada automaticamente baseada no nome da unidade" 
+                        : watchedName !== originalName 
+                          ? "Nova URL será gerada automaticamente quando o nome for alterado"
+                          : "URL atual da unidade"
+                      }
+                    </p>
+                  </div>
+                </div>
 
                 <FormField
                   control={form.control}

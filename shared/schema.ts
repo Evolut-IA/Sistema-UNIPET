@@ -235,6 +235,7 @@ export const insertPlanSchema = createInsertSchema(plans).omit({ id: true, creat
 export const insertPlanProcedureSchema = createInsertSchema(planProcedures).omit({ id: true, createdAt: true });
 export const insertNetworkUnitSchema = createInsertSchema(networkUnits).omit({ id: true, createdAt: true }).extend({
   imageUrl: z.string().min(1, "Imagem da unidade é obrigatória"),
+  urlSlug: z.string().optional(), // URL slug is optional - will be auto-generated if not provided
 });
 export const insertFaqItemSchema = createInsertSchema(faqItems).omit({ id: true, createdAt: true });
 export const insertContactSubmissionSchema = createInsertSchema(contactSubmissions).omit({ id: true, createdAt: true });

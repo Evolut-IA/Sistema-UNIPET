@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertClientSchema, insertPetSchema, insertPlanSchema, insertNetworkUnitSchema, insertFaqItemSchema, insertContactSubmissionSchema, insertSiteSettingsSchema, insertThemeSettingsSchema, insertGuideSchema, insertUserSchema, updateNetworkUnitCredentialsSchema, type InsertUser } from "@shared/schema";
 import bcrypt from "bcrypt";
+import { generateUniqueSlug } from "./utils";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
@@ -337,9 +338,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/network-units", async (req, res) => {
     try {
       const unitData = insertNetworkUnitSchema.parse(req.body);
-      const unit = await storage.createNetworkUnit(unitData);
+      
+      // Generate unique slug from unit name if not provided
+      const urlSlug = unitData.urlSlug || await generateUniqueSlug(unitData.name);
+      
+      const unit = await storage.createNetworkUnit({
+        ...unitData,
+        urlSlug
+      });
       res.status(201).json(unit);
     } catch (error) {
+      console.error("Error creating network unit:", error);
       res.status(400).json({ message: "Invalid network unit data" });
     }
   });
@@ -347,12 +356,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put("/api/network-units/:id", async (req, res) => {
     try {
       const unitData = insertNetworkUnitSchema.partial().parse(req.body);
-      const unit = await storage.updateNetworkUnit(req.params.id, unitData);
+      
+      // Handle slug updates - generate new slug if name changed and no explicit slug provided
+      let updateData = { ...unitData };
+      if (unitData.name && !unitData.urlSlug) {
+        updateData.urlSlug = await generateUniqueSlug(unitData.name, req.params.id);
+      }
+      
+      const unit = await storage.updateNetworkUnit(req.params.id, updateData);
       if (!unit) {
         return res.status(404).json({ message: "Network unit not found" });
       }
       res.json(unit);
     } catch (error) {
+      console.error("Error updating network unit:", error);
       res.status(400).json({ message: "Invalid network unit data" });
     }
   });
