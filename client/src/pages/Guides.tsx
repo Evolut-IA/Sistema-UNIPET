@@ -268,7 +268,7 @@ export default function Guides() {
               </SelectTrigger>
               <SelectContent>
                 {[{ value: "all", label: "Todos os tipos" }, ...GUIDE_TYPES.map(type => ({ value: type, label: getTypeLabel(type) }))].flatMap((item, index, array) => [
-                  <SelectItem key={item.value} value={item.value} className="py-3 px-4">
+                  <SelectItem key={item.value} value={item.value} className="py-3 pl-10 pr-4">
                     {item.label}
                   </SelectItem>,
                   ...(index < array.length - 1 ? [<Separator key={`separator-${item.value}`} />] : [])
@@ -286,7 +286,7 @@ export default function Guides() {
                   { value: "closed", label: "Fechadas" },
                   { value: "cancelled", label: "Canceladas" }
                 ].flatMap((status, index, array) => [
-                  <SelectItem key={status.value} value={status.value} className="py-3 px-4">
+                  <SelectItem key={status.value} value={status.value} className="py-3 pl-10 pr-4">
                     {status.label}
                   </SelectItem>,
                   ...(index < array.length - 1 ? [<Separator key={`separator-${status.value}`} />] : [])

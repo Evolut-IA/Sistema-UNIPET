@@ -170,7 +170,7 @@ export default function GuideForm() {
                         </FormControl>
                         <SelectContent>
                           {GUIDE_TYPES.flatMap((type, index) => [
-                            <SelectItem key={type} value={type} className="py-3 px-4">
+                            <SelectItem key={type} value={type} className="py-3 pl-10 pr-4">
                               {getTypeLabel(type)}
                             </SelectItem>,
                             ...(index < GUIDE_TYPES.length - 1 ? [<Separator key={`separator-${type}`} />] : [])
@@ -229,7 +229,7 @@ export default function GuideForm() {
                         </FormControl>
                         <SelectContent>
                           {[{value: "open", label: "Aberta"}, {value: "closed", label: "Fechada"}, {value: "cancelled", label: "Cancelada"}].flatMap((status, index, array) => [
-                            <SelectItem key={status.value} value={status.value} className="py-3 px-4">
+                            <SelectItem key={status.value} value={status.value} className="py-3 pl-10 pr-4">
                               {status.label}
                             </SelectItem>,
                             ...(index < array.length - 1 ? [<Separator key={`separator-${status.value}`} />] : [])

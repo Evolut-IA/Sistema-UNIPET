@@ -270,7 +270,7 @@ export default function PlanForm() {
                         </FormControl>
                         <SelectContent>
                           {PLAN_TYPES.flatMap((type, index) => [
-                            <SelectItem key={type} value={type} className="py-3 px-4">
+                            <SelectItem key={type} value={type} className="py-3 pl-10 pr-4">
                               {getPlanTypeLabel(type)}
                             </SelectItem>,
                             ...(index < PLAN_TYPES.length - 1 ? [<Separator key={`separator-${type}`} />] : [])

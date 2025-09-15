@@ -302,7 +302,7 @@ export default function Administration() {
                               { value: "edit", label: "Editar" },
                               { value: "delete", label: "Excluir" }
                             ].flatMap((role, index, array) => [
-                              <SelectItem key={role.value} value={role.value} className="py-3 px-4">
+                              <SelectItem key={role.value} value={role.value} className="py-3 pl-10 pr-4">
                                 {role.label}
                               </SelectItem>,
                               ...(index < array.length - 1 ? [<Separator key={`separator-${role.value}`} />] : [])

@@ -72,7 +72,7 @@ const SelectInput = ({ value, onChange, title, description, testId, options }: {
           </SelectTrigger>
           <SelectContent>
             {options.flatMap((option, index) => [
-              <SelectItem key={option.value} value={option.value} className="py-3 px-4">
+              <SelectItem key={option.value} value={option.value} className="py-3 pl-10 pr-4">
                 {option.label}
               </SelectItem>,
               ...(index < options.length - 1 ? [<Separator key={`separator-${option.value}`} />] : [])
