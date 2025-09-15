@@ -126,6 +126,26 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex-1 min-w-0">
+                <p className="text-xs sm:text-sm text-muted-foreground">Receita Mensal</p>
+                {statsLoading ? (
+                  <Skeleton className="h-6 sm:h-8 w-16 sm:w-20 mt-1" />
+                ) : (
+                  <>
+                    <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground truncate" data-testid="metric-monthly-revenue">
+                      R$ {(stats?.monthlyRevenue || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </p>
+                  </>
+                )}
+              </div>
+              <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
+            </div>
+          </CardContent>
+        </Card>
+
         <Card className="lg:col-span-2">
           <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <CardTitle className="text-foreground min-w-0">Todas as Guias</CardTitle>
@@ -205,26 +225,6 @@ export default function Dashboard() {
             ) : (
               <p className="text-muted-foreground text-center py-8">Nenhuma guia encontrada</p>
             )}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-start justify-between gap-2">
-              <div className="flex-1 min-w-0">
-                <p className="text-xs sm:text-sm text-muted-foreground">Receita Mensal</p>
-                {statsLoading ? (
-                  <Skeleton className="h-6 sm:h-8 w-16 sm:w-20 mt-1" />
-                ) : (
-                  <>
-                    <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground truncate" data-testid="metric-monthly-revenue">
-                      R$ {(stats?.monthlyRevenue || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                    </p>
-                  </>
-                )}
-              </div>
-              <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
-            </div>
           </CardContent>
         </Card>
       </div>
