@@ -261,9 +261,6 @@ export default function Network() {
                       <h3 className="font-semibold text-foreground" data-testid={`unit-name-${unit.id}`}>
                         {unit.name}
                       </h3>
-                      <Badge variant={unit.isActive ? "default" : "secondary"}>
-                        {unit.isActive ? "Ativo" : "Inativo"}
-                      </Badge>
                     </div>
 
                     {/* Informações Detalhadas - Ocultas em Mobile */}
@@ -298,18 +295,25 @@ export default function Network() {
                     </div>
                   </div>
 
-                  <div className="flex items-center flex-wrap gap-1 w-full sm:w-auto sm:ml-3">
-                    <Switch
-                      checked={unit.isActive}
-                      onCheckedChange={() => handleToggleStatus(unit.id, unit.isActive)}
-                      disabled={toggleUnitMutation.isPending}
-                      data-testid={`switch-unit-status-${unit.id}`}
-                    />
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-3 w-full sm:w-auto sm:ml-3">
+                    {/* Switch com Badge do lado direito */}
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        checked={unit.isActive}
+                        onCheckedChange={() => handleToggleStatus(unit.id, unit.isActive)}
+                        disabled={toggleUnitMutation.isPending}
+                        data-testid={`switch-unit-status-${unit.id}`}
+                      />
+                      <Badge variant={unit.isActive ? "default" : "secondary"}>
+                        {unit.isActive ? "Ativo" : "Inativo"}
+                      </Badge>
+                    </div>
                     
+                    {/* Botões em linha horizontal */}
+                    <div className="flex items-center space-x-1">
                       <Button
                         variant="outline"
                         size="sm"
-                        className="w-full sm:w-auto"
                         onClick={() => handleViewDetails(unit)}
                         data-testid={`button-view-${unit.id}`}
                       >
@@ -318,7 +322,6 @@ export default function Network() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="w-full sm:w-auto"
                         onClick={() => {
                           setSelectedUnit(unit);
                           handleCopyToClipboard();
@@ -327,41 +330,36 @@ export default function Network() {
                       >
                         <Copy className="h-4 w-4" />
                       </Button>
-
-                    {unit.googleMapsUrl && (
+                      {unit.googleMapsUrl && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          asChild
+                          data-testid={`button-maps-${unit.id}`}
+                        >
+                          <a href={unit.googleMapsUrl} target="_blank" rel="noopener noreferrer">
+                            <ExternalLink className="h-4 w-4" />
+                          </a>
+                        </Button>
+                      )}
                       <Button
                         variant="outline"
                         size="sm"
-                        className="w-full sm:w-auto"
-                        asChild
-                        data-testid={`button-maps-${unit.id}`}
+                        onClick={() => setLocation(`/rede/${unit.id}/editar`)}
+                        data-testid={`button-edit-${unit.id}`}
                       >
-                        <a href={unit.googleMapsUrl} target="_blank" rel="noopener noreferrer">
-                          <ExternalLink className="h-4 w-4" />
-                        </a>
+                        <Edit className="h-4 w-4" />
                       </Button>
-                    )}
-                    
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full sm:w-auto"
-                      onClick={() => setLocation(`/rede/${unit.id}/editar`)}
-                      data-testid={`button-edit-${unit.id}`}
-                    >
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full sm:w-auto"
-                      onClick={() => handleDelete(unit.id, unit.name)}
-                      disabled={deleteUnitMutation.isPending}
-                      data-testid={`button-delete-${unit.id}`}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleDelete(unit.id, unit.name)}
+                        disabled={deleteUnitMutation.isPending}
+                        data-testid={`button-delete-${unit.id}`}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -373,7 +371,7 @@ export default function Network() {
               <Building2 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <p className="text-muted-foreground mb-4">
                 {searchQuery 
-                  ? "Nenhuma unidade encontrada para a busca." 
+                  ? "Nenhuma unidade encontrada." 
                   : "Nenhuma unidade cadastrada ainda."
                 }
               </p>
