@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, timestamp, integer, boolean, decimal, json, pgEnum } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, timestamp, integer, boolean, decimal, json, pgEnum, uniqueIndex, index } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -78,17 +78,22 @@ export const plans = pgTable("plans", {
   planType: planTypeEnum("plan_type").notNull().default("with_waiting_period"),
 });
 
-// Plan Procedures table - procedimentos específicos de cada benefício
+// Plan Procedures table - relação entre procedimentos e planos com valores específicos
 export const planProcedures = pgTable("plan_procedures", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   planId: varchar("plan_id").notNull().references(() => plans.id, { onDelete: "cascade" }),
-  benefitName: text("benefit_name").notNull(), // nome do benefício (ex: "Consultas")
-  procedureName: text("procedure_name").notNull(), // nome do procedimento (ex: "Consulta Clínica")
-  description: text("description"), // descrição opcional do procedimento
-  price: integer("price").default(0), // preço em centavos (opcional)
+  procedureId: varchar("procedure_id").notNull().references(() => procedures.id, { onDelete: "cascade" }),
+  price: integer("price").default(0), // preço em centavos para este plano específico
   isIncluded: boolean("is_included").default(true), // se está incluído no plano
-  displayOrder: integer("display_order").default(0), // ordem de exibição
+  displayOrder: integer("display_order").notNull().default(0), // ordem de exibição
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+}, (table) => {
+  return {
+    planProcedureUnique: uniqueIndex("plan_procedure_unique_idx").on(table.planId, table.procedureId),
+    planIdIdx: index("plan_procedures_plan_id_idx").on(table.planId),
+    procedureIdIdx: index("plan_procedures_procedure_id_idx").on(table.procedureId),
+    planDisplayOrderIdx: index("plan_procedures_plan_display_order_idx").on(table.planId, table.displayOrder),
+  };
 });
 
 // Network Units table
@@ -117,6 +122,22 @@ export const faqItems = pgTable("faq_items", {
   displayOrder: integer("display_order").notNull(),
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+});
+
+// Procedures table - procedimentos principais
+export const procedures = pgTable("procedures", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  description: text("description"),
+  isActive: boolean("is_active").default(true),
+  displayOrder: integer("display_order").notNull().default(0),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`),
+}, (table) => {
+  return {
+    displayOrderIdx: index("procedures_display_order_idx").on(table.displayOrder),
+    isActiveIdx: index("procedures_is_active_idx").on(table.isActive),
+  };
 });
 
 // Contact submissions table
@@ -240,6 +261,7 @@ export const insertNetworkUnitSchema = createInsertSchema(networkUnits).omit({ i
   urlSlug: z.string().optional(), // URL slug is optional - will be auto-generated if not provided
 });
 export const insertFaqItemSchema = createInsertSchema(faqItems).omit({ id: true, createdAt: true });
+export const insertProcedureSchema = createInsertSchema(procedures).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertContactSubmissionSchema = createInsertSchema(contactSubmissions).omit({ id: true, createdAt: true });
 export const insertSiteSettingsSchema = createInsertSchema(siteSettings).omit({ id: true }).extend({
   mainImage: z.string().optional(),
@@ -263,6 +285,7 @@ export type InsertPlan = typeof plans.$inferInsert;
 export type InsertPlanProcedure = typeof planProcedures.$inferInsert;
 export type InsertNetworkUnit = typeof networkUnits.$inferInsert;
 export type InsertFaqItem = typeof faqItems.$inferInsert;
+export type InsertProcedure = typeof procedures.$inferInsert;
 export type InsertContactSubmission = typeof contactSubmissions.$inferInsert;
 export type InsertSiteSettings = typeof siteSettings.$inferInsert;
 export type InsertThemeSettings = typeof themeSettings.$inferInsert;
@@ -275,6 +298,7 @@ export type Plan = typeof plans.$inferSelect;
 export type PlanProcedure = typeof planProcedures.$inferSelect;
 export type NetworkUnit = typeof networkUnits.$inferSelect;
 export type FaqItem = typeof faqItems.$inferSelect;
+export type Procedure = typeof procedures.$inferSelect;
 export type ContactSubmission = typeof contactSubmissions.$inferSelect;
 export type SiteSettings = typeof siteSettings.$inferSelect;
 export type ThemeSettings = typeof themeSettings.$inferSelect;
