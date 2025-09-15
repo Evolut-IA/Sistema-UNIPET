@@ -15,6 +15,7 @@ import PlanForm from "@/pages/PlanForm";
 import Network from "@/pages/Network";
 import NetworkForm from "@/pages/NetworkForm";
 import FAQ from "@/pages/FAQ";
+import Procedures from "@/pages/Procedures";
 import ContactSubmissions from "@/pages/ContactSubmissions";
 import Settings from "@/pages/Settings";
 import Administration from "@/pages/Administration";
@@ -48,6 +49,7 @@ function Router() {
             <Route path="/rede" component={Network} />
             <Route path="/rede/novo" component={NetworkForm} />
             <Route path="/rede/:id/editar" component={NetworkForm} />
+            <Route path="/procedimentos" component={Procedures} />
             <Route path="/perguntas-frequentes" component={FAQ} />
             <Route path="/formularios" component={ContactSubmissions} />
             <Route path="/configuracoes" component={Settings} />
