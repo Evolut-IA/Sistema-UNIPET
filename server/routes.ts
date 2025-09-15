@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import path from "path";
 import { storage } from "./storage";
-import { insertClientSchema, insertPetSchema, insertPlanSchema, insertNetworkUnitSchema, insertFaqItemSchema, insertContactSubmissionSchema, insertSiteSettingsSchema, insertThemeSettingsSchema, insertGuideSchema, insertUserSchema, updateNetworkUnitCredentialsSchema, type InsertUser } from "@shared/schema";
+import { insertClientSchema, insertPetSchema, insertPlanSchema, insertNetworkUnitSchema, insertFaqItemSchema, insertContactSubmissionSchema, insertSiteSettingsSchema, insertThemeSettingsSchema, insertGuideSchema, insertUserSchema, updateNetworkUnitCredentialsSchema, insertProcedureSchema, insertPlanProcedureSchema, type InsertUser } from "@shared/schema";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { generateUniqueSlug } from "./utils";
@@ -231,36 +231,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Plan Procedures routes
-  app.post("/api/plan-procedures", async (req, res) => {
-    try {
-      const procedure = await storage.createPlanProcedure(req.body);
-      res.status(201).json(procedure);
-    } catch (error) {
-      res.status(400).json({ message: "Invalid procedure data" });
-    }
-  });
-
-  app.get("/api/plan-procedures/:planId", async (req, res) => {
-    try {
-      const procedures = await storage.getPlanProcedures(req.params.planId);
-      res.json(procedures);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch plan procedures" });
-    }
-  });
-
-  app.delete("/api/plan-procedures/:planId", async (req, res) => {
-    try {
-      const deleted = await storage.deletePlanProcedures(req.params.planId);
-      if (!deleted) {
-        return res.status(404).json({ message: "Plan procedures not found" });
-      }
-      res.status(204).send();
-    } catch (error) {
-      res.status(500).json({ message: "Failed to delete plan procedures" });
-    }
-  });
 
   // Network unit routes
   app.get("/api/network-units", async (req, res) => {
@@ -534,6 +504,117 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ message: "Failed to delete FAQ item" });
+    }
+  });
+
+  // Procedure routes
+  app.get("/api/procedures", async (req, res) => {
+    try {
+      const procedures = await storage.getProcedures();
+      res.json(procedures);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch procedures" });
+    }
+  });
+
+  app.get("/api/procedures/active", async (req, res) => {
+    try {
+      const procedures = await storage.getActiveProcedures();
+      res.json(procedures);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch active procedures" });
+    }
+  });
+
+  app.get("/api/procedures/:id", async (req, res) => {
+    try {
+      const procedure = await storage.getProcedure(req.params.id);
+      if (!procedure) {
+        return res.status(404).json({ message: "Procedure not found" });
+      }
+      res.json(procedure);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch procedure" });
+    }
+  });
+
+  app.post("/api/procedures", async (req, res) => {
+    try {
+      const procedureData = insertProcedureSchema.parse(req.body);
+      const procedure = await storage.createProcedure(procedureData);
+      res.status(201).json(procedure);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid procedure data" });
+    }
+  });
+
+  app.put("/api/procedures/:id", async (req, res) => {
+    try {
+      const procedureData = insertProcedureSchema.partial().parse(req.body);
+      const procedure = await storage.updateProcedure(req.params.id, procedureData);
+      if (!procedure) {
+        return res.status(404).json({ message: "Procedure not found" });
+      }
+      res.json(procedure);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid procedure data" });
+    }
+  });
+
+  app.delete("/api/procedures/:id", async (req, res) => {
+    try {
+      const deleted = await storage.deleteProcedure(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Procedure not found" });
+      }
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete procedure" });
+    }
+  });
+
+  // Plan Procedure routes
+  app.get("/api/plans/:planId/procedures", async (req, res) => {
+    try {
+      const procedures = await storage.getProceduresByPlan(req.params.planId);
+      res.json(procedures);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch plan procedures" });
+    }
+  });
+
+  app.post("/api/plan-procedures", async (req, res) => {
+    try {
+      const planProcedureData = insertPlanProcedureSchema.parse(req.body);
+      const planProcedure = await storage.createPlanProcedure(planProcedureData);
+      res.status(201).json(planProcedure);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid plan procedure data" });
+    }
+  });
+
+  app.put("/api/plan-procedures/:id", async (req, res) => {
+    try {
+      const planProcedureData = insertPlanProcedureSchema.partial().parse(req.body);
+      const planProcedure = await storage.updatePlanProcedure(req.params.id, planProcedureData);
+      if (!planProcedure) {
+        return res.status(404).json({ message: "Plan procedure not found" });
+      }
+      res.json(planProcedure);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid plan procedure data" });
+    }
+  });
+
+  app.delete("/api/plan-procedures/:id", async (req, res) => {
+    try {
+      const deleted = await storage.deletePlanProcedure(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Plan procedure not found" });
+      }
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete plan procedure" });
     }
   });
 
