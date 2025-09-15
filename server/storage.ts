@@ -13,7 +13,9 @@ import type {
   ContactSubmission, InsertContactSubmission,
   SiteSettings, InsertSiteSettings,
   ThemeSettings, InsertThemeSettings,
-  Guide, InsertGuide
+  Guide, InsertGuide,
+  Procedure, InsertProcedure,
+  PlanProcedure, InsertPlanProcedure
 } from "@shared/schema";
 
 const databaseUrl = process.env.DATABASE_URL || "postgresql://postgres:password@localhost:5432/unipet";
@@ -206,6 +208,22 @@ export interface IStorage {
   getGuidesByNetworkUnit(networkUnitId: string): Promise<Guide[]>;
   updateGuideUnitStatus(id: string, unitStatus: string): Promise<Guide | undefined>;
 
+  // Procedure methods
+  getProcedure(id: string): Promise<Procedure | undefined>;
+  getActiveProcedures(): Promise<Procedure[]>;
+  createProcedure(procedure: InsertProcedure): Promise<Procedure>;
+  updateProcedure(id: string, updates: Partial<InsertProcedure>): Promise<Procedure | undefined>;
+  deleteProcedure(id: string): Promise<boolean>;
+  getProcedures(): Promise<Procedure[]>;
+
+  // Plan Procedure methods
+  createPlanProcedure(planProcedure: InsertPlanProcedure): Promise<PlanProcedure>;
+  getPlanProcedures(planId: string): Promise<PlanProcedure[]>;
+  getProceduresByPlan(planId: string): Promise<(Procedure & { planProcedure: PlanProcedure })[]>;
+  updatePlanProcedure(id: string, updates: Partial<InsertPlanProcedure>): Promise<PlanProcedure | undefined>;
+  deletePlanProcedure(id: string): Promise<boolean>;
+  deletePlanProcedures(planId: string): Promise<boolean>;
+
   // Dashboard analytics
   getDashboardStats(startDate?: string, endDate?: string): Promise<{
     activeClients: number;
@@ -227,9 +245,6 @@ export interface IStorage {
     totalRevenue: number;
   }[]>;
 
-  // Network unit credentials methods
-  getNetworkUnitsWithCredentials(): Promise<NetworkUnitWithCredentialStatus[]>;
-  updateNetworkUnitCredentials(id: string, credentials: { login: string; senhaHash: string }): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -423,20 +438,6 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  // Plan Procedures methods
-  async createPlanProcedure(procedure: any): Promise<any> {
-    const result = await db.insert(schema.planProcedures).values(procedure).returning();
-    return result[0];
-  }
-
-  async getPlanProcedures(planId: string): Promise<any[]> {
-    return await db.select().from(schema.planProcedures).where(eq(schema.planProcedures.planId, planId));
-  }
-
-  async deletePlanProcedures(planId: string): Promise<boolean> {
-    const result = await db.delete(schema.planProcedures).where(eq(schema.planProcedures.planId, planId)).returning({ id: schema.planProcedures.id });
-    return result.length > 0;
-  }
 
   // Network unit methods
   async getNetworkUnit(id: string): Promise<NetworkUnit | undefined> {
@@ -542,6 +543,84 @@ export class DatabaseStorage implements IStorage {
 
   async getFaqItems(): Promise<FaqItem[]> {
     return await db.select().from(schema.faqItems).orderBy(desc(schema.faqItems.createdAt));
+  }
+
+  // Procedure methods
+  async getProcedure(id: string): Promise<Procedure | undefined> {
+    const result = await db.select().from(schema.procedures).where(eq(schema.procedures.id, id));
+    return result[0];
+  }
+
+  async getActiveProcedures(): Promise<Procedure[]> {
+    return await db.select().from(schema.procedures).where(eq(schema.procedures.isActive, true)).orderBy(schema.procedures.displayOrder);
+  }
+
+  async createProcedure(procedure: InsertProcedure): Promise<Procedure> {
+    const result = await db.insert(schema.procedures).values({
+      ...procedure,
+      updatedAt: new Date()
+    }).returning();
+    return result[0];
+  }
+
+  async updateProcedure(id: string, updates: Partial<InsertProcedure>): Promise<Procedure | undefined> {
+    const result = await db.update(schema.procedures).set({
+      ...updates,
+      updatedAt: new Date()
+    }).where(eq(schema.procedures.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteProcedure(id: string): Promise<boolean> {
+    // Primeiro, excluir todos os plan_procedures associados ao procedimento
+    await db.delete(schema.planProcedures).where(eq(schema.planProcedures.procedureId, id));
+    
+    // Depois, excluir o procedimento
+    const result = await db.delete(schema.procedures).where(eq(schema.procedures.id, id)).returning({ id: schema.procedures.id });
+    return result.length > 0;
+  }
+
+  async getProcedures(): Promise<Procedure[]> {
+    return await db.select().from(schema.procedures).orderBy(schema.procedures.displayOrder, desc(schema.procedures.createdAt));
+  }
+
+  // Plan Procedure methods - atualizar os métodos existentes e adicionar novos
+  async createPlanProcedure(planProcedure: InsertPlanProcedure): Promise<PlanProcedure> {
+    const result = await db.insert(schema.planProcedures).values(planProcedure).returning();
+    return result[0];
+  }
+
+  async getPlanProcedures(planId: string): Promise<PlanProcedure[]> {
+    return await db.select().from(schema.planProcedures).where(eq(schema.planProcedures.planId, planId)).orderBy(schema.planProcedures.displayOrder);
+  }
+
+  async getProceduresByPlan(planId: string): Promise<(Procedure & { planProcedure: PlanProcedure })[]> {
+    const result = await db
+      .select()
+      .from(schema.procedures)
+      .innerJoin(schema.planProcedures, eq(schema.procedures.id, schema.planProcedures.procedureId))
+      .where(eq(schema.planProcedures.planId, planId))
+      .orderBy(schema.planProcedures.displayOrder);
+
+    return result.map(row => ({
+      ...row.procedures,
+      planProcedure: row.plan_procedures
+    }));
+  }
+
+  async updatePlanProcedure(id: string, updates: Partial<InsertPlanProcedure>): Promise<PlanProcedure | undefined> {
+    const result = await db.update(schema.planProcedures).set(updates).where(eq(schema.planProcedures.id, id)).returning();
+    return result[0];
+  }
+
+  async deletePlanProcedure(id: string): Promise<boolean> {
+    const result = await db.delete(schema.planProcedures).where(eq(schema.planProcedures.id, id)).returning({ id: schema.planProcedures.id });
+    return result.length > 0;
+  }
+
+  async deletePlanProcedures(planId: string): Promise<boolean> {
+    const result = await db.delete(schema.planProcedures).where(eq(schema.planProcedures.planId, planId)).returning({ id: schema.planProcedures.id });
+    return result.length > 0;
   }
 
   // Contact submission methods
