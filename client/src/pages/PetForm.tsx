@@ -140,7 +140,7 @@ export default function PetForm() {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center">
         <Button
           variant="outline"
           onClick={() => setLocation("/clientes")}
