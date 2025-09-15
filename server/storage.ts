@@ -206,6 +206,7 @@ export interface IStorage {
     registeredPets: number;
     openGuides: number;
     monthlyRevenue: number;
+    totalRevenue: number;
     totalPlans: number;
     activePlans: number;
     inactivePlans: number;

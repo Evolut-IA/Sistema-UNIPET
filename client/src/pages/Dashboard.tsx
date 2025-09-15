@@ -227,12 +227,21 @@ export default function Dashboard() {
               <div className="flex-1 min-w-0">
                 <p className="text-xs sm:text-sm text-muted-foreground">Receita Mensal</p>
                 {statsLoading ? (
-                  <Skeleton className="h-6 sm:h-8 w-16 sm:w-20 mt-1" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-6 sm:h-8 w-16 sm:w-20 mt-1" />
+                    <Skeleton className="h-4 sm:h-5 w-20 sm:w-24" />
+                  </div>
                 ) : (
                   <>
                     <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground truncate" data-testid="metric-monthly-revenue">
                       R$ {(stats?.monthlyRevenue || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </p>
+                    <div className="mt-2 pt-2 border-t border-border">
+                      <p className="text-xs text-muted-foreground">Receita Total do Período</p>
+                      <p className="text-sm sm:text-base font-semibold text-foreground" data-testid="metric-total-revenue">
+                        R$ {(stats?.totalRevenue || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </p>
+                    </div>
                   </>
                 )}
               </div>
