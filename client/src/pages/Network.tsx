@@ -263,7 +263,7 @@ export default function Network() {
                     </div>
                   </div>
 
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-3 w-full sm:w-auto sm:ml-3">
+                  <div className="flex items-center gap-3 w-full sm:w-auto sm:ml-3">
                     {/* Switch com Badge do lado direito */}
                     <div className="flex items-center">
                       <Switch
