@@ -301,10 +301,10 @@ export default function Clients() {
             <div className="space-y-2">
               {displayClients.map((client: any) => (
                 <div key={client.id} className="border rounded-lg p-3 hover:bg-muted/10 transition-colors">
-                  <div className="flex flex-col lg:flex-row lg:justify-between gap-3">
-                    <div className="flex-1 min-w-0">
+                  <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-3">
+                    <div className="flex-1 min-w-0 flex items-center">
                       {/* Nome do Cliente */}
-                      <div className="mb-2">
+                      <div className="w-full">
                         <h3 className="font-semibold text-foreground break-words" data-testid={`client-name-${client.id}`}>
                           {client.fullName}
                         </h3>
