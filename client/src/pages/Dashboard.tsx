@@ -459,18 +459,18 @@ export default function Dashboard() {
             ) : planDistribution?.length && planDistribution.some(plan => plan.petCount > 0) ? (
               <div className="space-y-4">
                 {/* Resumo total */}
-                <div className="flex items-center justify-between p-3 bg-primary border border-border rounded-lg">
+                <div className="flex items-center justify-between p-3 border border-border rounded-lg">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-primary-foreground">Total de Pets com Planos</span>
+                    <span className="text-sm text-foreground">Total de Pets com Planos</span>
                     {planDistribution.some(plan => plan.petCount > 0) && (
                       <div className="w-2 h-2 bg-chart-4 rounded-full" title="Dados atualizados"></div>
                     )}
                   </div>
                   <div className="text-right">
-                    <span className="text-xl font-bold text-primary-foreground">
+                    <span className="text-xl font-bold text-foreground">
                       {planDistribution.reduce((sum, plan) => sum + plan.petCount, 0)}
                     </span>
-                    <div className="text-xs text-primary-foreground">
+                    <div className="text-xs text-foreground">
                       {planDistribution.reduce((sum, plan) => sum + plan.percentage, 0)}% total
                     </div>
                   </div>
