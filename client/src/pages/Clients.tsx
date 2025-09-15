@@ -348,8 +348,7 @@ export default function Clients() {
                         data-testid={`button-view-${client.id}`}
                         className="text-xs"
                       >
-                        <Eye className="h-3 w-3 mr-1" />
-                        Ver
+                        <Eye className="h-3 w-3" />
                       </Button>
                       <Button
                         variant="outline"
@@ -361,8 +360,7 @@ export default function Clients() {
                         data-testid={`button-copy-${client.id}`}
                         className="text-xs"
                       >
-                        <Copy className="h-3 w-3 mr-1" />
-                        Copiar
+                        <Copy className="h-3 w-3" />
                       </Button>
                       <Button
                         variant="outline"
@@ -371,8 +369,7 @@ export default function Clients() {
                         data-testid={`button-add-pet-${client.id}`}
                         className="text-xs"
                       >
-                        <AddPetIcon className="h-3 w-3 mr-1" />
-                        Pet
+                        <AddPetIcon className="h-3 w-3" />
                       </Button>
                       <Button
                         variant="outline"
@@ -381,8 +378,7 @@ export default function Clients() {
                         data-testid={`button-edit-${client.id}`}
                         className="text-xs"
                       >
-                        <Edit className="h-3 w-3 mr-1" />
-                        Editar
+                        <Edit className="h-3 w-3" />
                       </Button>
                       <Button
                         variant="outline"
@@ -392,8 +388,7 @@ export default function Clients() {
                         data-testid={`button-delete-${client.id}`}
                         className="text-xs"
                       >
-                        <Trash2 className="h-3 w-3 mr-1" />
-                        Excluir
+                        <Trash2 className="h-3 w-3" />
                       </Button>
                     </div>
                   </div>
