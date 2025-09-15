@@ -57,11 +57,10 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-  // ALWAYS serve the app on the port specified in the environment variable PORT
-  // EasyPanel will automatically set the PORT environment variable
+  // ALWAYS serve the app on port 5000 for Replit
+  // Port 5000 is the only port that is not firewalled in Replit
   // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = parseInt(process.env.PORT || '80', 10);
+  const port = parseInt(process.env.PORT || '5000', 10);
   
   server.listen(port, "0.0.0.0", () => {
     log(`serving on port ${port}`);
