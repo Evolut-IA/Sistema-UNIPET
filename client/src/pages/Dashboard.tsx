@@ -25,8 +25,8 @@ export default function Dashboard() {
     queryKey: ["/api/dashboard/stats"],
   });
 
-  const { data: recentGuides = [], isLoading: guidesLoading, isError: guidesError } = useQuery<Guide[]>({
-    queryKey: ["/api/guides/recent"],
+  const { data: allGuides = [], isLoading: guidesLoading, isError: guidesError } = useQuery<Guide[]>({
+    queryKey: ["/api/guides"],
   });
 
   const { data: networkUnits = [], isLoading: networkLoading, isError: networkError } = useQuery<NetworkUnit[]>({
@@ -85,7 +85,7 @@ export default function Dashboard() {
       </div>
 
       {/* Metrics Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
         <Card>
           <CardContent className="p-6">
             <div className="flex items-start justify-between gap-2">
@@ -126,23 +126,85 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-start justify-between gap-2">
-              <div className="flex-1 min-w-0">
-                <p className="text-xs sm:text-sm text-muted-foreground">Guias Abertas</p>
-                {statsLoading ? (
-                  <Skeleton className="h-6 sm:h-8 w-12 sm:w-16 mt-1" />
-                ) : (
-                  <>
-                    <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground truncate" data-testid="metric-open-guides">
-                      {stats?.openGuides?.toLocaleString() || 0}
-                    </p>
-                  </>
+        <Card className="lg:col-span-2">
+          <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <CardTitle className="text-foreground min-w-0">Todas as Guias</CardTitle>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="text-primary"
+              onClick={() => setLocation("/guias")}
+              data-testid="button-view-all-guides"
+            >
+              Ver todos
+            </Button>
+          </CardHeader>
+          <CardContent>
+            {guidesLoading ? (
+              <div className="space-y-3">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                    <div className="flex-1 space-y-1">
+                      <Skeleton className="h-4 w-32" />
+                      <Skeleton className="h-3 w-24" />
+                    </div>
+                    <Skeleton className="h-6 w-16" />
+                  </div>
+                ))}
+              </div>
+            ) : guidesError ? (
+              <div className="text-center py-8">
+                <p className="text-muted-foreground">Erro ao carregar guias</p>
+              </div>
+            ) : allGuides?.length ? (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                  <span className="text-sm text-muted-foreground">Total de Guias</span>
+                  <span className="text-xl font-bold text-foreground">{allGuides.length}</span>
+                </div>
+                {allGuides.slice(0, 5).map((guide: any) => (
+                  <div key={guide.id} className="flex items-center justify-between p-3 bg-background border rounded-lg hover:bg-accent/50 transition-colors">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-foreground truncate">
+                        {guide.procedure}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Cliente: {guide.clientName || 'N/A'} • Pet: {guide.petName || 'N/A'}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className={`text-xs px-2 py-1 rounded-full ${
+                        guide.status === 'open' 
+                          ? 'bg-green-100 text-green-800' 
+                          : guide.status === 'closed'
+                          ? 'bg-gray-100 text-gray-800'
+                          : 'bg-red-100 text-red-800'
+                      }`}>
+                        {guide.status === 'open' ? 'Aberta' : guide.status === 'closed' ? 'Fechada' : 'Cancelada'}
+                      </span>
+                      {guide.value && (
+                        <span className="text-sm font-medium text-foreground">
+                          R$ {parseFloat(guide.value).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+                {allGuides.length > 5 && (
+                  <div className="text-center pt-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => setLocation("/guias")}
+                    >
+                      Ver mais {allGuides.length - 5} guias
+                    </Button>
+                  </div>
                 )}
               </div>
-              <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
-            </div>
+            ) : (
+              <p className="text-muted-foreground text-center py-8">Nenhuma guia encontrada</p>
+            )}
           </CardContent>
         </Card>
 
