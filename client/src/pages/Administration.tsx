@@ -661,7 +661,7 @@ export default function Administration() {
 
                           <div className="flex items-center gap-6 text-sm text-muted-foreground">
                             <p><span className="font-medium">URL Slug:</span> /{unit.urlSlug || "não-definido"}</p>
-                            <p><span className="font-medium">Login atual:</span> {unit.login || "Não configurado"}</p>
+                            <p><span className="font-medium">Login:</span> {unit.login || "Não configurado"}</p>
                             
                             <div className="flex gap-2 ml-auto">
                               <Button
