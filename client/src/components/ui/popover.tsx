@@ -61,20 +61,8 @@ ResponsivePopoverTrigger.displayName = "ResponsivePopoverTrigger"
 
 const PopoverContent = React.forwardRef<
   React.ElementRef<typeof PopoverPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content> & {
-    mobileAsDrawer?: boolean
-  }
->(({ className, align = "center", sideOffset = 4, mobileAsDrawer = true, ...props }, ref) => {
-  const { isMobile } = useMobileViewport()
-  
-  if (isMobile && mobileAsDrawer) {
-    return (
-      <DrawerContent className={cn("max-h-[85vh]", className)} {...props}>
-        {props.children}
-      </DrawerContent>
-    )
-  }
-  
+  React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content>
+>(({ className, align = "center", sideOffset = 4, ...props }, ref) => {
   return (
     <PopoverPrimitive.Portal>
       <PopoverPrimitive.Content
@@ -89,10 +77,7 @@ const PopoverContent = React.forwardRef<
           "data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2",
           "data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
           "origin-[--radix-popover-content-transform-origin]",
-          // Mobile responsive width - properly centered
-          isMobile ? "w-[calc(100vw-2rem)] max-w-sm mx-4" : "w-72",
-          // Mobile padding
-          isMobile ? "p-3" : "p-4",
+          "w-72 p-4",
           className
         )}
         {...props}
@@ -100,12 +85,45 @@ const PopoverContent = React.forwardRef<
     </PopoverPrimitive.Portal>
   )
 })
+
+// Component specifically for responsive drawer content
+const ResponsivePopoverContent = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentPropsWithoutRef<"div"> & {
+    align?: "center" | "start" | "end"
+    sideOffset?: number
+  }
+>(({ className, align = "center", sideOffset = 4, children, ...props }, ref) => {
+  const { isMobile } = useMobileViewport()
+  
+  if (isMobile) {
+    return (
+      <DrawerContent className={cn("max-h-[85vh]", className)} {...props}>
+        {children}
+      </DrawerContent>
+    )
+  }
+  
+  return (
+    <PopoverContent
+      ref={ref}
+      align={align}
+      sideOffset={sideOffset}
+      className={className}
+      {...props}
+    >
+      {children}
+    </PopoverContent>
+  )
+})
 PopoverContent.displayName = PopoverPrimitive.Content.displayName
+ResponsivePopoverContent.displayName = "ResponsivePopoverContent"
 
 export { 
   Popover, 
   PopoverTrigger, 
   PopoverContent,
   ResponsivePopover,
-  ResponsivePopoverTrigger
+  ResponsivePopoverTrigger,
+  ResponsivePopoverContent
 }
