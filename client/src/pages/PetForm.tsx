@@ -350,7 +350,7 @@ export default function PetForm() {
                               {plan.name} - {new Intl.NumberFormat('pt-BR', { 
                                 style: 'currency', 
                                 currency: 'BRL' 
-                              }).format(parseFloat(plan.price))}
+                              }).format(parseFloat(plan.price) / 100)}
                             </SelectItem>
                           ))}
                         </SelectContent>
