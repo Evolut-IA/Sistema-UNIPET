@@ -13,8 +13,6 @@ import {
   TrendingUp,
   Plus,
   User,
-  ArrowUp,
-  ArrowRight,
   ExternalLink
 } from "lucide-react";
 import { format } from "date-fns";
@@ -100,10 +98,6 @@ export default function Dashboard() {
                     <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground truncate" data-testid="metric-active-clients">
                       {stats?.activeClients?.toLocaleString() || 0}
                     </p>
-                    <p className="text-xs text-green-600 mt-1 flex items-center">
-                      <ArrowUp className="h-3 w-3 mr-1 flex-shrink-0" />
-                      <span className="truncate">Crescimento este mês</span>
-                    </p>
                   </>
                 )}
               </div>
@@ -123,10 +117,6 @@ export default function Dashboard() {
                   <>
                     <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground truncate" data-testid="metric-registered-pets">
                       {stats?.registeredPets?.toLocaleString() || 0}
-                    </p>
-                    <p className="text-xs text-green-600 mt-1 flex items-center">
-                      <ArrowUp className="h-3 w-3 mr-1 flex-shrink-0" />
-                      <span className="truncate">Crescimento este mês</span>
                     </p>
                   </>
                 )}
@@ -148,10 +138,6 @@ export default function Dashboard() {
                     <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground truncate" data-testid="metric-open-guides">
                       {stats?.openGuides?.toLocaleString() || 0}
                     </p>
-                    <p className="text-xs text-yellow-600 mt-1 flex items-center">
-                      <ArrowRight className="h-3 w-3 mr-1 flex-shrink-0" />
-                      <span className="truncate">Atualizações hoje</span>
-                    </p>
                   </>
                 )}
               </div>
@@ -171,10 +157,6 @@ export default function Dashboard() {
                   <>
                     <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground truncate" data-testid="metric-monthly-revenue">
                       R$ {((stats?.monthlyRevenue || 0) / 1000).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}K
-                    </p>
-                    <p className="text-xs text-green-600 mt-1 flex items-center">
-                      <ArrowUp className="h-3 w-3 mr-1 flex-shrink-0" />
-                      <span className="truncate">Crescimento este mês</span>
                     </p>
                   </>
                 )}
