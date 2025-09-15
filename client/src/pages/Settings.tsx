@@ -14,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { insertSiteSettingsSchema } from "@shared/schema";
-import { Settings as SettingsIcon, Globe, Palette, Save } from "lucide-react";
+import { Settings as SettingsIcon, Globe, Palette, Save, Loader2 } from "lucide-react";
 import ThemeEditor from "@/components/ThemeEditor";
 import { ImageUpload } from "@/components/ui/image-upload";
 
@@ -121,11 +121,35 @@ export default function Settings() {
   return (
     <div className="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-3 sm:gap-4">
-        <SettingsIcon className="h-6 w-6 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
-        <div className="min-w-0">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <div className="flex-1">
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground break-words">Configurações</h1>
           <p className="text-sm text-muted-foreground">Gerencie as configurações do sistema</p>
+        </div>
+        <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-3 xs:gap-4">
+          <Button 
+            className="btn-primary w-full xs:w-auto"
+            onClick={() => {
+              const activeTab = document.querySelector('[data-state="active"]')?.getAttribute('value');
+              if (activeTab === 'site') {
+                siteForm.handleSubmit(onSubmitSite)();
+              }
+            }}
+            disabled={saveSiteMutation.isPending}
+            data-testid="button-save-settings"
+          >
+            {saveSiteMutation.isPending ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Salvando...
+              </>
+            ) : (
+              <>
+                <Save className="h-4 w-4 mr-2" />
+                Salvar Configurações
+              </>
+            )}
+          </Button>
         </div>
       </div>
 

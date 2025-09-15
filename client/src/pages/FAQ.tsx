@@ -138,25 +138,37 @@ export default function FAQ() {
     <div className="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-        <div className="flex-1 min-w-0">
+        <div className="flex-1">
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground break-words">FAQ</h1>
           <p className="text-sm text-muted-foreground">Gerencie as perguntas frequentes</p>
         </div>
-        
-        <Dialog open={dialogOpen} onOpenChange={(open) => {
-          setDialogOpen(open);
-          if (!open) {
-            setEditingItem(null);
-            form.reset();
-          }
-        }}>
-          <DialogTrigger asChild>
-            <Button className="btn-primary" data-testid="button-new-faq">
-              <Plus className="h-4 w-4 mr-2" />
-              Novo Item
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl">
+        <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-3 xs:gap-4">
+          <Dialog open={dialogOpen} onOpenChange={(open) => {
+            setDialogOpen(open);
+            if (!open) {
+              setEditingItem(null);
+              form.reset();
+            }
+          }}>
+            <DialogTrigger asChild>
+              <Button className="btn-primary w-full xs:w-auto" data-testid="button-new-faq">
+                <Plus className="h-4 w-4 mr-2" />
+                Novo Item
+              </Button>
+            </DialogTrigger>
+          </Dialog>
+        </div>
+      </div>
+
+      {/* Dialog Content */}
+      <Dialog open={dialogOpen} onOpenChange={(open) => {
+        setDialogOpen(open);
+        if (!open) {
+          setEditingItem(null);
+          form.reset();
+        }
+      }}>
+        <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle className="text-foreground">
                 {editingItem ? "Editar Item" : "Novo Item FAQ"}
@@ -236,7 +248,6 @@ export default function FAQ() {
             </Form>
           </DialogContent>
         </Dialog>
-      </div>
 
       {/* Search */}
       <Card>

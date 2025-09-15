@@ -205,18 +205,20 @@ export default function Network() {
     <div className="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-        <div className="flex-1 min-w-0">
+        <div className="flex-1">
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground break-words">Rede Credenciada</h1>
           <p className="text-sm text-muted-foreground">Gerencie as unidades credenciadas</p>
         </div>
-        <Button 
-          className="btn-primary w-full sm:w-auto"
-          onClick={() => setLocation("/rede/novo")}
-          data-testid="button-new-unit"
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          Nova Unidade
-        </Button>
+        <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-3 xs:gap-4">
+          <Button 
+            className="btn-primary w-full xs:w-auto"
+            onClick={() => setLocation("/rede/novo")}
+            data-testid="button-new-unit"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Nova Unidade
+          </Button>
+        </div>
       </div>
 
       {/* Search */}

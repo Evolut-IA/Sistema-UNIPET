@@ -194,28 +194,37 @@ export default function Administration() {
     <div className="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-        <div className="flex items-center gap-3 sm:gap-4">
-          <UserCog className="h-6 w-6 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
-          <div className="min-w-0">
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground break-words">Administração</h1>
-            <p className="text-sm text-muted-foreground">Gerencie usuários e permissões do sistema</p>
-          </div>
+        <div className="flex-1">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground break-words">Administração</h1>
+          <p className="text-sm text-muted-foreground">Gerencie usuários e permissões do sistema</p>
         </div>
-        
-        <Dialog open={dialogOpen} onOpenChange={(open) => {
-          setDialogOpen(open);
-          if (!open) {
-            setEditingUser(null);
-            form.reset();
-          }
-        }}>
-          <DialogTrigger asChild>
-            <Button className="btn-primary" data-testid="button-new-user">
-              <Plus className="h-4 w-4 mr-2" />
-              Novo Usuário
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-3 xs:gap-4">
+          <Dialog open={dialogOpen} onOpenChange={(open) => {
+            setDialogOpen(open);
+            if (!open) {
+              setEditingUser(null);
+              form.reset();
+            }
+          }}>
+            <DialogTrigger asChild>
+              <Button className="btn-primary w-full xs:w-auto" data-testid="button-new-user">
+                <Plus className="h-4 w-4 mr-2" />
+                Novo Usuário
+              </Button>
+            </DialogTrigger>
+          </Dialog>
+        </div>
+      </div>
+
+      {/* Dialog Content */}
+      <Dialog open={dialogOpen} onOpenChange={(open) => {
+        setDialogOpen(open);
+        if (!open) {
+          setEditingUser(null);
+          form.reset();
+        }
+      }}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="text-foreground">
                 {editingUser ? "Editar Usuário" : "Novo Usuário"}
@@ -370,7 +379,6 @@ export default function Administration() {
             </Form>
           </DialogContent>
         </Dialog>
-      </div>
 
       {/* Search */}
       <Card>
