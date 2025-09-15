@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,6 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -345,14 +346,15 @@ export default function PetForm() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {plans?.map((plan: any) => (
+                          {plans?.flatMap((plan: any, index: number) => [
                             <SelectItem key={plan.id} value={plan.id}>
                               {plan.name} - {new Intl.NumberFormat('pt-BR', { 
                                 style: 'currency', 
                                 currency: 'BRL' 
                               }).format(parseFloat(plan.price) / 100)}
-                            </SelectItem>
-                          ))}
+                            </SelectItem>,
+                            ...(index < (plans?.length ?? 0) - 1 ? [<Separator key={`separator-${plan.id}`} />] : [])
+                          ])}
                         </SelectContent>
                       </Select>
                       <FormMessage />
