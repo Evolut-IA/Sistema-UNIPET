@@ -86,7 +86,7 @@ export const plans = pgTable("plans", {
   displayOrder: integer("display_order").notNull().default(0),
   price: integer("price").notNull().default(0),
   planType: planTypeEnum("plan_type").notNull().default("with_waiting_period"),
-  coparticipacaoPercentual: integer("coparticipacao_percentual"),
+  // coparticipacaoPercentual: integer("coparticipacao_percentual"),
 });
 
 

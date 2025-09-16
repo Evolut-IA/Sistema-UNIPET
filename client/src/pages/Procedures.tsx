@@ -28,6 +28,7 @@ export default function Procedures() {
   const [selectedPlans, setSelectedPlans] = useState<{
     planId: string, 
     receber: string, 
+    pagar: string,
     coparticipacao: string, 
     carencia: string, 
     limitesAnuais: string
@@ -76,6 +77,7 @@ export default function Procedures() {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2
         }), // Converter de centavos para reais com formato PT-BR
+        pagar: item.pagar || "0,00",
         coparticipacao: item.coparticipacao || "0,00",
         carencia: item.carencia || "",
         limitesAnuais: item.limitesAnuais || ""
@@ -94,6 +96,7 @@ export default function Procedures() {
         setSelectedPlans([...selectedPlans, { 
           planId: unselectedPlans[0].id, 
           receber: "0,00",
+          pagar: "0,00",
           coparticipacao: "0,00",
           carencia: "",
           limitesAnuais: ""
@@ -455,11 +458,10 @@ export default function Procedures() {
                         
                         return (
                           <div key={index} className="p-4 border rounded-lg">
-                            {/* Layout responsivo: desktop = linha única, mobile = empilhado */}
-                            <div className="flex flex-col md:flex-row gap-4 items-end">
-                              {/* Container dos campos que se expandem igualmente */}
-                              <div className={`flex flex-col md:flex-row gap-4 flex-1 ${showCoparticipacao ? 'md:grid md:grid-cols-5' : 'md:grid md:grid-cols-4'}`}>
-                                {/* Plano */}
+                            {/* Layout organizado em 2 linhas */}
+                            <div className="space-y-4">
+                              {/* Primeira linha: Plano */}
+                              <div className="grid grid-cols-1 gap-4">
                                 <div>
                                   <label className="text-sm font-medium">Plano</label>
                                   <Select
@@ -481,7 +483,10 @@ export default function Procedures() {
                                     <p className="text-xs text-red-500 mt-1">{planErrors[index]}</p>
                                   )}
                                 </div>
+                              </div>
 
+                              {/* Segunda linha: Campos financeiros e administrativos */}
+                              <div className={`grid gap-4 ${showCoparticipacao ? 'grid-cols-2 md:grid-cols-5' : 'grid-cols-2 md:grid-cols-4'}`}>
                                 {/* Receber */}
                                 <div>
                                   <label className="text-sm font-medium">Receber (R$)</label>
@@ -496,6 +501,18 @@ export default function Procedures() {
                                   {planErrors[index] && (
                                     <p className="text-xs text-red-500 mt-1">{planErrors[index]}</p>
                                   )}
+                                </div>
+
+                                {/* Pagar */}
+                                <div>
+                                  <label className="text-sm font-medium">Pagar (R$)</label>
+                                  <InputMasked
+                                    mask="price"
+                                    value={selectedPlan.pagar}
+                                    onChange={(e) => updatePlanField(index, 'pagar', e.target.value)}
+                                    placeholder="0,00"
+                                    data-testid={`input-plan-pagar-${index}`}
+                                  />
                                 </div>
                                 
                                 {/* Coparticipação (condicional) */}
@@ -547,9 +564,8 @@ export default function Procedures() {
                                   />
                                 </div>
                               </div>
-
-                              {/* Botão Remover - compacto e quadrado */}
-                              <div className="flex justify-center md:justify-end">
+                              {/* Botão Remover na mesma linha dos campos */}
+                              <div className="col-span-full flex justify-end">
                                 <Button
                                   type="button"
                                   size="sm"
