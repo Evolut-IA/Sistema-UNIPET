@@ -154,12 +154,21 @@ export default function Settings() {
       </div>
 
       <Tabs defaultValue="site" className="space-y-4 sm:space-y-6">
-        <TabsList className="grid w-full grid-cols-2 gap-1">
-          <TabsTrigger value="site" className="flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm">
+        <TabsList 
+          className="grid w-full grid-cols-2 gap-1" 
+          style={{ backgroundColor: 'var(--background)' }}
+        >
+          <TabsTrigger 
+            value="site" 
+            className="flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+          >
             <Globe className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
             <span className="truncate">Site</span>
           </TabsTrigger>
-          <TabsTrigger value="theme" className="flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm">
+          <TabsTrigger 
+            value="theme" 
+            className="flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+          >
             <Palette className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
             <span className="truncate">Tema</span>
           </TabsTrigger>
