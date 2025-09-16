@@ -435,7 +435,7 @@ export default function ThemeEditor() {
                             <ColorInput
                               value={field.value || DEFAULT_THEME.chart4Color}
                               onChange={field.onChange}
-                              title="Positivo (Verde)"
+                              title="Positivo"
                               description="Status positivos, sucessos e confirmações"
                               testId="color-positive"
                             />
@@ -453,7 +453,7 @@ export default function ThemeEditor() {
                             <ColorInput
                               value={field.value || DEFAULT_THEME.warningColor}
                               onChange={field.onChange}
-                              title="Ausente (Amarelo)"
+                              title="Aviso"
                               description="Status de ausência, avisos e alertas"
                               testId="color-warning"
                             />
@@ -471,7 +471,7 @@ export default function ThemeEditor() {
                             <ColorInput
                               value={field.value || DEFAULT_THEME.chart5Color}
                               onChange={field.onChange}
-                              title="Negativo (Vermelho)"
+                              title="Negativo"
                               description="Status negativos, erros e cancelamentos"
                               testId="color-negative"
                             />
