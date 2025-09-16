@@ -63,12 +63,12 @@ const DateFilterComponent = React.memo(function DateFilterComponent({
   className,
   initialRange
 }: DateFilterComponentProps) {
-  // Use default range (current month) if no valid initial range provided
+  // Use default range (no filter) if no valid initial range provided
   const defaultRange = React.useMemo(() => {
     if (initialRange?.startDate && initialRange?.endDate) {
       return initialRange
     }
-    return getCurrentMonthRange()
+    return { startDate: null, endDate: null }
   }, [initialRange])
   
   const {
@@ -108,14 +108,7 @@ const DateFilterComponent = React.memo(function DateFilterComponent({
     handleQuickSelection(getTodayRange())
   }, [handleQuickSelection])
 
-  // Set default range on component mount if no valid filtering is active
-  React.useEffect(() => {
-    if ((!initialRange?.startDate || !initialRange?.endDate) && !isFiltering) {
-      const defaultRange = getCurrentMonthRange()
-      setDateRange(defaultRange)
-      onDateRangeChange?.(defaultRange.startDate, defaultRange.endDate)
-    }
-  }, [initialRange, isFiltering, setDateRange, onDateRangeChange])
+  // No default range on component mount - starts with no filter
 
   return (
     <Card className={cn("w-full", className)}>
@@ -163,7 +156,7 @@ const DateFilterComponent = React.memo(function DateFilterComponent({
                   size="sm"
                   onClick={handleCurrentMonth}
                   disabled={isLoading}
-                  className="h-8 px-3 text-xs"
+                  className="h-10 px-3 text-xs"
                   aria-label="Filtrar por mês atual"
                 >
                   Mês atual
@@ -173,7 +166,7 @@ const DateFilterComponent = React.memo(function DateFilterComponent({
                   size="sm"
                   onClick={handleCurrentWeek}
                   disabled={isLoading}
-                  className="h-8 px-3 text-xs"
+                  className="h-10 px-3 text-xs"
                   aria-label="Filtrar por semana atual"
                 >
                   Semana atual
@@ -183,7 +176,7 @@ const DateFilterComponent = React.memo(function DateFilterComponent({
                   size="sm"
                   onClick={handleToday}
                   disabled={isLoading}
-                  className="h-8 px-3 text-xs"
+                  className="h-10 px-3 text-xs"
                   aria-label="Filtrar por hoje"
                 >
                   Hoje
