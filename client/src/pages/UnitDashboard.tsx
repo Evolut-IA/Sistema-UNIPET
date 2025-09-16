@@ -261,20 +261,20 @@ export default function UnitDashboard() {
       {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-4">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4 py-3 sm:py-4">
+            <div className="flex items-center space-x-4 min-w-0">
               <PawPrint className="h-8 w-8 text-primary" />
               <div>
-                <h1 className="text-xl font-semibold text-gray-900">
+                <h1 className="text-lg sm:text-xl font-semibold text-gray-900 break-words">
                   {authState.unit?.name}
                 </h1>
-                <p className="text-sm text-gray-500 flex items-center">
+                <p className="text-xs sm:text-sm text-gray-500 flex items-center break-words">
                   <MapPin className="h-4 w-4 mr-1" />
                   {authState.unit?.address}
                 </p>
               </div>
             </div>
-            <Button variant="outline" onClick={handleLogout}>
+            <Button variant="outline" onClick={handleLogout} className="w-full sm:w-auto text-xs sm:text-sm">
               Sair
             </Button>
           </div>
@@ -284,8 +284,8 @@ export default function UnitDashboard() {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Painel de Guias</h2>
-          <p className="text-gray-600">
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-2 break-words">Painel de Guias</h2>
+          <p className="text-sm sm:text-base text-gray-600">
             Gerencie as guias de atendimento enviadas para sua unidade
           </p>
         </div>

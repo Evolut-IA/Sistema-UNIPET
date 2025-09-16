@@ -148,13 +148,13 @@ export default function Plans() {
   return (
     <div className="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Planos de Saúde</h1>
-          <p className="text-muted-foreground">Gerencie os planos de saúde disponíveis</p>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <div className="flex-1 min-w-0">
+          <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground break-words">Planos de Saúde</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">Gerencie os planos de saúde disponíveis</p>
         </div>
         <Button 
-          className="btn-primary"
+          className="btn-primary w-full sm:w-auto"
           onClick={() => setLocation("/planos/novo")}
           data-testid="button-new-plan"
         >
