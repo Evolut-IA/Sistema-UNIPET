@@ -184,6 +184,13 @@ export default function Settings() {
                 siteForm.handleSubmit(onSubmitSite)();
               } else if (activeTab === 'rules') {
                 rulesForm.handleSubmit(onSubmitRules)();
+              } else if (activeTab === 'theme') {
+                // Na aba tema, instruir o usuário a usar o botão "Aplicar Tema"
+                toast({
+                  title: "Use o botão 'Aplicar Tema'",
+                  description: "Para salvar as configurações de tema, use o botão 'Aplicar Tema' localizado na parte inferior da aba Tema.",
+                  variant: "default",
+                });
               }
             }}
             disabled={saveSiteMutation.isPending || saveRulesMutation.isPending}
