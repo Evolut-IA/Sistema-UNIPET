@@ -146,7 +146,7 @@ const DateFilterComponent = React.memo(function DateFilterComponent({
           {/* Quick Selection Buttons */}
           <div className="flex flex-wrap gap-2">
             <Button
-              variant="outline"
+              variant="default"
               size="sm"
               onClick={handleCurrentMonth}
               disabled={isLoading}
@@ -156,7 +156,7 @@ const DateFilterComponent = React.memo(function DateFilterComponent({
               Mês atual
             </Button>
             <Button
-              variant="outline"
+              variant="default"
               size="sm"
               onClick={handleCurrentWeek}
               disabled={isLoading}
@@ -166,7 +166,7 @@ const DateFilterComponent = React.memo(function DateFilterComponent({
               Semana atual
             </Button>
             <Button
-              variant="outline"
+              variant="default"
               size="sm"
               onClick={handleToday}
               disabled={isLoading}

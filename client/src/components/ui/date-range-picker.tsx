@@ -125,10 +125,10 @@ const DateRangePicker = React.forwardRef<
 
   const triggerButton = (
     <Button
-      variant="outline"
+      variant="default"
       className={cn(
         "w-full justify-start text-left font-normal",
-        (!value?.startDate && !value?.endDate) && "text-muted-foreground"
+        (!value?.startDate && !value?.endDate) && "text-primary-foreground/70"
       )}
       disabled={disabled}
     >
