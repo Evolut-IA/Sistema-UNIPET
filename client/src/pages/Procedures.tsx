@@ -420,34 +420,24 @@ export default function Procedures() {
                   {selectedPlans.length > 0 && (
                     <div className="space-y-3">
                       {selectedPlans.map((selectedPlan, index) => (
-                        <div key={index} className="flex gap-3 p-3 border rounded-lg">
+                        <div key={index} className="flex items-center gap-3 p-3 border rounded-lg">
                           <div className="flex-1">
                             <label className="text-sm font-medium">Plano</label>
-                            <div className="flex items-center gap-2">
-                              <Select
-                                value={selectedPlan.planId}
-                                onValueChange={(value) => updatePlanId(index, value)}
-                              >
-                                <SelectTrigger className={planErrors[index] && !selectedPlan.planId ? 'border-red-500' : ''}>
-                                  <SelectValue placeholder="Selecione um plano" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {getAvailablePlans(index).map((plan: any) => (
-                                    <SelectItem key={plan.id} value={plan.id}>
-                                      {plan.name}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              <Button
-                                type="button"
-                                size="sm"
-                                onClick={() => removePlan(index)}
-                                className="btn-primary"
-                              >
-                                <X className="h-4 w-4" />
-                              </Button>
-                            </div>
+                            <Select
+                              value={selectedPlan.planId}
+                              onValueChange={(value) => updatePlanId(index, value)}
+                            >
+                              <SelectTrigger className={planErrors[index] && !selectedPlan.planId ? 'border-red-500' : ''}>
+                                <SelectValue placeholder="Selecione um plano" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {getAvailablePlans(index).map((plan: any) => (
+                                  <SelectItem key={plan.id} value={plan.id}>
+                                    {plan.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
                             {planErrors[index] && !selectedPlan.planId && (
                               <p className="text-xs text-red-500 mt-1">{planErrors[index]}</p>
                             )}
@@ -467,6 +457,15 @@ export default function Procedures() {
                               <p className="text-xs text-red-500 mt-1">{planErrors[index]}</p>
                             )}
                           </div>
+                          
+                          <Button
+                            type="button"
+                            size="sm"
+                            onClick={() => removePlan(index)}
+                            className="btn-primary"
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
                         </div>
                       ))}
                     </div>
