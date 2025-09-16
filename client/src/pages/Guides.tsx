@@ -370,7 +370,7 @@ export default function Guides() {
                     </div>
                     
                     {/* Mobile: Botões */}
-                    <div className="flex lg:hidden items-center justify-end w-full">
+                    <div className="flex lg:hidden items-center justify-start">
                       <div className="flex items-center space-x-1">
                         <Button
                           variant="default"
