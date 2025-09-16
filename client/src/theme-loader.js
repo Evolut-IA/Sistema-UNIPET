@@ -56,7 +56,7 @@
     root.style.setProperty('--background', themeSettings.backgroundColor || DEFAULT_THEME.backgroundColor);
     root.style.setProperty('--foreground', themeSettings.textColor || DEFAULT_THEME.textColor);
     root.style.setProperty('--muted', themeSettings.mutedBackgroundColor || DEFAULT_THEME.mutedBackgroundColor);
-    root.style.setProperty('--muted-foreground', '#6b7280'); // Fixed value for secondary texts
+    root.style.setProperty('--muted-foreground', themeSettings.mutedTextColor || DEFAULT_THEME.mutedTextColor);
     root.style.setProperty('--placeholder-foreground', themeSettings.mutedTextColor || DEFAULT_THEME.mutedTextColor);
     
     // Typography
