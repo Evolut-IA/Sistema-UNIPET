@@ -247,7 +247,7 @@ export default function ContactSubmissions() {
       <Card>
         <CardContent className="p-3 sm:p-4 lg:p-6">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4" style={{color: 'var(--input-foreground)'}} />
             <Input
               placeholder="Buscar por nome, email, telefone ou pet..."
               value={searchQuery}
