@@ -139,9 +139,9 @@ export default function Plans() {
 
   const getPlanTypeColor = (type: string) => {
     switch (type) {
-      case "with_waiting_period": return "bg-muted text-muted-foreground";
-      case "without_waiting_period": return "bg-muted text-muted-foreground";
-      default: return "bg-muted text-muted-foreground";
+      case "with_waiting_period": return "border border-border rounded-lg bg-background text-foreground";
+      case "without_waiting_period": return "border border-border rounded-lg bg-background text-foreground";
+      default: return "border border-border rounded-lg bg-background text-foreground";
     }
   };
 
