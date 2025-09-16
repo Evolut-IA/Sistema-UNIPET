@@ -312,26 +312,27 @@ export default function Clients() {
                     </div>
                     
                     {/* Botões - Mobile: Scroll horizontal; Desktop: Em linha */}
-                    <div className="flex items-center space-x-1 w-full sm:w-auto overflow-x-auto pb-2 sm:pb-0 sm:overflow-visible scrollbar-hide">
-                      <Button
-                        variant="default"
-                        size="sm"
-                        onClick={() => handleViewDetails(client)}
-                        data-testid={`button-view-${client.id}`}
-                        className="text-xs"
-                      >
+                    <div className="flex items-center space-x-1 w-full sm:w-auto overflow-x-auto pb-2 pe-4 ps-1 sm:pb-0 sm:pe-0 sm:ps-0 sm:overflow-visible scrollbar-hide">
+                      <div className="inline-flex whitespace-nowrap gap-x-1">
+                        <Button
+                          variant="default"
+                          size="sm"
+                          onClick={() => handleViewDetails(client)}
+                          data-testid={`button-view-${client.id}`}
+                          className="text-xs shrink-0"
+                        >
                         <Eye className="h-3 w-3" />
                       </Button>
-                      <Button
-                        variant="default"
-                        size="sm"
-                        onClick={() => {
-                          setSelectedClient(client);
-                          handleCopyToClipboard();
-                        }}
-                        data-testid={`button-copy-${client.id}`}
-                        className="text-xs"
-                      >
+                        <Button
+                          variant="default"
+                          size="sm"
+                          onClick={() => {
+                            setSelectedClient(client);
+                            handleCopyToClipboard();
+                          }}
+                          data-testid={`button-copy-${client.id}`}
+                          className="text-xs shrink-0"
+                        >
                         <Copy className="h-3 w-3" />
                       </Button>
                       <Button
@@ -358,10 +359,11 @@ export default function Clients() {
                         onClick={() => handleDelete(client.id, client.fullName)}
                         disabled={deleteClientMutation.isPending}
                         data-testid={`button-delete-${client.id}`}
-                        className="text-xs"
+                        className="text-xs shrink-0"
                       >
                         <Trash2 className="h-3 w-3" />
                       </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
