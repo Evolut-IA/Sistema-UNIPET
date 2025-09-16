@@ -357,7 +357,7 @@ export default function ContactSubmissions() {
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle className="text-foreground">Detalhes do Formulário</DialogTitle>
+            <DialogTitle className="text-primary">Detalhes do Formulário</DialogTitle>
           </DialogHeader>
           {selectedSubmission && (
             <div className="space-y-4">
@@ -406,7 +406,7 @@ export default function ContactSubmissions() {
               
               {selectedSubmission.message && (
                 <div>
-                  <label className="text-sm font-medium text-foreground">Mensagem</label>
+                  <label className="text-sm font-medium text-primary">Mensagem</label>
                   <div className="mt-1 p-3 bg-muted/10 rounded-lg">
                     <p className="text-muted-foreground whitespace-pre-wrap">{selectedSubmission.message}</p>
                   </div>
