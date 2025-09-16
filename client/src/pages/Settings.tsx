@@ -13,7 +13,7 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { insertSiteSettingsSchema } from "@shared/schema";
+import { insertSiteSettingsSchema, insertRulesSettingsSchema } from "@shared/schema";
 import { Settings as SettingsIcon, Globe, Palette, Save, Loader2, FileText } from "lucide-react";
 import ThemeEditor from "@/components/ThemeEditor";
 import { ImageUpload } from "@/components/ui/image-upload";
@@ -64,8 +64,9 @@ export default function Settings() {
   });
 
   const rulesForm = useForm({
+    resolver: zodResolver(insertRulesSettingsSchema),
     defaultValues: {
-      fixedPercentage: "",
+      fixedPercentage: 0,
     },
   });
 
@@ -142,7 +143,7 @@ export default function Settings() {
   useEffect(() => {
     if (rulesSettings && typeof rulesSettings === 'object' && !rulesLoading) {
       const mergedRulesSettings = {
-        fixedPercentage: (rulesSettings as any).fixedPercentage || "",
+        fixedPercentage: Number((rulesSettings as any).fixedPercentage ?? 0).toString(),
       };
       
       rulesForm.reset(mergedRulesSettings);
@@ -565,30 +566,72 @@ export default function Settings() {
 
         {/* Rules Settings */}
         <TabsContent value="rules" className="space-y-6" data-testid="tab-content-rules">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-foreground">Planos & Procedimentos</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <FormItem>
-                  <FormLabel>Porcentagem Fixa para Cálculo Automático</FormLabel>
-                  <FormControl>
-                    <Input 
-                      type="number" 
-                      placeholder="Ex: 50" 
-                      min="0" 
-                      max="100"
-                      data-testid="input-percentage-fixed"
-                    />
-                  </FormControl>
-                  <p className="text-sm text-muted-foreground">
-                    Porcentagem que será aplicada automaticamente no campo "Pagar (R$)" quando inserir um valor em "Receber (R$)"
-                  </p>
-                </FormItem>
-              </div>
-            </CardContent>
-          </Card>
+          {rulesLoading ? (
+            <div className="space-y-4">
+              <Card className="animate-pulse">
+                <CardContent className="p-6">
+                  <div className="h-4 bg-muted rounded w-1/4 mb-4"></div>
+                  <div className="space-y-3">
+                    <div className="h-10 bg-muted rounded"></div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          ) : (
+            <Form {...rulesForm}>
+              <form onSubmit={rulesForm.handleSubmit(onSubmitRules)} className="space-y-4 sm:space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-foreground">Planos & Procedimentos</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <FormField
+                        control={rulesForm.control}
+                        name="fixedPercentage"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Porcentagem Fixa para Cálculo Automático</FormLabel>
+                            <FormControl>
+                              <Input 
+                                {...field}
+                                type="number" 
+                                placeholder="Ex: 50" 
+                                min="0" 
+                                max="100"
+                                value={field.value || ""}
+                                onChange={(e) => {
+                                  const value = e.target.value === "" ? "" : Number(e.target.value);
+                                  field.onChange(value);
+                                }}
+                                data-testid="input-percentage-fixed"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                            <p className="text-sm text-muted-foreground">
+                              Porcentagem que será aplicada automaticamente no campo "Pagar (R$)" quando inserir um valor em "Receber (R$)"
+                            </p>
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <div className="flex justify-end">
+                  <Button
+                    type="submit"
+                    className="btn-primary"
+                    disabled={saveRulesMutation.isPending}
+                    data-testid="button-save-rules"
+                  >
+                    <Save className="h-4 w-4 mr-2" />
+                    {saveRulesMutation.isPending ? "Salvando..." : "Salvar Regras"}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          )}
         </TabsContent>
       </Tabs>
     </div>

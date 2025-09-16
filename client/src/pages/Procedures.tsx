@@ -48,6 +48,11 @@ export default function Procedures() {
     queryKey: ["/api/plans/active"],
   });
 
+  // Buscar configurações de regras para cálculo automático de porcentagem
+  const { data: rulesSettings } = useQuery({
+    queryKey: ["/api/settings/rules"],
+  });
+
   // Buscar planos do procedimento quando estiver editando
   const { data: existingProcedurePlans } = useQuery({
     queryKey: ["/api/procedures", editingItem?.id, "plans"],
@@ -156,6 +161,12 @@ export default function Procedures() {
       // Handle other fields based on their type
       if (field === 'receber' || field === 'pagar' || field === 'coparticipacao') {
         (updated[index] as any)[field] = value;
+        
+        // Cálculo automático do campo 'pagar' quando 'receber' for alterado
+        if (field === 'receber' && value && value.trim() !== '') {
+          const calculatedPayValue = calculatePayValue(value);
+          updated[index].pagar = calculatedPayValue;
+        }
       }
     }
     
@@ -210,6 +221,32 @@ export default function Procedures() {
     
     const numValue = parseFloat(cleanPrice);
     return isNaN(numValue) ? 0 : numValue;
+  };
+
+  // Função para converter número para formato brasileiro
+  const convertNumberToPrice = (num: number): string => {
+    return num.toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  };
+
+  // Função para calcular valor a pagar baseado na porcentagem das regras
+  const calculatePayValue = (receberValue: string): string => {
+    if (!rulesSettings || typeof rulesSettings !== 'object' || !receberValue || receberValue.trim() === '') {
+      return '0,00';
+    }
+    
+    const settings = rulesSettings as any;
+    if (!settings.fixedPercentage || settings.fixedPercentage <= 0) {
+      return '0,00';
+    }
+    
+    const receberNumber = convertPriceToNumber(receberValue);
+    const percentage = settings.fixedPercentage / 100;
+    const payValue = receberNumber * percentage;
+    
+    return convertNumberToPrice(payValue);
   };
 
   // Função para filtrar planos já selecionados
