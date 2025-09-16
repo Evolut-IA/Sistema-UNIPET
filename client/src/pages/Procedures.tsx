@@ -9,7 +9,7 @@ import { InputMasked } from "@/components/ui/input-masked";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -474,11 +474,17 @@ export default function Procedures() {
           resetForm();
         }
       }}>
-        <DialogContent className="overflow-y-auto" maxHeightMobile="max-h-[90vh]">
+        <DialogContent className="overflow-y-auto" maxHeightMobile="max-h-[80vh]">
           <DialogHeader>
             <DialogTitle className="text-foreground">
               {editingItem ? "Editar Procedimento" : "Novo Procedimento"}
             </DialogTitle>
+            <DialogDescription>
+              {editingItem 
+                ? "Atualize as informações do procedimento e configure os planos associados." 
+                : "Crie um novo procedimento médico e configure os planos que o cobrem."
+              }
+            </DialogDescription>
           </DialogHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -739,9 +745,12 @@ export default function Procedures() {
 
       {/* View Dialog */}
       <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
-        <DialogContent className="">
+        <DialogContent className="overflow-y-auto" maxHeightMobile="max-h-[80vh]">
           <DialogHeader>
             <DialogTitle className="text-foreground">Visualizar Procedimento</DialogTitle>
+            <DialogDescription>
+              Visualize todas as informações do procedimento e os planos que o cobrem.
+            </DialogDescription>
           </DialogHeader>
           
           {viewingItem && (

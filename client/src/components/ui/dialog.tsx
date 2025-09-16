@@ -78,8 +78,8 @@ const DialogContent = React.forwardRef<
           "w-[calc(100vw-2rem)] max-w-none",
           // Maintain default center positioning and add margins
           "mx-4",
-          // Dynamic max height based on prop or default
-          maxHeightMobile || "max-h-[calc(100vh-4rem)]",
+          // Dynamic max height based on prop or default - more conservative
+          maxHeightMobile || "max-h-[calc(100vh-6rem)]",
           // Mobile padding
           "p-4",
           // Rounded corners for mobile
@@ -91,15 +91,16 @@ const DialogContent = React.forwardRef<
         ...baseClasses,
         // Tablet sizing
         "w-[calc(100vw-4rem)] max-w-2xl mx-8 my-8",
-        "max-h-[calc(100vh-4rem)]",
+        "max-h-[calc(100vh-6rem)]",
         "p-6",
         "rounded-lg"
       ]
     } else {
       return [
         ...baseClasses,
-        // Desktop sizing - increased width for better readability
+        // Desktop sizing - increased width for better readability with proper height constraints
         "max-w-2xl w-full",
+        "max-h-[calc(100vh-8rem)]", // Conservative height to ensure dialogs fit within viewport
         "p-6",
         "rounded-lg"
       ]
