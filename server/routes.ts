@@ -779,10 +779,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/settings/theme", async (req, res) => {
     try {
+      console.log("Theme settings request body:", JSON.stringify(req.body, null, 2));
       const settingsData = insertThemeSettingsSchema.parse(req.body);
       const settings = await storage.updateThemeSettings(settingsData);
       res.json(settings);
     } catch (error) {
+      console.error("Theme validation error:", error);
       res.status(400).json({ message: "Invalid theme settings data" });
     }
   });
