@@ -79,30 +79,37 @@ export default function Procedures() {
   // Carregar planos existentes quando estiver editando (apenas uma vez quando o modal abre)
   useEffect(() => {
     if (existingProcedurePlans && Array.isArray(existingProcedurePlans) && editingItem?.id) {
-      const planData = existingProcedurePlans.map((item: any) => ({
-        planId: item.planId,
-        receber: (item.price / 100).toLocaleString('pt-BR', {
+      const planData = existingProcedurePlans.map((item: any) => {
+        const receberValue = (item.price / 100).toLocaleString('pt-BR', {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2
-        }), // Converter de centavos para reais com formato PT-BR
-        pagar: item.pagar || "0,00",
-        coparticipacao: (item.coparticipacao ? (item.coparticipacao / 100).toLocaleString('pt-BR', {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        }) : "0,00"),
-        carencia: item.carencia || "",
-        limitesAnuais: item.limitesAnuais || "",
-        enableCarencia: Boolean(item.carencia && item.carencia.trim() !== ""),
-        enableLimitesAnuais: Boolean(item.limitesAnuais && item.limitesAnuais.trim() !== "" && item.limitesAnuais !== "ilimitado"),
-        enableCoparticipacao: Boolean(item.coparticipacao && item.coparticipacao > 0)
-      }));
+        }); // Converter de centavos para reais com formato PT-BR
+        
+        // Calcular automaticamente o campo "pagar" baseado na porcentagem configurada
+        const pagarValue = calculatePayValue(receberValue);
+        
+        return {
+          planId: item.planId,
+          receber: receberValue,
+          pagar: pagarValue,
+          coparticipacao: (item.coparticipacao ? (item.coparticipacao / 100).toLocaleString('pt-BR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          }) : "0,00"),
+          carencia: item.carencia || "",
+          limitesAnuais: item.limitesAnuais || "",
+          enableCarencia: Boolean(item.carencia && item.carencia.trim() !== ""),
+          enableLimitesAnuais: Boolean(item.limitesAnuais && item.limitesAnuais.trim() !== "" && item.limitesAnuais !== "ilimitado"),
+          enableCoparticipacao: Boolean(item.coparticipacao && item.coparticipacao > 0)
+        };
+      });
       setSelectedPlans(planData);
     }
     // Limpar planos quando não estiver editando (criando novo)
     else if (!editingItem?.id) {
       setSelectedPlans([]);
     }
-  }, [editingItem?.id]); // Dependência apenas no ID do item sendo editado
+  }, [existingProcedurePlans, editingItem?.id]); // Adicionar existingProcedurePlans como dependência
 
   // Funções para gerenciar planos selecionados
   const addPlan = () => {
