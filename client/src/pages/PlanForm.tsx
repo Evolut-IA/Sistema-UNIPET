@@ -157,7 +157,7 @@ export default function PlanForm() {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center space-x-4">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
         <Button
           variant="default"
           onClick={() => setLocation("/planos")}

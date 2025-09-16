@@ -141,12 +141,11 @@ export default function PetForm() {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
         <Button
           variant="default"
           onClick={() => setLocation("/clientes")}
           data-testid="button-back-to-clients"
-          className="hidden sm:flex"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
           Voltar
@@ -159,18 +158,6 @@ export default function PetForm() {
             {client && `Cliente: ${client.fullName}`}
           </p>
         </div>
-      </div>
-
-      {/* Mobile Back Button */}
-      <div className="sm:hidden">
-        <Button
-          variant="default"
-          onClick={() => setLocation("/clientes")}
-          data-testid="button-back-to-clients-mobile"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Voltar
-        </Button>
       </div>
 
       <Form {...form}>
