@@ -141,24 +141,25 @@ export default function PetForm() {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-        <Button
-          variant="default"
-          onClick={() => setLocation("/clientes")}
-          data-testid="button-back-to-clients"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Voltar
-        </Button>
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">
-            {isEdit ? "Editar Pet" : "Novo Pet"}
-          </h1>
-          <p className="text-muted-foreground">
-            {client && `Cliente: ${client.fullName}`}
-          </p>
-        </div>
+      <div>
+        <h1 className="text-3xl font-bold text-foreground">
+          {isEdit ? "Editar Pet" : "Novo Pet"}
+        </h1>
+        <p className="text-muted-foreground">
+          {client && `Cliente: ${client.fullName}`}
+        </p>
       </div>
+
+      {/* Back Button */}
+      <Button
+        variant="default"
+        onClick={() => setLocation("/clientes")}
+        data-testid="button-back-to-clients"
+        className="w-full sm:w-auto"
+      >
+        <ArrowLeft className="h-4 w-4 mr-2" />
+        Voltar
+      </Button>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

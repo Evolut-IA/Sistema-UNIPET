@@ -191,24 +191,25 @@ export default function ClientForm() {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-        <Button
-          variant="default"
-          onClick={() => setLocation("/clientes")}
-          data-testid="button-back-to-clients"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Voltar
-        </Button>
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">
-            {isEdit ? "Editar Cliente" : "Novo Cliente"}
-          </h1>
-          <p className="text-muted-foreground">
-            {isEdit ? "Atualize as informações do cliente" : "Cadastre um novo cliente"}
-          </p>
-        </div>
+      <div>
+        <h1 className="text-3xl font-bold text-foreground">
+          {isEdit ? "Editar Cliente" : "Novo Cliente"}
+        </h1>
+        <p className="text-muted-foreground">
+          {isEdit ? "Atualize as informações do cliente" : "Cadastre um novo cliente"}
+        </p>
       </div>
+
+      {/* Back Button */}
+      <Button
+        variant="default"
+        onClick={() => setLocation("/clientes")}
+        data-testid="button-back-to-clients"
+        className="w-full sm:w-auto"
+      >
+        <ArrowLeft className="h-4 w-4 mr-2" />
+        Voltar
+      </Button>
 
       {/* Form */}
       <Card>

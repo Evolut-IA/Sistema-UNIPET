@@ -164,24 +164,25 @@ export default function NetworkForm() {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-        <Button
-          variant="default"
-          onClick={() => setLocation("/rede")}
-          data-testid="button-back-to-network"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Voltar
-        </Button>
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">
-            {isEdit ? "Editar Unidade" : "Nova Unidade"}
-          </h1>
-          <p className="text-muted-foreground">
-            {isEdit ? "Atualize as informações da unidade" : "Cadastre uma nova unidade da rede"}
-          </p>
-        </div>
+      <div>
+        <h1 className="text-3xl font-bold text-foreground">
+          {isEdit ? "Editar Unidade" : "Nova Unidade"}
+        </h1>
+        <p className="text-muted-foreground">
+          {isEdit ? "Atualize as informações da unidade" : "Cadastre uma nova unidade da rede"}
+        </p>
       </div>
+
+      {/* Back Button */}
+      <Button
+        variant="default"
+        onClick={() => setLocation("/rede")}
+        data-testid="button-back-to-network"
+        className="w-full sm:w-auto"
+      >
+        <ArrowLeft className="h-4 w-4 mr-2" />
+        Voltar
+      </Button>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

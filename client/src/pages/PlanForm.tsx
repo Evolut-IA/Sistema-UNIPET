@@ -157,24 +157,25 @@ export default function PlanForm() {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-        <Button
-          variant="default"
-          onClick={() => setLocation("/planos")}
-          data-testid="button-back-to-plans"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Voltar
-        </Button>
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">
-            {isEdit ? "Editar Plano" : "Novo Plano"}
-          </h1>
-          <p className="text-muted-foreground">
-            {isEdit ? "Atualize as informações do plano" : "Crie um novo plano de saúde"}
-          </p>
-        </div>
+      <div>
+        <h1 className="text-3xl font-bold text-foreground">
+          {isEdit ? "Editar Plano" : "Novo Plano"}
+        </h1>
+        <p className="text-muted-foreground">
+          {isEdit ? "Atualize as informações do plano" : "Crie um novo plano de saúde"}
+        </p>
       </div>
+
+      {/* Back Button */}
+      <Button
+        variant="default"
+        onClick={() => setLocation("/planos")}
+        data-testid="button-back-to-plans"
+        className="w-full sm:w-auto"
+      >
+        <ArrowLeft className="h-4 w-4 mr-2" />
+        Voltar
+      </Button>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

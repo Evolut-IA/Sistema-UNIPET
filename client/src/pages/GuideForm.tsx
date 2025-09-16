@@ -147,31 +147,32 @@ export default function GuideForm() {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-        <Button
-          variant="default"
-          onClick={() => setLocation("/guias")}
-          data-testid="button-back-to-guides"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Voltar
-        </Button>
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">
-            {isEdit ? "Editar Guia" : "Nova Guia"}
-          </h1>
-          <p className="text-muted-foreground">
-            {isEdit ? "Atualize as informações da guia" : "Crie uma nova guia de atendimento"}
-          </p>
-          {(client || pet) && (
-            <div className="mt-2 text-sm text-primary">
-              {client && <span>Cliente: {client.fullName}</span>}
-              {client && pet && <span> | </span>}
-              {pet && <span>Pet: {pet.name} ({pet.species})</span>}
-            </div>
-          )}
-        </div>
+      <div>
+        <h1 className="text-3xl font-bold text-foreground">
+          {isEdit ? "Editar Guia" : "Nova Guia"}
+        </h1>
+        <p className="text-muted-foreground">
+          {isEdit ? "Atualize as informações da guia" : "Crie uma nova guia de atendimento"}
+        </p>
+        {(client || pet) && (
+          <div className="mt-2 text-sm text-primary">
+            {client && <span>Cliente: {client.fullName}</span>}
+            {client && pet && <span> | </span>}
+            {pet && <span>Pet: {pet.name} ({pet.species})</span>}
+          </div>
+        )}
       </div>
+
+      {/* Back Button */}
+      <Button
+        variant="default"
+        onClick={() => setLocation("/guias")}
+        data-testid="button-back-to-guides"
+        className="w-full sm:w-auto"
+      >
+        <ArrowLeft className="h-4 w-4 mr-2" />
+        Voltar
+      </Button>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
