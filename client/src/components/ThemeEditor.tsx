@@ -155,6 +155,30 @@ const ColorInput = ({ value, onChange, title, description, testId }: {
   );
 };
 
+// Color groups mapping - when a main color changes, update all related fields
+const COLOR_GROUPS = {
+  primaryColor: {
+    color: '#277677',
+    fields: ['primaryBackground', 'secondaryBackground', 'accentText', 'destructiveBackground', 'inputBorder', 'focusBorder', 'chart1Color', 'chart2Color', 'chart3Color']
+  },
+  backgroundColor: {
+    color: '#e0e0e0', 
+    fields: ['backgroundColor', 'mutedBackgroundColor', 'cardBackground', 'popoverBackground']
+  },
+  textColor: {
+    color: '#1a1a1a',
+    fields: ['textColor', 'mutedTextColor', 'cardText', 'popoverText']
+  },
+  buttonTextColor: {
+    color: '#FAF9F7',
+    fields: ['primaryText', 'secondaryText', 'destructiveText']
+  },
+  accentBackground: {
+    color: '#ffffff',
+    fields: ['accentBackground']
+  }
+};
+
 export default function ThemeEditor() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -167,6 +191,14 @@ export default function ThemeEditor() {
     resolver: zodResolver(insertThemeSettingsSchema),
     defaultValues: DEFAULT_THEME,
   });
+
+  // Function to update all related fields when a main color changes
+  const updateColorGroup = (groupKey: keyof typeof COLOR_GROUPS, newColor: string) => {
+    const group = COLOR_GROUPS[groupKey];
+    group.fields.forEach(field => {
+      form.setValue(field as any, newColor);
+    });
+  };
 
   const saveThemeMutation = useMutation({
     mutationFn: async (data: any) => {
@@ -251,384 +283,84 @@ export default function ThemeEditor() {
                 </AccordionTrigger>
                 <AccordionContent className="space-y-8">
                   
-                  {/* Cores dos Botões */}
+                  {/* Cores Principais do Sistema */}
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">
-                      Cores dos Botões
+                      Cores Principais do Sistema
                     </h3>
+                    <div className="text-sm text-muted-foreground mb-4">
+                      Estas 5 cores controlam toda a aparência do sistema. Ao alterar uma cor principal, todos os elementos relacionados são atualizados automaticamente.
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <FormField
-                        control={form.control}
-                        name="primaryBackground"
-                        render={({ field }) => (
-                          <FormItem>
-                            <ColorInput
-                              value={field.value || DEFAULT_THEME.primaryBackground}
-                              onChange={field.onChange}
-                              title="Fundo do Botão"
-                              description="Cor de fundo dos botões principais"
-                              testId="color-button-bg"
-                            />
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
                       
-                      <FormField
-                        control={form.control}
-                        name="primaryText"
-                        render={({ field }) => (
-                          <FormItem>
-                            <ColorInput
-                              value={field.value || DEFAULT_THEME.primaryText}
-                              onChange={field.onChange}
-                              title="Texto do Botão"
-                              description="Cor do texto dentro dos botões"
-                              testId="color-button-text"
-                            />
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                      {/* Cor Principal */}
+                      <div>
+                        <ColorInput
+                          value={watchedValues.primaryBackground || COLOR_GROUPS.primaryColor.color}
+                          onChange={(newColor) => updateColorGroup('primaryColor', newColor)}
+                          title="Cor Principal"
+                          description="Botões, bordas, gráficos e elementos interativos"
+                          testId="color-primary"
+                        />
+                      </div>
                       
-                      <FormField
-                        control={form.control}
-                        name="accentBackground"
-                        render={({ field }) => (
-                          <FormItem>
-                            <ColorInput
-                              value={field.value || DEFAULT_THEME.accentBackground}
-                              onChange={field.onChange}
-                              title="Fundo do botão em destaque"
-                              description="Cor de fundo dos botões em destaque"
-                              testId="color-button-highlight-bg"
-                            />
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                      {/* Cor de Fundo */}
+                      <div>
+                        <ColorInput
+                          value={watchedValues.backgroundColor || COLOR_GROUPS.backgroundColor.color}
+                          onChange={(newColor) => updateColorGroup('backgroundColor', newColor)}
+                          title="Cor de Fundo"
+                          description="Fundos de página, cards e containers"
+                          testId="color-background"
+                        />
+                      </div>
                       
-                      <FormField
-                        control={form.control}
-                        name="accentText"
-                        render={({ field }) => (
-                          <FormItem>
-                            <ColorInput
-                              value={field.value || DEFAULT_THEME.accentText}
-                              onChange={field.onChange}
-                              title="Texto do Botão em destaque"
-                              description="Cor do texto dos botões em destaque"
-                              testId="color-button-highlight-text"
-                            />
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                      {/* Cor de Texto */}
+                      <div>
+                        <ColorInput
+                          value={watchedValues.textColor || COLOR_GROUPS.textColor.color}
+                          onChange={(newColor) => updateColorGroup('textColor', newColor)}
+                          title="Cor de Texto"
+                          description="Textos principais, placeholders e secundários"
+                          testId="color-text"
+                        />
+                      </div>
                       
-                      <FormField
-                        control={form.control}
-                        name="secondaryBackground"
-                        render={({ field }) => (
-                          <FormItem>
-                            <ColorInput
-                              value={field.value || DEFAULT_THEME.secondaryBackground}
-                              onChange={field.onChange}
-                              title="Fundo do Botão Secundário"
-                              description="Cor de fundo dos botões secundários"
-                              testId="color-secondary-button-bg"
-                            />
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                      {/* Cor de Texto em Botões */}
+                      <div>
+                        <ColorInput
+                          value={watchedValues.primaryText || COLOR_GROUPS.buttonTextColor.color}
+                          onChange={(newColor) => updateColorGroup('buttonTextColor', newColor)}
+                          title="Cor de Texto em Botões"
+                          description="Texto dentro de botões principais e secundários"
+                          testId="color-button-text"
+                        />
+                      </div>
                       
-                      <FormField
-                        control={form.control}
-                        name="secondaryText"
-                        render={({ field }) => (
-                          <FormItem>
-                            <ColorInput
-                              value={field.value || DEFAULT_THEME.secondaryText}
-                              onChange={field.onChange}
-                              title="Texto do Botão Secundário"
-                              description="Cor do texto dos botões secundários"
-                              testId="color-secondary-button-text"
-                            />
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="destructiveBackground"
-                        render={({ field }) => (
-                          <FormItem>
-                            <ColorInput
-                              value={field.value || DEFAULT_THEME.destructiveBackground}
-                              onChange={field.onChange}
-                              title="Fundo do Botão Destrutivo"
-                              description="Cor de fundo dos botões destrutivos"
-                              testId="color-destructive-button-bg"
-                            />
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="destructiveText"
-                        render={({ field }) => (
-                          <FormItem>
-                            <ColorInput
-                              value={field.value || DEFAULT_THEME.destructiveText}
-                              onChange={field.onChange}
-                              title="Texto do Botão Destrutivo"
-                              description="Cor do texto dos botões destrutivos"
-                              testId="color-destructive-button-text"
-                            />
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                      {/* Cor de Destaque */}
+                      <div>
+                        <ColorInput
+                          value={watchedValues.accentBackground || COLOR_GROUPS.accentBackground.color}
+                          onChange={(newColor) => updateColorGroup('accentBackground', newColor)}
+                          title="Cor de Destaque"
+                          description="Fundos de botões em destaque"
+                          testId="color-accent"
+                        />
+                      </div>
                     </div>
                   </div>
 
-                  {/* Fundo e texto principal */}
+                  {/* Cores Específicas */}
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">
-                      Fundo e texto principal
+                      Cores Específicas
                     </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <FormField
-                        control={form.control}
-                        name="backgroundColor"
-                        render={({ field }) => (
-                          <FormItem>
-                            <ColorInput
-                              value={field.value || DEFAULT_THEME.backgroundColor}
-                              onChange={field.onChange}
-                              title="Fundo da Página"
-                              description="Cor de fundo da página principal"
-                              testId="color-page-bg"
-                            />
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="textColor"
-                        render={({ field }) => (
-                          <FormItem>
-                            <ColorInput
-                              value={field.value || DEFAULT_THEME.textColor}
-                              onChange={field.onChange}
-                              title="Texto Principal"
-                              description="Cor do texto principal da página"
-                              testId="color-main-text"
-                            />
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="cardBackground"
-                        render={({ field }) => (
-                          <FormItem>
-                            <ColorInput
-                              value={field.value || DEFAULT_THEME.cardBackground}
-                              onChange={field.onChange}
-                              title="Fundo dos Cards"
-                              description="Cor de fundo dos cards e containers"
-                              testId="color-cards-bg"
-                            />
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="cardText"
-                        render={({ field }) => (
-                          <FormItem>
-                            <ColorInput
-                              value={field.value || DEFAULT_THEME.cardText}
-                              onChange={field.onChange}
-                              title="Texto Secundário"
-                              description="Cor do texto dentro dos cards"
-                              testId="color-secondary-text"
-                            />
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="popoverBackground"
-                        render={({ field }) => (
-                          <FormItem>
-                            <ColorInput
-                              value={field.value || DEFAULT_THEME.popoverBackground}
-                              onChange={field.onChange}
-                              title="Fundo das divs internas"
-                              description="Cor de fundo das divs internas"
-                              testId="color-internal-divs-bg"
-                            />
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="popoverText"
-                        render={({ field }) => (
-                          <FormItem>
-                            <ColorInput
-                              value={field.value || DEFAULT_THEME.popoverText}
-                              onChange={field.onChange}
-                              title="Texto das divs"
-                              description="Cor do texto das divs internas"
-                              testId="color-internal-divs-text"
-                            />
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                    <div className="text-sm text-muted-foreground mb-4">
+                      Cores para elementos específicos que não são compartilhadas no sistema.
                     </div>
-                  </div>
-
-                  {/* Cores dos Gráficos */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">
-                      Cores dos Gráficos
-                    </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <FormField
-                        control={form.control}
-                        name="chart1Color"
-                        render={({ field }) => (
-                          <FormItem>
-                            <ColorInput
-                              value={field.value || DEFAULT_THEME.chart1Color}
-                              onChange={field.onChange}
-                              title="Visão Geral em Gráficos"
-                              description="Cor principal dos gráficos de visão geral"
-                              testId="color-overview-charts"
-                            />
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
                       
-                      <FormField
-                        control={form.control}
-                        name="chart2Color"
-                        render={({ field }) => (
-                          <FormItem>
-                            <ColorInput
-                              value={field.value || DEFAULT_THEME.chart2Color}
-                              onChange={field.onChange}
-                              title="Distribuição de Planos"
-                              description="Cor dos gráficos de distribuição de planos"
-                              testId="color-plans-distribution"
-                            />
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="chart3Color"
-                        render={({ field }) => (
-                          <FormItem>
-                            <ColorInput
-                              value={field.value || DEFAULT_THEME.chart3Color}
-                              onChange={field.onChange}
-                              title="Icones"
-                              description="Cor dos ícones nos gráficos"
-                              testId="color-charts-icons"
-                            />
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Cores de Status */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">
-                      Cores de Status
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <FormField
-                        control={form.control}
-                        name="chart4Color"
-                        render={({ field }) => (
-                          <FormItem>
-                            <ColorInput
-                              value={field.value || DEFAULT_THEME.chart4Color}
-                              onChange={field.onChange}
-                              title="Positivo (verde)"
-                              description="Cor para status positivos e sucessos"
-                              testId="color-status-positive"
-                            />
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="warningColor"
-                        render={({ field }) => (
-                          <FormItem>
-                            <ColorInput
-                              value={field.value || DEFAULT_THEME.warningColor}
-                              onChange={field.onChange}
-                              title="Ausente (amarelo)"
-                              description="Cor para status de ausência e avisos"
-                              testId="color-status-warning"
-                            />
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="chart5Color"
-                        render={({ field }) => (
-                          <FormItem>
-                            <ColorInput
-                              value={field.value || DEFAULT_THEME.chart5Color}
-                              onChange={field.onChange}
-                              title="Negativo (vermelho)"
-                              description="Cor para status negativos e erros"
-                              testId="color-status-negative"
-                            />
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Cores de textarea */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">
-                      Cores de textarea
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {/* Fundo dos Campos de Texto */}
                       <FormField
                         control={form.control}
                         name="inputBackground"
@@ -637,77 +369,63 @@ export default function ThemeEditor() {
                             <ColorInput
                               value={field.value || DEFAULT_THEME.inputBackground}
                               onChange={field.onChange}
-                              title="Fundo"
-                              description="Cor de fundo dos campos de texto"
-                              testId="color-textarea-bg"
+                              title="Fundo dos Campos de Texto"
+                              description="Cor de fundo específica para campos de entrada"
+                              testId="color-input-bg"
                             />
                             <FormMessage />
                           </FormItem>
                         )}
                       />
                       
+                      {/* Positivo (Verde) */}
                       <FormField
                         control={form.control}
-                        name="textColor"
+                        name="chart4Color"
                         render={({ field }) => (
                           <FormItem>
                             <ColorInput
-                              value={field.value || DEFAULT_THEME.textColor}
+                              value={field.value || DEFAULT_THEME.chart4Color}
                               onChange={field.onChange}
-                              title="Texto Digitado"
-                              description="Cor do texto escrito nos campos"
-                              testId="color-textarea-text"
+                              title="Positivo (Verde)"
+                              description="Status positivos, sucessos e confirmações"
+                              testId="color-positive"
                             />
                             <FormMessage />
                           </FormItem>
                         )}
                       />
                       
+                      {/* Ausente (Amarelo) */}
                       <FormField
                         control={form.control}
-                        name="mutedTextColor"
+                        name="warningColor"
                         render={({ field }) => (
                           <FormItem>
                             <ColorInput
-                              value={field.value || DEFAULT_THEME.mutedTextColor}
+                              value={field.value || DEFAULT_THEME.warningColor}
                               onChange={field.onChange}
-                              title="Texto placeholder"
-                              description="Cor do texto de exemplo nos campos"
-                              testId="color-textarea-placeholder"
+                              title="Ausente (Amarelo)"
+                              description="Status de ausência, avisos e alertas"
+                              testId="color-warning"
                             />
                             <FormMessage />
                           </FormItem>
                         )}
                       />
                       
+                      {/* Negativo (Vermelho) */}
                       <FormField
                         control={form.control}
-                        name="inputBorder"
+                        name="chart5Color"
                         render={({ field }) => (
                           <FormItem>
                             <ColorInput
-                              value={field.value || DEFAULT_THEME.inputBorder}
+                              value={field.value || DEFAULT_THEME.chart5Color}
                               onChange={field.onChange}
-                              title="Borda dos Campos"
-                              description="Cor da borda dos campos de texto"
-                              testId="color-input-border"
-                            />
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="focusBorder"
-                        render={({ field }) => (
-                          <FormItem>
-                            <ColorInput
-                              value={field.value || DEFAULT_THEME.focusBorder}
-                              onChange={field.onChange}
-                              title="Borda ao Focar"
-                              description="Cor da borda quando o campo está focado"
-                              testId="color-focus-border"
+                              title="Negativo (Vermelho)"
+                              description="Status negativos, erros e cancelamentos"
+                              testId="color-negative"
                             />
                             <FormMessage />
                           </FormItem>
