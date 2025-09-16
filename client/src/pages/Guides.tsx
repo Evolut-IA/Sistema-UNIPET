@@ -327,11 +327,8 @@ export default function Guides() {
                       </div>
                     </div>
                     
-                    {/* Desktop: Status + Botões */}
+                    {/* Desktop: Botões */}
                     <div className="hidden lg:flex lg:items-center lg:space-x-3">
-                      <Badge className={getStatusColor(guide.status)} data-testid={`badge-status-desktop-${guide.id}`}>
-                        {getStatusLabel(guide.status)}
-                      </Badge>
                       <div className="flex items-center space-x-1">
                         <Button
                           variant="default"
@@ -372,8 +369,8 @@ export default function Guides() {
                       </div>
                     </div>
                     
-                    {/* Mobile: Botões + Status */}
-                    <div className="flex lg:hidden items-center justify-between w-full">
+                    {/* Mobile: Botões */}
+                    <div className="flex lg:hidden items-center justify-end w-full">
                       <div className="flex items-center space-x-1">
                         <Button
                           variant="default"
@@ -412,9 +409,6 @@ export default function Guides() {
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
-                      <Badge className={getStatusColor(guide.status)} data-testid={`badge-status-mobile-${guide.id}`}>
-                        {getStatusLabel(guide.status)}
-                      </Badge>
                     </div>
                   </div>
                 </div>
