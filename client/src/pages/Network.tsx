@@ -241,7 +241,7 @@ export default function Network() {
       <Card>
         <CardHeader>
           <CardTitle className="text-foreground">
-            Rede ({filteredUnits?.length || 0})
+            Unidades ({filteredUnits?.length || 0})
           </CardTitle>
         </CardHeader>
         <CardContent>
