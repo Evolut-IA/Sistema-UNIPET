@@ -70,7 +70,9 @@ const SheetContent = React.forwardRef<
           return cn(
             baseClasses,
             // Mobile: Reduce width to add margins on both sides, ensuring sheets don't touch screen edges
-            "w-[calc(100vw-2rem)]" + (side === 'right' ? ' right-4' : ' left-4'),
+            "w-[calc(100vw-2rem)]",
+            // Posicionamento correto baseado no lado
+            side === 'right' ? "right-4" : "left-4",
             // Mobile padding
             "p-4"
           )

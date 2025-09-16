@@ -131,34 +131,89 @@
 }
 
 /* REMOÇÃO TOTAL DE OUTLINE E FOCUS - PRIORIDADE MÁXIMA */
+/* EXCEÇÃO CRÍTICA: Popups e dialogs PRECISAM de box-shadow para funcionar */
 *, *::before, *::after {
   outline: none !important;
+}
+
+/* Remover box-shadow de todos EXCETO popups */
+*:not([role="dialog"]):not([data-radix-dialog-content]):not([data-radix-alert-dialog-content]):not([data-radix-sheet-content]),
+*:not([role="dialog"]):not([data-radix-dialog-content]):not([data-radix-alert-dialog-content]):not([data-radix-sheet-content])::before,
+*:not([role="dialog"]):not([data-radix-dialog-content]):not([data-radix-alert-dialog-content]):not([data-radix-sheet-content])::after {
   box-shadow: none !important;
 }
 
-*:focus, *:focus-visible, *:focus-within {
+*:focus:not([role="dialog"]):not([data-radix-dialog-content]):not([data-radix-alert-dialog-content]):not([data-radix-sheet-content]),
+*:focus-visible:not([role="dialog"]):not([data-radix-dialog-content]):not([data-radix-alert-dialog-content]):not([data-radix-sheet-content]),
+*:focus-within:not([role="dialog"]):not([data-radix-dialog-content]):not([data-radix-alert-dialog-content]):not([data-radix-sheet-content]) {
   outline: none !important;
   box-shadow: none !important;
 }
 
-*:hover {
+*:hover:not([role="dialog"]):not([data-radix-dialog-content]):not([data-radix-alert-dialog-content]):not([data-radix-sheet-content]) {
   outline: none !important;
   box-shadow: none !important;
 }
 
-*:active {
+*:active:not([role="dialog"]):not([data-radix-dialog-content]):not([data-radix-alert-dialog-content]):not([data-radix-sheet-content]) {
   outline: none !important;
   box-shadow: none !important;
 }
 
-/* Remover outline de elementos específicos */
-button, input, textarea, select, a, [role="button"], [tabindex], div, span, p, h1, h2, h3, h4, h5, h6, img, svg {
+/* Remover outline de elementos específicos MAS preservar box-shadow dos popups */
+button:not([role="dialog"]):not([data-radix-dialog-content]):not([data-radix-alert-dialog-content]):not([data-radix-sheet-content]),
+input, textarea, select, a, [role="button"], [tabindex],
+div:not([role="dialog"]):not([data-radix-dialog-content]):not([data-radix-alert-dialog-content]):not([data-radix-sheet-content]),
+span, p, h1, h2, h3, h4, h5, h6, img, svg {
   outline: none !important;
   box-shadow: none !important;
+}
+
+/* GARANTIR que popups e dialogs SEMPRE tenham box-shadow */
+[role="dialog"], [data-radix-dialog-content], [data-radix-alert-dialog-content], [data-radix-sheet-content] {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* CORREÇÃO DEFINITIVA POPUPS MOBILE - Mobile-First com breakpoint expandido */
+@media (max-width: 1023px) {
+  /* POPUPS E DIALOGS - Centralização forçada com margens iguais */
+  [role="dialog"], [data-radix-dialog-content] {
+    width: calc(100vw - 2rem) !important;
+    max-width: none !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) translateY(-50%) !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  
+  /* ALERT DIALOGS */
+  [data-radix-alert-dialog-content] {
+    width: calc(100vw - 2rem) !important;
+    max-width: none !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) translateY(-50%) !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  
+  /* SHEETS quando lado direito/esquerdo */
+  [data-radix-sheet-content][data-side="right"] {
+    width: calc(100vw - 2rem) !important;
+    right: 1rem !important;
+    left: auto !important;
+  }
+  
+  [data-radix-sheet-content][data-side="left"] {
+    width: calc(100vw - 2rem) !important;
+    left: 1rem !important;
+    right: auto !important;
+  }
 }
 
 /* Mobile-First Responsive Utilities */
-@media (max-width: 767px) {
+@media (max-width: 1023px) {
   /* Container Mobile Responsive */
   .container-mobile {
     width: 100% !important;
