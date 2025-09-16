@@ -15,8 +15,7 @@ import type {
   ThemeSettings, InsertThemeSettings,
   Guide, InsertGuide,
   Procedure, InsertProcedure,
-  ProcedurePlan, InsertProcedurePlan,
-  NetworkUnitProcedure, InsertNetworkUnitProcedure
+  ProcedurePlan, InsertProcedurePlan
 } from "@shared/schema";
 
 const databaseUrl = process.env.DATABASE_URL || "postgresql://postgres:password@localhost:5432/unipet";
@@ -222,17 +221,6 @@ export interface IStorage {
   bulkUpdateProcedurePlansForPlan(planId: string, procedurePlans: InsertProcedurePlan[]): Promise<ProcedurePlan[]>;
   bulkUpdateProcedurePlansForProcedure(procedureId: string, procedurePlans: InsertProcedurePlan[]): Promise<ProcedurePlan[]>;
 
-  // Network unit procedure methods
-  getNetworkUnitProcedure(id: string): Promise<NetworkUnitProcedure | undefined>;
-  getNetworkUnitProcedures(networkUnitId: string): Promise<NetworkUnitProcedure[]>;
-  getProcedureNetworkUnits(procedureId: string): Promise<NetworkUnitProcedure[]>;
-  createNetworkUnitProcedure(networkUnitProcedure: InsertNetworkUnitProcedure): Promise<NetworkUnitProcedure>;
-  updateNetworkUnitProcedure(id: string, updates: Partial<InsertNetworkUnitProcedure>): Promise<NetworkUnitProcedure | undefined>;
-  deleteNetworkUnitProcedure(id: string): Promise<boolean>;
-  bulkCreateNetworkUnitProcedures(networkUnitProcedures: InsertNetworkUnitProcedure[]): Promise<NetworkUnitProcedure[]>;
-  bulkUpdateNetworkUnitProceduresForUnit(networkUnitId: string, networkUnitProcedures: InsertNetworkUnitProcedure[]): Promise<NetworkUnitProcedure[]>;
-  bulkUpdateNetworkUnitProceduresForProcedure(procedureId: string, networkUnitProcedures: InsertNetworkUnitProcedure[]): Promise<NetworkUnitProcedure[]>;
-
   // Dashboard analytics
   getDashboardStats(startDate?: string, endDate?: string): Promise<{
     activeClients: number;
@@ -334,6 +322,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getClients(startDate?: string, endDate?: string): Promise<Client[]> {
+    let query = db.select().from(schema.clients);
+    
     // Build date filter conditions
     const dateConditions = [];
     if (startDate) {
@@ -347,13 +337,10 @@ export class DatabaseStorage implements IStorage {
     }
     
     if (dateConditions.length > 0) {
-      return await db.select().from(schema.clients)
-        .where(and(...dateConditions))
-        .orderBy(desc(schema.clients.createdAt));
+      query = query.where(and(...dateConditions));
     }
     
-    return await db.select().from(schema.clients)
-      .orderBy(desc(schema.clients.createdAt));
+    return await query.orderBy(desc(schema.clients.createdAt));
   }
 
   // Pet methods
@@ -420,6 +407,8 @@ export class DatabaseStorage implements IStorage {
 
   async getPlans(startDate?: string, endDate?: string): Promise<Plan[]> {
     try {
+      let query = db.select().from(schema.plans);
+      
       // Build date filter conditions
       const dateConditions = [];
       if (startDate) {
@@ -433,11 +422,10 @@ export class DatabaseStorage implements IStorage {
       }
       
       if (dateConditions.length > 0) {
-        return await db.select().from(schema.plans)
-          .where(and(...dateConditions));
+        query = query.where(and(...dateConditions));
       }
       
-      return await db.select().from(schema.plans);
+      return await query;
     } catch (error) {
       console.error("Error in getPlans():", error);
       throw error;
@@ -587,82 +575,6 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(schema.procedures).orderBy(schema.procedures.displayOrder, desc(schema.procedures.createdAt));
   }
 
-  // Network unit procedure methods
-  async getNetworkUnitProcedure(id: string): Promise<NetworkUnitProcedure | undefined> {
-    const result = await db.select().from(schema.networkUnitProcedures).where(eq(schema.networkUnitProcedures.id, id));
-    return result[0];
-  }
-
-  async getNetworkUnitProcedures(networkUnitId: string): Promise<NetworkUnitProcedure[]> {
-    return await db.select().from(schema.networkUnitProcedures)
-      .where(eq(schema.networkUnitProcedures.networkUnitId, networkUnitId))
-      .orderBy(schema.networkUnitProcedures.displayOrder, desc(schema.networkUnitProcedures.createdAt));
-  }
-
-  async getProcedureNetworkUnits(procedureId: string): Promise<NetworkUnitProcedure[]> {
-    return await db.select().from(schema.networkUnitProcedures)
-      .where(eq(schema.networkUnitProcedures.procedureId, procedureId))
-      .orderBy(schema.networkUnitProcedures.displayOrder, desc(schema.networkUnitProcedures.createdAt));
-  }
-
-  async createNetworkUnitProcedure(networkUnitProcedure: InsertNetworkUnitProcedure): Promise<NetworkUnitProcedure> {
-    const result = await db.insert(schema.networkUnitProcedures).values(networkUnitProcedure).returning();
-    return result[0];
-  }
-
-  async updateNetworkUnitProcedure(id: string, updates: Partial<InsertNetworkUnitProcedure>): Promise<NetworkUnitProcedure | undefined> {
-    const result = await db.update(schema.networkUnitProcedures)
-      .set(updates)
-      .where(eq(schema.networkUnitProcedures.id, id))
-      .returning();
-    return result[0];
-  }
-
-  async deleteNetworkUnitProcedure(id: string): Promise<boolean> {
-    const result = await db.delete(schema.networkUnitProcedures)
-      .where(eq(schema.networkUnitProcedures.id, id))
-      .returning({ id: schema.networkUnitProcedures.id });
-    return result.length > 0;
-  }
-
-  async bulkCreateNetworkUnitProcedures(networkUnitProcedures: InsertNetworkUnitProcedure[]): Promise<NetworkUnitProcedure[]> {
-    if (networkUnitProcedures.length === 0) return [];
-    const result = await db.insert(schema.networkUnitProcedures).values(networkUnitProcedures).returning();
-    return result;
-  }
-
-  async bulkUpdateNetworkUnitProceduresForUnit(
-    networkUnitId: string, 
-    networkUnitProcedures: InsertNetworkUnitProcedure[]
-  ): Promise<NetworkUnitProcedure[]> {
-    return await db.transaction(async (tx) => {
-      // Delete existing network unit procedures for this unit
-      await tx.delete(schema.networkUnitProcedures)
-        .where(eq(schema.networkUnitProcedures.networkUnitId, networkUnitId));
-      
-      // Insert new network unit procedures
-      if (networkUnitProcedures.length === 0) return [];
-      const result = await tx.insert(schema.networkUnitProcedures).values(networkUnitProcedures).returning();
-      return result;
-    });
-  }
-
-  async bulkUpdateNetworkUnitProceduresForProcedure(
-    procedureId: string, 
-    networkUnitProcedures: InsertNetworkUnitProcedure[]
-  ): Promise<NetworkUnitProcedure[]> {
-    return await db.transaction(async (tx) => {
-      // Delete existing network unit procedures for this procedure
-      await tx.delete(schema.networkUnitProcedures)
-        .where(eq(schema.networkUnitProcedures.procedureId, procedureId));
-      
-      // Insert new network unit procedures
-      if (networkUnitProcedures.length === 0) return [];
-      const result = await tx.insert(schema.networkUnitProcedures).values(networkUnitProcedures).returning();
-      return result;
-    });
-  }
-
   // Plan Procedure methods - relacionamento entre procedimentos e planos
   async getProcedurePlans(procedureId: string): Promise<ProcedurePlan[]> {
     return await db.select().from(schema.procedurePlans).where(eq(schema.procedurePlans.procedureId, procedureId));
@@ -756,6 +668,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getContactSubmissions(startDate?: string, endDate?: string): Promise<ContactSubmission[]> {
+    let query = db.select().from(schema.contactSubmissions);
+    
     // Build date filter conditions
     const dateConditions = [];
     if (startDate) {
@@ -769,13 +683,10 @@ export class DatabaseStorage implements IStorage {
     }
     
     if (dateConditions.length > 0) {
-      return await db.select().from(schema.contactSubmissions)
-        .where(and(...dateConditions))
-        .orderBy(desc(schema.contactSubmissions.createdAt));
+      query = query.where(and(...dateConditions));
     }
     
-    return await db.select().from(schema.contactSubmissions)
-      .orderBy(desc(schema.contactSubmissions.createdAt));
+    return await query.orderBy(desc(schema.contactSubmissions.createdAt));
   }
 
   async deleteContactSubmission(id: string): Promise<boolean> {
@@ -910,6 +821,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getGuides(startDate?: string, endDate?: string): Promise<Guide[]> {
+    let query = db.select().from(schema.guides);
+    
     // Build date filter conditions
     const dateConditions = [];
     if (startDate) {
@@ -923,13 +836,10 @@ export class DatabaseStorage implements IStorage {
     }
     
     if (dateConditions.length > 0) {
-      return await db.select().from(schema.guides)
-        .where(and(...dateConditions))
-        .orderBy(desc(schema.guides.createdAt));
+      query = query.where(and(...dateConditions));
     }
     
-    return await db.select().from(schema.guides)
-      .orderBy(desc(schema.guides.createdAt));
+    return await query.orderBy(desc(schema.guides.createdAt));
   }
 
   async getRecentGuides(limit: number = 10): Promise<Guide[]> {
@@ -953,7 +863,7 @@ export class DatabaseStorage implements IStorage {
         createdAt: schema.guides.createdAt,
         updatedAt: schema.guides.updatedAt,
         client: {
-          name: schema.clients.fullName,
+          name: schema.clients.name,
           email: schema.clients.email,
           phone: schema.clients.phone,
         },
@@ -975,7 +885,7 @@ export class DatabaseStorage implements IStorage {
       .update(schema.guides)
       .set({ 
         unitStatus,
-        updatedAt: new Date()
+        updatedAt: sql`CURRENT_TIMESTAMP`
       })
       .where(eq(schema.guides.id, id))
       .returning();
@@ -1006,17 +916,18 @@ export class DatabaseStorage implements IStorage {
     }
 
     // Count active clients (clients that have at least one guide in the date range)
-    const activeClientsCount = dateConditions.length > 0
-      ? await db
-          .selectDistinct({ clientId: schema.guides.clientId })
-          .from(schema.guides)
-          .where(and(...dateConditions))
-      : await db
-          .selectDistinct({ clientId: schema.guides.clientId })
-          .from(schema.guides);
+    let activeClientsQuery = db
+      .selectDistinct({ clientId: schema.guides.clientId })
+      .from(schema.guides);
+    
+    if (dateConditions.length > 0) {
+      activeClientsQuery = activeClientsQuery.where(and(...dateConditions));
+    }
+    
+    const activeClientsCount = await activeClientsQuery;
     
     // Count pets (filter by creation date if date range is specified)
-    let petsCount;
+    let petsQuery = db.select({ count: count() }).from(schema.pets);
     if (startDate || endDate) {
       const petDateConditions = [];
       if (startDate) {
@@ -1028,29 +939,25 @@ export class DatabaseStorage implements IStorage {
         petDateConditions.push(lt(schema.pets.createdAt, endDateTime));
       }
       if (petDateConditions.length > 0) {
-        petsCount = await db.select({ count: count() }).from(schema.pets)
-          .where(and(...petDateConditions));
-      } else {
-        petsCount = await db.select({ count: count() }).from(schema.pets);
+        petsQuery = petsQuery.where(and(...petDateConditions));
       }
-    } else {
-      petsCount = await db.select({ count: count() }).from(schema.pets);
     }
+    const petsCount = await petsQuery;
     
     // Count open guides (filter by date range if specified)
-    const openGuidesCount = dateConditions.length > 0
-      ? await db.select({ count: count() }).from(schema.guides)
-          .where(and(eq(schema.guides.status, 'open'), ...dateConditions))
-      : await db.select({ count: count() }).from(schema.guides)
-          .where(eq(schema.guides.status, 'open'));
+    let openGuidesQuery = db.select({ count: count() }).from(schema.guides).where(eq(schema.guides.status, 'open'));
+    if (dateConditions.length > 0) {
+      openGuidesQuery = openGuidesQuery.where(and(eq(schema.guides.status, 'open'), ...dateConditions));
+    }
+    const openGuidesCount = await openGuidesQuery;
     
     // Calculate revenue from guides in the specified date range
-    let revenueGuides;
+    let revenueQuery = db
+      .select({ value: schema.guides.value })
+      .from(schema.guides);
+    
     if (dateConditions.length > 0) {
-      revenueGuides = await db
-        .select({ value: schema.guides.value })
-        .from(schema.guides)
-        .where(and(...dateConditions));
+      revenueQuery = revenueQuery.where(and(...dateConditions));
     } else {
       // If no date filter, use current month as default
       const currentDate = new Date();
@@ -1059,14 +966,13 @@ export class DatabaseStorage implements IStorage {
       const startOfMonth = new Date(currentYear, currentMonth, 1);
       const endOfMonth = new Date(currentYear, currentMonth + 1, 1);
       
-      revenueGuides = await db
-        .select({ value: schema.guides.value })
-        .from(schema.guides)
-        .where(and(
-          gte(schema.guides.createdAt, startOfMonth),
-          lt(schema.guides.createdAt, endOfMonth)
-        ));
+      revenueQuery = revenueQuery.where(and(
+        gte(schema.guides.createdAt, startOfMonth),
+        lt(schema.guides.createdAt, endOfMonth)
+      ));
     }
+    
+    const revenueGuides = await revenueQuery;
     
     const monthlyRevenue = revenueGuides.reduce((sum, guide) => {
       const value = parseFloat(guide.value?.toString() || '0') || 0;
