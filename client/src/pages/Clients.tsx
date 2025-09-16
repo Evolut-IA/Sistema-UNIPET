@@ -391,7 +391,7 @@ export default function Clients() {
 
       {/* Details Dialog */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent className="sm:max-w-lg max-h-[80vh] flex flex-col">
+        <DialogContent className="flex flex-col" maxHeightMobile="max-h-[80vh]">
           <DialogHeader className="flex-shrink-0">
             <DialogTitle className="flex items-center space-x-2">
               <Eye className="h-5 w-5 text-primary" />

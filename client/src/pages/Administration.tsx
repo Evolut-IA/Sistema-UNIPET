@@ -312,7 +312,7 @@ export default function Administration() {
           form.reset();
         }
       }}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="overflow-y-auto" maxHeightMobile="max-h-[90vh]">
             <DialogHeader>
               <DialogTitle className="text-foreground">
                 {editingUser ? "Editar Usuário" : "Novo Usuário"}
@@ -711,7 +711,7 @@ export default function Administration() {
             setShowPasswordConfirm(false);
           }
         }}>
-          <DialogContent className="max-w-md">
+          <DialogContent className="">
             <DialogHeader>
               <DialogTitle className="text-foreground">
                 {editingNetworkUnit?.login ? "Editar" : "Definir"} Credenciais

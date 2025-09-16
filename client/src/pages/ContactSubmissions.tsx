@@ -355,7 +355,7 @@ export default function ContactSubmissions() {
 
       {/* Details Dialog */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="">
           <DialogHeader>
             <DialogTitle className="text-primary">Detalhes do Formulário</DialogTitle>
           </DialogHeader>

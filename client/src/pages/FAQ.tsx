@@ -168,7 +168,7 @@ export default function FAQ() {
           form.reset();
         }
       }}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="">
             <DialogHeader>
               <DialogTitle className="text-foreground">
                 {editingItem ? "Editar Item" : "Novo Item FAQ"}

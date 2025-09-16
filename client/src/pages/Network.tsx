@@ -364,7 +364,7 @@ export default function Network() {
 
       {/* Details Dialog */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent className="sm:max-w-2xl">
+        <DialogContent className="">
           <DialogHeader>
             <DialogTitle className="flex items-center space-x-2">
               <Building2 className="h-5 w-5 text-primary" />

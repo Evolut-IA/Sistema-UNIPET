@@ -395,7 +395,7 @@ export default function Procedures() {
           resetForm();
         }
       }}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="overflow-y-auto" maxHeightMobile="max-h-[90vh]">
           <DialogHeader>
             <DialogTitle className="text-foreground">
               {editingItem ? "Editar Procedimento" : "Novo Procedimento"}
@@ -634,7 +634,7 @@ export default function Procedures() {
 
       {/* View Dialog */}
       <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="">
           <DialogHeader>
             <DialogTitle className="text-foreground">Visualizar Procedimento</DialogTitle>
           </DialogHeader>
