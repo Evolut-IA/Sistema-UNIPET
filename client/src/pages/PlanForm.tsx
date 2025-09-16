@@ -48,6 +48,7 @@ export default function PlanForm() {
       buttonText: "Contratar Plano",
       displayOrder: 0,
       isActive: true,
+      coparticipacaoPercentual: undefined,
     },
   });
 
@@ -76,6 +77,7 @@ export default function PlanForm() {
         buttonText: (plan as any).buttonText || "Contratar Plano",
         displayOrder: (plan as any).displayOrder || 0,
         isActive: (plan as any).isActive ?? true,
+        coparticipacaoPercentual: (plan as any).coparticipacaoPercentual || undefined,
       });
     }
   }, [plan, form]);
@@ -111,6 +113,7 @@ export default function PlanForm() {
       const planData = {
         ...data,
         price: Math.round(parseFloat(data.price) * 100), // Convert to cents
+        coparticipacaoPercentual: data.coparticipacaoPercentual || null,
       };
 
       let planId;
@@ -240,6 +243,41 @@ export default function PlanForm() {
                     </FormItem>
                   )}
                 />
+
+                {/* Campo de Coparticipação - aparece apenas para planos Com Coparticipação */}
+                {form.watch("planType") === "with_waiting_period" && (
+                  <FormField
+                    control={form.control}
+                    name="coparticipacaoPercentual"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Percentual de Coparticipação (%)</FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            type="number"
+                            min="1"
+                            max="100"
+                            placeholder="Ex: 20"
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              // Aceita apenas números de 1 a 100
+                              if (value === '' || (Number(value) >= 1 && Number(value) <= 100)) {
+                                field.onChange(value === '' ? undefined : Number(value));
+                              }
+                            }}
+                            value={field.value || ''}
+                            data-testid="input-coparticipacao-percentual"
+                          />
+                        </FormControl>
+                        <p className="text-xs text-muted-foreground">
+                          Digite um valor entre 1 e 100%
+                        </p>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
 
                 <FormField
                   control={form.control}
