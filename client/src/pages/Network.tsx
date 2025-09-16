@@ -221,7 +221,7 @@ export default function Network() {
 
       {/* Search */}
       <Card>
-        <CardContent className="p-3 sm:p-4 lg:p-6">
+        <CardContent className="p-6">
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
@@ -258,8 +258,7 @@ export default function Network() {
           ))
         ) : filteredUnits?.length ? (
           filteredUnits.map((unit: any) => (
-            <Card key={unit.id} className="hover:shadow-md transition-shadow">
-              <CardContent className="p-3">
+            <div key={unit.id} className="border rounded-lg p-3 hover:bg-muted/10 transition-colors">
                 <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-3">
                   <div className="flex-1 min-w-0 flex items-center">
                     {/* Nome da Unidade */}
@@ -334,8 +333,7 @@ export default function Network() {
                     </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+            </div>
           ))
         ) : (
           <Card>
@@ -360,7 +358,7 @@ export default function Network() {
             </CardContent>
           </Card>
         )}
-          </div>
+        </div>
         </CardContent>
       </Card>
 
