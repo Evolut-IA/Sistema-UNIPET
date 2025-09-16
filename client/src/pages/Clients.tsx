@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useLocation } from "wouter";
 import type { Client } from "@shared/schema";
-import { Plus, Search, Edit, Trash2, Eye, Copy, FileText, PenTool } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Eye, Copy, FileText } from "lucide-react";
 
 // Componente do ícone de adicionar pet
 const AddPetIcon = ({ className }: { className?: string }) => (
@@ -597,7 +597,7 @@ export default function Clients() {
                               }}
                               className="text-xs"
                             >
-                              <PenTool className="h-3 w-3" />
+                              <Edit className="h-3 w-3" />
                             </Button>
                           </div>
                         </div>
