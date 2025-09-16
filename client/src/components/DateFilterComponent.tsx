@@ -201,15 +201,6 @@ const DateFilterComponent = React.memo(function DateFilterComponent({
             )}
           </div>
 
-          {/* Active Filter Display */}
-          {isFiltering && isValidRange && (
-            <div className="flex items-start sm:items-center gap-2 p-2 bg-primary/10 rounded-md">
-              <CalendarIcon className="h-3 w-3 text-primary flex-shrink-0 mt-0.5 sm:mt-0" />
-              <span className="text-xs text-primary font-medium break-words">
-                Período ativo: {formatDateRangeForDisplay(dateRange.startDate, dateRange.endDate)}
-              </span>
-            </div>
-          )}
 
           {/* Loading State */}
           {isLoading && (
