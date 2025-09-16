@@ -122,6 +122,22 @@ export const procedures = pgTable("procedures", {
   };
 });
 
+// Procedure Plans table - relacionamento entre procedimentos e planos com preços específicos
+export const procedurePlans = pgTable("plan_procedures", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  planId: varchar("plan_id").notNull().references(() => plans.id),
+  procedureId: varchar("procedure_id").notNull().references(() => procedures.id),
+  price: integer("price").default(0), // preço em centavos
+  isIncluded: boolean("is_included").default(true),
+  displayOrder: integer("display_order").default(0),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+}, (table) => {
+  return {
+    procedureIdx: index("plan_procedures_procedure_idx").on(table.procedureId),
+    planIdx: index("plan_procedures_plan_idx").on(table.planId),
+  };
+});
+
 // Contact submissions table
 export const contactSubmissions = pgTable("contact_submissions", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -245,6 +261,7 @@ export const insertNetworkUnitSchema = createInsertSchema(networkUnits).omit({ i
 });
 export const insertFaqItemSchema = createInsertSchema(faqItems).omit({ id: true, createdAt: true });
 export const insertProcedureSchema = createInsertSchema(procedures).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertProcedurePlanSchema = createInsertSchema(procedurePlans).omit({ id: true, createdAt: true, isIncluded: true, displayOrder: true });
 export const insertContactSubmissionSchema = createInsertSchema(contactSubmissions).omit({ id: true, createdAt: true });
 export const insertSiteSettingsSchema = createInsertSchema(siteSettings).omit({ id: true }).extend({
   mainImage: z.string().optional(),
@@ -268,6 +285,7 @@ export type InsertPlan = typeof plans.$inferInsert;
 export type InsertNetworkUnit = typeof networkUnits.$inferInsert;
 export type InsertFaqItem = typeof faqItems.$inferInsert;
 export type InsertProcedure = typeof procedures.$inferInsert;
+export type InsertProcedurePlan = typeof procedurePlans.$inferInsert;
 export type InsertContactSubmission = typeof contactSubmissions.$inferInsert;
 export type InsertSiteSettings = typeof siteSettings.$inferInsert;
 export type InsertThemeSettings = typeof themeSettings.$inferInsert;
@@ -280,6 +298,7 @@ export type Plan = typeof plans.$inferSelect;
 export type NetworkUnit = typeof networkUnits.$inferSelect;
 export type FaqItem = typeof faqItems.$inferSelect;
 export type Procedure = typeof procedures.$inferSelect;
+export type ProcedurePlan = typeof procedurePlans.$inferSelect;
 export type ContactSubmission = typeof contactSubmissions.$inferSelect;
 export type SiteSettings = typeof siteSettings.$inferSelect;
 export type ThemeSettings = typeof themeSettings.$inferSelect;
