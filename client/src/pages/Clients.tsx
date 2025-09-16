@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useLocation } from "wouter";
 import type { Client } from "@shared/schema";
-import { Plus, Search, Edit, Trash2, Eye, Copy } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Eye, Copy, FileText, PenTool } from "lucide-react";
 
 // Componente do ícone de adicionar pet
 const AddPetIcon = ({ className }: { className?: string }) => (
@@ -573,6 +573,36 @@ export default function Clients() {
                             </div>
                           </div>
                         )}
+                        
+                        {/* Botões de Ação do Pet */}
+                        <div className="mt-3 pt-2 border-t border-border">
+                          <div className="flex items-center space-x-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                setDetailsOpen(false);
+                                setLocation(`/guias/novo?clientId=${selectedClient.id}&petId=${pet.id}`);
+                              }}
+                              className="text-xs"
+                            >
+                              <FileText className="h-3 w-3 mr-1" />
+                              Gerar Guia
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                setDetailsOpen(false);
+                                setLocation(`/pets/${pet.id}/editar`);
+                              }}
+                              className="text-xs"
+                            >
+                              <PenTool className="h-3 w-3 mr-1" />
+                              Editar Pet
+                            </Button>
+                          </div>
+                        </div>
                       </div>
                     ))}
                   </div>
