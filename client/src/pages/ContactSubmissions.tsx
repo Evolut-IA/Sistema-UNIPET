@@ -325,7 +325,7 @@ export default function ContactSubmissions() {
                         <Copy className="h-4 w-4" />
                       </Button>
                       <Button
-                        variant="outline"
+                        variant="default"
                         size="sm"
                         onClick={() => handleDelete(submission.id, submission.name)}
                         disabled={deleteMutation.isPending}
