@@ -123,20 +123,18 @@ export default function Procedures() {
     setSelectedPlans(updated);
     
     // Validar campos obrigatórios e limpar erro se válido
-    const errors = { ...planErrors };
-    if (field === 'receber' || field === 'coparticipacao') {
-      if (value && value.trim() !== '') {
-        const numValue = convertPriceToNumber(value);
-        if (numValue < 0) {
-          errors[index] = `${field === 'receber' ? 'Valor a receber' : 'Coparticipação'} deve ser maior ou igual a zero`;
-        } else {
-          delete errors[index];
-        }
-      } else {
-        errors[index] = `${field === 'receber' ? 'Valor a receber' : 'Coparticipação'} é obrigatório`;
-      }
+    if (field === 'receber' && value && planErrors[index]) {
+      const newErrors = { ...planErrors };
+      delete newErrors[index];
+      setPlanErrors(newErrors);
     }
-    setPlanErrors(errors);
+  };
+
+  // Função para atualizar campos booleanos
+  const updatePlanBooleanField = (index: number, field: string, value: boolean) => {
+    const updated = [...selectedPlans];
+    (updated[index] as any)[field] = value;
+    setSelectedPlans(updated);
   };
 
   // Função para converter preço brasileiro para número
@@ -514,18 +512,29 @@ export default function Procedures() {
                                   </div>
                                 )}
 
-                                {/* Carência - aparece apenas para planos Sem Coparticipação */}
-                                {!showCoparticipacao && (
-                                  <div>
-                                    <label className="text-sm font-medium">Carência</label>
-                                    <Input
-                                      value={selectedPlan.carencia}
-                                      onChange={(e) => updatePlanField(index, 'carencia', e.target.value)}
-                                      placeholder="Digite apenas números"
-                                      data-testid={`input-plan-carencia-${index}`}
+                                {/* Carência */}
+                                <div>
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <input
+                                      type="checkbox"
+                                      id={`enable-carencia-${index}`}
+                                      checked={(selectedPlan as any).enableCarencia || false}
+                                      onChange={(e) => updatePlanBooleanField(index, 'enableCarencia', e.target.checked)}
+                                      className="rounded"
                                     />
+                                    <label htmlFor={`enable-carencia-${index}`} className="text-sm font-medium">
+                                      Carência
+                                    </label>
                                   </div>
-                                )}
+                                  <Input
+                                    value={selectedPlan.carencia}
+                                    onChange={(e) => updatePlanField(index, 'carencia', e.target.value)}
+                                    placeholder="Digite apenas números"
+                                    disabled={!(selectedPlan as any).enableCarencia}
+                                    className={!(selectedPlan as any).enableCarencia ? 'bg-gray-100 text-gray-400' : ''}
+                                    data-testid={`input-plan-carencia-${index}`}
+                                  />
+                                </div>
                                 
                                 {/* Limites Anuais */}
                                 <div>
