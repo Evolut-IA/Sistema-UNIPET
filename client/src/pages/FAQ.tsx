@@ -270,7 +270,7 @@ export default function FAQ() {
         <Card>
           <CardHeader>
             <CardTitle className="text-foreground">
-              Gerenciamento ({filteredItems?.length || 0} itens)
+              Itens ({filteredItems?.length || 0})
             </CardTitle>
           </CardHeader>
           <CardContent>
