@@ -392,9 +392,11 @@ export default function ContactSubmissions() {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-primary">Plano de Interesse</label>
-                  <Badge className={getPlanInterestColor(selectedSubmission.planInterest)}>
-                    {selectedSubmission.planInterest}
-                  </Badge>
+                  <div className="mt-1">
+                    <Badge className={getPlanInterestColor(selectedSubmission.planInterest)}>
+                      {selectedSubmission.planInterest}
+                    </Badge>
+                  </div>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-primary">Data de Recebimento</label>
