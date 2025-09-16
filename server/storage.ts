@@ -14,7 +14,8 @@ import type {
   SiteSettings, InsertSiteSettings,
   ThemeSettings, InsertThemeSettings,
   Guide, InsertGuide,
-  Procedure, InsertProcedure
+  Procedure, InsertProcedure,
+  ProcedurePlan, InsertProcedurePlan
 } from "@shared/schema";
 
 const databaseUrl = process.env.DATABASE_URL || "postgresql://postgres:password@localhost:5432/unipet";
@@ -215,6 +216,10 @@ export interface IStorage {
   deleteProcedure(id: string): Promise<boolean>;
   getProcedures(): Promise<Procedure[]>;
 
+  // Procedure plan methods with transaction support
+  bulkCreateProcedurePlans(procedurePlans: InsertProcedurePlan[]): Promise<ProcedurePlan[]>;
+  bulkUpdateProcedurePlansForPlan(planId: string, procedurePlans: InsertProcedurePlan[]): Promise<ProcedurePlan[]>;
+  bulkUpdateProcedurePlansForProcedure(procedureId: string, procedurePlans: InsertProcedurePlan[]): Promise<ProcedurePlan[]>;
 
   // Dashboard analytics
   getDashboardStats(startDate?: string, endDate?: string): Promise<{
@@ -570,7 +575,86 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(schema.procedures).orderBy(schema.procedures.displayOrder, desc(schema.procedures.createdAt));
   }
 
-  // Plan Procedure methods - atualizar os métodos existentes e adicionar novos
+  // Plan Procedure methods - relacionamento entre procedimentos e planos
+  async getProcedurePlans(procedureId: string): Promise<ProcedurePlan[]> {
+    return await db.select().from(schema.procedurePlans).where(eq(schema.procedurePlans.procedureId, procedureId));
+  }
+
+  async getPlanProcedures(planId: string): Promise<(ProcedurePlan & { procedure: Procedure })[]> {
+    return await db.select({
+      id: schema.procedurePlans.id,
+      procedureId: schema.procedurePlans.procedureId,
+      planId: schema.procedurePlans.planId,
+      price: schema.procedurePlans.price,
+      isIncluded: schema.procedurePlans.isIncluded,
+      displayOrder: schema.procedurePlans.displayOrder,
+      createdAt: schema.procedurePlans.createdAt,
+      procedure: schema.procedures
+    })
+    .from(schema.procedurePlans)
+    .innerJoin(schema.procedures, eq(schema.procedurePlans.procedureId, schema.procedures.id))
+    .where(eq(schema.procedurePlans.planId, planId))
+    .orderBy(schema.procedurePlans.displayOrder);
+  }
+
+  async createProcedurePlan(procedurePlan: InsertProcedurePlan): Promise<ProcedurePlan> {
+    const result = await db.insert(schema.procedurePlans).values(procedurePlan).returning();
+    return result[0];
+  }
+
+  async updateProcedurePlan(id: string, updates: Partial<InsertProcedurePlan>): Promise<ProcedurePlan | undefined> {
+    const result = await db.update(schema.procedurePlans).set(updates).where(eq(schema.procedurePlans.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteProcedurePlan(id: string): Promise<boolean> {
+    const result = await db.delete(schema.procedurePlans).where(eq(schema.procedurePlans.id, id)).returning({ id: schema.procedurePlans.id });
+    return result.length > 0;
+  }
+
+  async deleteProcedurePlansByProcedure(procedureId: string): Promise<boolean> {
+    const result = await db.delete(schema.procedurePlans).where(eq(schema.procedurePlans.procedureId, procedureId)).returning({ id: schema.procedurePlans.id });
+    return result.length > 0;
+  }
+
+  async bulkCreateProcedurePlans(procedurePlans: InsertProcedurePlan[]): Promise<ProcedurePlan[]> {
+    return await db.transaction(async (tx) => {
+      const result = await tx.insert(schema.procedurePlans).values(procedurePlans).returning();
+      return result;
+    });
+  }
+
+  // Transactional bulk update for procedure plans (delete all existing + create new ones)
+  async bulkUpdateProcedurePlansForPlan(planId: string, procedurePlans: InsertProcedurePlan[]): Promise<ProcedurePlan[]> {
+    return await db.transaction(async (tx) => {
+      // First, delete all existing procedure plans for this plan
+      await tx.delete(schema.procedurePlans).where(eq(schema.procedurePlans.planId, planId));
+      
+      // Then, insert the new procedure plans if any
+      if (procedurePlans.length > 0) {
+        const result = await tx.insert(schema.procedurePlans).values(procedurePlans).returning();
+        return result;
+      }
+      
+      return [];
+    });
+  }
+
+  // Transactional bulk update for procedure plans by procedure (delete all existing + create new ones)
+  async bulkUpdateProcedurePlansForProcedure(procedureId: string, procedurePlans: InsertProcedurePlan[]): Promise<ProcedurePlan[]> {
+    return await db.transaction(async (tx) => {
+      // First, delete all existing procedure plans for this procedure
+      await tx.delete(schema.procedurePlans).where(eq(schema.procedurePlans.procedureId, procedureId));
+      
+      // Then, insert the new procedure plans if any
+      if (procedurePlans.length > 0) {
+        const result = await tx.insert(schema.procedurePlans).values(procedurePlans).returning();
+        return result;
+      }
+      
+      return [];
+    });
+  }
 
   // Contact submission methods
   async getContactSubmission(id: string): Promise<ContactSubmission | undefined> {

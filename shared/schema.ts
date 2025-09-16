@@ -125,14 +125,16 @@ export const procedures = pgTable("procedures", {
 // Procedure Plans table - relacionamento entre procedimentos e planos com preços específicos
 export const procedurePlans = pgTable("plan_procedures", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  planId: varchar("plan_id").notNull().references(() => plans.id),
-  procedureId: varchar("procedure_id").notNull().references(() => procedures.id),
+  planId: varchar("plan_id").notNull().references(() => plans.id, { onDelete: "cascade" }),
+  procedureId: varchar("procedure_id").notNull().references(() => procedures.id, { onDelete: "cascade" }),
   price: integer("price").default(0), // preço em centavos
   isIncluded: boolean("is_included").default(true),
   displayOrder: integer("display_order").default(0),
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
 }, (table) => {
   return {
+    // Unique constraint to prevent duplicate plan-procedure relationships
+    uniquePlanProcedure: uniqueIndex("plan_procedures_unique_plan_procedure").on(table.planId, table.procedureId),
     procedureIdx: index("plan_procedures_procedure_idx").on(table.procedureId),
     planIdx: index("plan_procedures_plan_idx").on(table.planId),
   };

@@ -31,6 +31,12 @@ export default function PlanForm() {
     enabled: isEdit,
   });
 
+  // Buscar procedimentos vinculados ao plano quando estiver editando
+  const { data: planProcedures } = useQuery({
+    queryKey: ["/api/plans", params.id, "procedures"],
+    enabled: isEdit && !!params.id,
+  });
+
   const form = useForm({
     resolver: zodResolver(insertPlanSchema),
     defaultValues: {
@@ -260,7 +266,43 @@ export default function PlanForm() {
             </CardContent>
           </Card>
 
-
+          {/* Seção de Procedimentos */}
+          {isEdit && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-foreground">Procedimentos</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {Array.isArray(planProcedures) && planProcedures.length > 0 ? (
+                  <div className="space-y-3">
+                    {planProcedures.map((item: any) => (
+                      <div key={item.id} className="flex items-center justify-between p-3 border rounded-lg">
+                        <div className="flex-1">
+                          <h4 className="font-medium text-foreground">{item.procedure.name}</h4>
+                          {item.procedure.description && (
+                            <p className="text-sm text-muted-foreground mt-1">{item.procedure.description}</p>
+                          )}
+                        </div>
+                        <div className="text-right">
+                          <p className="font-medium text-lg">
+                            R$ {(item.price / 100).toFixed(2).replace('.', ',')}
+                          </p>
+                          <p className="text-xs text-muted-foreground">Preço no plano</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <p>Nenhum procedimento vinculado a este plano.</p>
+                    <p className="text-sm mt-1">
+                      Para vincular procedimentos, acesse a página de Procedimentos e configure os preços para este plano.
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
 
           <div className="flex justify-end space-x-4">
             <Button

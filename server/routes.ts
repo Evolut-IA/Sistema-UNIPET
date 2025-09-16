@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import path from "path";
 import { storage } from "./storage";
-import { insertClientSchema, insertPetSchema, insertPlanSchema, insertNetworkUnitSchema, insertFaqItemSchema, insertContactSubmissionSchema, insertSiteSettingsSchema, insertThemeSettingsSchema, insertGuideSchema, insertUserSchema, updateNetworkUnitCredentialsSchema, insertProcedureSchema, type InsertUser } from "@shared/schema";
+import { insertClientSchema, insertPetSchema, insertPlanSchema, insertNetworkUnitSchema, insertFaqItemSchema, insertContactSubmissionSchema, insertSiteSettingsSchema, insertThemeSettingsSchema, insertGuideSchema, insertUserSchema, updateNetworkUnitCredentialsSchema, insertProcedureSchema, insertProcedurePlanSchema, type InsertUser } from "@shared/schema";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { generateUniqueSlug } from "./utils";
@@ -573,6 +573,112 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Procedure Plans routes - relacionamento entre procedimentos e planos
+  app.get("/api/procedures/:procedureId/plans", async (req, res) => {
+    try {
+      const procedurePlans = await storage.getProcedurePlans(req.params.procedureId);
+      res.json(procedurePlans);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch procedure plans" });
+    }
+  });
+
+  app.get("/api/plans/:planId/procedures", async (req, res) => {
+    try {
+      const planProcedures = await storage.getPlanProcedures(req.params.planId);
+      res.json(planProcedures);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch plan procedures" });
+    }
+  });
+
+  app.post("/api/procedure-plans", async (req, res) => {
+    try {
+      const procedurePlanData = insertProcedurePlanSchema.parse(req.body);
+      const procedurePlan = await storage.createProcedurePlan(procedurePlanData);
+      res.status(201).json(procedurePlan);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid procedure plan data" });
+    }
+  });
+
+  app.post("/api/procedure-plans/bulk", async (req, res) => {
+    try {
+      const { procedurePlans } = req.body;
+      if (!Array.isArray(procedurePlans)) {
+        return res.status(400).json({ message: "procedurePlans must be an array" });
+      }
+      
+      const validatedPlans = procedurePlans.map(plan => insertProcedurePlanSchema.parse(plan));
+      const result = await storage.bulkCreateProcedurePlans(validatedPlans);
+      res.status(201).json(result);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid procedure plans data" });
+    }
+  });
+
+  app.put("/api/procedure-plans/:id", async (req, res) => {
+    try {
+      const procedurePlanData = insertProcedurePlanSchema.partial().parse(req.body);
+      const procedurePlan = await storage.updateProcedurePlan(req.params.id, procedurePlanData);
+      if (!procedurePlan) {
+        return res.status(404).json({ message: "Procedure plan not found" });
+      }
+      res.json(procedurePlan);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid procedure plan data" });
+    }
+  });
+
+  app.delete("/api/procedure-plans/:id", async (req, res) => {
+    try {
+      const deleted = await storage.deleteProcedurePlan(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Procedure plan not found" });
+      }
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete procedure plan" });
+    }
+  });
+
+  app.delete("/api/procedures/:procedureId/plans", async (req, res) => {
+    try {
+      const deleted = await storage.deleteProcedurePlansByProcedure(req.params.procedureId);
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete procedure plans" });
+    }
+  });
+
+  // Atomic PUT endpoint for updating procedure-plan relationships
+  app.put("/api/procedures/:procedureId/plans", async (req, res) => {
+    try {
+      const { procedurePlans } = req.body;
+      if (!Array.isArray(procedurePlans)) {
+        return res.status(400).json({ message: "procedurePlans must be an array" });
+      }
+      
+      // Validate each procedure plan
+      const validatedPlans = procedurePlans.map(plan => 
+        insertProcedurePlanSchema.parse({
+          ...plan,
+          procedureId: req.params.procedureId
+        })
+      );
+      
+      // Use atomic bulk update method
+      const result = await storage.bulkUpdateProcedurePlansForProcedure(req.params.procedureId, validatedPlans);
+      res.json(result);
+    } catch (error) {
+      console.error("Error updating procedure plans atomically:", error);
+      if (error instanceof Error && error.name === "ZodError") {
+        res.status(400).json({ message: "Invalid procedure plans data", details: error.message });
+      } else {
+        res.status(500).json({ message: "Failed to update procedure plans" });
+      }
+    }
+  });
 
   // Contact submission routes
   app.get("/api/contact-submissions", async (req, res) => {

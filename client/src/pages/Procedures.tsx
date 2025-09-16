@@ -1,17 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { InputMasked } from "@/components/ui/input-masked";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Plus, Search, Edit, Trash2, ClipboardList, Eye, DollarSign } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Plus, Search, Edit, Trash2, ClipboardList, Eye, DollarSign, X } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { insertProcedureSchema } from "@shared/schema";
@@ -22,11 +24,23 @@ export default function Procedures() {
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
   const [viewingItem, setViewingItem] = useState<any>(null);
+  const [selectedPlans, setSelectedPlans] = useState<{planId: string, price: string}[]>([]);
+  const [planErrors, setPlanErrors] = useState<{[key: number]: string}>({});
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
   const { data: procedures, isLoading } = useQuery({
     queryKey: ["/api/procedures"],
+  });
+
+  const { data: plans } = useQuery({
+    queryKey: ["/api/plans/active"],
+  });
+
+  // Buscar planos do procedimento quando estiver editando
+  const { data: existingProcedurePlans } = useQuery({
+    queryKey: ["/api/procedures", editingItem?.id, "plans"],
+    enabled: !!editingItem?.id,
   });
 
 
@@ -39,23 +53,148 @@ export default function Procedures() {
     },
   });
 
+  // Carregar planos existentes quando estiver editando
+  useEffect(() => {
+    if (existingProcedurePlans && Array.isArray(existingProcedurePlans)) {
+      const planData = existingProcedurePlans.map((item: any) => ({
+        planId: item.planId,
+        price: (item.price / 100).toLocaleString('pt-BR', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }) // Converter de centavos para reais com formato PT-BR
+      }));
+      setSelectedPlans(planData);
+    }
+  }, [existingProcedurePlans]);
+
+  // Funções para gerenciar planos selecionados
+  const addPlan = () => {
+    if (Array.isArray(plans) && plans.length > 0) {
+      const unselectedPlans = plans.filter((plan: any) => 
+        !selectedPlans.some(sp => sp.planId === plan.id)
+      );
+      if (unselectedPlans.length > 0) {
+        setSelectedPlans([...selectedPlans, { planId: unselectedPlans[0].id, price: "0,00" }]);
+      }
+    }
+  };
+
+  const removePlan = (index: number) => {
+    setSelectedPlans(selectedPlans.filter((_, i) => i !== index));
+  };
+
+  const updatePlanPrice = (index: number, price: string) => {
+    const updated = [...selectedPlans];
+    updated[index].price = price;
+    setSelectedPlans(updated);
+    
+    // Validar preço e limpar erro se válido
+    const errors = { ...planErrors };
+    if (price && price.trim() !== '') {
+      const numValue = convertPriceToNumber(price);
+      if (numValue < 0) {
+        errors[index] = 'Preço deve ser maior ou igual a zero';
+      } else {
+        delete errors[index];
+      }
+    } else {
+      errors[index] = 'Preço é obrigatório';
+    }
+    setPlanErrors(errors);
+  };
+
+  // Função para converter preço brasileiro para número
+  const convertPriceToNumber = (priceStr: string): number => {
+    if (!priceStr || priceStr.trim() === '') return 0;
+    
+    // Remove formatação brasileira e converte para número
+    const cleanPrice = priceStr
+      .replace(/\./g, '') // Remove separadores de milhares
+      .replace(/,/g, '.'); // Converte vírgula decimal para ponto
+    
+    const numValue = parseFloat(cleanPrice);
+    return isNaN(numValue) ? 0 : numValue;
+  };
+
+  // Função para filtrar planos já selecionados
+  const getAvailablePlans = (currentIndex?: number) => {
+    if (!Array.isArray(plans)) return [];
+    
+    return plans.filter((plan: any) => {
+      // Permite o plano atual quando estiver editando uma linha específica
+      const isCurrentSelection = currentIndex !== undefined && 
+        selectedPlans[currentIndex] && 
+        selectedPlans[currentIndex].planId === plan.id;
+      
+      // Se é a seleção atual, permite; caso contrário, verifica se não está em uso
+      return isCurrentSelection || !selectedPlans.some(sp => sp.planId === plan.id);
+    });
+  };
+
+  const updatePlanId = (index: number, planId: string) => {
+    const updated = [...selectedPlans];
+    updated[index].planId = planId;
+    setSelectedPlans(updated);
+    
+    // Limpar erro de plano se selecionado
+    const errors = { ...planErrors };
+    if (planId) {
+      delete errors[index];
+      setPlanErrors(errors);
+    }
+  };
+
+  const resetForm = () => {
+    form.reset();
+    setSelectedPlans([]);
+    setPlanErrors({});
+    setEditingItem(null);
+  };
+
   const createMutation = useMutation({
     mutationFn: async (data: any) => {
+      let procedureResponse;
+      
       if (editingItem) {
-        return await apiRequest("PUT", `/api/procedures/${editingItem.id}`, data);
+        procedureResponse = await apiRequest("PUT", `/api/procedures/${editingItem.id}`, data);
       } else {
-        return await apiRequest("POST", "/api/procedures", data);
+        procedureResponse = await apiRequest("POST", "/api/procedures", data);
       }
+
+      // Salvar relacionamentos com planos usando endpoint atômico
+      const procedureId = editingItem ? editingItem.id : procedureResponse.id;
+      
+      // Preparar planos para o endpoint atômico
+      const procedurePlans = selectedPlans
+        .filter(plan => plan.planId && plan.price) // Filtrar entradas válidas
+        .map(plan => {
+          const numericPrice = convertPriceToNumber(plan.price);
+          return {
+            procedureId,
+            planId: plan.planId,
+            price: Math.round(numericPrice * 100) // Converter para centavos
+          };
+        })
+        .filter(plan => plan.price >= 0); // Filtrar preços válidos
+      
+      // Usar endpoint atômico para atualizar relacionamentos
+      // Isso substitui DELETE + POST em uma única transação
+      await apiRequest("PUT", `/api/procedures/${procedureId}/plans`, { procedurePlans });
+
+      return procedureResponse;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/procedures"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/procedures", editingItem?.id, "plans"] });
+      // Invalidar cache dos planos também para atualizar a página de edição de planos
+      queryClient.invalidateQueries({ queryKey: ["/api/plans"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/plans", "active"] });
       toast({
         title: editingItem ? "Procedimento atualizado" : "Procedimento criado",
         description: editingItem ? "Procedimento foi atualizado com sucesso." : "Procedimento foi criado com sucesso.",
       });
       setDialogOpen(false);
-      setEditingItem(null);
-      form.reset();
+      resetForm();
     },
     onError: () => {
       toast({
@@ -118,8 +257,6 @@ export default function Procedures() {
       description: item.description || "",
       isActive: item.isActive ?? true,
     });
-    
-    
     setDialogOpen(true);
   };
 
@@ -141,6 +278,37 @@ export default function Procedures() {
 
 
   const onSubmit = (data: any) => {
+    // Validar planos antes de submeter
+    const errors: {[key: number]: string} = {};
+    let hasErrors = false;
+    
+    selectedPlans.forEach((plan, index) => {
+      if (!plan.planId) {
+        errors[index] = 'Selecione um plano';
+        hasErrors = true;
+      }
+      if (!plan.price || plan.price.trim() === '') {
+        errors[index] = 'Preço é obrigatório';
+        hasErrors = true;
+      } else {
+        const numValue = convertPriceToNumber(plan.price);
+        if (numValue < 0) {
+          errors[index] = 'Preço deve ser maior ou igual a zero';
+          hasErrors = true;
+        }
+      }
+    });
+    
+    if (hasErrors) {
+      setPlanErrors(errors);
+      toast({
+        title: "Erro de validação",
+        description: "Verifique os campos dos planos e tente novamente.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     createMutation.mutate(data);
   };
 
@@ -156,8 +324,7 @@ export default function Procedures() {
           <Dialog open={dialogOpen} onOpenChange={(open) => {
             setDialogOpen(open);
             if (!open) {
-              setEditingItem(null);
-              form.reset();
+              resetForm();
             }
           }}>
             <DialogTrigger asChild>
@@ -174,8 +341,7 @@ export default function Procedures() {
       <Dialog open={dialogOpen} onOpenChange={(open) => {
         setDialogOpen(open);
         if (!open) {
-          setEditingItem(null);
-          form.reset();
+          resetForm();
         }
       }}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -200,6 +366,90 @@ export default function Procedures() {
                     </FormItem>
                   )}
                 />
+
+                {/* Seção de Seleção de Planos */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-medium">Planos Vinculados</h3>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={addPlan}
+                      disabled={!Array.isArray(plans) || plans.length === 0 || selectedPlans.length >= plans.length}
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Adicionar Plano
+                    </Button>
+                  </div>
+                  
+                  {selectedPlans.length > 0 && (
+                    <div className="space-y-3">
+                      {selectedPlans.map((selectedPlan, index) => (
+                        <div key={index} className="flex items-center gap-3 p-3 border rounded-lg">
+                          <div className="flex-1">
+                            <label className="text-sm font-medium">Plano</label>
+                            <Select
+                              value={selectedPlan.planId}
+                              onValueChange={(value) => updatePlanId(index, value)}
+                            >
+                              <SelectTrigger className={planErrors[index] && !selectedPlan.planId ? 'border-red-500' : ''}>
+                                <SelectValue placeholder="Selecione um plano" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {getAvailablePlans(index).map((plan: any) => (
+                                  <SelectItem key={plan.id} value={plan.id}>
+                                    {plan.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {planErrors[index] && !selectedPlan.planId && (
+                              <p className="text-xs text-red-500 mt-1">{planErrors[index]}</p>
+                            )}
+                          </div>
+                          
+                          <div className="w-32">
+                            <label className="text-sm font-medium">Preço (R$)</label>
+                            <InputMasked
+                              mask="price"
+                              value={selectedPlan.price}
+                              onChange={(e) => updatePlanPrice(index, e.target.value)}
+                              placeholder="0,00"
+                              data-testid={`input-plan-price-${index}`}
+                              className={planErrors[index] ? 'border-red-500' : ''}
+                            />
+                            {planErrors[index] && (
+                              <p className="text-xs text-red-500 mt-1">{planErrors[index]}</p>
+                            )}
+                          </div>
+                          
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removePlan(index)}
+                            className="text-red-600 hover:text-red-800"
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {selectedPlans.length === 0 && (
+                    <div className="text-center py-4 text-muted-foreground">
+                      Nenhum plano vinculado. Clique em "Adicionar Plano" para vincular este procedimento a um plano.
+                    </div>
+                  )}
+                  
+                  {Array.isArray(plans) && plans.length > 0 && selectedPlans.length >= plans.length && (
+                    <div className="text-center py-2 text-sm text-muted-foreground">
+                      Todos os planos disponíveis já foram adicionados.
+                    </div>
+                  )}
+                </div>
 
               </div>
 
