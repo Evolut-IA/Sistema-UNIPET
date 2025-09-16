@@ -56,8 +56,8 @@ export const GUIDE_TYPES = [
 ];
 
 export const PLAN_TYPES = [
-  "com_coparticipacao",
-  "sem_coparticipacao"
+  "with_waiting_period",
+  "without_waiting_period"
 ];
 
 export const PAYMENT_METHODS = [

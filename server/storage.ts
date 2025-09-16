@@ -14,8 +14,7 @@ import type {
   SiteSettings, InsertSiteSettings,
   ThemeSettings, InsertThemeSettings,
   Guide, InsertGuide,
-  Procedure, InsertProcedure,
-  PlanProcedure, InsertPlanProcedure
+  Procedure, InsertProcedure
 } from "@shared/schema";
 
 const databaseUrl = process.env.DATABASE_URL || "postgresql://postgres:password@localhost:5432/unipet";
@@ -216,13 +215,6 @@ export interface IStorage {
   deleteProcedure(id: string): Promise<boolean>;
   getProcedures(): Promise<Procedure[]>;
 
-  // Plan Procedure methods
-  createPlanProcedure(planProcedure: InsertPlanProcedure): Promise<PlanProcedure>;
-  getPlanProcedures(planId: string): Promise<PlanProcedure[]>;
-  getProceduresByPlan(planId: string): Promise<(Procedure & { planProcedure: PlanProcedure })[]>;
-  updatePlanProcedure(id: string, updates: Partial<InsertPlanProcedure>): Promise<PlanProcedure | undefined>;
-  deletePlanProcedure(id: string): Promise<boolean>;
-  deletePlanProcedures(planId: string): Promise<boolean>;
 
   // Dashboard analytics
   getDashboardStats(startDate?: string, endDate?: string): Promise<{
@@ -403,9 +395,6 @@ export class DatabaseStorage implements IStorage {
     // Primeiro, excluir todos os pets associados ao plano
     await db.delete(schema.pets).where(eq(schema.pets.planId, id));
     
-    // Excluir procedures do plano
-    await db.delete(schema.planProcedures).where(eq(schema.planProcedures.planId, id));
-    
     // Depois, excluir o plano
     const result = await db.delete(schema.plans).where(eq(schema.plans.id, id)).returning({ id: schema.plans.id });
     return result.length > 0;
@@ -572,10 +561,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteProcedure(id: string): Promise<boolean> {
-    // Primeiro, excluir todos os plan_procedures associados ao procedimento
-    await db.delete(schema.planProcedures).where(eq(schema.planProcedures.procedureId, id));
-    
-    // Depois, excluir o procedimento
+    // Excluir o procedimento
     const result = await db.delete(schema.procedures).where(eq(schema.procedures.id, id)).returning({ id: schema.procedures.id });
     return result.length > 0;
   }
@@ -585,57 +571,6 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Plan Procedure methods - atualizar os métodos existentes e adicionar novos
-  async createPlanProcedure(planProcedure: InsertPlanProcedure): Promise<PlanProcedure> {
-    const result = await db.insert(schema.planProcedures).values(planProcedure).returning();
-    return result[0];
-  }
-
-  async getPlanProcedures(planId: string): Promise<PlanProcedure[]> {
-    return await db.select().from(schema.planProcedures).where(eq(schema.planProcedures.planId, planId)).orderBy(schema.planProcedures.displayOrder);
-  }
-
-  async getProceduresByPlan(planId: string): Promise<(Procedure & { planProcedure: PlanProcedure })[]> {
-    const result = await db
-      .select()
-      .from(schema.procedures)
-      .innerJoin(schema.planProcedures, eq(schema.procedures.id, schema.planProcedures.procedureId))
-      .where(eq(schema.planProcedures.planId, planId))
-      .orderBy(schema.planProcedures.displayOrder);
-
-    return result.map(row => ({
-      ...row.procedures,
-      planProcedure: row.plan_procedures
-    }));
-  }
-
-  async getPlanProceduresByProcedure(procedureId: string): Promise<(PlanProcedure & { plan: Plan })[]> {
-    const result = await db
-      .select()
-      .from(schema.planProcedures)
-      .innerJoin(schema.plans, eq(schema.planProcedures.planId, schema.plans.id))
-      .where(eq(schema.planProcedures.procedureId, procedureId))
-      .orderBy(schema.planProcedures.displayOrder);
-
-    return result.map(row => ({
-      ...row.plan_procedures,
-      plan: row.plans
-    }));
-  }
-
-  async updatePlanProcedure(id: string, updates: Partial<InsertPlanProcedure>): Promise<PlanProcedure | undefined> {
-    const result = await db.update(schema.planProcedures).set(updates).where(eq(schema.planProcedures.id, id)).returning();
-    return result[0];
-  }
-
-  async deletePlanProcedure(id: string): Promise<boolean> {
-    const result = await db.delete(schema.planProcedures).where(eq(schema.planProcedures.id, id)).returning({ id: schema.planProcedures.id });
-    return result.length > 0;
-  }
-
-  async deletePlanProcedures(planId: string): Promise<boolean> {
-    const result = await db.delete(schema.planProcedures).where(eq(schema.planProcedures.planId, planId)).returning({ id: schema.planProcedures.id });
-    return result.length > 0;
-  }
 
   // Contact submission methods
   async getContactSubmission(id: string): Promise<ContactSubmission | undefined> {

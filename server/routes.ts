@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import path from "path";
 import { storage } from "./storage";
-import { insertClientSchema, insertPetSchema, insertPlanSchema, insertNetworkUnitSchema, insertFaqItemSchema, insertContactSubmissionSchema, insertSiteSettingsSchema, insertThemeSettingsSchema, insertGuideSchema, insertUserSchema, updateNetworkUnitCredentialsSchema, insertProcedureSchema, insertPlanProcedureSchema, type InsertUser } from "@shared/schema";
+import { insertClientSchema, insertPetSchema, insertPlanSchema, insertNetworkUnitSchema, insertFaqItemSchema, insertContactSubmissionSchema, insertSiteSettingsSchema, insertThemeSettingsSchema, insertGuideSchema, insertUserSchema, updateNetworkUnitCredentialsSchema, insertProcedureSchema, type InsertUser } from "@shared/schema";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { generateUniqueSlug } from "./utils";
@@ -573,59 +573,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Plan Procedure routes
-  app.get("/api/plans/:planId/procedures", async (req, res) => {
-    try {
-      const procedures = await storage.getProceduresByPlan(req.params.planId);
-      res.json(procedures);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch plan procedures" });
-    }
-  });
-
-  app.get("/api/procedures/:procedureId/plan-procedures", async (req, res) => {
-    try {
-      const planProcedures = await storage.getPlanProceduresByProcedure(req.params.procedureId);
-      res.json(planProcedures);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch procedure plan procedures" });
-    }
-  });
-
-  app.post("/api/plan-procedures", async (req, res) => {
-    try {
-      const planProcedureData = insertPlanProcedureSchema.parse(req.body);
-      const planProcedure = await storage.createPlanProcedure(planProcedureData);
-      res.status(201).json(planProcedure);
-    } catch (error) {
-      res.status(400).json({ message: "Invalid plan procedure data" });
-    }
-  });
-
-  app.put("/api/plan-procedures/:id", async (req, res) => {
-    try {
-      const planProcedureData = insertPlanProcedureSchema.partial().parse(req.body);
-      const planProcedure = await storage.updatePlanProcedure(req.params.id, planProcedureData);
-      if (!planProcedure) {
-        return res.status(404).json({ message: "Plan procedure not found" });
-      }
-      res.json(planProcedure);
-    } catch (error) {
-      res.status(400).json({ message: "Invalid plan procedure data" });
-    }
-  });
-
-  app.delete("/api/plan-procedures/:id", async (req, res) => {
-    try {
-      const deleted = await storage.deletePlanProcedure(req.params.id);
-      if (!deleted) {
-        return res.status(404).json({ message: "Plan procedure not found" });
-      }
-      res.status(204).send();
-    } catch (error) {
-      res.status(500).json({ message: "Failed to delete plan procedure" });
-    }
-  });
 
   // Contact submission routes
   app.get("/api/contact-submissions", async (req, res) => {

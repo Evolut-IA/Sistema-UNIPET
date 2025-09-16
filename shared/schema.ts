@@ -68,7 +68,6 @@ export const plans = pgTable("plans", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: text("name").notNull(),
   description: text("description").notNull(),
-  features: text("features").array().notNull().default([]),
   image: text("image").notNull(),
   isActive: boolean("is_active").notNull().default(true),
   createdAt: timestamp("created_at").notNull().default(sql`now()`),
@@ -78,23 +77,6 @@ export const plans = pgTable("plans", {
   planType: planTypeEnum("plan_type").notNull().default("with_waiting_period"),
 });
 
-// Plan Procedures table - relação entre procedimentos e planos com valores específicos
-export const planProcedures = pgTable("plan_procedures", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  planId: varchar("plan_id").notNull().references(() => plans.id, { onDelete: "cascade" }),
-  procedureId: varchar("procedure_id").notNull().references(() => procedures.id, { onDelete: "cascade" }),
-  price: integer("price").default(0), // preço em centavos para este plano específico
-  isIncluded: boolean("is_included").default(true), // se está incluído no plano
-  displayOrder: integer("display_order").notNull().default(0), // ordem de exibição
-  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
-}, (table) => {
-  return {
-    planProcedureUnique: uniqueIndex("plan_procedure_unique_idx").on(table.planId, table.procedureId),
-    planIdIdx: index("plan_procedures_plan_id_idx").on(table.planId),
-    procedureIdIdx: index("plan_procedures_procedure_id_idx").on(table.procedureId),
-    planDisplayOrderIdx: index("plan_procedures_plan_display_order_idx").on(table.planId, table.displayOrder),
-  };
-});
 
 // Network Units table
 export const networkUnits = pgTable("network_units", {
@@ -255,7 +237,6 @@ export const insertPetSchema = createInsertSchema(pets).omit({ id: true, created
   })).optional()
 });
 export const insertPlanSchema = createInsertSchema(plans).omit({ id: true, createdAt: true });
-export const insertPlanProcedureSchema = createInsertSchema(planProcedures).omit({ id: true, createdAt: true });
 export const insertNetworkUnitSchema = createInsertSchema(networkUnits).omit({ id: true, createdAt: true }).extend({
   imageUrl: z.string().min(1, "Imagem da unidade é obrigatória"),
   urlSlug: z.string().optional(), // URL slug is optional - will be auto-generated if not provided
@@ -282,7 +263,6 @@ export type InsertUser = typeof users.$inferInsert;
 export type InsertClient = typeof clients.$inferInsert;
 export type InsertPet = typeof pets.$inferInsert;
 export type InsertPlan = typeof plans.$inferInsert;
-export type InsertPlanProcedure = typeof planProcedures.$inferInsert;
 export type InsertNetworkUnit = typeof networkUnits.$inferInsert;
 export type InsertFaqItem = typeof faqItems.$inferInsert;
 export type InsertProcedure = typeof procedures.$inferInsert;
@@ -295,7 +275,6 @@ export type User = typeof users.$inferSelect;
 export type Client = typeof clients.$inferSelect;
 export type Pet = typeof pets.$inferSelect;
 export type Plan = typeof plans.$inferSelect;
-export type PlanProcedure = typeof planProcedures.$inferSelect;
 export type NetworkUnit = typeof networkUnits.$inferSelect;
 export type FaqItem = typeof faqItems.$inferSelect;
 export type Procedure = typeof procedures.$inferSelect;

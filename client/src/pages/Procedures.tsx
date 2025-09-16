@@ -22,7 +22,6 @@ export default function Procedures() {
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
   const [viewingItem, setViewingItem] = useState<any>(null);
-  const [planValues, setPlanValues] = useState<{[key: string]: { price: number, isIncluded: boolean, id?: string }}>({});
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -30,9 +29,6 @@ export default function Procedures() {
     queryKey: ["/api/procedures"],
   });
 
-  const { data: plans } = useQuery({
-    queryKey: ["/api/plans"],
-  });
 
   const form = useForm({
     resolver: zodResolver(insertProcedureSchema),
@@ -45,55 +41,20 @@ export default function Procedures() {
 
   const createMutation = useMutation({
     mutationFn: async (data: any) => {
-      let procedure;
       if (editingItem) {
-        procedure = await apiRequest("PUT", `/api/procedures/${editingItem.id}`, data);
+        return await apiRequest("PUT", `/api/procedures/${editingItem.id}`, data);
       } else {
-        procedure = await apiRequest("POST", "/api/procedures", data);
-      }
-
-      // Save plan values
-      const activePlans = Object.entries(planValues)
-        .filter(([_, value]) => value.isIncluded);
-      
-      for (const [planId, value] of activePlans) {
-        const planProcedureData = {
-          planId,
-          procedureId: procedure.id,
-          price: Math.round(value.price), // Ensure integer for cents
-          isIncluded: true
-        };
-        
-        if (value.id) {
-          // Update existing plan procedure
-          await apiRequest("PUT", `/api/plan-procedures/${value.id}`, planProcedureData);
-        } else {
-          // Create new plan procedure
-          await apiRequest("POST", "/api/plan-procedures", planProcedureData);
-        }
-      }
-      
-      // Delete plan procedures that are no longer included
-      if (editingItem) {
-        const existingPlanProcedures = await apiRequest("GET", `/api/procedures/${procedure.id}/plan-procedures`);
-        for (const pp of existingPlanProcedures) {
-          const currentValue = planValues[pp.planId];
-          if (!currentValue || !currentValue.isIncluded) {
-            await apiRequest("DELETE", `/api/plan-procedures/${pp.id}`);
-          }
-        }
+        return await apiRequest("POST", "/api/procedures", data);
       }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/procedures"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/plan-procedures"] });
       toast({
         title: editingItem ? "Procedimento atualizado" : "Procedimento criado",
         description: editingItem ? "Procedimento foi atualizado com sucesso." : "Procedimento foi criado com sucesso.",
       });
       setDialogOpen(false);
       setEditingItem(null);
-      setPlanValues({});
       form.reset();
     },
     onError: () => {
@@ -158,37 +119,13 @@ export default function Procedures() {
       isActive: item.isActive ?? true,
     });
     
-    // Load existing plan values for editing
-    try {
-      const existingPlanProcedures = await apiRequest("GET", `/api/procedures/${item.id}/plan-procedures`);
-      const loadedPlanValues: {[key: string]: { price: number, isIncluded: boolean, id: string }} = {};
-      
-      existingPlanProcedures.forEach((pp: any) => {
-        loadedPlanValues[pp.planId] = {
-          price: pp.price || 0,
-          isIncluded: pp.isIncluded ?? true,
-          id: pp.id
-        };
-      });
-      
-      setPlanValues(loadedPlanValues);
-    } catch (error) {
-      // If error loading existing values, reset to empty
-      setPlanValues({});
-    }
     
     setDialogOpen(true);
   };
 
   const handleView = async (item: any) => {
     setViewingItem(item);
-    // Fetch plan procedures for this procedure
-    try {
-      const planProcedures = await apiRequest("GET", `/api/procedures/${item.id}/plan-procedures`);
-      setViewingItem({ ...item, planProcedures });
-    } catch (error) {
-      setViewingItem(item);
-    }
+    setViewingItem(item);
     setViewDialogOpen(true);
   };
 
@@ -202,18 +139,6 @@ export default function Procedures() {
     toggleMutation.mutate({ id, isActive: !currentStatus });
   };
 
-  const handlePlanValueChange = (planId: string, field: 'price' | 'isIncluded', value: string | boolean) => {
-    setPlanValues(prev => ({
-      ...prev,
-      [planId]: {
-        ...prev[planId],
-        [field]: field === 'price' ? Math.round(parseFloat(value as string) * 100) : value, // Convert to cents for price
-        price: prev[planId]?.price || 0,
-        isIncluded: prev[planId]?.isIncluded || false,
-        id: prev[planId]?.id
-      }
-    }));
-  };
 
   const onSubmit = (data: any) => {
     createMutation.mutate(data);
@@ -225,14 +150,13 @@ export default function Procedures() {
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div className="flex-1">
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground break-words">Procedimentos</h1>
-          <p className="text-sm text-muted-foreground">Gerencie os procedimentos médicos e seus valores por plano</p>
+          <p className="text-sm text-muted-foreground">Gerencie os procedimentos médicos disponíveis</p>
         </div>
         <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-3 xs:gap-4">
           <Dialog open={dialogOpen} onOpenChange={(open) => {
             setDialogOpen(open);
             if (!open) {
               setEditingItem(null);
-              setPlanValues({});
               form.reset();
             }
           }}>
@@ -251,7 +175,6 @@ export default function Procedures() {
         setDialogOpen(open);
         if (!open) {
           setEditingItem(null);
-          setPlanValues({});
           form.reset();
         }
       }}>
@@ -278,48 +201,6 @@ export default function Procedures() {
                   )}
                 />
 
-                {/* Plan Values */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Valores por Plano</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Configure os valores deste procedimento para cada plano de saúde
-                  </p>
-                  
-                  <div className="space-y-3 max-h-96 overflow-y-auto border rounded-lg p-4">
-                    {Array.isArray(plans) && plans.map((plan: any) => (
-                      <div key={plan.id} className="flex items-center space-x-3 p-3 border rounded-lg">
-                        <Checkbox
-                          checked={planValues[plan.id]?.isIncluded || false}
-                          onCheckedChange={(checked) => 
-                            handlePlanValueChange(plan.id, 'isIncluded', checked === true)
-                          }
-                          data-testid={`checkbox-plan-${plan.id}`}
-                        />
-                        
-                        <div className="flex-1">
-                          <p className="font-medium text-sm">{plan.name}</p>
-                          <p className="text-xs text-muted-foreground">{plan.description}</p>
-                        </div>
-                        
-                        <div className="flex items-center space-x-2">
-                          <DollarSign className="h-4 w-4 text-muted-foreground" />
-                          <Input
-                            type="number"
-                            step="0.01"
-                            placeholder="0.00"
-                            value={planValues[plan.id]?.price ? (planValues[plan.id].price / 100).toFixed(2) : ""}
-                            onChange={(e) => 
-                              handlePlanValueChange(plan.id, 'price', e.target.value)
-                            }
-                            disabled={!planValues[plan.id]?.isIncluded}
-                            className="w-24"
-                            data-testid={`input-plan-price-${plan.id}`}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
               </div>
 
               <div className="flex justify-end space-x-4">
@@ -364,21 +245,6 @@ export default function Procedures() {
                 </Badge>
               </div>
               
-              <div>
-                <h4 className="font-medium mb-2">Valores por Plano</h4>
-                <div className="space-y-2">
-                  {viewingItem.planProcedures?.length ? (
-                    viewingItem.planProcedures.map((pp: any) => (
-                      <div key={pp.id} className="flex justify-between items-center p-2 border rounded">
-                        <span className="text-sm">{pp.plan?.name}</span>
-                        <span className="font-medium">R$ {pp.price ? (pp.price / 100).toFixed(2) : '0.00'}</span>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-sm text-muted-foreground">Nenhum valor configurado para planos</p>
-                  )}
-                </div>
-              </div>
             </div>
           )}
         </DialogContent>

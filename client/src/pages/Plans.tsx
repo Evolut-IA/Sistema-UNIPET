@@ -66,7 +66,7 @@ export default function Plans() {
     },
   });
 
-  const filteredPlans = plans ? plans.filter((plan: any) =>
+  const filteredPlans = Array.isArray(plans) ? plans.filter((plan: any) =>
     plan.name?.toLowerCase().includes(searchQuery.toLowerCase())
   ) : [];
 
@@ -228,24 +228,6 @@ export default function Plans() {
                   </p>
                 </div>
 
-                {plan.features && plan.features.length > 0 && (
-                  <div className="mb-4">
-                    <p className="text-sm font-medium text-foreground mb-2">Principais benefícios:</p>
-                    <ul className="text-sm text-muted-foreground space-y-1">
-                      {plan.features.slice(0, 3).map((feature: string, index: number) => (
-                        <li key={index} className="flex items-start">
-                          <span className="text-chart-4 mr-2">✓</span>
-                          {feature}
-                        </li>
-                      ))}
-                      {plan.features.length > 3 && (
-                        <li className="text-xs text-muted-foreground italic">
-                          +{plan.features.length - 3} benefícios adicionais
-                        </li>
-                      )}
-                    </ul>
-                  </div>
-                )}
 
                 <div className="flex space-x-2 pt-3 border-t">
                   <Button
