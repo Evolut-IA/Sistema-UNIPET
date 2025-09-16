@@ -448,89 +448,92 @@ export default function Procedures() {
                         return (
                           <div key={index} className="p-4 border rounded-lg">
                             {/* Layout responsivo: desktop = linha única, mobile = empilhado */}
-                            <div className={`grid grid-cols-1 ${showCoparticipacao ? 'md:grid-cols-6' : 'md:grid-cols-5'} gap-4 items-end`}>
-                              {/* Plano */}
-                              <div>
-                                <label className="text-sm font-medium">Plano</label>
-                                <Select
-                                  value={selectedPlan.planId}
-                                  onValueChange={(value) => updatePlanId(index, value)}
-                                >
-                                  <SelectTrigger className={planErrors[index] && !selectedPlan.planId ? 'border-red-500' : ''}>
-                                    <SelectValue placeholder="Selecione um plano" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {getAvailablePlans(index).map((plan: any) => (
-                                      <SelectItem key={plan.id} value={plan.id}>
-                                        {plan.name}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                                {planErrors[index] && !selectedPlan.planId && (
-                                  <p className="text-xs text-red-500 mt-1">{planErrors[index]}</p>
-                                )}
-                              </div>
-
-                              {/* Receber */}
-                              <div>
-                                <label className="text-sm font-medium">Receber (R$)</label>
-                                <InputMasked
-                                  mask="price"
-                                  value={selectedPlan.receber}
-                                  onChange={(e) => updatePlanField(index, 'receber', e.target.value)}
-                                  placeholder="0,00"
-                                  data-testid={`input-plan-receber-${index}`}
-                                  className={planErrors[index] ? 'border-red-500' : ''}
-                                />
-                                {planErrors[index] && (
-                                  <p className="text-xs text-red-500 mt-1">{planErrors[index]}</p>
-                                )}
-                              </div>
-                              
-                              {/* Coparticipação (condicional) */}
-                              {showCoparticipacao && (
+                            <div className="flex flex-col md:flex-row gap-4 items-end">
+                              {/* Container dos campos que se expandem igualmente */}
+                              <div className={`flex flex-col md:flex-row gap-4 flex-1 ${showCoparticipacao ? 'md:grid md:grid-cols-5' : 'md:grid md:grid-cols-4'}`}>
+                                {/* Plano */}
                                 <div>
-                                  <label className="text-sm font-medium">Coparticipação (R$)</label>
+                                  <label className="text-sm font-medium">Plano</label>
+                                  <Select
+                                    value={selectedPlan.planId}
+                                    onValueChange={(value) => updatePlanId(index, value)}
+                                  >
+                                    <SelectTrigger className={planErrors[index] && !selectedPlan.planId ? 'border-red-500' : ''}>
+                                      <SelectValue placeholder="Selecione um plano" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {getAvailablePlans(index).map((plan: any) => (
+                                        <SelectItem key={plan.id} value={plan.id}>
+                                          {plan.name}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  {planErrors[index] && !selectedPlan.planId && (
+                                    <p className="text-xs text-red-500 mt-1">{planErrors[index]}</p>
+                                  )}
+                                </div>
+
+                                {/* Receber */}
+                                <div>
+                                  <label className="text-sm font-medium">Receber (R$)</label>
                                   <InputMasked
                                     mask="price"
-                                    value={selectedPlan.coparticipacao}
-                                    onChange={(e) => updatePlanField(index, 'coparticipacao', e.target.value)}
+                                    value={selectedPlan.receber}
+                                    onChange={(e) => updatePlanField(index, 'receber', e.target.value)}
                                     placeholder="0,00"
-                                    data-testid={`input-plan-coparticipacao-${index}`}
+                                    data-testid={`input-plan-receber-${index}`}
+                                    className={planErrors[index] ? 'border-red-500' : ''}
+                                  />
+                                  {planErrors[index] && (
+                                    <p className="text-xs text-red-500 mt-1">{planErrors[index]}</p>
+                                  )}
+                                </div>
+                                
+                                {/* Coparticipação (condicional) */}
+                                {showCoparticipacao && (
+                                  <div>
+                                    <label className="text-sm font-medium">Coparticipação (R$)</label>
+                                    <InputMasked
+                                      mask="price"
+                                      value={selectedPlan.coparticipacao}
+                                      onChange={(e) => updatePlanField(index, 'coparticipacao', e.target.value)}
+                                      placeholder="0,00"
+                                      data-testid={`input-plan-coparticipacao-${index}`}
+                                    />
+                                  </div>
+                                )}
+
+                                {/* Carência */}
+                                <div>
+                                  <label className="text-sm font-medium">Carência</label>
+                                  <Input
+                                    value={selectedPlan.carencia}
+                                    onChange={(e) => updatePlanField(index, 'carencia', e.target.value)}
+                                    placeholder="Ex: 30 dias"
+                                    data-testid={`input-plan-carencia-${index}`}
                                   />
                                 </div>
-                              )}
-
-                              {/* Carência */}
-                              <div>
-                                <label className="text-sm font-medium">Carência</label>
-                                <Input
-                                  value={selectedPlan.carencia}
-                                  onChange={(e) => updatePlanField(index, 'carencia', e.target.value)}
-                                  placeholder="Ex: 30 dias"
-                                  data-testid={`input-plan-carencia-${index}`}
-                                />
-                              </div>
-                              
-                              {/* Limites Anuais */}
-                              <div>
-                                <label className="text-sm font-medium">Limites Anuais</label>
-                                <Input
-                                  value={selectedPlan.limitesAnuais}
-                                  onChange={(e) => updatePlanField(index, 'limitesAnuais', e.target.value)}
-                                  placeholder="Ex: R$ 5.000,00"
-                                  data-testid={`input-plan-limites-${index}`}
-                                />
+                                
+                                {/* Limites Anuais */}
+                                <div>
+                                  <label className="text-sm font-medium">Limites Anuais</label>
+                                  <Input
+                                    value={selectedPlan.limitesAnuais}
+                                    onChange={(e) => updatePlanField(index, 'limitesAnuais', e.target.value)}
+                                    placeholder="Ex: R$ 5.000,00"
+                                    data-testid={`input-plan-limites-${index}`}
+                                  />
+                                </div>
                               </div>
 
-                              {/* Botão Remover */}
+                              {/* Botão Remover - compacto e quadrado */}
                               <div className="flex justify-center md:justify-end">
                                 <Button
                                   type="button"
                                   size="sm"
                                   onClick={() => removePlan(index)}
-                                  className="btn-primary"
+                                  className="btn-primary w-10 h-10 p-0 flex-shrink-0"
                                 >
                                   <X className="h-4 w-4" />
                                 </Button>
