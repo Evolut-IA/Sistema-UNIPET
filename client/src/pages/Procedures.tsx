@@ -446,10 +446,11 @@ export default function Procedures() {
                         const showCoparticipacao = currentPlan?.planType === "with_waiting_period";
                         
                         return (
-                          <div key={index} className="p-4 border rounded-lg space-y-4">
-                            {/* Linha 1: Plano */}
-                            <div className="grid grid-cols-1 gap-4">
-                              <div>
+                          <div key={index} className="p-4 border rounded-lg">
+                            {/* Layout responsivo: desktop = linha única, mobile = empilhado */}
+                            <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
+                              {/* Plano */}
+                              <div className="md:col-span-2">
                                 <label className="text-sm font-medium">Plano</label>
                                 <Select
                                   value={selectedPlan.planId}
@@ -470,10 +471,8 @@ export default function Procedures() {
                                   <p className="text-xs text-red-500 mt-1">{planErrors[index]}</p>
                                 )}
                               </div>
-                            </div>
 
-                            {/* Linha 2: Receber e Coparticipação (condicional) */}
-                            <div className={`grid ${showCoparticipacao ? 'grid-cols-2' : 'grid-cols-1'} gap-4`}>
+                              {/* Receber */}
                               <div>
                                 <label className="text-sm font-medium">Receber (R$)</label>
                                 <InputMasked
@@ -489,7 +488,8 @@ export default function Procedures() {
                                 )}
                               </div>
                               
-                              {showCoparticipacao && (
+                              {/* Coparticipação (condicional) */}
+                              {showCoparticipacao ? (
                                 <div>
                                   <label className="text-sm font-medium">Coparticipação (R$)</label>
                                   <InputMasked
@@ -500,11 +500,11 @@ export default function Procedures() {
                                     data-testid={`input-plan-coparticipacao-${index}`}
                                   />
                                 </div>
+                              ) : (
+                                <div></div> // Espaço vazio quando não há coparticipação
                               )}
-                            </div>
 
-                            {/* Linha 3: Carência e Limites Anuais */}
-                            <div className="grid grid-cols-2 gap-4">
+                              {/* Carência */}
                               <div>
                                 <label className="text-sm font-medium">Carência</label>
                                 <Input
@@ -515,6 +515,7 @@ export default function Procedures() {
                                 />
                               </div>
                               
+                              {/* Limites Anuais */}
                               <div>
                                 <label className="text-sm font-medium">Limites Anuais</label>
                                 <Input
@@ -524,18 +525,18 @@ export default function Procedures() {
                                   data-testid={`input-plan-limites-${index}`}
                                 />
                               </div>
-                            </div>
 
-                            {/* Botão Remover */}
-                            <div className="flex justify-end">
-                              <Button
-                                type="button"
-                                size="sm"
-                                onClick={() => removePlan(index)}
-                                className="btn-primary"
-                              >
-                                <X className="h-4 w-4" />
-                              </Button>
+                              {/* Botão Remover */}
+                              <div className="flex justify-center md:justify-end">
+                                <Button
+                                  type="button"
+                                  size="sm"
+                                  onClick={() => removePlan(index)}
+                                  className="btn-primary"
+                                >
+                                  <X className="h-4 w-4" />
+                                </Button>
+                              </div>
                             </div>
                           </div>
                         );
