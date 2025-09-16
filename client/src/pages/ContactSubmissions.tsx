@@ -303,7 +303,7 @@ export default function ContactSubmissions() {
                         data-testid={`button-whatsapp-${submission.id}`}
                         title="Enviar mensagem no WhatsApp"
                       >
-                        <WhatsAppIcon className="h-4 w-4" />
+                        <WhatsAppIcon className="h-5 w-5" />
                       </Button>
                       <Button
                         variant="default"
