@@ -514,16 +514,18 @@ export default function Procedures() {
                                   </div>
                                 )}
 
-                                {/* Carência */}
-                                <div>
-                                  <label className="text-sm font-medium">Carência</label>
-                                  <Input
-                                    value={selectedPlan.carencia}
-                                    onChange={(e) => updatePlanField(index, 'carencia', e.target.value)}
-                                    placeholder="Digite apenas números"
-                                    data-testid={`input-plan-carencia-${index}`}
-                                  />
-                                </div>
+                                {/* Carência - aparece apenas para planos Sem Coparticipação */}
+                                {!showCoparticipacao && (
+                                  <div>
+                                    <label className="text-sm font-medium">Carência</label>
+                                    <Input
+                                      value={selectedPlan.carencia}
+                                      onChange={(e) => updatePlanField(index, 'carencia', e.target.value)}
+                                      placeholder="Digite apenas números"
+                                      data-testid={`input-plan-carencia-${index}`}
+                                    />
+                                  </div>
+                                )}
                                 
                                 {/* Limites Anuais */}
                                 <div>
