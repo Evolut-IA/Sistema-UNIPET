@@ -204,9 +204,9 @@ export default function Guides() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "open": return "bg-chart-2/20 text-chart-2";      // Distribuição de Planos
-      case "closed": return "bg-chart-1/20 text-chart-1";    // Visão Geral em Gráficos
-      case "cancelled": return "bg-chart-5/20 text-chart-5"; // Negativo (vermelho)
+      case "open": return "bg-warning/20 text-warning";       // Ausente (amarelo)
+      case "closed": return "bg-chart-4/20 text-chart-4";     // Positivo (verde)
+      case "cancelled": return "bg-chart-5/20 text-chart-5";  // Negativo (vermelho)
       default: return "bg-chart-4/20 text-chart-4";
     }
   };
