@@ -318,13 +318,13 @@ export default function Procedures() {
         errors[index] = 'Selecione um plano';
         hasErrors = true;
       }
-      if (!plan.price || plan.price.trim() === '') {
-        errors[index] = 'Preço é obrigatório';
+      if (!plan.receber || plan.receber.trim() === '') {
+        errors[index] = 'Valor a receber é obrigatório';
         hasErrors = true;
       } else {
-        const numValue = convertPriceToNumber(plan.price);
+        const numValue = convertPriceToNumber(plan.receber);
         if (numValue < 0) {
-          errors[index] = 'Preço deve ser maior ou igual a zero';
+          errors[index] = 'Valor a receber deve ser maior ou igual a zero';
           hasErrors = true;
         }
       }
@@ -448,9 +448,9 @@ export default function Procedures() {
                         return (
                           <div key={index} className="p-4 border rounded-lg">
                             {/* Layout responsivo: desktop = linha única, mobile = empilhado */}
-                            <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
+                            <div className={`grid grid-cols-1 ${showCoparticipacao ? 'md:grid-cols-6' : 'md:grid-cols-5'} gap-4 items-end`}>
                               {/* Plano */}
-                              <div className="md:col-span-2">
+                              <div>
                                 <label className="text-sm font-medium">Plano</label>
                                 <Select
                                   value={selectedPlan.planId}
@@ -489,7 +489,7 @@ export default function Procedures() {
                               </div>
                               
                               {/* Coparticipação (condicional) */}
-                              {showCoparticipacao ? (
+                              {showCoparticipacao && (
                                 <div>
                                   <label className="text-sm font-medium">Coparticipação (R$)</label>
                                   <InputMasked
@@ -500,8 +500,6 @@ export default function Procedures() {
                                     data-testid={`input-plan-coparticipacao-${index}`}
                                   />
                                 </div>
-                              ) : (
-                                <div></div> // Espaço vazio quando não há coparticipação
                               )}
 
                               {/* Carência */}
