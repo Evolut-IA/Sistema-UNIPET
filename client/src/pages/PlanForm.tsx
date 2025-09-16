@@ -16,7 +16,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { insertPlanSchema } from "@shared/schema";
 import { ArrowLeft } from "lucide-react";
-import { PLAN_TYPES } from "@/lib/constants";
+import { PLAN_TYPES, PROCEDURE_TYPE_LABELS } from "@/lib/constants";
 
 export default function PlanForm() {
   const [, setLocation] = useLocation();
@@ -274,23 +274,45 @@ export default function PlanForm() {
               </CardHeader>
               <CardContent>
                 {Array.isArray(planProcedures) && planProcedures.length > 0 ? (
-                  <div className="space-y-3">
-                    {planProcedures.map((item: any) => (
-                      <div key={item.id} className="flex items-center justify-between p-3 border rounded-lg">
-                        <div className="flex-1">
-                          <h4 className="font-medium text-foreground">{item.procedure.name}</h4>
-                          {item.procedure.description && (
-                            <p className="text-sm text-muted-foreground mt-1">{item.procedure.description}</p>
-                          )}
+                  <div className="space-y-6">
+                    {(() => {
+                      // Group procedures by type
+                      const groupedProcedures = planProcedures.reduce((groups: any, item: any) => {
+                        const type = item.procedure.procedureType || 'consultas';
+                        if (!groups[type]) {
+                          groups[type] = [];
+                        }
+                        groups[type].push(item);
+                        return groups;
+                      }, {});
+
+                      // Render each group
+                      return Object.entries(groupedProcedures).map(([type, procedures]: [string, any]) => (
+                        <div key={type} className="space-y-3">
+                          <h3 className="text-lg font-semibold text-foreground border-b pb-2">
+                            {PROCEDURE_TYPE_LABELS[type as keyof typeof PROCEDURE_TYPE_LABELS]}
+                          </h3>
+                          <div className="space-y-2 ml-4">
+                            {procedures.map((item: any) => (
+                              <div key={item.id} className="flex items-center justify-between p-3 border rounded-lg">
+                                <div className="flex-1">
+                                  <h4 className="font-medium text-foreground">{item.procedure.name}</h4>
+                                  {item.procedure.description && (
+                                    <p className="text-sm text-muted-foreground mt-1">{item.procedure.description}</p>
+                                  )}
+                                </div>
+                                <div className="text-right">
+                                  <p className="font-medium text-lg">
+                                    R$ {(item.price / 100).toFixed(2).replace('.', ',')}
+                                  </p>
+                                  <p className="text-xs text-muted-foreground">Preço no plano</p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
                         </div>
-                        <div className="text-right">
-                          <p className="font-medium text-lg">
-                            R$ {(item.price / 100).toFixed(2).replace('.', ',')}
-                          </p>
-                          <p className="text-xs text-muted-foreground">Preço no plano</p>
-                        </div>
-                      </div>
-                    ))}
+                      ));
+                    })()}
                   </div>
                 ) : (
                   <div className="text-center py-8 text-muted-foreground">

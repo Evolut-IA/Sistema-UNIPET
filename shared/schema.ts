@@ -5,6 +5,17 @@ import { z } from "zod";
 
 // Enums
 export const planTypeEnum = pgEnum("plan_type_enum", ["with_waiting_period", "without_waiting_period"]);
+export const procedureTypeEnum = pgEnum("procedure_type_enum", [
+  "consultas",
+  "exames_laboratoriais", 
+  "especialistas",
+  "vacinas",
+  "cirurgias",
+  "exames_de_imagem",
+  "exames_laboratoriais_complexos",
+  "procedimentos_ambulatoriais",
+  "beneficios_especiais"
+]);
 
 // Users table for authentication and administration
 export const users = pgTable("users", {
@@ -111,6 +122,7 @@ export const procedures = pgTable("procedures", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: text("name").notNull(),
   description: text("description"),
+  procedureType: procedureTypeEnum("procedure_type").notNull().default("consultas"),
   isActive: boolean("is_active").default(true),
   displayOrder: integer("display_order").notNull().default(0),
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
@@ -119,6 +131,7 @@ export const procedures = pgTable("procedures", {
   return {
     displayOrderIdx: index("procedures_display_order_idx").on(table.displayOrder),
     isActiveIdx: index("procedures_is_active_idx").on(table.isActive),
+    procedureTypeIdx: index("procedures_procedure_type_idx").on(table.procedureType),
   };
 });
 

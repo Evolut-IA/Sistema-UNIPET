@@ -17,6 +17,7 @@ import { Plus, Search, Edit, Trash2, ClipboardList, Eye, DollarSign, X } from "l
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { insertProcedureSchema } from "@shared/schema";
+import { PROCEDURE_TYPES, PROCEDURE_TYPE_LABELS } from "@/lib/constants";
 
 export default function Procedures() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -49,6 +50,7 @@ export default function Procedures() {
     defaultValues: {
       name: "",
       description: "",
+      procedureType: "consultas",
       isActive: true,
     },
   });
@@ -255,6 +257,7 @@ export default function Procedures() {
     form.reset({
       name: item.name || "",
       description: item.description || "",
+      procedureType: item.procedureType || "consultas",
       isActive: item.isActive ?? true,
     });
     setDialogOpen(true);
@@ -362,6 +365,31 @@ export default function Procedures() {
                       <FormControl>
                         <Input {...field} data-testid="input-procedure-name" />
                       </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="procedureType"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tipo de Procedimento *</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger data-testid="select-procedure-type">
+                            <SelectValue placeholder="Selecione o tipo" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {PROCEDURE_TYPES.map((type) => (
+                            <SelectItem key={type} value={type}>
+                              {PROCEDURE_TYPE_LABELS[type as keyof typeof PROCEDURE_TYPE_LABELS]}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
