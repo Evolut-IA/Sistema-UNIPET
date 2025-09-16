@@ -183,13 +183,26 @@ export default function ThemeEditor() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  // Try to get cached theme data from localStorage
+  const getCachedTheme = () => {
+    try {
+      const cached = localStorage.getItem('cached-theme');
+      return cached ? JSON.parse(cached) : null;
+    } catch {
+      return null;
+    }
+  };
+
   const { data: themeSettings, isLoading } = useQuery({
     queryKey: ["/api/settings/theme"],
   });
 
+  // Use cached data if available, otherwise use DEFAULT_THEME
+  const initialValues = getCachedTheme() || DEFAULT_THEME;
+
   const form = useForm({
     resolver: zodResolver(insertThemeSettingsSchema),
-    defaultValues: DEFAULT_THEME,
+    defaultValues: initialValues,
   });
 
   // Function to update all related fields when a main color changes
@@ -239,8 +252,12 @@ export default function ThemeEditor() {
   // Apply theme changes in real-time
   const watchedValues = form.watch();
   useEffect(() => {
-    applyThemeToCSSVariables(watchedValues);
-  }, [watchedValues]);
+    // Only apply theme if we have loaded data from server or have cached data
+    // This prevents applying DEFAULT_THEME values before real data arrives
+    if (themeSettings || getCachedTheme()) {
+      applyThemeToCSSVariables(watchedValues);
+    }
+  }, [watchedValues, themeSettings]);
 
   const onSubmit = (data: any) => {
     saveThemeMutation.mutate(data);
