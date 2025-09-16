@@ -58,7 +58,7 @@ export function ResponsivePopupDemo() {
           <h3 className="font-medium">Dialog Responsivo</h3>
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="outline" className="w-full">
+              <Button variant="default" className="w-full">
                 Abrir Dialog
               </Button>
             </DialogTrigger>
@@ -128,11 +128,11 @@ export function ResponsivePopupDemo() {
           <h3 className="font-medium">Popover Responsivo</h3>
           <ResponsivePopover open={popoverOpen} onOpenChange={setPopoverOpen}>
             <ResponsivePopoverTrigger asChild>
-              <Button variant="outline" className="w-full">
+              <Button variant="default" className="w-full">
                 Abrir Popover
               </Button>
             </ResponsivePopoverTrigger>
-            <PopoverContent mobileAsDrawer={true}>
+            <PopoverContent>
               <div className="space-y-4">
                 <div>
                   <h4 className="font-medium">Popover Inteligente</h4>
@@ -159,7 +159,7 @@ export function ResponsivePopupDemo() {
           <h3 className="font-medium">Sheet Responsivo</h3>
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="outline" className="w-full">
+              <Button variant="default" className="w-full">
                 Abrir Sheet
               </Button>
             </SheetTrigger>

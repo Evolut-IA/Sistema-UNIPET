@@ -297,7 +297,7 @@ export default function ContactSubmissions() {
                     {/* Botões em linha horizontal */}
                     <div className="flex items-center space-x-1 w-full sm:w-auto sm:ml-3">
                       <Button
-                        variant="outline"
+                        variant="default"
                         size="sm"
                         onClick={() => handleWhatsApp(submission)}
                         data-testid={`button-whatsapp-${submission.id}`}
@@ -306,7 +306,7 @@ export default function ContactSubmissions() {
                         <WhatsAppIcon className="h-4 w-4" />
                       </Button>
                       <Button
-                        variant="outline"
+                        variant="default"
                         size="sm"
                         onClick={() => handleViewDetails(submission)}
                         data-testid={`button-view-${submission.id}`}
@@ -314,7 +314,7 @@ export default function ContactSubmissions() {
                         <Eye className="h-4 w-4" />
                       </Button>
                       <Button
-                        variant="outline"
+                        variant="default"
                         size="sm"
                         onClick={() => {
                           setSelectedSubmission(submission);

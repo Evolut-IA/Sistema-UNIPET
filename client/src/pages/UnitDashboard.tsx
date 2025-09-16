@@ -337,7 +337,7 @@ export default function UnitDashboard() {
                           </div>
                           <div className="flex space-x-2">
                             <Button
-                              variant="outline"
+                              variant="default"
                               size="sm"
                               onClick={() => setSelectedGuide(guide)}
                             >
