@@ -271,7 +271,7 @@ export default function Procedures() {
         <Card>
           <CardHeader>
             <CardTitle className="text-foreground">
-              Gerenciamento ({filteredItems?.length || 0} procedimentos)
+              Procedimentos ({filteredItems?.length || 0})
             </CardTitle>
           </CardHeader>
           <CardContent>
