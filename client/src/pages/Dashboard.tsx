@@ -165,9 +165,9 @@ export default function Dashboard() {
   );
 
   return (
-    <div className="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
+    <div className="p-3 sm:p-4 lg:p-6 space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
         <div className="flex-1">
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground break-words">Dashboard Geral</h1>
           <p className="text-sm text-muted-foreground">Visão geral do sistema de gestão</p>
@@ -210,7 +210,7 @@ export default function Dashboard() {
         )}
 
       {/* Metrics Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         <Card>
           <CardContent className="p-6">
             <div className="flex items-start justify-between gap-2">
@@ -283,7 +283,7 @@ export default function Dashboard() {
       </div>
 
       {/* Charts Grid - Two columns */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         {/* Visão Geral em Gráficos */}
         <Card>
           <CardHeader>

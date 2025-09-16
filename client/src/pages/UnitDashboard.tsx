@@ -291,7 +291,7 @@ export default function UnitDashboard() {
         </div>
 
         <Tabs defaultValue="pending" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 gap-1">
             <TabsTrigger value="pending">Pendentes</TabsTrigger>
             <TabsTrigger value="accepted">Aceitas</TabsTrigger>
             <TabsTrigger value="rejected">Rejeitadas</TabsTrigger>

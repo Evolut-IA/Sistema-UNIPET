@@ -311,8 +311,8 @@ export default function Clients() {
                       </div>
                     </div>
                     
-                    {/* Botões em linha horizontal */}
-                    <div className="flex items-center space-x-1 w-full sm:w-auto">
+                    {/* Botões - Mobile: Scroll horizontal; Desktop: Em linha */}
+                    <div className="flex items-center space-x-1 w-full sm:w-auto overflow-x-auto pb-2 sm:pb-0 sm:overflow-visible scrollbar-hide">
                       <Button
                         variant="default"
                         size="sm"

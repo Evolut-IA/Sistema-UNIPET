@@ -155,13 +155,13 @@ export default function PlanForm() {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-3 sm:p-4 lg:p-6 space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-foreground">
+        <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground break-words">
           {isEdit ? "Editar Plano" : "Novo Plano"}
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-sm sm:text-base text-muted-foreground">
           {isEdit ? "Atualize as informações do plano" : "Crie um novo plano de saúde"}
         </p>
       </div>

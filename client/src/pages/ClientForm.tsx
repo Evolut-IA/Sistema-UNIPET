@@ -39,7 +39,7 @@ export default function ClientForm() {
   });
 
   const deletePetMutation = useMutation({
-    mutationFn: (petId: string) => apiRequest(`/api/pets/${petId}`, { method: "DELETE" }),
+    mutationFn: (petId: string) => apiRequest("DELETE", `/api/pets/${petId}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/clients", params.id, "pets"] });
       toast({
@@ -189,13 +189,13 @@ export default function ClientForm() {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-3 sm:p-4 lg:p-6 space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-foreground">
+        <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground break-words">
           {isEdit ? "Editar Cliente" : "Novo Cliente"}
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-sm sm:text-base text-muted-foreground">
           {isEdit ? "Atualize as informações do cliente" : "Cadastre um novo cliente"}
         </p>
       </div>
@@ -420,13 +420,14 @@ export default function ClientForm() {
       {isEdit && (
         <Card>
           <CardHeader>
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <CardTitle className="text-foreground">Pets do Cliente</CardTitle>
               <Button
                 variant="default"
                 size="sm"
                 onClick={() => setLocation(`/clientes/${params.id}/pets/novo`)}
                 data-testid="button-add-pet"
+                className="w-full md:w-auto"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Adicionar Pet
@@ -444,7 +445,7 @@ export default function ClientForm() {
                 {pets.map((pet: any) => (
                   <div
                     key={pet.id}
-                    className="flex items-center justify-between p-4 border border-border rounded-lg bg-card"
+                    className="flex flex-col md:flex-row md:items-center justify-between p-4 border border-border rounded-lg bg-card gap-4 md:gap-0"
                   >
                     <div className="flex-1">
                       <div className="flex items-center gap-3">

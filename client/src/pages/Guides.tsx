@@ -370,8 +370,8 @@ export default function Guides() {
                     </div>
                     
                     {/* Mobile: Botões */}
-                    <div className="flex lg:hidden items-center justify-start">
-                      <div className="flex items-center space-x-1">
+                    <div className="flex lg:hidden items-center justify-start overflow-x-auto pb-2 scrollbar-hide">
+                      <div className="flex items-center space-x-1 min-w-max">
                         <Button
                           variant="default"
                           size="sm"
