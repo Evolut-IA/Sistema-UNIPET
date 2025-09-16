@@ -270,9 +270,7 @@ export const insertPetSchema = createInsertSchema(pets).omit({ id: true, created
     date: z.string()
   })).optional()
 });
-export const insertPlanSchema = createInsertSchema(plans).omit({ id: true, createdAt: true }).extend({
-  coparticipacaoPercentual: z.number().min(1, "Percentual deve ser entre 1 e 100").max(100, "Percentual deve ser entre 1 e 100").optional()
-});
+export const insertPlanSchema = createInsertSchema(plans).omit({ id: true, createdAt: true });
 export const insertNetworkUnitSchema = createInsertSchema(networkUnits).omit({ id: true, createdAt: true }).extend({
   imageUrl: z.string().min(1, "Imagem da unidade é obrigatória"),
   urlSlug: z.string().optional(), // URL slug is optional - will be auto-generated if not provided
