@@ -127,8 +127,7 @@ const DateRangePicker = React.forwardRef<
     <Button
       variant="default"
       className={cn(
-        "w-full justify-start text-left font-normal",
-        (!value?.startDate && !value?.endDate) && "text-primary-foreground/70"
+        "w-full justify-start text-left font-normal"
       )}
       disabled={disabled}
     >
