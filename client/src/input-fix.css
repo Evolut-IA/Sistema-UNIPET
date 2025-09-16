@@ -1,23 +1,23 @@
 /* PREVENIR MUDANÇA DE COR DO BACKGROUND AO COLAR TEXTO */
 input, textarea, select {
   background-color: var(--input) !important;
-  color: var(--foreground) !important;
+  color: var(--input-foreground) !important;
 }
 
 /* Prevenir mudanças de cor em todos os estados de input */
 input:focus, textarea:focus, select:focus {
   background-color: var(--input) !important;
-  color: var(--foreground) !important;
+  color: var(--input-foreground) !important;
 }
 
 input:hover, textarea:hover, select:hover {
   background-color: var(--input) !important;
-  color: var(--foreground) !important;
+  color: var(--input-foreground) !important;
 }
 
 input:active, textarea:active, select:active {
   background-color: var(--input) !important;
-  color: var(--foreground) !important;
+  color: var(--input-foreground) !important;
 }
 
 /* Prevenir autofill do navegador de mudar cores */
@@ -26,49 +26,49 @@ input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 30px var(--input) inset !important;
-  -webkit-text-fill-color: var(--foreground) !important;
+  -webkit-text-fill-color: var(--input-foreground) !important;
   background-color: var(--input) !important;
-  color: var(--foreground) !important;
+  color: var(--input-foreground) !important;
 }
 
 /* Prevenir mudanças de cor ao colar texto */
 input:focus-visible, textarea:focus-visible, select:focus-visible {
   background-color: var(--input) !important;
-  color: var(--foreground) !important;
+  color: var(--input-foreground) !important;
 }
 
 /* Garantir que o background não mude em nenhum estado */
 input[type="text"], input[type="email"], input[type="password"], input[type="number"], 
 input[type="tel"], input[type="url"], input[type="search"], textarea {
   background-color: var(--input) !important;
-  color: var(--foreground) !important;
+  color: var(--input-foreground) !important;
 }
 
 input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus, 
 input[type="number"]:focus, input[type="tel"]:focus, input[type="url"]:focus, 
 input[type="search"]:focus, textarea:focus {
   background-color: var(--input) !important;
-  color: var(--foreground) !important;
+  color: var(--input-foreground) !important;
 }
 
 /* Prevenir mudanças de cor específicas para componentes UI */
 .input, .textarea, .select {
   background-color: var(--input) !important;
-  color: var(--foreground) !important;
+  color: var(--input-foreground) !important;
 }
 
 .input:focus, .textarea:focus, .select:focus {
   background-color: var(--input) !important;
-  color: var(--foreground) !important;
+  color: var(--input-foreground) !important;
 }
 
 /* Prevenir mudanças de cor em elementos com classes específicas */
 [class*="input"], [class*="textarea"], [class*="select"] {
   background-color: var(--input) !important;
-  color: var(--foreground) !important;
+  color: var(--input-foreground) !important;
 }
 
 [class*="input"]:focus, [class*="textarea"]:focus, [class*="select"]:focus {
   background-color: var(--input) !important;
-  color: var(--foreground) !important;
+  color: var(--input-foreground) !important;
 }

@@ -28,6 +28,7 @@ export const DEFAULT_THEME = {
   
   // Forms
   inputBackground: "#f7f9fa",
+  inputText: "#1a1a1a",
   inputBorder: "#e1eaef",
   focusBorder: "#277677",
   
@@ -78,6 +79,7 @@ export const applyThemeToCSSVariables = (themeSettings: Record<string, any>) => 
   
   // Forms
   root.style.setProperty('--input', themeSettings.inputBackground || DEFAULT_THEME.inputBackground);
+  root.style.setProperty('--input-foreground', themeSettings.inputText || DEFAULT_THEME.inputText);
   root.style.setProperty('--border', themeSettings.inputBorder || DEFAULT_THEME.inputBorder);
   root.style.setProperty('--ring', themeSettings.focusBorder || DEFAULT_THEME.focusBorder);
   

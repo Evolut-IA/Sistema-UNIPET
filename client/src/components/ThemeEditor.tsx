@@ -381,11 +381,11 @@ export default function ThemeEditor() {
                       {/* Cor do Texto de Textarea */}
                       <FormField
                         control={form.control}
-                        name="textColor"
+                        name="inputText"
                         render={({ field }) => (
                           <FormItem>
                             <ColorInput
-                              value={field.value || DEFAULT_THEME.textColor}
+                              value={field.value || DEFAULT_THEME.inputText}
                               onChange={field.onChange}
                               title="Cor do Texto de Textarea"
                               description="Cor do texto dentro de campos de entrada"
