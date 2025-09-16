@@ -238,7 +238,14 @@ export default function Network() {
       </Card>
 
       {/* Units List */}
-      <div className="space-y-2">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-foreground">
+            Rede ({filteredUnits?.length || 0})
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
         {isLoading ? (
           [...Array(5)].map((_, i) => (
             <Card key={i} className="animate-pulse">
@@ -353,7 +360,9 @@ export default function Network() {
             </CardContent>
           </Card>
         )}
-      </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Details Dialog */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>

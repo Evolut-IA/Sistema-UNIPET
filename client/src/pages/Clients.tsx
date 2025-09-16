@@ -283,7 +283,7 @@ export default function Clients() {
       <Card>
         <CardHeader>
           <CardTitle className="text-foreground">
-            {searchQuery.length > 2 ? "Resultados da Busca" : "Todos os Clientes"}
+            {searchQuery.length > 2 ? `Resultados da Busca (${displayClients?.length || 0})` : `Clientes (${displayClients?.length || 0})`}
           </CardTitle>
         </CardHeader>
         <CardContent>
