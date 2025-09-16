@@ -156,7 +156,7 @@ export default function Settings() {
       <Tabs defaultValue="site" className="space-y-4 sm:space-y-6">
         <TabsList 
           className="grid w-full grid-cols-2 gap-1" 
-          style={{ backgroundColor: 'var(--background)' }}
+          style={{ backgroundColor: 'var(--accent)' }}
         >
           <TabsTrigger 
             value="site" 
