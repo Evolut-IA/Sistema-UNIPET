@@ -461,7 +461,6 @@ export default function Guides() {
                   <h4 className="font-semibold text-foreground mb-2">Informações Básicas</h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center space-x-2">
-                      <FileText className="h-4 w-4 text-muted-foreground" />
                       <span><strong className="text-primary">Procedimento:</strong> <span className="text-foreground">{selectedGuide.procedure}</span></span>
                     </div>
                     <div className="flex items-center space-x-2">
