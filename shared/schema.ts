@@ -111,8 +111,6 @@ export const procedures = pgTable("procedures", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: text("name").notNull(),
   description: text("description"),
-  planId: varchar("plan_id").references(() => plans.id),
-  value: text("value"),
   isActive: boolean("is_active").default(true),
   displayOrder: integer("display_order").notNull().default(0),
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
