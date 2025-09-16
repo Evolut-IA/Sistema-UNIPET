@@ -458,10 +458,11 @@ export default function Procedures() {
                         
                         return (
                           <div key={index} className="p-4 border rounded-lg">
-                            {/* Layout organizado em 2 linhas */}
+                            {/* Layout organizado em 2 linhas: 3 campos em cima, 3 embaixo */}
                             <div className="space-y-4">
-                              {/* Primeira linha: Plano */}
-                              <div className="grid grid-cols-1 gap-4">
+                              {/* Primeira linha: Plano, Receber, Pagar */}
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                {/* Plano */}
                                 <div>
                                   <label className="text-sm font-medium">Plano</label>
                                   <Select
@@ -483,10 +484,7 @@ export default function Procedures() {
                                     <p className="text-xs text-red-500 mt-1">{planErrors[index]}</p>
                                   )}
                                 </div>
-                              </div>
 
-                              {/* Segunda linha: Campos financeiros e administrativos */}
-                              <div className={`grid gap-4 ${showCoparticipacao ? 'grid-cols-2 md:grid-cols-5' : 'grid-cols-2 md:grid-cols-4'}`}>
                                 {/* Receber */}
                                 <div>
                                   <label className="text-sm font-medium">Receber (R$)</label>
@@ -514,9 +512,12 @@ export default function Procedures() {
                                     data-testid={`input-plan-pagar-${index}`}
                                   />
                                 </div>
-                                
-                                {/* Coparticipação (condicional) */}
-                                {showCoparticipacao && (
+                              </div>
+
+                              {/* Segunda linha: Coparticipação (condicional), Carência, Limites Anuais */}
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                {/* Coparticipação (condicional) - se não for com coparticipação, deixa espaço vazio */}
+                                {showCoparticipacao ? (
                                   <div>
                                     <label className="text-sm font-medium">Coparticipação (R$)</label>
                                     <InputMasked
@@ -527,6 +528,8 @@ export default function Procedures() {
                                       data-testid={`input-plan-coparticipacao-${index}`}
                                     />
                                   </div>
+                                ) : (
+                                  <div></div>
                                 )}
 
                                 {/* Carência */}
