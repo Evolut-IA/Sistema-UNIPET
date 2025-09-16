@@ -407,42 +407,42 @@ export default function UnitDashboard() {
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-sm font-medium">Cliente</Label>
-                    <p className="text-sm text-gray-600">{selectedGuide.client?.name}</p>
-                    <p className="text-sm text-gray-600">{selectedGuide.client?.email}</p>
-                    <p className="text-sm text-gray-600">{selectedGuide.client?.phone}</p>
+                    <Label className="text-sm font-medium text-primary">Cliente</Label>
+                    <p className="text-sm text-foreground">{selectedGuide.client?.name}</p>
+                    <p className="text-sm text-foreground">{selectedGuide.client?.email}</p>
+                    <p className="text-sm text-foreground">{selectedGuide.client?.phone}</p>
                   </div>
                   <div>
-                    <Label className="text-sm font-medium">Pet</Label>
-                    <p className="text-sm text-gray-600">{selectedGuide.pet?.name}</p>
-                    <p className="text-sm text-gray-600">
+                    <Label className="text-sm font-medium text-primary">Pet</Label>
+                    <p className="text-sm text-foreground">{selectedGuide.pet?.name}</p>
+                    <p className="text-sm text-foreground">
                       {selectedGuide.pet?.species} - {selectedGuide.pet?.breed}
                     </p>
                   </div>
                 </div>
                 
                 <div>
-                  <Label className="text-sm font-medium">Tipo de Atendimento</Label>
-                  <p className="text-sm text-gray-600">{selectedGuide.type}</p>
+                  <Label className="text-sm font-medium text-primary">Tipo de Atendimento</Label>
+                  <p className="text-sm text-foreground">{selectedGuide.type}</p>
                 </div>
 
                 {selectedGuide.procedureNotes && (
                   <div>
-                    <Label className="text-sm font-medium">Observações do Procedimento</Label>
-                    <p className="text-sm text-gray-600">{selectedGuide.procedureNotes}</p>
+                    <Label className="text-sm font-medium text-primary">Observações do Procedimento</Label>
+                    <p className="text-sm text-foreground">{selectedGuide.procedureNotes}</p>
                   </div>
                 )}
 
                 {selectedGuide.generalNotes && (
                   <div>
-                    <Label className="text-sm font-medium">Observações Gerais</Label>
-                    <p className="text-sm text-gray-600">{selectedGuide.generalNotes}</p>
+                    <Label className="text-sm font-medium text-primary">Observações Gerais</Label>
+                    <p className="text-sm text-foreground">{selectedGuide.generalNotes}</p>
                   </div>
                 )}
 
                 {selectedGuide.value && (
                   <div>
-                    <Label className="text-sm font-medium">Valor</Label>
+                    <Label className="text-sm font-medium text-primary">Valor</Label>
                     <p className="text-sm font-medium text-green-600">
                       {formatCurrency(selectedGuide.value)}
                     </p>
@@ -450,7 +450,7 @@ export default function UnitDashboard() {
                 )}
 
                 <div>
-                  <Label className="text-sm font-medium">Status</Label>
+                  <Label className="text-sm font-medium text-primary">Status</Label>
                   <div className="mt-1">
                     {getStatusBadge(selectedGuide.unitStatus || "pending")}
                   </div>

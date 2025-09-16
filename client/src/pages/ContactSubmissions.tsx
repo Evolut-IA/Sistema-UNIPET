@@ -363,42 +363,42 @@ export default function ContactSubmissions() {
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-foreground">Nome Completo</label>
-                  <p className="text-muted-foreground">{selectedSubmission.name}</p>
+                  <label className="text-sm font-medium text-primary">Nome Completo</label>
+                  <p className="text-foreground">{selectedSubmission.name}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-foreground">Email</label>
-                  <p className="text-muted-foreground">{selectedSubmission.email}</p>
+                  <label className="text-sm font-medium text-primary">Email</label>
+                  <p className="text-foreground">{selectedSubmission.email}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-foreground">Telefone</label>
-                  <p className="text-muted-foreground">{selectedSubmission.phone}</p>
+                  <label className="text-sm font-medium text-primary">Telefone</label>
+                  <p className="text-foreground">{selectedSubmission.phone}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-foreground">Cidade</label>
-                  <p className="text-muted-foreground">{selectedSubmission.city}</p>
+                  <label className="text-sm font-medium text-primary">Cidade</label>
+                  <p className="text-foreground">{selectedSubmission.city}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-foreground">Nome do Pet</label>
-                  <p className="text-muted-foreground">{selectedSubmission.petName}</p>
+                  <label className="text-sm font-medium text-primary">Nome do Pet</label>
+                  <p className="text-foreground">{selectedSubmission.petName}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-foreground">Tipo de Animal</label>
-                  <p className="text-muted-foreground">{selectedSubmission.animalType}</p>
+                  <label className="text-sm font-medium text-primary">Tipo de Animal</label>
+                  <p className="text-foreground">{selectedSubmission.animalType}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-foreground">Idade do Pet</label>
-                  <p className="text-muted-foreground">{selectedSubmission.petAge}</p>
+                  <label className="text-sm font-medium text-primary">Idade do Pet</label>
+                  <p className="text-foreground">{selectedSubmission.petAge}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-foreground">Plano de Interesse</label>
+                  <label className="text-sm font-medium text-primary">Plano de Interesse</label>
                   <Badge className={getPlanInterestColor(selectedSubmission.planInterest)}>
                     {selectedSubmission.planInterest}
                   </Badge>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-foreground">Data de Recebimento</label>
-                  <p className="text-muted-foreground">
+                  <label className="text-sm font-medium text-primary">Data de Recebimento</label>
+                  <p className="text-foreground">
                     {selectedSubmission.createdAt && format(new Date(selectedSubmission.createdAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
                   </p>
                 </div>

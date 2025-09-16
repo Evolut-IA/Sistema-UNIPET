@@ -462,22 +462,22 @@ export default function Guides() {
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center space-x-2">
                       <FileText className="h-4 w-4 text-muted-foreground" />
-                      <span><strong>Procedimento:</strong> {selectedGuide.procedure}</span>
+                      <span><strong className="text-primary">Procedimento:</strong> <span className="text-foreground">{selectedGuide.procedure}</span></span>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <span><strong>Tipo:</strong> {getTypeLabel(selectedGuide.type)}</span>
+                      <span><strong className="text-primary">Tipo:</strong> <span className="text-foreground">{getTypeLabel(selectedGuide.type)}</span></span>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <span><strong>Valor:</strong> R$ {parseFloat(selectedGuide.value || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                      <span><strong className="text-primary">Valor:</strong> <span className="text-foreground">R$ {parseFloat(selectedGuide.value || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></span>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <span><strong>Status:</strong></span>
+                      <span><strong className="text-primary">Status:</strong></span>
                       <Badge className={getStatusColor(selectedGuide.status)}>
                         {getStatusLabel(selectedGuide.status)}
                       </Badge>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <span><strong>Criada em:</strong> {selectedGuide.createdAt && format(new Date(selectedGuide.createdAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}</span>
+                      <span><strong className="text-primary">Criada em:</strong> <span className="text-foreground">{selectedGuide.createdAt && format(new Date(selectedGuide.createdAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}</span></span>
                     </div>
                   </div>
                 </div>
@@ -487,7 +487,7 @@ export default function Guides() {
                   <div className="space-y-2 text-sm">
                     {selectedGuide.procedureNotes && (
                       <div>
-                        <span className="font-medium text-foreground">Observações do Procedimento:</span>
+                        <span className="font-medium text-primary">Observações do Procedimento:</span>
                         <p className="text-muted-foreground mt-1 p-2 bg-muted/10 rounded">
                           {selectedGuide.procedureNotes}
                         </p>
@@ -495,7 +495,7 @@ export default function Guides() {
                     )}
                     {selectedGuide.generalNotes && (
                       <div>
-                        <span className="font-medium text-foreground">Anotações Gerais:</span>
+                        <span className="font-medium text-primary">Anotações Gerais:</span>
                         <p className="text-muted-foreground mt-1 p-2 bg-muted/10 rounded">
                           {selectedGuide.generalNotes}
                         </p>

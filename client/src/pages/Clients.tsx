@@ -410,16 +410,16 @@ export default function Clients() {
                   <h4 className="font-semibold text-foreground mb-2">Informações Pessoais</h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center space-x-2">
-                      <span><strong>Nome Completo:</strong> {selectedClient.fullName}</span>
+                      <span><strong className="text-primary">Nome Completo:</strong> <span className="text-foreground">{selectedClient.fullName}</span></span>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <span><strong>Email:</strong> {selectedClient.email || "Não informado"}</span>
+                      <span><strong className="text-primary">Email:</strong> <span className="text-foreground">{selectedClient.email || "Não informado"}</span></span>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <span><strong>Telefone:</strong> {selectedClient.phone}</span>
+                      <span><strong className="text-primary">Telefone:</strong> <span className="text-foreground">{selectedClient.phone}</span></span>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <span><strong>CPF:</strong> {selectedClient.cpf}</span>
+                      <span><strong className="text-primary">CPF:</strong> <span className="text-foreground">{selectedClient.cpf}</span></span>
                     </div>
                   </div>
                 </div>
@@ -428,16 +428,16 @@ export default function Clients() {
                   <h4 className="font-semibold text-foreground mb-2">Informações de Localização</h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center space-x-2">
-                      <span><strong>Cidade:</strong> {selectedClient.city || "Não informado"}</span>
+                      <span><strong className="text-primary">Cidade:</strong> <span className="text-foreground">{selectedClient.city || "Não informado"}</span></span>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <span><strong>Estado:</strong> {selectedClient.state || "Não informado"}</span>
+                      <span><strong className="text-primary">Estado:</strong> <span className="text-foreground">{selectedClient.state || "Não informado"}</span></span>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <span><strong>CEP:</strong> {selectedClient.cep || "Não informado"}</span>
+                      <span><strong className="text-primary">CEP:</strong> <span className="text-foreground">{selectedClient.cep || "Não informado"}</span></span>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <span><strong>Endereço:</strong> {selectedClient.address || "Não informado"}</span>
+                      <span><strong className="text-primary">Endereço:</strong> <span className="text-foreground">{selectedClient.address || "Não informado"}</span></span>
                     </div>
                   </div>
                 </div>
@@ -447,11 +447,11 @@ export default function Clients() {
                 <h4 className="font-semibold text-foreground mb-2">Informações do Cadastro</h4>
                 <div className="space-y-2 text-sm">
                   <div className="flex items-center space-x-2">
-                    <span><strong>Data de Cadastro:</strong> {selectedClient.createdAt && format(new Date(selectedClient.createdAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}</span>
+                    <span><strong className="text-primary">Data de Cadastro:</strong> <span className="text-foreground">{selectedClient.createdAt && format(new Date(selectedClient.createdAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}</span></span>
                   </div>
                   {selectedClient.updatedAt && (
                     <div className="flex items-center space-x-2">
-                      <span><strong>Última Atualização:</strong> {format(new Date(selectedClient.updatedAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}</span>
+                      <span><strong className="text-primary">Última Atualização:</strong> <span className="text-foreground">{format(new Date(selectedClient.updatedAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}</span></span>
                     </div>
                   )}
                 </div>
@@ -469,54 +469,54 @@ export default function Clients() {
                         <div className="grid grid-cols-1 gap-2 text-sm">
                           {/* Informações Básicas */}
                           <div className="flex items-center space-x-2">
-                            <span><strong>Nome:</strong> {pet.name}</span>
+                            <span><strong className="text-primary">Nome:</strong> <span className="text-foreground">{pet.name}</span></span>
                           </div>
                           <div className="flex items-center space-x-2">
-                            <span><strong>Espécie:</strong> {pet.species}</span>
+                            <span><strong className="text-primary">Espécie:</strong> <span className="text-foreground">{pet.species}</span></span>
                           </div>
                           {pet.breed && (
                             <div className="flex items-center space-x-2">
-                              <span><strong>Raça:</strong> {pet.breed}</span>
+                              <span><strong className="text-primary">Raça:</strong> <span className="text-foreground">{pet.breed}</span></span>
                             </div>
                           )}
                           {pet.age && (
                             <div className="flex items-center space-x-2">
-                              <span><strong>Idade:</strong> {pet.age}</span>
+                              <span><strong className="text-primary">Idade:</strong> <span className="text-foreground">{pet.age}</span></span>
                             </div>
                           )}
                           {pet.sex && (
                             <div className="flex items-center space-x-2">
-                              <span><strong>Sexo:</strong> {pet.sex}</span>
+                              <span><strong className="text-primary">Sexo:</strong> <span className="text-foreground">{pet.sex}</span></span>
                             </div>
                           )}
                           {pet.color && (
                             <div className="flex items-center space-x-2">
-                              <span><strong>Cor:</strong> {pet.color}</span>
+                              <span><strong className="text-primary">Cor:</strong> <span className="text-foreground">{pet.color}</span></span>
                             </div>
                           )}
                           {pet.weight && (
                             <div className="flex items-center space-x-2">
-                              <span><strong>Peso:</strong> {pet.weight}kg</span>
+                              <span><strong className="text-primary">Peso:</strong> <span className="text-foreground">{pet.weight}kg</span></span>
                             </div>
                           )}
                           {pet.birthDate && (
                             <div className="flex items-center space-x-2">
-                              <span><strong>Data de Nascimento:</strong> {format(new Date(pet.birthDate), "dd/MM/yyyy", { locale: ptBR })}</span>
+                              <span><strong className="text-primary">Data de Nascimento:</strong> <span className="text-foreground">{format(new Date(pet.birthDate), "dd/MM/yyyy", { locale: ptBR })}</span></span>
                             </div>
                           )}
                           {pet.castrated !== null && (
                             <div className="flex items-center space-x-2">
-                              <span><strong>Castrado:</strong> {pet.castrated ? "Sim" : "Não"}</span>
+                              <span><strong className="text-primary">Castrado:</strong> <span className="text-foreground">{pet.castrated ? "Sim" : "Não"}</span></span>
                             </div>
                           )}
                           {pet.microchip && (
                             <div className="flex items-center space-x-2">
-                              <span><strong>Microchip:</strong> {pet.microchip}</span>
+                              <span><strong className="text-primary">Microchip:</strong> <span className="text-foreground">{pet.microchip}</span></span>
                             </div>
                           )}
                           {pet.lastCheckup && (
                             <div className="flex items-center space-x-2">
-                              <span><strong>Último Check-up:</strong> {format(new Date(pet.lastCheckup), "dd/MM/yyyy", { locale: ptBR })}</span>
+                              <span><strong className="text-primary">Último Check-up:</strong> <span className="text-foreground">{format(new Date(pet.lastCheckup), "dd/MM/yyyy", { locale: ptBR })}</span></span>
                             </div>
                           )}
                         </div>
@@ -528,32 +528,32 @@ export default function Clients() {
                             <div className="grid grid-cols-1 gap-2 text-sm">
                               {pet.previousDiseases && (
                                 <div className="flex items-start space-x-2">
-                                  <span><strong>Doenças Anteriores:</strong> {pet.previousDiseases}</span>
+                                  <span><strong className="text-primary">Doenças Anteriores:</strong> <span className="text-foreground">{pet.previousDiseases}</span></span>
                                 </div>
                               )}
                               {pet.surgeries && (
                                 <div className="flex items-start space-x-2">
-                                  <span><strong>Cirurgias:</strong> {pet.surgeries}</span>
+                                  <span><strong className="text-primary">Cirurgias:</strong> <span className="text-foreground">{pet.surgeries}</span></span>
                                 </div>
                               )}
                               {pet.allergies && (
                                 <div className="flex items-start space-x-2">
-                                  <span><strong>Alergias:</strong> {pet.allergies}</span>
+                                  <span><strong className="text-primary">Alergias:</strong> <span className="text-foreground">{pet.allergies}</span></span>
                                 </div>
                               )}
                               {pet.currentMedications && (
                                 <div className="flex items-start space-x-2">
-                                  <span><strong>Medicações Atuais:</strong> {pet.currentMedications}</span>
+                                  <span><strong className="text-primary">Medicações Atuais:</strong> <span className="text-foreground">{pet.currentMedications}</span></span>
                                 </div>
                               )}
                               {pet.hereditaryConditions && (
                                 <div className="flex items-start space-x-2">
-                                  <span><strong>Condições Hereditárias:</strong> {pet.hereditaryConditions}</span>
+                                  <span><strong className="text-primary">Condições Hereditárias:</strong> <span className="text-foreground">{pet.hereditaryConditions}</span></span>
                                 </div>
                               )}
                               {pet.parasiteTreatments && (
                                 <div className="flex items-start space-x-2">
-                                  <span><strong>Tratamentos Antiparasitários:</strong> {pet.parasiteTreatments}</span>
+                                  <span><strong className="text-primary">Tratamentos Antiparasitários:</strong> <span className="text-foreground">{pet.parasiteTreatments}</span></span>
                                 </div>
                               )}
                             </div>
@@ -567,7 +567,7 @@ export default function Clients() {
                             <div className="space-y-1 text-sm">
                               {pet.vaccineData.map((vaccine: any, index: number) => (
                                 <div key={index} className="flex items-center space-x-2">
-                                  <span><strong>{vaccine.vaccine}:</strong> {format(new Date(vaccine.date), "dd/MM/yyyy", { locale: ptBR })}</span>
+                                  <span><strong className="text-primary">{vaccine.vaccine}:</strong> <span className="text-foreground">{format(new Date(vaccine.date), "dd/MM/yyyy", { locale: ptBR })}</span></span>
                                 </div>
                               ))}
                             </div>

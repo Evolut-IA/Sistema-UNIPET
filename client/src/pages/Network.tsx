@@ -380,24 +380,24 @@ export default function Network() {
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center space-x-2">
                       <Building2 className="h-4 w-4 text-muted-foreground" />
-                      <span><strong>Nome:</strong> {selectedUnit.name}</span>
+                      <span><strong className="text-primary">Nome:</strong> <span className="text-foreground">{selectedUnit.name}</span></span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <MapPin className="h-4 w-4 text-muted-foreground" />
-                      <span><strong>Endereço:</strong> {selectedUnit.address}</span>
+                      <span><strong className="text-primary">Endereço:</strong> <span className="text-foreground">{selectedUnit.address}</span></span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Phone className="h-4 w-4 text-muted-foreground" />
-                      <span><strong>Telefone:</strong> {selectedUnit.phone}</span>
+                      <span><strong className="text-primary">Telefone:</strong> <span className="text-foreground">{selectedUnit.phone}</span></span>
                     </div>
                     {selectedUnit.whatsapp && (
                       <div className="flex items-center space-x-2">
                         <Phone className="h-4 w-4 text-muted-foreground" />
-                        <span><strong>WhatsApp:</strong> {selectedUnit.whatsapp}</span>
+                        <span><strong className="text-primary">WhatsApp:</strong> <span className="text-foreground">{selectedUnit.whatsapp}</span></span>
                       </div>
                     )}
                     <div className="flex items-center space-x-2">
-                      <span><strong>Status:</strong> {selectedUnit.isActive ? "Ativo" : "Inativo"}</span>
+                      <span><strong className="text-primary">Status:</strong> <span className="text-foreground">{selectedUnit.isActive ? "Ativo" : "Inativo"}</span></span>
                     </div>
                   </div>
                 </div>
