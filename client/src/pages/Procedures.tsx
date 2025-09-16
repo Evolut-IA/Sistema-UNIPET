@@ -25,7 +25,13 @@ export default function Procedures() {
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
   const [viewingItem, setViewingItem] = useState<any>(null);
-  const [selectedPlans, setSelectedPlans] = useState<{planId: string, price: string}[]>([]);
+  const [selectedPlans, setSelectedPlans] = useState<{
+    planId: string, 
+    receber: string, 
+    coparticipacao: string, 
+    carencia: string, 
+    limitesAnuais: string
+  }[]>([]);
   const [planErrors, setPlanErrors] = useState<{[key: number]: string}>({});
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -66,10 +72,13 @@ export default function Procedures() {
     if (existingProcedurePlans && Array.isArray(existingProcedurePlans)) {
       const planData = existingProcedurePlans.map((item: any) => ({
         planId: item.planId,
-        price: (item.price / 100).toLocaleString('pt-BR', {
+        receber: (item.price / 100).toLocaleString('pt-BR', {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2
-        }) // Converter de centavos para reais com formato PT-BR
+        }), // Converter de centavos para reais com formato PT-BR
+        coparticipacao: item.coparticipacao || "0,00",
+        carencia: item.carencia || "",
+        limitesAnuais: item.limitesAnuais || ""
       }));
       setSelectedPlans(planData);
     }
@@ -82,7 +91,13 @@ export default function Procedures() {
         !selectedPlans.some(sp => sp.planId === plan.id)
       );
       if (unselectedPlans.length > 0) {
-        setSelectedPlans([...selectedPlans, { planId: unselectedPlans[0].id, price: "0,00" }]);
+        setSelectedPlans([...selectedPlans, { 
+          planId: unselectedPlans[0].id, 
+          receber: "0,00",
+          coparticipacao: "0,00",
+          carencia: "",
+          limitesAnuais: ""
+        }]);
       }
     }
   };
@@ -91,22 +106,25 @@ export default function Procedures() {
     setSelectedPlans(selectedPlans.filter((_, i) => i !== index));
   };
 
-  const updatePlanPrice = (index: number, price: string) => {
+  // Funções para atualizar campos específicos
+  const updatePlanField = (index: number, field: string, value: string) => {
     const updated = [...selectedPlans];
-    updated[index].price = price;
+    (updated[index] as any)[field] = value;
     setSelectedPlans(updated);
     
-    // Validar preço e limpar erro se válido
+    // Validar campos obrigatórios e limpar erro se válido
     const errors = { ...planErrors };
-    if (price && price.trim() !== '') {
-      const numValue = convertPriceToNumber(price);
-      if (numValue < 0) {
-        errors[index] = 'Preço deve ser maior ou igual a zero';
+    if (field === 'receber' || field === 'coparticipacao') {
+      if (value && value.trim() !== '') {
+        const numValue = convertPriceToNumber(value);
+        if (numValue < 0) {
+          errors[index] = `${field === 'receber' ? 'Valor a receber' : 'Coparticipação'} deve ser maior ou igual a zero`;
+        } else {
+          delete errors[index];
+        }
       } else {
-        delete errors[index];
+        errors[index] = `${field === 'receber' ? 'Valor a receber' : 'Coparticipação'} é obrigatório`;
       }
-    } else {
-      errors[index] = 'Preço é obrigatório';
     }
     setPlanErrors(errors);
   };
@@ -174,13 +192,17 @@ export default function Procedures() {
       
       // Preparar planos para o endpoint atômico
       const procedurePlans = selectedPlans
-        .filter(plan => plan.planId && plan.price) // Filtrar entradas válidas
+        .filter(plan => plan.planId && plan.receber) // Filtrar entradas válidas
         .map(plan => {
-          const numericPrice = convertPriceToNumber(plan.price);
+          const numericReceber = convertPriceToNumber(plan.receber);
+          const numericCoparticipacao = convertPriceToNumber(plan.coparticipacao);
           return {
             procedureId,
             planId: plan.planId,
-            price: Math.round(numericPrice * 100) // Converter para centavos
+            price: Math.round(numericReceber * 100), // Converter para centavos
+            coparticipacao: Math.round(numericCoparticipacao * 100),
+            carencia: plan.carencia,
+            limitesAnuais: plan.limitesAnuais
           };
         })
         .filter(plan => plan.price >= 0); // Filtrar preços válidos
@@ -419,55 +441,105 @@ export default function Procedures() {
                   
                   {selectedPlans.length > 0 && (
                     <div className="space-y-3">
-                      {selectedPlans.map((selectedPlan, index) => (
-                        <div key={index} className="flex items-center gap-3 p-3 border rounded-lg">
-                          <div className="flex-1">
-                            <label className="text-sm font-medium">Plano</label>
-                            <Select
-                              value={selectedPlan.planId}
-                              onValueChange={(value) => updatePlanId(index, value)}
-                            >
-                              <SelectTrigger className={planErrors[index] && !selectedPlan.planId ? 'border-red-500' : ''}>
-                                <SelectValue placeholder="Selecione um plano" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {getAvailablePlans(index).map((plan: any) => (
-                                  <SelectItem key={plan.id} value={plan.id}>
-                                    {plan.name}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                            {planErrors[index] && !selectedPlan.planId && (
-                              <p className="text-xs text-red-500 mt-1">{planErrors[index]}</p>
-                            )}
+                      {selectedPlans.map((selectedPlan, index) => {
+                        const currentPlan = Array.isArray(plans) ? plans.find((p: any) => p.id === selectedPlan.planId) : null;
+                        const showCoparticipacao = currentPlan?.planType === "with_waiting_period";
+                        
+                        return (
+                          <div key={index} className="p-4 border rounded-lg space-y-4">
+                            {/* Linha 1: Plano */}
+                            <div className="grid grid-cols-1 gap-4">
+                              <div>
+                                <label className="text-sm font-medium">Plano</label>
+                                <Select
+                                  value={selectedPlan.planId}
+                                  onValueChange={(value) => updatePlanId(index, value)}
+                                >
+                                  <SelectTrigger className={planErrors[index] && !selectedPlan.planId ? 'border-red-500' : ''}>
+                                    <SelectValue placeholder="Selecione um plano" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {getAvailablePlans(index).map((plan: any) => (
+                                      <SelectItem key={plan.id} value={plan.id}>
+                                        {plan.name}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                                {planErrors[index] && !selectedPlan.planId && (
+                                  <p className="text-xs text-red-500 mt-1">{planErrors[index]}</p>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Linha 2: Receber e Coparticipação (condicional) */}
+                            <div className={`grid ${showCoparticipacao ? 'grid-cols-2' : 'grid-cols-1'} gap-4`}>
+                              <div>
+                                <label className="text-sm font-medium">Receber (R$)</label>
+                                <InputMasked
+                                  mask="price"
+                                  value={selectedPlan.receber}
+                                  onChange={(e) => updatePlanField(index, 'receber', e.target.value)}
+                                  placeholder="0,00"
+                                  data-testid={`input-plan-receber-${index}`}
+                                  className={planErrors[index] ? 'border-red-500' : ''}
+                                />
+                                {planErrors[index] && (
+                                  <p className="text-xs text-red-500 mt-1">{planErrors[index]}</p>
+                                )}
+                              </div>
+                              
+                              {showCoparticipacao && (
+                                <div>
+                                  <label className="text-sm font-medium">Coparticipação (R$)</label>
+                                  <InputMasked
+                                    mask="price"
+                                    value={selectedPlan.coparticipacao}
+                                    onChange={(e) => updatePlanField(index, 'coparticipacao', e.target.value)}
+                                    placeholder="0,00"
+                                    data-testid={`input-plan-coparticipacao-${index}`}
+                                  />
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Linha 3: Carência e Limites Anuais */}
+                            <div className="grid grid-cols-2 gap-4">
+                              <div>
+                                <label className="text-sm font-medium">Carência</label>
+                                <Input
+                                  value={selectedPlan.carencia}
+                                  onChange={(e) => updatePlanField(index, 'carencia', e.target.value)}
+                                  placeholder="Ex: 30 dias"
+                                  data-testid={`input-plan-carencia-${index}`}
+                                />
+                              </div>
+                              
+                              <div>
+                                <label className="text-sm font-medium">Limites Anuais</label>
+                                <Input
+                                  value={selectedPlan.limitesAnuais}
+                                  onChange={(e) => updatePlanField(index, 'limitesAnuais', e.target.value)}
+                                  placeholder="Ex: R$ 5.000,00"
+                                  data-testid={`input-plan-limites-${index}`}
+                                />
+                              </div>
+                            </div>
+
+                            {/* Botão Remover */}
+                            <div className="flex justify-end">
+                              <Button
+                                type="button"
+                                size="sm"
+                                onClick={() => removePlan(index)}
+                                className="btn-primary"
+                              >
+                                <X className="h-4 w-4" />
+                              </Button>
+                            </div>
                           </div>
-                          
-                          <div className="w-32">
-                            <label className="text-sm font-medium">Preço (R$)</label>
-                            <InputMasked
-                              mask="price"
-                              value={selectedPlan.price}
-                              onChange={(e) => updatePlanPrice(index, e.target.value)}
-                              placeholder="0,00"
-                              data-testid={`input-plan-price-${index}`}
-                              className={planErrors[index] ? 'border-red-500' : ''}
-                            />
-                            {planErrors[index] && (
-                              <p className="text-xs text-red-500 mt-1">{planErrors[index]}</p>
-                            )}
-                          </div>
-                          
-                          <Button
-                            type="button"
-                            size="sm"
-                            onClick={() => removePlan(index)}
-                            className="btn-primary"
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   )}
                   
