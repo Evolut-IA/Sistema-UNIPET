@@ -119,10 +119,15 @@ export default function Procedures() {
     
     // Tratamento especial para o campo carência (apenas números)
     if (field === 'carencia') {
-      // Remove tudo que não for número
-      const numericValue = value.replace(/\D/g, '');
-      // Se houver números, adiciona " dias", senão deixa vazio
-      (updated[index] as any)[field] = numericValue ? `${numericValue} dias` : '';
+      // Se o valor estiver vazio, mantém vazio
+      if (value === '') {
+        (updated[index] as any)[field] = '';
+      } else {
+        // Remove qualquer texto existente e mantém apenas números
+        const numericValue = value.replace(/[^\d]/g, '');
+        // Se houver números, adiciona " dias", senão deixa vazio
+        (updated[index] as any)[field] = numericValue ? `${numericValue} dias` : '';
+      }
     } else {
       (updated[index] as any)[field] = value;
     }
