@@ -14,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { insertSiteSettingsSchema } from "@shared/schema";
-import { Settings as SettingsIcon, Globe, Palette, Save, Loader2 } from "lucide-react";
+import { Settings as SettingsIcon, Globe, Palette, Save, Loader2, FileText } from "lucide-react";
 import ThemeEditor from "@/components/ThemeEditor";
 import { ImageUpload } from "@/components/ui/image-upload";
 
@@ -25,6 +25,14 @@ export default function Settings() {
   const { data: siteSettings, isLoading: siteLoading, error: siteError } = useQuery({
     queryKey: ["/api/settings/site"],
     queryFn: () => apiRequest("GET", "/api/settings/site"),
+    retry: 3,
+    retryDelay: 1000,
+    staleTime: 5 * 60 * 1000, // 5 minutos
+  });
+
+  const { data: rulesSettings, isLoading: rulesLoading, error: rulesError } = useQuery({
+    queryKey: ["/api/settings/rules"],
+    queryFn: () => apiRequest("GET", "/api/settings/rules"),
     retry: 3,
     retryDelay: 1000,
     staleTime: 5 * 60 * 1000, // 5 minutos
@@ -55,6 +63,12 @@ export default function Settings() {
     },
   });
 
+  const rulesForm = useForm({
+    defaultValues: {
+      fixedPercentage: "",
+    },
+  });
+
 
   const saveSiteMutation = useMutation({
     mutationFn: async (data: any) => {
@@ -71,6 +85,26 @@ export default function Settings() {
       toast({
         title: "Erro",
         description: "Falha ao salvar configurações do site.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const saveRulesMutation = useMutation({
+    mutationFn: async (data: any) => {
+      await apiRequest("PUT", "/api/settings/rules", data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/settings/rules"] });
+      toast({
+        title: "Regras salvas",
+        description: "Configurações de regras foram salvas com sucesso.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Erro",
+        description: "Falha ao salvar configurações de regras.",
         variant: "destructive",
       });
     },
@@ -105,6 +139,16 @@ export default function Settings() {
     }
   }, [siteSettings, siteLoading, siteError, siteForm]);
 
+  useEffect(() => {
+    if (rulesSettings && typeof rulesSettings === 'object' && !rulesLoading) {
+      const mergedRulesSettings = {
+        fixedPercentage: (rulesSettings as any).fixedPercentage || "",
+      };
+      
+      rulesForm.reset(mergedRulesSettings);
+    }
+  }, [rulesSettings, rulesLoading, rulesError, rulesForm]);
+
 
   const onSubmitSite = (data: any) => {
     // Remove campos vazios antes de enviar
@@ -115,6 +159,10 @@ export default function Settings() {
     );
     
     saveSiteMutation.mutate(cleanData);
+  };
+
+  const onSubmitRules = (data: any) => {
+    saveRulesMutation.mutate(data);
   };
 
 
@@ -133,12 +181,14 @@ export default function Settings() {
               const activeTab = document.querySelector('[data-state="active"]')?.getAttribute('value');
               if (activeTab === 'site') {
                 siteForm.handleSubmit(onSubmitSite)();
+              } else if (activeTab === 'rules') {
+                rulesForm.handleSubmit(onSubmitRules)();
               }
             }}
-            disabled={saveSiteMutation.isPending}
+            disabled={saveSiteMutation.isPending || saveRulesMutation.isPending}
             data-testid="button-save-settings"
           >
-            {saveSiteMutation.isPending ? (
+            {(saveSiteMutation.isPending || saveRulesMutation.isPending) ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                 Salvando...
@@ -155,7 +205,7 @@ export default function Settings() {
 
       <Tabs defaultValue="site" className="space-y-4 sm:space-y-6">
         <TabsList 
-          className="grid w-full grid-cols-2 gap-1" 
+          className="grid w-full grid-cols-3 gap-1" 
           style={{ backgroundColor: 'var(--accent)' }}
         >
           <TabsTrigger 
@@ -171,6 +221,13 @@ export default function Settings() {
           >
             <Palette className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
             <span className="truncate">Tema</span>
+          </TabsTrigger>
+          <TabsTrigger 
+            value="rules" 
+            className="flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+          >
+            <FileText className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+            <span className="truncate">Regras</span>
           </TabsTrigger>
         </TabsList>
 
@@ -504,6 +561,34 @@ export default function Settings() {
         {/* Theme Settings */}
         <TabsContent value="theme" className="space-y-6" data-testid="tab-content-theme">
           <ThemeEditor />
+        </TabsContent>
+
+        {/* Rules Settings */}
+        <TabsContent value="rules" className="space-y-6" data-testid="tab-content-rules">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-foreground">Planos & Procedimentos</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <FormItem>
+                  <FormLabel>Porcentagem Fixa para Cálculo Automático</FormLabel>
+                  <FormControl>
+                    <Input 
+                      type="number" 
+                      placeholder="Ex: 50" 
+                      min="0" 
+                      max="100"
+                      data-testid="input-percentage-fixed"
+                    />
+                  </FormControl>
+                  <p className="text-sm text-muted-foreground">
+                    Porcentagem que será aplicada automaticamente no campo "Pagar (R$)" quando inserir um valor em "Receber (R$)"
+                  </p>
+                </FormItem>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>

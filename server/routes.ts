@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import path from "path";
 import { storage } from "./storage";
-import { insertClientSchema, insertPetSchema, insertPlanSchema, insertNetworkUnitSchema, insertFaqItemSchema, insertContactSubmissionSchema, insertSiteSettingsSchema, insertThemeSettingsSchema, insertGuideSchema, insertUserSchema, updateNetworkUnitCredentialsSchema, insertProcedureSchema, insertProcedurePlanSchema, type InsertUser } from "@shared/schema";
+import { insertClientSchema, insertPetSchema, insertPlanSchema, insertNetworkUnitSchema, insertFaqItemSchema, insertContactSubmissionSchema, insertSiteSettingsSchema, insertRulesSettingsSchema, insertThemeSettingsSchema, insertGuideSchema, insertUserSchema, updateNetworkUnitCredentialsSchema, insertProcedureSchema, insertProcedurePlanSchema, type InsertUser } from "@shared/schema";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { generateUniqueSlug } from "./utils";
@@ -867,6 +867,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(settings);
     } catch (error) {
       res.status(400).json({ message: "Invalid site settings data" });
+    }
+  });
+
+  // Rules settings routes
+  app.get("/api/settings/rules", async (req, res) => {
+    try {
+      console.log("=== API /api/settings/rules called ===");
+      const settings = await storage.getRulesSettings();
+      console.log("Rules settings from DB:", settings);
+      
+      // If no data, return an empty object
+      if (!settings) {
+        const defaultSettings = {
+          fixedPercentage: 0,
+        };
+        console.log("No existing rules settings, returning defaults:", defaultSettings);
+        res.json(defaultSettings);
+      } else {
+        console.log("Returning existing rules settings:", settings);
+        res.json(settings);
+      }
+    } catch (error) {
+      console.error("Error in /api/settings/rules:", error);
+      res.status(500).json({ message: "Failed to fetch rules settings" });
+    }
+  });
+
+  app.put("/api/settings/rules", async (req, res) => {
+    try {
+      console.log("=== PUT /api/settings/rules called ===");
+      console.log("Request body:", req.body);
+      const settingsData = insertRulesSettingsSchema.parse(req.body);
+      console.log("Parsed settings data:", settingsData);
+      const settings = await storage.updateRulesSettings(settingsData);
+      console.log("Updated rules settings:", settings);
+      res.json(settings);
+    } catch (error) {
+      console.error("Error in PUT /api/settings/rules:", error);
+      res.status(400).json({ message: "Invalid rules settings data" });
     }
   });
 

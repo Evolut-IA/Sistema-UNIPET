@@ -194,6 +194,14 @@ export const siteSettings = pgTable("site_settings", {
   cores: json("cores").$type<{[key: string]: string}>().default({}),
 });
 
+// Rules settings table
+export const rulesSettings = pgTable("rules_settings", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  fixedPercentage: integer("fixed_percentage").default(0), // Percentage for automatic calculation (0-100)
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`),
+});
+
 
 // Theme settings table
 export const themeSettings = pgTable("theme_settings", {
@@ -287,6 +295,9 @@ export const insertSiteSettingsSchema = createInsertSchema(siteSettings).omit({ 
   networkImage: z.string().optional(),
   aboutImage: z.string().optional(),
 });
+export const insertRulesSettingsSchema = createInsertSchema(rulesSettings).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  fixedPercentage: z.number().min(0, "Porcentagem deve ser pelo menos 0").max(100, "Porcentagem deve ser no máximo 100").optional()
+});
 export const insertThemeSettingsSchema = createInsertSchema(themeSettings).omit({ id: true });
 export const insertGuideSchema = createInsertSchema(guides).omit({ id: true, createdAt: true, updatedAt: true });
 
@@ -307,6 +318,7 @@ export type InsertProcedure = typeof procedures.$inferInsert;
 export type InsertProcedurePlan = typeof procedurePlans.$inferInsert;
 export type InsertContactSubmission = typeof contactSubmissions.$inferInsert;
 export type InsertSiteSettings = typeof siteSettings.$inferInsert;
+export type InsertRulesSettings = typeof rulesSettings.$inferInsert;
 export type InsertThemeSettings = typeof themeSettings.$inferInsert;
 export type InsertGuide = typeof guides.$inferInsert;
 
@@ -320,6 +332,7 @@ export type Procedure = typeof procedures.$inferSelect;
 export type ProcedurePlan = typeof procedurePlans.$inferSelect;
 export type ContactSubmission = typeof contactSubmissions.$inferSelect;
 export type SiteSettings = typeof siteSettings.$inferSelect;
+export type RulesSettings = typeof rulesSettings.$inferSelect;
 export type ThemeSettings = typeof themeSettings.$inferSelect;
 export type Guide = typeof guides.$inferSelect;
 

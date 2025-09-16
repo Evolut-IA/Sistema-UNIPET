@@ -12,6 +12,7 @@ import type {
   FaqItem, InsertFaqItem,
   ContactSubmission, InsertContactSubmission,
   SiteSettings, InsertSiteSettings,
+  RulesSettings, InsertRulesSettings,
   ThemeSettings, InsertThemeSettings,
   Guide, InsertGuide,
   Procedure, InsertProcedure,
@@ -192,6 +193,9 @@ export interface IStorage {
   getSiteSettings(): Promise<SiteSettings | undefined>;
   updateSiteSettings(settings: InsertSiteSettings): Promise<SiteSettings>;
 
+  // Rules settings methods
+  getRulesSettings(): Promise<RulesSettings | undefined>;
+  updateRulesSettings(settings: InsertRulesSettings): Promise<RulesSettings>;
 
   // Theme settings methods
   getThemeSettings(): Promise<ThemeSettings | undefined>;
@@ -732,6 +736,54 @@ export class DatabaseStorage implements IStorage {
       }
     } catch (error) {
       console.error("Error in updateSiteSettings:", error);
+      throw error;
+    }
+  }
+
+  // Rules settings methods
+  async getRulesSettings(): Promise<RulesSettings | undefined> {
+    try {
+      console.log("Fetching rules settings from database...");
+      const result = await db.select().from(schema.rulesSettings).limit(1);
+      console.log("Rules settings query result:", result);
+      
+      if (result.length > 0) {
+        console.log("First result values:", result[0]);
+      }
+      
+      return result[0];
+    } catch (error) {
+      console.error("Error in getRulesSettings:", error);
+      throw error;
+    }
+  }
+
+  async updateRulesSettings(settings: InsertRulesSettings): Promise<RulesSettings> {
+    try {
+      console.log("Updating rules settings with data:", settings);
+      const existing = await this.getRulesSettings();
+      console.log("Existing rules settings found:", !!existing);
+      
+      if (existing) {
+        console.log("Updating existing rules settings with ID:", existing.id);
+        const result = await db.update(schema.rulesSettings).set({
+          ...settings,
+          updatedAt: new Date()
+        }).where(eq(schema.rulesSettings.id, existing.id)).returning();
+        console.log("Update result:", result[0]);
+        return result[0];
+      } else {
+        console.log("No existing rules settings found, creating new record");
+        const result = await db.insert(schema.rulesSettings).values({
+          ...settings,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        }).returning();
+        console.log("Insert result:", result[0]);
+        return result[0];
+      }
+    } catch (error) {
+      console.error("Error in updateRulesSettings:", error);
       throw error;
     }
   }
