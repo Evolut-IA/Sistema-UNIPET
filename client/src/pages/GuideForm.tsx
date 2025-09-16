@@ -24,8 +24,13 @@ export default function GuideForm() {
   const queryClient = useQueryClient();
 
   const isEdit = Boolean(params.id);
+  
+  // Extract query parameters from URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlClientId = urlParams.get('clientId');
+  const urlPetId = urlParams.get('petId');
 
-  const { data: guide, isLoading: guideLoading } = useQuery({
+  const { data: guide, isLoading: guideLoading } = useQuery<any>({
     queryKey: ["/api/guides", params.id],
     enabled: isEdit,
   });
@@ -35,11 +40,22 @@ export default function GuideForm() {
     queryKey: ["/api/plans/active"],
   });
 
+  // Fetch client and pet information if IDs are provided
+  const { data: client } = useQuery<any>({
+    queryKey: ["/api/clients", urlClientId || guide?.clientId],
+    enabled: Boolean(urlClientId || guide?.clientId),
+  });
+
+  const { data: pet } = useQuery<any>({
+    queryKey: ["/api/pets", urlPetId || guide?.petId],
+    enabled: Boolean(urlPetId || guide?.petId),
+  });
+
   const form = useForm({
     resolver: zodResolver(insertGuideSchema),
     defaultValues: {
-      clientId: "",
-      petId: "",
+      clientId: urlClientId || "",
+      petId: urlPetId || "",
       type: "",
       procedure: "",
       procedureNotes: "",
@@ -61,8 +77,12 @@ export default function GuideForm() {
         value: guide.value || "",
         status: guide.status || "open",
       });
+    } else if (urlClientId || urlPetId) {
+      // Set URL parameters if editing and no guide data yet
+      form.setValue("clientId", urlClientId || "");
+      form.setValue("petId", urlPetId || "");
     }
-  }, [guide, form]);
+  }, [guide, form, urlClientId, urlPetId]);
 
   const mutation = useMutation({
     mutationFn: async (data: any) => {
@@ -143,6 +163,13 @@ export default function GuideForm() {
           <p className="text-muted-foreground">
             {isEdit ? "Atualize as informações da guia" : "Crie uma nova guia de atendimento"}
           </p>
+          {(client || pet) && (
+            <div className="mt-2 text-sm text-primary">
+              {client && <span>Cliente: {client.fullName}</span>}
+              {client && pet && <span> | </span>}
+              {pet && <span>Pet: {pet.name} ({pet.species})</span>}
+            </div>
+          )}
         </div>
       </div>
 

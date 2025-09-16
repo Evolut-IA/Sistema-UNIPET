@@ -343,14 +343,14 @@ export default function PetForm() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Plano de Saúde</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value || ""}>
+                      <Select onValueChange={(value) => field.onChange(value === "none" ? "" : value)} value={field.value || "none"}>
                         <FormControl>
                           <SelectTrigger data-testid="select-plan">
                             <SelectValue placeholder="Selecione um plano" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="" className="py-3 pl-10 pr-4">
+                          <SelectItem value="none" className="py-3 pl-10 pr-4">
                             Nenhum plano selecionado
                           </SelectItem>
                           <Separator />
