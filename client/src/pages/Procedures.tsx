@@ -5,13 +5,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { InputMasked } from "@/components/ui/input-masked";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Plus, Search, Edit, Trash2, ClipboardList, Eye, DollarSign } from "lucide-react";
+import { Plus, Search, Edit, Trash2, ClipboardList, Eye } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { insertProcedureSchema } from "@shared/schema";
@@ -29,12 +31,18 @@ export default function Procedures() {
     queryKey: ["/api/procedures"],
   });
 
+  const { data: plans } = useQuery({
+    queryKey: ["/api/plans/active"],
+  });
+
 
   const form = useForm({
     resolver: zodResolver(insertProcedureSchema),
     defaultValues: {
       name: "",
       description: "",
+      planId: "",
+      value: "",
       isActive: true,
     },
   });
@@ -116,6 +124,8 @@ export default function Procedures() {
     form.reset({
       name: item.name || "",
       description: item.description || "",
+      planId: item.planId || "",
+      value: item.value || "",
       isActive: item.isActive ?? true,
     });
     
@@ -186,7 +196,7 @@ export default function Procedures() {
           </DialogHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
                   name="name"
@@ -201,6 +211,72 @@ export default function Procedures() {
                   )}
                 />
 
+                <FormField
+                  control={form.control}
+                  name="planId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Plano</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger data-testid="select-plan">
+                            <SelectValue placeholder="Selecione um plano" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="" className="py-3 pl-10 pr-4">
+                            Nenhum plano específico
+                          </SelectItem>
+                          {plans?.map((plan: any) => (
+                            <SelectItem key={plan.id} value={plan.id} className="py-3 pl-10 pr-4">
+                              {plan.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="value"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Valor (R$)</FormLabel>
+                      <FormControl>
+                        <InputMasked 
+                          {...field} 
+                          mask="price"
+                          placeholder="0,00"
+                          data-testid="input-value" 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Descrição</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          {...field} 
+                          placeholder="Descreva o procedimento..."
+                          data-testid="textarea-description" 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
 
               <div className="flex justify-end space-x-4">
@@ -240,11 +316,25 @@ export default function Procedures() {
                 {viewingItem.description && (
                   <p className="text-sm text-muted-foreground mt-1">{viewingItem.description}</p>
                 )}
-                <Badge variant={viewingItem.isActive ? "default" : "secondary"} className="mt-2">
-                  {viewingItem.isActive ? "Ativo" : "Inativo"}
-                </Badge>
+                
+                <div className="flex flex-wrap gap-2 mt-3">
+                  <Badge variant={viewingItem.isActive ? "default" : "secondary"}>
+                    {viewingItem.isActive ? "Ativo" : "Inativo"}
+                  </Badge>
+                  
+                  {viewingItem.planId && (
+                    <Badge variant="outline">
+                      Plano: {plans?.find((p: any) => p.id === viewingItem.planId)?.name || viewingItem.planId}
+                    </Badge>
+                  )}
+                  
+                  {viewingItem.value && (
+                    <Badge variant="outline">
+                      Valor: R$ {viewingItem.value}
+                    </Badge>
+                  )}
+                </div>
               </div>
-              
             </div>
           )}
         </DialogContent>
@@ -295,6 +385,18 @@ export default function Procedures() {
                           <h3 className="font-semibold text-foreground break-words" data-testid={`procedure-name-${item.id}`}>
                             {item.name}
                           </h3>
+                          <div className="flex flex-wrap gap-2 mt-1">
+                            {item.planId && (
+                              <span className="text-xs text-muted-foreground">
+                                Plano: {plans?.find((p: any) => p.id === item.planId)?.name || item.planId}
+                              </span>
+                            )}
+                            {item.value && (
+                              <span className="text-xs text-muted-foreground">
+                                • R$ {item.value}
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
                       
