@@ -4,6 +4,27 @@ input, textarea, select {
   color: var(--input-foreground) !important;
 }
 
+/* Controlar cor do placeholder */
+input::placeholder, textarea::placeholder, select::placeholder {
+  color: var(--placeholder) !important;
+}
+
+input::-webkit-input-placeholder, textarea::-webkit-input-placeholder, select::-webkit-input-placeholder {
+  color: var(--placeholder) !important;
+}
+
+input::-moz-placeholder, textarea::-moz-placeholder, select::-moz-placeholder {
+  color: var(--placeholder) !important;
+}
+
+input:-ms-input-placeholder, textarea:-ms-input-placeholder, select:-ms-input-placeholder {
+  color: var(--placeholder) !important;
+}
+
+input:-moz-placeholder, textarea:-moz-placeholder, select:-moz-placeholder {
+  color: var(--placeholder) !important;
+}
+
 /* Prevenir mudanças de cor em todos os estados de input */
 input:focus, textarea:focus, select:focus {
   background-color: var(--input) !important;

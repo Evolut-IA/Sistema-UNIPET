@@ -395,6 +395,24 @@ export default function ThemeEditor() {
                           </FormItem>
                         )}
                       />
+                      
+                      {/* Cor do Texto de Placeholder */}
+                      <FormField
+                        control={form.control}
+                        name="placeholderText"
+                        render={({ field }) => (
+                          <FormItem>
+                            <ColorInput
+                              value={field.value || DEFAULT_THEME.placeholderText}
+                              onChange={field.onChange}
+                              title="Cor do Texto de Placeholder"
+                              description="Cor do texto de exemplo nos campos de entrada"
+                              testId="color-placeholder-text"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     </div>
                   </div>
 
