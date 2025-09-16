@@ -143,49 +143,53 @@ const DateFilterComponent = React.memo(function DateFilterComponent({
             )}
           </div>
 
-          {/* Quick Selection Buttons */}
-          <div className="flex flex-wrap gap-2">
-            <Button
-              variant="default"
-              size="sm"
-              onClick={handleCurrentMonth}
-              disabled={isLoading}
-              className="h-8 px-3 text-xs"
-              aria-label="Filtrar por mês atual"
-            >
-              Mês atual
-            </Button>
-            <Button
-              variant="default"
-              size="sm"
-              onClick={handleCurrentWeek}
-              disabled={isLoading}
-              className="h-8 px-3 text-xs"
-              aria-label="Filtrar por semana atual"
-            >
-              Semana atual
-            </Button>
-            <Button
-              variant="default"
-              size="sm"
-              onClick={handleToday}
-              disabled={isLoading}
-              className="h-8 px-3 text-xs"
-              aria-label="Filtrar por hoje"
-            >
-              Hoje
-            </Button>
-          </div>
-
-          {/* Date Range Picker */}
+          {/* Date Range Picker with Quick Selection Buttons */}
           <div className="space-y-2">
-            <DateRangePicker
-              value={dateRange}
-              onChange={handleDateRangeChange}
-              placeholder="Selecionar período personalizado"
-              disabled={isLoading}
-              className="w-full"
-            />
+            <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-3">
+              <div className="flex-1">
+                <DateRangePicker
+                  value={dateRange}
+                  onChange={handleDateRangeChange}
+                  placeholder="Selecionar período personalizado"
+                  disabled={isLoading}
+                  className="w-full"
+                />
+              </div>
+              
+              {/* Quick Selection Buttons - Mobile: above, Desktop: right side */}
+              <div className="flex flex-wrap gap-2 md:flex-nowrap md:gap-2">
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={handleCurrentMonth}
+                  disabled={isLoading}
+                  className="h-8 px-3 text-xs"
+                  aria-label="Filtrar por mês atual"
+                >
+                  Mês atual
+                </Button>
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={handleCurrentWeek}
+                  disabled={isLoading}
+                  className="h-8 px-3 text-xs"
+                  aria-label="Filtrar por semana atual"
+                >
+                  Semana atual
+                </Button>
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={handleToday}
+                  disabled={isLoading}
+                  className="h-8 px-3 text-xs"
+                  aria-label="Filtrar por hoje"
+                >
+                  Hoje
+                </Button>
+              </div>
+            </div>
             
             {/* Error Message */}
             {errorMessage && (
