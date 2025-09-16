@@ -142,6 +142,9 @@ export const procedurePlans = pgTable("plan_procedures", {
   planId: varchar("plan_id").notNull().references(() => plans.id, { onDelete: "cascade" }),
   procedureId: varchar("procedure_id").notNull().references(() => procedures.id, { onDelete: "cascade" }),
   price: integer("price").default(0), // preço em centavos
+  coparticipacao: integer("coparticipacao").default(0), // coparticipação em centavos
+  carencia: text("carencia"), // período de carência (ex: "30 dias")
+  limitesAnuais: text("limites_anuais"), // limites anuais (ex: "2 vezes no ano" ou "ilimitado")
   isIncluded: boolean("is_included").default(true),
   displayOrder: integer("display_order").default(0),
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),

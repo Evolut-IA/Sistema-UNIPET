@@ -31,7 +31,10 @@ export default function Procedures() {
     pagar: string,
     coparticipacao: string, 
     carencia: string, 
-    limitesAnuais: string
+    limitesAnuais: string,
+    enableCarencia?: boolean,
+    enableLimitesAnuais?: boolean,
+    enableCoparticipacao?: boolean
   }[]>([]);
   const [planErrors, setPlanErrors] = useState<{[key: number]: string}>({});
   const queryClient = useQueryClient();
@@ -78,9 +81,15 @@ export default function Procedures() {
           maximumFractionDigits: 2
         }), // Converter de centavos para reais com formato PT-BR
         pagar: item.pagar || "0,00",
-        coparticipacao: item.coparticipacao || "0,00",
+        coparticipacao: (item.coparticipacao ? (item.coparticipacao / 100).toLocaleString('pt-BR', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }) : "0,00"),
         carencia: item.carencia || "",
-        limitesAnuais: item.limitesAnuais || ""
+        limitesAnuais: item.limitesAnuais || "",
+        enableCarencia: Boolean(item.carencia && item.carencia.trim() !== ""),
+        enableLimitesAnuais: Boolean(item.limitesAnuais && item.limitesAnuais.trim() !== "" && item.limitesAnuais !== "ilimitado"),
+        enableCoparticipacao: Boolean(item.coparticipacao && item.coparticipacao > 0)
       }));
       setSelectedPlans(planData);
     }
@@ -103,7 +112,10 @@ export default function Procedures() {
           pagar: "0,00",
           coparticipacao: "0,00",
           carencia: "",
-          limitesAnuais: ""
+          limitesAnuais: "",
+          enableCarencia: false,
+          enableLimitesAnuais: false,
+          enableCoparticipacao: false
         }]);
       }
     }
@@ -121,15 +133,30 @@ export default function Procedures() {
     if (field === 'carencia') {
       // Se o valor estiver vazio, mantém vazio
       if (value === '') {
-        (updated[index] as any)[field] = '';
+        updated[index].carencia = '';
       } else {
         // Remove qualquer texto existente e mantém apenas números
         const numericValue = value.replace(/[^\d]/g, '');
         // Se houver números, adiciona " dias", senão deixa vazio
-        (updated[index] as any)[field] = numericValue ? `${numericValue} dias` : '';
+        updated[index].carencia = numericValue ? `${numericValue} dias` : '';
+      }
+    } 
+    // Tratamento especial para o campo limites anuais (apenas números)
+    else if (field === 'limitesAnuais') {
+      // Se o valor estiver vazio, mantém vazio
+      if (value === '') {
+        updated[index].limitesAnuais = '';
+      } else {
+        // Remove qualquer texto existente e mantém apenas números
+        const numericValue = value.replace(/[^\d]/g, '');
+        // Se houver números, adiciona " vezes no ano", senão deixa vazio
+        updated[index].limitesAnuais = numericValue ? `${numericValue} vezes no ano` : '';
       }
     } else {
-      (updated[index] as any)[field] = value;
+      // Handle other fields based on their type
+      if (field === 'receber' || field === 'pagar' || field === 'coparticipacao') {
+        (updated[index] as any)[field] = value;
+      }
     }
     
     setSelectedPlans(updated);
@@ -140,12 +167,35 @@ export default function Procedures() {
       delete newErrors[index];
       setPlanErrors(newErrors);
     }
+    
+    // Clear error when limitesAnuais field becomes valid
+    if (field === 'limitesAnuais' && value && planErrors[index]) {
+      const numericMatch = value.match(/(\d+)/);
+      const numericValue = numericMatch ? parseInt(numericMatch[1], 10) : 0;
+      if (numericValue >= 1) {
+        const newErrors = { ...planErrors };
+        delete newErrors[index];
+        setPlanErrors(newErrors);
+      }
+    }
   };
 
   // Função para atualizar campos booleanos
-  const updatePlanBooleanField = (index: number, field: string, value: boolean) => {
+  const updatePlanBooleanField = (index: number, field: 'enableCarencia' | 'enableLimitesAnuais' | 'enableCoparticipacao', value: boolean) => {
     const updated = [...selectedPlans];
-    (updated[index] as any)[field] = value;
+    updated[index][field] = value;
+    
+    // Clear the corresponding field value when disabling
+    if (!value) {
+      if (field === 'enableCarencia') {
+        updated[index].carencia = '';
+      } else if (field === 'enableLimitesAnuais') {
+        updated[index].limitesAnuais = '';
+      } else if (field === 'enableCoparticipacao') {
+        updated[index].coparticipacao = '0,00';
+      }
+    }
+    
     setSelectedPlans(updated);
   };
 
@@ -216,13 +266,26 @@ export default function Procedures() {
         .map(plan => {
           const numericReceber = convertPriceToNumber(plan.receber);
           const numericCoparticipacao = convertPriceToNumber(plan.coparticipacao);
+          
+          // Determinar o valor final dos limites anuais
+          let finalLimitesAnuais = "ilimitado";
+          if ((plan as any).enableLimitesAnuais && plan.limitesAnuais && plan.limitesAnuais.trim() !== "") {
+            finalLimitesAnuais = plan.limitesAnuais;
+          }
+          
+          // Determinar o valor final da coparticipação
+          let finalCoparticipacao = 0;
+          if ((plan as any).enableCoparticipacao && numericCoparticipacao > 0) {
+            finalCoparticipacao = Math.round(numericCoparticipacao * 100);
+          }
+          
           return {
             procedureId,
             planId: plan.planId,
             price: Math.round(numericReceber * 100), // Converter para centavos
-            coparticipacao: Math.round(numericCoparticipacao * 100),
+            coparticipacao: finalCoparticipacao,
             carencia: plan.carencia,
-            limitesAnuais: plan.limitesAnuais
+            limitesAnuais: finalLimitesAnuais
           };
         })
         .filter(plan => plan.price >= 0); // Filtrar preços válidos
@@ -348,6 +411,22 @@ export default function Procedures() {
           hasErrors = true;
         }
       }
+      
+      // Validate Limites Anuais when enabled
+      if (plan.enableLimitesAnuais) {
+        if (!plan.limitesAnuais || plan.limitesAnuais.trim() === '') {
+          errors[index] = 'Limites anuais é obrigatório quando habilitado';
+          hasErrors = true;
+        } else {
+          // Extract numeric value from string like "2 vezes no ano"
+          const numericMatch = plan.limitesAnuais.match(/(\d+)/);
+          const numericValue = numericMatch ? parseInt(numericMatch[1], 10) : 0;
+          if (numericValue < 1) {
+            errors[index] = 'Limites anuais deve ser maior ou igual a 1';
+            hasErrors = true;
+          }
+        }
+      }
     });
     
     if (hasErrors) {
@@ -462,8 +541,6 @@ export default function Procedures() {
                   {selectedPlans.length > 0 && (
                     <div className="space-y-3">
                       {selectedPlans.map((selectedPlan, index) => {
-                        const currentPlan = Array.isArray(plans) ? plans.find((p: any) => p.id === selectedPlan.planId) : null;
-                        const showCoparticipacao = currentPlan?.planType === "with_waiting_period";
                         
                         return (
                           <div key={index} className="p-4 border rounded-lg">
@@ -523,23 +600,32 @@ export default function Procedures() {
                                 </div>
                               </div>
 
-                              {/* Segunda linha: Coparticipação (condicional), Carência, Limites Anuais */}
+                              {/* Segunda linha: Coparticipação, Carência, Limites Anuais */}
                               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                {/* Coparticipação (condicional) - se não for com coparticipação, deixa espaço vazio */}
-                                {showCoparticipacao ? (
-                                  <div>
-                                    <label className="text-sm font-medium">Coparticipação (R$)</label>
-                                    <InputMasked
-                                      mask="price"
-                                      value={selectedPlan.coparticipacao}
-                                      onChange={(e) => updatePlanField(index, 'coparticipacao', e.target.value)}
-                                      placeholder="0,00"
-                                      data-testid={`input-plan-coparticipacao-${index}`}
+                                {/* Coparticipação */}
+                                <div>
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <input
+                                      type="checkbox"
+                                      id={`enable-coparticipacao-${index}`}
+                                      checked={selectedPlan.enableCoparticipacao || false}
+                                      onChange={(e) => updatePlanBooleanField(index, 'enableCoparticipacao', e.target.checked)}
+                                      className="rounded"
                                     />
+                                    <label htmlFor={`enable-coparticipacao-${index}`} className="text-sm font-medium">
+                                      Coparticipação (R$)
+                                    </label>
                                   </div>
-                                ) : (
-                                  <div></div>
-                                )}
+                                  <InputMasked
+                                    mask="price"
+                                    value={selectedPlan.coparticipacao}
+                                    onChange={(e) => updatePlanField(index, 'coparticipacao', e.target.value)}
+                                    placeholder="0,00"
+                                    disabled={!selectedPlan.enableCoparticipacao}
+                                    className={!selectedPlan.enableCoparticipacao ? 'bg-gray-100 text-gray-400' : ''}
+                                    data-testid={`input-plan-coparticipacao-${index}`}
+                                  />
+                                </div>
 
                                 {/* Carência */}
                                 <div>
@@ -547,7 +633,7 @@ export default function Procedures() {
                                     <input
                                       type="checkbox"
                                       id={`enable-carencia-${index}`}
-                                      checked={(selectedPlan as any).enableCarencia || false}
+                                      checked={selectedPlan.enableCarencia || false}
                                       onChange={(e) => updatePlanBooleanField(index, 'enableCarencia', e.target.checked)}
                                       className="rounded"
                                     />
@@ -559,34 +645,53 @@ export default function Procedures() {
                                     value={selectedPlan.carencia}
                                     onChange={(e) => updatePlanField(index, 'carencia', e.target.value)}
                                     placeholder="Digite apenas números"
-                                    disabled={!(selectedPlan as any).enableCarencia}
-                                    className={!(selectedPlan as any).enableCarencia ? 'bg-gray-100 text-gray-400' : ''}
+                                    disabled={!selectedPlan.enableCarencia}
+                                    className={!selectedPlan.enableCarencia ? 'bg-gray-100 text-gray-400' : ''}
                                     data-testid={`input-plan-carencia-${index}`}
                                   />
                                 </div>
                                 
                                 {/* Limites Anuais */}
                                 <div>
-                                  <label className="text-sm font-medium">Limites Anuais</label>
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <input
+                                      type="checkbox"
+                                      id={`enable-limites-${index}`}
+                                      checked={selectedPlan.enableLimitesAnuais || false}
+                                      onChange={(e) => updatePlanBooleanField(index, 'enableLimitesAnuais', e.target.checked)}
+                                      className="rounded"
+                                    />
+                                    <label htmlFor={`enable-limites-${index}`} className="text-sm font-medium">
+                                      Limites Anuais
+                                    </label>
+                                  </div>
                                   <Input
                                     value={selectedPlan.limitesAnuais}
                                     onChange={(e) => updatePlanField(index, 'limitesAnuais', e.target.value)}
-                                    placeholder="Ex: R$ 5.000,00"
+                                    placeholder="Ex: 2"
+                                    disabled={!selectedPlan.enableLimitesAnuais}
+                                    className={!selectedPlan.enableLimitesAnuais ? 'bg-gray-100 text-gray-400' : ''}
                                     data-testid={`input-plan-limites-${index}`}
                                   />
+                                  {planErrors[index] && selectedPlan.enableLimitesAnuais && planErrors[index].includes('Limites anuais') && (
+                                    <p className="text-xs text-red-500 mt-1">{planErrors[index]}</p>
+                                  )}
                                 </div>
                               </div>
-                              {/* Botão Remover na mesma linha dos campos */}
-                              <div className="col-span-full flex justify-end">
-                                <Button
-                                  type="button"
-                                  size="sm"
-                                  onClick={() => removePlan(index)}
-                                  className="btn-primary w-10 h-10 p-0 flex-shrink-0"
-                                >
-                                  <X className="h-4 w-4" />
-                                </Button>
-                              </div>
+                            </div>
+                            
+                            {/* Botão Remover */}
+                            <div className="flex justify-end pt-2">
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => removePlan(index)}
+                                className="text-red-600 hover:text-red-700"
+                              >
+                                <X className="h-4 w-4 mr-1" />
+                                Remover
+                              </Button>
                             </div>
                           </div>
                         );
