@@ -69,8 +69,8 @@ const SheetContent = React.forwardRef<
         case 'right':
           return cn(
             baseClasses,
-            // Mobile: Take up most of the screen width but leave some margin
-            "w-[90vw] max-w-none",
+            // Mobile: Reduce width to add margins on both sides, ensuring sheets don't touch screen edges
+            "w-[calc(100vw-2rem)]" + (side === 'right' ? ' right-4' : ' left-4'),
             // Mobile padding
             "p-4"
           )
