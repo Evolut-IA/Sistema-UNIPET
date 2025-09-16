@@ -68,9 +68,9 @@ export default function Procedures() {
     },
   });
 
-  // Carregar planos existentes quando estiver editando
+  // Carregar planos existentes quando estiver editando (apenas uma vez quando o modal abre)
   useEffect(() => {
-    if (existingProcedurePlans && Array.isArray(existingProcedurePlans)) {
+    if (existingProcedurePlans && Array.isArray(existingProcedurePlans) && editingItem?.id) {
       const planData = existingProcedurePlans.map((item: any) => ({
         planId: item.planId,
         receber: (item.price / 100).toLocaleString('pt-BR', {
@@ -84,7 +84,11 @@ export default function Procedures() {
       }));
       setSelectedPlans(planData);
     }
-  }, [existingProcedurePlans]);
+    // Limpar planos quando não estiver editando (criando novo)
+    else if (!editingItem?.id) {
+      setSelectedPlans([]);
+    }
+  }, [editingItem?.id]); // Dependência apenas no ID do item sendo editado
 
   // Funções para gerenciar planos selecionados
   const addPlan = () => {
