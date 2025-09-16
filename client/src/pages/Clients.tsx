@@ -578,7 +578,7 @@ export default function Clients() {
                         <div className="mt-3 pt-2 border-t border-border">
                           <div className="flex items-center space-x-2">
                             <Button
-                              variant="outline"
+                              variant="default"
                               size="sm"
                               onClick={() => {
                                 setDetailsOpen(false);
@@ -586,11 +586,10 @@ export default function Clients() {
                               }}
                               className="text-xs"
                             >
-                              <FileText className="h-3 w-3 mr-1" />
-                              Gerar Guia
+                              <FileText className="h-3 w-3" />
                             </Button>
                             <Button
-                              variant="outline"
+                              variant="default"
                               size="sm"
                               onClick={() => {
                                 setDetailsOpen(false);
@@ -598,8 +597,7 @@ export default function Clients() {
                               }}
                               className="text-xs"
                             >
-                              <PenTool className="h-3 w-3 mr-1" />
-                              Editar Pet
+                              <PenTool className="h-3 w-3" />
                             </Button>
                           </div>
                         </div>
