@@ -146,7 +146,7 @@ export default function Plans() {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
@@ -165,7 +165,7 @@ export default function Plans() {
 
       {/* Search */}
       <Card>
-        <CardContent className="p-6">
+        <CardContent className="p-3 sm:p-4 lg:p-6">
           <div className="flex space-x-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4" style={{color: 'var(--input-foreground)'}} />
@@ -182,11 +182,11 @@ export default function Plans() {
       </Card>
 
       {/* Plans Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {isLoading ? (
           [...Array(6)].map((_, i) => (
             <Card key={i} className="animate-pulse">
-              <CardContent className="p-6">
+              <CardContent className="p-3 sm:p-4 lg:p-6">
                 <div className="h-6 bg-muted rounded mb-2"></div>
                 <div className="h-4 bg-muted rounded w-3/4 mb-4"></div>
                 <div className="h-8 bg-muted rounded mb-4"></div>

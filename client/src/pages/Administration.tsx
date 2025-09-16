@@ -477,7 +477,7 @@ export default function Administration() {
 
       {/* Search */}
       <Card>
-        <CardContent className="p-6">
+        <CardContent className="p-3 sm:p-4 lg:p-6">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4" style={{color: 'var(--input-foreground)'}} />
             <Input
@@ -498,7 +498,7 @@ export default function Administration() {
             Usuários ({filteredUsers?.length || 0})
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-3 sm:p-4 lg:p-6">
           {isLoading ? (
             <div className="space-y-4">
               {[...Array(5)].map((_, i) => (
@@ -525,7 +525,7 @@ export default function Administration() {
                         </Badge>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 text-sm text-muted-foreground mb-3">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-muted-foreground mb-3">
                         <p><span className="font-medium">Email:</span> {user.email}</p>
                         <p><span className="font-medium">Criado em:</span> {user.createdAt && format(new Date(user.createdAt), "dd/MM/yyyy", { locale: ptBR })}</p>
                         <p><span className="font-medium">Locais:</span> {user.permissions?.length || 0}</p>

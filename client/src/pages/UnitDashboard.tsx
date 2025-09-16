@@ -305,7 +305,7 @@ export default function UnitDashboard() {
                   .filter(guide => guide.unitStatus === status)
                   .map(guide => (
                     <Card key={guide.id} className="hover:shadow-md transition-shadow">
-                      <CardContent className="p-6">
+                      <CardContent className="p-3 sm:p-4 lg:p-6">
                         <div className="flex justify-between items-start mb-4">
                           <div className="flex-1">
                             <div className="flex items-center space-x-3 mb-2">
@@ -369,7 +369,7 @@ export default function UnitDashboard() {
                 
                 {guides.filter(guide => guide.unitStatus === status).length === 0 && (
                   <Card>
-                    <CardContent className="p-8 text-center">
+                    <CardContent className="p-3 sm:p-4 lg:p-6 text-center">
                       <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                       <h3 className="text-lg font-medium text-gray-900 mb-2">
                         Nenhuma guia {status === "pending" ? "pendente" : 
