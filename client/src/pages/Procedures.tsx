@@ -44,6 +44,12 @@ export default function Procedures() {
     enabled: !!editingItem?.id,
   });
 
+  // Buscar planos do procedimento quando estiver visualizando
+  const { data: viewingProcedurePlans } = useQuery({
+    queryKey: ["/api/procedures", viewingItem?.id, "plans"],
+    enabled: !!viewingItem?.id,
+  });
+
 
   const form = useForm({
     resolver: zodResolver(insertProcedureSchema),
@@ -512,15 +518,59 @@ export default function Procedures() {
           </DialogHeader>
           
           {viewingItem && (
-            <div className="space-y-4">
+            <div className="space-y-6">
+              {/* Nome do Procedimento */}
               <div>
-                <h3 className="text-lg font-medium">{viewingItem.name}</h3>
+                <label className="text-sm font-medium text-foreground">Nome do Procedimento</label>
+                <h3 className="text-lg font-medium mt-1">{viewingItem.name}</h3>
                 {viewingItem.description && (
-                  <p className="text-sm text-muted-foreground mt-1">{viewingItem.description}</p>
+                  <p className="text-sm text-muted-foreground mt-2">{viewingItem.description}</p>
                 )}
                 <Badge variant={viewingItem.isActive ? "default" : "secondary"} className="mt-2">
                   {viewingItem.isActive ? "Ativo" : "Inativo"}
                 </Badge>
+              </div>
+
+              {/* Tipo de Procedimento */}
+              <div>
+                <label className="text-sm font-medium text-foreground">Tipo de Procedimento</label>
+                <p className="text-base mt-1">
+                  {PROCEDURE_TYPE_LABELS[viewingItem.procedureType as keyof typeof PROCEDURE_TYPE_LABELS] || 'Consultas'}
+                </p>
+              </div>
+
+              {/* Planos Vinculados */}
+              <div>
+                <label className="text-sm font-medium text-foreground">Planos Vinculados</label>
+                <div className="mt-2">
+                  {viewingProcedurePlans && Array.isArray(viewingProcedurePlans) && viewingProcedurePlans.length > 0 ? (
+                    <div className="space-y-2">
+                      {viewingProcedurePlans.map((planItem: any) => {
+                        const plan = Array.isArray(plans) ? plans.find((p: any) => p.id === planItem.planId) : null;
+                        return (
+                          <div key={planItem.planId} className="flex items-center justify-between p-3 border rounded-lg bg-muted/20">
+                            <div>
+                              <p className="font-medium">{plan?.name || 'Plano não encontrado'}</p>
+                              {plan?.description && (
+                                <p className="text-sm text-muted-foreground">{plan.description}</p>
+                              )}
+                            </div>
+                            <div className="text-right">
+                              <p className="font-medium text-lg">
+                                R$ {(planItem.price / 100).toFixed(2).replace('.', ',')}
+                              </p>
+                              <p className="text-xs text-muted-foreground">Preço no plano</p>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground py-4">
+                      Nenhum plano vinculado a este procedimento.
+                    </p>
+                  )}
+                </div>
               </div>
               
             </div>
