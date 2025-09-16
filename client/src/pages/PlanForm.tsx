@@ -57,8 +57,8 @@ export default function PlanForm() {
 
   const getPlanTypeLabel = (type: string) => {
     switch (type) {
-      case "with_waiting_period": return "Com Carência";
-      case "without_waiting_period": return "Sem Carência";
+      case "with_waiting_period": return "Com Coparticipação";
+      case "without_waiting_period": return "Sem Coparticipação";
       default: return type;
     }
   };
