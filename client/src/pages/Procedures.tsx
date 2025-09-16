@@ -206,7 +206,7 @@ export default function Procedures() {
               <div className="flex justify-end space-x-4">
                 <Button
                   type="button"
-                  variant="outline"
+                  variant="default"
                   onClick={() => setDialogOpen(false)}
                   data-testid="button-cancel"
                 >
@@ -301,7 +301,7 @@ export default function Procedures() {
                       {/* Botões em linha horizontal */}
                       <div className="flex items-center space-x-1 w-full sm:w-auto">
                         <Button
-                          variant="outline"
+                          variant="default"
                           size="sm"
                           onClick={() => handleView(item)}
                           data-testid={`button-view-${item.id}`}
@@ -311,7 +311,7 @@ export default function Procedures() {
                         </Button>
                         
                         <Button
-                          variant="outline"
+                          variant="default"
                           size="sm"
                           onClick={() => handleEdit(item)}
                           data-testid={`button-edit-${item.id}`}
@@ -321,7 +321,7 @@ export default function Procedures() {
                         </Button>
                         
                         <Button
-                          variant="outline"
+                          variant="default"
                           size="sm"
                           onClick={() => handleDelete(item.id)}
                           disabled={deleteMutation.isPending}
@@ -345,7 +345,7 @@ export default function Procedures() {
                 </p>
                 {!searchQuery && (
                   <Button
-                    variant="outline"
+                    variant="default"
                     onClick={() => setDialogOpen(true)}
                     data-testid="button-add-first-procedure"
                   >

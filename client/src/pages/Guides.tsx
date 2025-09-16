@@ -334,7 +334,7 @@ export default function Guides() {
                       </Badge>
                       <div className="flex items-center space-x-1">
                         <Button
-                          variant="outline"
+                          variant="default"
                           size="sm"
                           onClick={() => handleViewDetails(guide)}
                           data-testid={`button-view-${guide.id}`}
@@ -342,7 +342,7 @@ export default function Guides() {
                           <Eye className="h-4 w-4" />
                         </Button>
                         <Button
-                          variant="outline"
+                          variant="default"
                           size="sm"
                           onClick={() => {
                             setSelectedGuide(guide);
@@ -353,7 +353,7 @@ export default function Guides() {
                           <Copy className="h-4 w-4" />
                         </Button>
                         <Button
-                          variant="outline"
+                          variant="default"
                           size="sm"
                           onClick={() => setLocation(`/guias/${guide.id}/editar`)}
                           data-testid={`button-edit-${guide.id}`}
@@ -361,7 +361,7 @@ export default function Guides() {
                           <Edit className="h-4 w-4" />
                         </Button>
                         <Button
-                          variant="outline"
+                          variant="default"
                           size="sm"
                           onClick={() => handleDelete(guide.id, guide.procedure)}
                           disabled={deleteGuideMutation.isPending}
@@ -376,7 +376,7 @@ export default function Guides() {
                     <div className="flex lg:hidden items-center justify-between w-full">
                       <div className="flex items-center space-x-1">
                         <Button
-                          variant="outline"
+                          variant="default"
                           size="sm"
                           onClick={() => handleViewDetails(guide)}
                           data-testid={`button-view-mobile-${guide.id}`}
@@ -384,7 +384,7 @@ export default function Guides() {
                           <Eye className="h-4 w-4" />
                         </Button>
                         <Button
-                          variant="outline"
+                          variant="default"
                           size="sm"
                           onClick={() => {
                             setSelectedGuide(guide);
@@ -395,7 +395,7 @@ export default function Guides() {
                           <Copy className="h-4 w-4" />
                         </Button>
                         <Button
-                          variant="outline"
+                          variant="default"
                           size="sm"
                           onClick={() => setLocation(`/guias/${guide.id}/editar`)}
                           data-testid={`button-edit-mobile-${guide.id}`}
@@ -403,7 +403,7 @@ export default function Guides() {
                           <Edit className="h-4 w-4" />
                         </Button>
                         <Button
-                          variant="outline"
+                          variant="default"
                           size="sm"
                           onClick={() => handleDelete(guide.id, guide.procedure)}
                           disabled={deleteGuideMutation.isPending}

@@ -143,7 +143,7 @@ export default function PetForm() {
       {/* Header */}
       <div className="flex items-center">
         <Button
-          variant="outline"
+          variant="default"
           onClick={() => setLocation("/clientes")}
           data-testid="button-back-to-clients"
           className="hidden sm:flex"
@@ -164,7 +164,7 @@ export default function PetForm() {
       {/* Mobile Back Button */}
       <div className="sm:hidden">
         <Button
-          variant="outline"
+          variant="default"
           onClick={() => setLocation("/clientes")}
           data-testid="button-back-to-clients-mobile"
         >
@@ -480,7 +480,7 @@ export default function PetForm() {
           <div className="flex justify-end space-x-4">
             <Button
               type="button"
-              variant="outline"
+              variant="default"
               onClick={() => setLocation("/clientes")}
               data-testid="button-cancel"
             >

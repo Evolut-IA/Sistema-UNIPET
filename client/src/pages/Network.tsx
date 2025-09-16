@@ -283,7 +283,7 @@ export default function Network() {
                     {/* Botões em linha horizontal */}
                     <div className="flex items-center space-x-1">
                       <Button
-                        variant="outline"
+                        variant="default"
                         size="sm"
                         onClick={() => handleViewDetails(unit)}
                         data-testid={`button-view-${unit.id}`}
@@ -291,7 +291,7 @@ export default function Network() {
                         <Eye className="h-4 w-4" />
                       </Button>
                       <Button
-                        variant="outline"
+                        variant="default"
                         size="sm"
                         onClick={() => {
                           setSelectedUnit(unit);
@@ -303,7 +303,7 @@ export default function Network() {
                       </Button>
                       {unit.googleMapsUrl && (
                         <Button
-                          variant="outline"
+                          variant="default"
                           size="sm"
                           asChild
                           data-testid={`button-maps-${unit.id}`}
@@ -314,7 +314,7 @@ export default function Network() {
                         </Button>
                       )}
                       <Button
-                        variant="outline"
+                        variant="default"
                         size="sm"
                         onClick={() => setLocation(`/rede/${unit.id}/editar`)}
                         data-testid={`button-edit-${unit.id}`}
@@ -322,7 +322,7 @@ export default function Network() {
                         <Edit className="h-4 w-4" />
                       </Button>
                       <Button
-                        variant="outline"
+                        variant="default"
                         size="sm"
                         onClick={() => handleDelete(unit.id, unit.name)}
                         disabled={deleteUnitMutation.isPending}
@@ -420,7 +420,7 @@ export default function Network() {
                 <div>
                   <h4 className="font-semibold text-foreground mb-2">Localização</h4>
                   <Button
-                    variant="outline"
+                    variant="default"
                     asChild
                     className="w-full"
                   >

@@ -231,7 +231,7 @@ export default function Plans() {
 
                 <div className="flex space-x-2 pt-3 border-t">
                   <Button
-                    variant="outline"
+                    variant="default"
                     size="sm"
                     className="flex-1"
                     onClick={() => setLocation(`/planos/${plan.id}/editar`)}
@@ -241,7 +241,7 @@ export default function Plans() {
                     Editar
                   </Button>
                   <Button
-                    variant="outline"
+                    variant="default"
                     size="sm"
                     onClick={() => handleDelete(plan.id, plan.name)}
                     disabled={deletePlanMutation.isPending}

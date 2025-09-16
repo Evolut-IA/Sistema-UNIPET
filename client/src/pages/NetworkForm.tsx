@@ -166,7 +166,7 @@ export default function NetworkForm() {
       {/* Header */}
       <div className="flex items-center space-x-4">
         <Button
-          variant="outline"
+          variant="default"
           onClick={() => setLocation("/rede")}
           data-testid="button-back-to-network"
         >
@@ -379,7 +379,7 @@ export default function NetworkForm() {
           <div className="flex justify-end space-x-4">
             <Button
               type="button"
-              variant="outline"
+              variant="default"
               onClick={() => setLocation("/rede")}
               data-testid="button-cancel"
             >

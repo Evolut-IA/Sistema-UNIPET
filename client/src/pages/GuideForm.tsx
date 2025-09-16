@@ -129,7 +129,7 @@ export default function GuideForm() {
       {/* Header */}
       <div className="flex items-center space-x-4">
         <Button
-          variant="outline"
+          variant="default"
           onClick={() => setLocation("/guias")}
           data-testid="button-back-to-guides"
         >
@@ -285,7 +285,7 @@ export default function GuideForm() {
           <div className="flex justify-center space-x-4 md:space-x-4 space-x-2 md:flex-row flex-col md:space-y-0 space-y-3">
             <Button
               type="button"
-              variant="outline"
+              variant="default"
               onClick={() => setLocation("/guias")}
               data-testid="button-cancel"
               className="md:w-auto w-full md:h-10 h-12 md:text-sm text-base"

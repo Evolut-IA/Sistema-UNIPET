@@ -229,7 +229,7 @@ export default function FAQ() {
                 <div className="flex justify-end space-x-4">
                   <Button
                     type="button"
-                    variant="outline"
+                    variant="default"
                     onClick={() => setDialogOpen(false)}
                     data-testid="button-cancel"
                   >
@@ -306,7 +306,7 @@ export default function FAQ() {
                       />
                       
                       <Button
-                        variant="outline"
+                        variant="default"
                         size="sm"
                         onClick={() => handleEdit(item)}
                         data-testid={`button-edit-${item.id}`}
@@ -315,7 +315,7 @@ export default function FAQ() {
                       </Button>
                       
                       <Button
-                        variant="outline"
+                        variant="default"
                         size="sm"
                         onClick={() => handleDelete(item.id)}
                         disabled={deleteMutation.isPending}
@@ -337,7 +337,7 @@ export default function FAQ() {
                 </p>
                 {!searchQuery && (
                   <Button
-                    variant="outline"
+                    variant="default"
                     onClick={() => setDialogOpen(true)}
                     data-testid="button-add-first-faq"
                   >

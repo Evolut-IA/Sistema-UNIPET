@@ -455,7 +455,7 @@ export default function Administration() {
                 <div className="flex justify-end space-x-4">
                   <Button
                     type="button"
-                    variant="outline"
+                    variant="default"
                     onClick={() => setDialogOpen(false)}
                     data-testid="button-cancel"
                   >
@@ -565,7 +565,7 @@ export default function Administration() {
 
                       <div className="flex space-x-2">
                         <Button
-                          variant="outline"
+                          variant="default"
                           size="sm"
                           onClick={() => handleEdit(user)}
                           data-testid={`button-edit-${user.id}`}
@@ -573,7 +573,7 @@ export default function Administration() {
                           <Edit className="h-4 w-4" />
                         </Button>
                         <Button
-                          variant="outline"
+                          variant="default"
                           size="sm"
                           onClick={() => handleDelete(user.id)}
                           disabled={deleteMutation.isPending}

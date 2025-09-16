@@ -314,7 +314,7 @@ export default function Clients() {
                     {/* Botões em linha horizontal */}
                     <div className="flex items-center space-x-1 w-full sm:w-auto">
                       <Button
-                        variant="outline"
+                        variant="default"
                         size="sm"
                         onClick={() => handleViewDetails(client)}
                         data-testid={`button-view-${client.id}`}
@@ -323,7 +323,7 @@ export default function Clients() {
                         <Eye className="h-3 w-3" />
                       </Button>
                       <Button
-                        variant="outline"
+                        variant="default"
                         size="sm"
                         onClick={() => {
                           setSelectedClient(client);
@@ -335,7 +335,7 @@ export default function Clients() {
                         <Copy className="h-3 w-3" />
                       </Button>
                       <Button
-                        variant="outline"
+                        variant="default"
                         size="sm"
                         onClick={() => setLocation(`/clientes/${client.id}/pets/novo`)}
                         data-testid={`button-add-pet-${client.id}`}
@@ -344,7 +344,7 @@ export default function Clients() {
                         <AddPetIcon className="h-3 w-3" />
                       </Button>
                       <Button
-                        variant="outline"
+                        variant="default"
                         size="sm"
                         onClick={() => setLocation(`/clientes/${client.id}/editar`)}
                         data-testid={`button-edit-${client.id}`}
@@ -353,7 +353,7 @@ export default function Clients() {
                         <Edit className="h-3 w-3" />
                       </Button>
                       <Button
-                        variant="outline"
+                        variant="default"
                         size="sm"
                         onClick={() => handleDelete(client.id, client.fullName)}
                         disabled={deleteClientMutation.isPending}

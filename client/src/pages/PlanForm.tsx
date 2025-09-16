@@ -150,7 +150,7 @@ export default function PlanForm() {
       {/* Header */}
       <div className="flex items-center space-x-4">
         <Button
-          variant="outline"
+          variant="default"
           onClick={() => setLocation("/planos")}
           data-testid="button-back-to-plans"
         >
@@ -265,7 +265,7 @@ export default function PlanForm() {
           <div className="flex justify-end space-x-4">
             <Button
               type="button"
-              variant="outline"
+              variant="default"
               onClick={() => setLocation("/planos")}
               data-testid="button-cancel"
             >
