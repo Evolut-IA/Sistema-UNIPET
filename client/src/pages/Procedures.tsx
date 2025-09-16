@@ -109,7 +109,17 @@ export default function Procedures() {
   // Funções para atualizar campos específicos
   const updatePlanField = (index: number, field: string, value: string) => {
     const updated = [...selectedPlans];
-    (updated[index] as any)[field] = value;
+    
+    // Tratamento especial para o campo carência (apenas números)
+    if (field === 'carencia') {
+      // Remove tudo que não for número
+      const numericValue = value.replace(/\D/g, '');
+      // Se houver números, adiciona " dias", senão deixa vazio
+      (updated[index] as any)[field] = numericValue ? `${numericValue} dias` : '';
+    } else {
+      (updated[index] as any)[field] = value;
+    }
+    
     setSelectedPlans(updated);
     
     // Validar campos obrigatórios e limpar erro se válido
@@ -510,7 +520,7 @@ export default function Procedures() {
                                   <Input
                                     value={selectedPlan.carencia}
                                     onChange={(e) => updatePlanField(index, 'carencia', e.target.value)}
-                                    placeholder="Ex: 30 dias"
+                                    placeholder="Digite apenas números"
                                     data-testid={`input-plan-carencia-${index}`}
                                   />
                                 </div>
