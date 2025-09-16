@@ -350,13 +350,13 @@ export default function ThemeEditor() {
                     </div>
                   </div>
 
-                  {/* Cores Específicas */}
+                  {/* Cores de Textarea */}
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">
-                      Cores Específicas
+                      Cores de Textarea
                     </h3>
                     <div className="text-sm text-muted-foreground mb-4">
-                      Cores para elementos específicos que não são compartilhadas no sistema.
+                      Cores específicas para campos de texto e textareas.
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       
@@ -377,6 +377,36 @@ export default function ThemeEditor() {
                           </FormItem>
                         )}
                       />
+                      
+                      {/* Cor do Texto de Textarea */}
+                      <FormField
+                        control={form.control}
+                        name="textColor"
+                        render={({ field }) => (
+                          <FormItem>
+                            <ColorInput
+                              value={field.value || DEFAULT_THEME.textColor}
+                              onChange={field.onChange}
+                              title="Cor do Texto de Textarea"
+                              description="Cor do texto dentro de campos de entrada"
+                              testId="color-input-text"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Cores de Status */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">
+                      Cores de Status
+                    </h3>
+                    <div className="text-sm text-muted-foreground mb-4">
+                      Cores para diferentes estados e status do sistema.
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       
                       {/* Positivo (Verde) */}
                       <FormField

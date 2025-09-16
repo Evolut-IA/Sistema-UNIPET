@@ -189,6 +189,7 @@ export const themeSettings = pgTable("theme_settings", {
   
   // Forms
   inputBackground: text("input_background").default("#f7f9fa"),
+  inputText: text("input_text").default("#1a1a1a"),
   inputBorder: text("input_border").default("#e1eaef"),
   focusBorder: text("focus_border").default("#277677"),
   
