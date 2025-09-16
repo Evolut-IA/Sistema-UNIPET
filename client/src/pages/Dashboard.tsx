@@ -463,7 +463,7 @@ export default function Dashboard() {
                   <div className="flex items-center gap-2">
                     <span className="text-sm text-foreground">Total de Pets com Planos</span>
                     {planDistribution.some(plan => plan.petCount > 0) && (
-                      <div className="w-2 h-2 bg-chart-4 rounded-full" title="Dados atualizados"></div>
+                      <div className="w-2 h-2 bg-primary rounded-full" title="Dados atualizados"></div>
                     )}
                   </div>
                   <div className="text-right">
@@ -478,13 +478,13 @@ export default function Dashboard() {
 
                 {/* Distribuição por plano */}
                 {planDistribution.map((plan, index: number) => {
-                  // Cores específicas para cada plano
+                  // Cores uniformes usando primary para todos os planos
                   const planColors = {
-                    'BASIC': { bg: 'bg-chart-1', text: 'text-chart-1', light: 'bg-chart-1/20' },
-                    'COMFORT': { bg: 'bg-chart-3', text: 'text-chart-3', light: 'bg-chart-3/20' },
-                    'PLATINUM': { bg: 'bg-chart-2', text: 'text-chart-2', light: 'bg-chart-2/20' },
-                    'INFINITY': { bg: 'bg-chart-3', text: 'text-chart-3', light: 'bg-chart-3/20' },
-                    'PREMIUM': { bg: 'bg-chart-5', text: 'text-chart-5', light: 'bg-chart-5/20' }
+                    'BASIC': { bg: 'bg-primary', text: 'text-primary', light: 'bg-primary/20' },
+                    'COMFORT': { bg: 'bg-primary', text: 'text-primary', light: 'bg-primary/20' },
+                    'PLATINUM': { bg: 'bg-primary', text: 'text-primary', light: 'bg-primary/20' },
+                    'INFINITY': { bg: 'bg-primary', text: 'text-primary', light: 'bg-primary/20' },
+                    'PREMIUM': { bg: 'bg-primary', text: 'text-primary', light: 'bg-primary/20' }
                   };
 
                   const colors = planColors[plan.planName as keyof typeof planColors] ||
@@ -534,11 +534,11 @@ export default function Dashboard() {
                 {/* Mostrar planos mesmo sem pets */}
                 {planDistribution.map((plan) => {
                   const planColors = {
-                    'BASIC': { bg: 'bg-chart-1', text: 'text-chart-1', light: 'bg-chart-1/20' },
-                    'COMFORT': { bg: 'bg-chart-3', text: 'text-chart-3', light: 'bg-chart-3/20' },
-                    'PLATINUM': { bg: 'bg-chart-2', text: 'text-chart-2', light: 'bg-chart-2/20' },
-                    'INFINITY': { bg: 'bg-chart-3', text: 'text-chart-3', light: 'bg-chart-3/20' },
-                    'PREMIUM': { bg: 'bg-chart-5', text: 'text-chart-5', light: 'bg-chart-5/20' }
+                    'BASIC': { bg: 'bg-primary', text: 'text-primary', light: 'bg-primary/20' },
+                    'COMFORT': { bg: 'bg-primary', text: 'text-primary', light: 'bg-primary/20' },
+                    'PLATINUM': { bg: 'bg-primary', text: 'text-primary', light: 'bg-primary/20' },
+                    'INFINITY': { bg: 'bg-primary', text: 'text-primary', light: 'bg-primary/20' },
+                    'PREMIUM': { bg: 'bg-primary', text: 'text-primary', light: 'bg-primary/20' }
                   };
 
                   const colors = planColors[plan.planName as keyof typeof planColors] ||
