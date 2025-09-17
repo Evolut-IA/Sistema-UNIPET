@@ -37,6 +37,7 @@ export default function Procedures() {
     enableCoparticipacao?: boolean
   }[]>([]);
   const [planErrors, setPlanErrors] = useState<{[key: number]: string}>({});
+  const [manuallyEditedFields, setManuallyEditedFields] = useState<{[key: number]: {[field: string]: boolean}}>({});
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -104,10 +105,13 @@ export default function Procedures() {
         };
       });
       setSelectedPlans(planData);
+      // Resetar estado de edições manuais ao carregar dados existentes
+      setManuallyEditedFields({});
     }
     // Limpar planos quando não estiver editando (criando novo)
     else if (!editingItem?.id) {
       setSelectedPlans([]);
+      setManuallyEditedFields({});
     }
   }, [existingProcedurePlans, editingItem?.id]); // Adicionar existingProcedurePlans como dependência
 
@@ -135,11 +139,29 @@ export default function Procedures() {
 
   const removePlan = (index: number) => {
     setSelectedPlans(selectedPlans.filter((_, i) => i !== index));
+    
+    // Reorganizar o estado de edições manuais após remoção
+    const updatedManualFields = {...manuallyEditedFields};
+    delete updatedManualFields[index];
+    
+    // Reindexar os campos manuais restantes
+    const reindexedManualFields: {[key: number]: {[field: string]: boolean}} = {};
+    Object.keys(updatedManualFields).forEach(key => {
+      const numKey = parseInt(key);
+      if (numKey < index) {
+        reindexedManualFields[numKey] = updatedManualFields[numKey];
+      } else if (numKey > index) {
+        reindexedManualFields[numKey - 1] = updatedManualFields[numKey];
+      }
+    });
+    
+    setManuallyEditedFields(reindexedManualFields);
   };
 
   // Funções para atualizar campos específicos
   const updatePlanField = (index: number, field: string, value: string) => {
     const updated = [...selectedPlans];
+    const updatedManualFields = {...manuallyEditedFields};
     
     // Tratamento especial para o campo carência (apenas números)
     if (field === 'carencia') {
@@ -169,15 +191,26 @@ export default function Procedures() {
       if (field === 'receber' || field === 'pagar' || field === 'coparticipacao') {
         (updated[index] as any)[field] = value;
         
+        // Marcar campo como editado manualmente
+        if (!updatedManualFields[index]) {
+          updatedManualFields[index] = {};
+        }
+        updatedManualFields[index][field] = true;
+        
         // Cálculo automático do campo 'pagar' quando 'receber' for alterado
+        // Só recalcula se o campo 'pagar' não foi editado manualmente
         if (field === 'receber' && value && value.trim() !== '') {
-          const calculatedPayValue = calculatePayValue(value);
-          updated[index].pagar = calculatedPayValue;
+          const wasPagarManuallyEdited = updatedManualFields[index]?.pagar;
+          if (!wasPagarManuallyEdited) {
+            const calculatedPayValue = calculatePayValue(value);
+            updated[index].pagar = calculatedPayValue;
+          }
         }
       }
     }
     
     setSelectedPlans(updated);
+    setManuallyEditedFields(updatedManualFields);
     
     // Validar campos obrigatórios e limpar erro se válido
     if (field === 'receber' && value && planErrors[index]) {
@@ -289,6 +322,7 @@ export default function Procedures() {
     setSelectedPlans([]);
     setPlanErrors({});
     setEditingItem(null);
+    setManuallyEditedFields({});
   };
 
   const createMutation = useMutation({
