@@ -796,7 +796,7 @@ export default function Procedures() {
                                       id={`enable-carencia-${index}`}
                                       checked={selectedPlan.enableCarencia || false}
                                       onChange={(e) => updatePlanBooleanField(index, 'enableCarencia', e.target.checked)}
-                                      label="Carência"
+                                      label="Carência (Dias)"
                                     />
                                   </div>
                                   <Input
