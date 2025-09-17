@@ -11,7 +11,7 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Checkbox } from "@/components/ui/checkbox";
+import { CustomCheckbox } from "@/components/ui/custom-checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Search, Edit, Trash2, ClipboardList, Eye, DollarSign, X } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
@@ -688,17 +688,13 @@ export default function Procedures() {
                               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 {/* Coparticipação */}
                                 <div>
-                                  <div className="flex items-center gap-2 mb-2">
-                                    <input
-                                      type="checkbox"
+                                  <div className="mb-2">
+                                    <CustomCheckbox
                                       id={`enable-coparticipacao-${index}`}
                                       checked={selectedPlan.enableCoparticipacao || false}
                                       onChange={(e) => updatePlanBooleanField(index, 'enableCoparticipacao', e.target.checked)}
-                                      className="rounded"
+                                      label="Coparticipação (R$)"
                                     />
-                                    <label htmlFor={`enable-coparticipacao-${index}`} className="text-sm font-medium">
-                                      Coparticipação (R$)
-                                    </label>
                                   </div>
                                   <InputMasked
                                     mask="price"
@@ -713,17 +709,13 @@ export default function Procedures() {
 
                                 {/* Carência */}
                                 <div>
-                                  <div className="flex items-center gap-2 mb-2">
-                                    <input
-                                      type="checkbox"
+                                  <div className="mb-2">
+                                    <CustomCheckbox
                                       id={`enable-carencia-${index}`}
                                       checked={selectedPlan.enableCarencia || false}
                                       onChange={(e) => updatePlanBooleanField(index, 'enableCarencia', e.target.checked)}
-                                      className="rounded"
+                                      label="Carência"
                                     />
-                                    <label htmlFor={`enable-carencia-${index}`} className="text-sm font-medium">
-                                      Carência
-                                    </label>
                                   </div>
                                   <Input
                                     value={selectedPlan.carencia}
@@ -737,17 +729,13 @@ export default function Procedures() {
                                 
                                 {/* Limites Anuais */}
                                 <div>
-                                  <div className="flex items-center gap-2 mb-2">
-                                    <input
-                                      type="checkbox"
+                                  <div className="mb-2">
+                                    <CustomCheckbox
                                       id={`enable-limites-${index}`}
                                       checked={selectedPlan.enableLimitesAnuais || false}
                                       onChange={(e) => updatePlanBooleanField(index, 'enableLimitesAnuais', e.target.checked)}
-                                      className="rounded"
+                                      label="Limites Anuais"
                                     />
-                                    <label htmlFor={`enable-limites-${index}`} className="text-sm font-medium">
-                                      Limites Anuais
-                                    </label>
                                   </div>
                                   <Input
                                     value={selectedPlan.limitesAnuais}
