@@ -303,10 +303,6 @@ export default function Dashboard() {
                     label: "Formulários",
                     color: "var(--chart-1)",
                   },
-                  planos: {
-                    label: "Planos",
-                    color: "var(--chart-1)",
-                  },
                   rede: {
                     label: "Unidades de Rede",
                     color: "var(--chart-1)",
@@ -333,12 +329,6 @@ export default function Dashboard() {
                       categoriaShort: "Formulários",
                       total: contactSubmissions?.length || 0,
                       fill: "var(--color-formularios)",
-                    },
-                    {
-                      categoria: "Planos",
-                      categoriaShort: "Planos",
-                      total: stats?.totalPlans || 0,
-                      fill: "var(--color-planos)",
                     },
                     {
                       categoria: "Unidades",
