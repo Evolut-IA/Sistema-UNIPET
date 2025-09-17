@@ -31,7 +31,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { insertUserSchema } from "@shared/schema";
-import { UserCog, Plus, Search, Edit, Trash2, Shield, User, Key, Network, Lock, Eye, EyeOff, Globe, Copy, RefreshCw, ExternalLink, Columns3 as Columns, ChevronLeft, ChevronRight } from "lucide-react";
+import { UserCog, Plus, Search, Edit, Trash2, Shield, User, Key, Network, Lock, Eye, EyeOff, Columns3 as Columns, ChevronLeft, ChevronRight } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -69,8 +69,6 @@ export default function Administration() {
   const [editingUser, setEditingUser] = useState<any>(null);
   const [credentialDialogOpen, setCredentialDialogOpen] = useState(false);
   const [editingNetworkUnit, setEditingNetworkUnit] = useState<any>(null);
-  const [urlDialogOpen, setUrlDialogOpen] = useState(false);
-  const [editingUrlUnit, setEditingUrlUnit] = useState<any>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const [visibleColumns, setVisibleColumns] = useState<string[]>([...allColumns]);
@@ -122,18 +120,6 @@ export default function Administration() {
     },
   });
 
-  const urlForm = useForm({
-    resolver: zodResolver(
-      z.object({
-        urlSlug: z.string()
-          .min(3, "URL deve ter pelo menos 3 caracteres")
-          .max(100, "URL não pode ter mais de 100 caracteres")
-      })
-    ),
-    defaultValues: {
-      urlSlug: "",
-    },
-  });
 
   const createMutation = useMutation({
     mutationFn: async (data: any) => {
@@ -230,51 +216,7 @@ export default function Administration() {
     },
   });
 
-  const regenerateSlugMutation = useMutation({
-    mutationFn: async (unitId: string) => {
-      const response = await apiRequest("PUT", `/api/network-units/${unitId}/regenerate-slug`);
-      return response;
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/network-units/credentials"] });
-      toast({
-        title: "URL regenerada",
-        description: `Nova URL: ${data.newSlug}`,
-      });
-    },
-    onError: () => {
-      toast({
-        title: "Erro",
-        description: "Falha ao regenerar URL da unidade.",
-        variant: "destructive",
-      });
-    },
-  });
 
-  const updateUrlMutation = useMutation({
-    mutationFn: async (data: { id: string; urlSlug: string }) => {
-      await apiRequest("PUT", `/api/network-units/${data.id}`, {
-        urlSlug: data.urlSlug,
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/network-units/credentials"] });
-      toast({
-        title: "URL atualizada",
-        description: "URL da unidade foi atualizada com sucesso.",
-      });
-      setUrlDialogOpen(false);
-      setEditingUrlUnit(null);
-      urlForm.reset();
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Erro",
-        description: error.message || "Falha ao atualizar URL da unidade.",
-        variant: "destructive",
-      });
-    },
-  });
 
   const filteredUsers = users.filter((user: any) =>
     user.username?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -340,29 +282,12 @@ export default function Administration() {
     setCredentialDialogOpen(true);
   };
 
-  const handleEditUrl = (networkUnit: any) => {
-    setEditingUrlUnit(networkUnit);
-    urlForm.reset({
-      urlSlug: networkUnit.urlSlug || "",
-    });
-    setUrlDialogOpen(true);
-  };
-
   const onCredentialSubmit = (data: any) => {
     if (editingNetworkUnit) {
       updateCredentialsMutation.mutate({
         id: editingNetworkUnit.id,
         login: data.login,
         password: data.password,
-      });
-    }
-  };
-
-  const onUrlSubmit = (data: any) => {
-    if (editingUrlUnit) {
-      updateUrlMutation.mutate({
-        id: editingUrlUnit.id,
-        urlSlug: data.urlSlug,
       });
     }
   };
@@ -419,60 +344,6 @@ export default function Administration() {
     );
   };
 
-  // URL Management helper functions
-  const getDomain = () => {
-    if (typeof window !== 'undefined') {
-      return window.location.origin;
-    }
-    // Fallback to environment or localhost
-    return 'https://2872e078-80d4-4c88-990e-9aee3a3a947c-00-1t5v7l4nfgg9j.kirk.replit.dev';
-  };
-
-  const getFullUrl = (slug: string) => {
-    return `${getDomain()}/${slug}`;
-  };
-
-  const handleCopyUrl = async (slug: string) => {
-    if (!slug) {
-      toast({
-        title: "Erro",
-        description: "URL slug não definido para esta unidade.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      const fullUrl = getFullUrl(slug);
-      await navigator.clipboard.writeText(fullUrl);
-      toast({
-        title: "URL copiada!",
-        description: `${fullUrl} foi copiada para o clipboard.`,
-      });
-    } catch (error) {
-      toast({
-        title: "Erro",
-        description: "Falha ao copiar URL para o clipboard.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleRegenerateUrl = (unit: any) => {
-    if (confirm(`Tem certeza que deseja regenerar a URL para "${unit.name}"? Isso pode quebrar links existentes.`)) {
-      regenerateSlugMutation.mutate(unit.id);
-    }
-  };
-
-  const getUrlStatus = (unit: any) => {
-    if (!unit.urlSlug) {
-      return { text: "Não configurado", color: "bg-chart-5/20 text-chart-5" };
-    }
-    if (unit.isActive) {
-      return { text: "Ativo", color: "bg-chart-2/20 text-chart-2" };
-    }
-    return { text: "Inativo", color: "bg-chart-4/20 text-chart-4" };
-  };
 
   return (
     <>
@@ -712,13 +583,13 @@ export default function Administration() {
         </DropdownMenu>
       </div>
 
+      {/* Section Title */}
+      <h2 className="text-xl font-semibold text-foreground mb-4">
+        Usuários
+      </h2>
+
       {/* Modern Table Container */}
       <div className="container my-10 space-y-4 border border-border rounded-lg bg-accent shadow-sm">
-        <div className="p-4">
-          <h2 className="text-xl font-semibold text-foreground">
-            Usuários
-          </h2>
-        </div>
 
         {/* Table */}
         <div className="rounded-lg overflow-hidden">
@@ -900,36 +771,36 @@ export default function Administration() {
       {/* Separator between sections */}
       <Separator className="my-8" />
 
-      {/* Network Credentials Section */}
+      {/* Network Credentials Section Header */}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4">
+        <h2 className="text-xl font-semibold text-foreground">
+          Rede Credenciada
+        </h2>
+        
+        {/* Controle de Colunas da Rede */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm">
+              <Columns className="h-4 w-4 mr-2" />
+              Colunas
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {networkColumns.map((col) => (
+              <DropdownMenuCheckboxItem
+                key={col}
+                checked={visibleNetworkColumns.includes(col)}
+                onCheckedChange={() => toggleNetworkColumn(col)}
+              >
+                {col}
+              </DropdownMenuCheckboxItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      {/* Network Credentials Table Container */}
       <div className="container my-10 space-y-4 border border-border rounded-lg bg-accent shadow-sm">
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 p-4 border-b border-border">
-          <div className="flex-1">
-            <h2 className="text-lg font-medium text-foreground">
-              Rede Credenciada
-            </h2>
-          </div>
-          
-          {/* Controle de Colunas da Rede */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                <Columns className="h-4 w-4 mr-2" />
-                Colunas
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {networkColumns.map((col) => (
-                <DropdownMenuCheckboxItem
-                  key={col}
-                  checked={visibleNetworkColumns.includes(col)}
-                  onCheckedChange={() => toggleNetworkColumn(col)}
-                >
-                  {col}
-                </DropdownMenuCheckboxItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
         
         {isLoadingNetworkUnits ? (
           <div className="p-4">
@@ -1005,13 +876,6 @@ export default function Administration() {
                             onClick={() => handleEditCredentials(unit)}
                           >
                             <Key className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleEditUrl(unit)}
-                          >
-                            <Globe className="h-4 w-4" />
                           </Button>
                         </div>
                       </TableCell>
@@ -1222,69 +1086,6 @@ export default function Administration() {
           </DialogContent>
       </Dialog>
 
-      {/* URL Dialog */}
-      <Dialog open={urlDialogOpen} onOpenChange={(open) => {
-        setUrlDialogOpen(open);
-        if (!open) {
-          setEditingUrlUnit(null);
-          urlForm.reset();
-        }
-      }}>
-        <DialogContent className="overflow-y-auto" maxHeightMobile="max-h-[90vh]">
-          <DialogHeader>
-            <DialogTitle className="text-foreground">
-              Editar URL da Unidade
-            </DialogTitle>
-            <p className="text-sm text-muted-foreground">
-              {editingUrlUnit ? `Editando URL para: ${editingUrlUnit.name}` : ''}
-            </p>
-          </DialogHeader>
-          <Form {...urlForm}>
-            <form onSubmit={urlForm.handleSubmit(onUrlSubmit)} className="space-y-4">
-              <FormField
-                control={urlForm.control}
-                name="urlSlug"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>URL Personalizada *</FormLabel>
-                    <FormControl>
-                      <div className="space-y-2">
-                        <InputMasked 
-                          {...field} 
-                          mask="url-slug"
-                          placeholder="minha-clinica-veterinaria"
-                          className="font-mono"
-                        />
-                        <div className="text-xs text-muted-foreground">
-                          <p><strong>URL final:</strong> {field.value ? getFullUrl(field.value) : getDomain() + '/sua-url-aqui'}</p>
-                        </div>
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="flex justify-end space-x-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setUrlDialogOpen(false)}
-                >
-                  Cancelar
-                </Button>
-                <Button
-                  type="submit"
-                  className="btn-primary"
-                  disabled={updateUrlMutation.isPending}
-                >
-                  {updateUrlMutation.isPending ? "Salvando..." : "Salvar URL"}
-                </Button>
-              </div>
-            </form>
-          </Form>
-        </DialogContent>
-      </Dialog>
 
       </div>
     </>
