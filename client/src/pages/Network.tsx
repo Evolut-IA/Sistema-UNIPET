@@ -290,17 +290,6 @@ export default function Network() {
                       >
                         <Eye className="h-4 w-4" />
                       </Button>
-                      <Button
-                        variant="default"
-                        size="sm"
-                        onClick={() => {
-                          setSelectedUnit(unit);
-                          handleCopyToClipboard();
-                        }}
-                        data-testid={`button-copy-${unit.id}`}
-                      >
-                        <Copy className="h-4 w-4" />
-                      </Button>
                       {unit.googleMapsUrl && (
                         <Button
                           variant="default"
@@ -396,6 +385,19 @@ export default function Network() {
                       <span><strong className="text-primary">Status:</strong> <span className="text-foreground">{selectedUnit.isActive ? "Ativo" : "Inativo"}</span></span>
                     </div>
                   </div>
+                </div>
+
+                {/* Botão Copiar Informações */}
+                <div>
+                  <Button
+                    variant="default"
+                    onClick={handleCopyToClipboard}
+                    className="w-full"
+                    data-testid="button-copy-unit-details"
+                  >
+                    <Copy className="h-4 w-4 mr-2" />
+                    Copiar Informações
+                  </Button>
                 </div>
 
                 {selectedUnit.services && selectedUnit.services.length > 0 && (
