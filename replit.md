@@ -8,14 +8,21 @@ Sistema UNIPET is a comprehensive pet management system built with React, TypeSc
 **Status**: ✅ **FULLY VALIDATED AND APPROVED FOR PRODUCTION**
 
 ### UNIPET Partner System - 100% Complete
-The UNIPET partner dashboard has been fully implemented, tested, and validated with comprehensive end-to-end testing. All 6 core functionalities are operational:
+The UNIPET partner dashboard has been fully implemented, tested, and validated with comprehensive end-to-end testing. All 7 core functionalities are operational:
 
 1. **✅ Digital ID Cards**: Professional flip-card design with front/back views
-2. **✅ Guide Management**: Full CRUD operations with status tracking
+2. **✅ Guide Management**: Full CRUD operations with status tracking and pagination
 3. **✅ Client Management**: Linked clients with comprehensive data
 4. **✅ Plan Consultation**: 4 active plans with coparticipation calculations
 5. **✅ Guide Creation**: Automatic calculation system for BASIC/PLATINUM/INFINITY/COMFORT plans
 6. **✅ Coverage Table**: Advanced filtering with 161 procedure-plan combinations
+7. **✅ Pagination System**: Displays exactly 10 guides per page with navigation controls
+
+### Recent Updates - September 17, 2025
+- **Pagination Implementation**: Added comprehensive pagination system to the guides (/guias) page
+- **API Enhancement**: Backend now supports paginated responses with structured data format
+- **Frontend Navigation**: Implemented page navigation controls with proper state management
+- **Search Integration**: Pagination works seamlessly with existing search and filter functionality
 
 ### Key Validation Results
 - **Authentication**: JWT-based secure login system functioning
@@ -24,13 +31,14 @@ The UNIPET partner dashboard has been fully implemented, tested, and validated w
 - **Performance**: API response times < 1s, optimized with useMemo and proper caching
 - **Data Integrity**: New guide created during testing confirms end-to-end functionality
 - **URL Generation**: Automatic partner URLs working (e.g., `/clinica-veterinaria-pet-center`)
+- **Pagination**: Validated showing exactly 10 guides per page (13 total guides = 2 pages)
 
 ### Test Credentials
 - Partner Unit: Clínica Veterinária Pet Center
 - Login: test123 / test123
 - URL: `/clinica-veterinaria-pet-center`
 
-The system successfully processes real data with 7 guides, 3 clients, 4 active plans, and complete procedure coverage matrix.
+The system successfully processes real data with 13 guides, 3 clients, 4 active plans, and complete procedure coverage matrix with pagination support.
 
 # User Preferences
 
