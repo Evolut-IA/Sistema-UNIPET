@@ -360,10 +360,10 @@ export default function Guides() {
       </div>
 
       {/* Modern Table Container */}
-      <div className="container my-10 space-y-4 border border-border rounded-lg bg-accent shadow-sm">
+      <div className="container my-10 space-y-4 border border-border bg-accent shadow-sm" style={{ borderRadius: 'var(--radius)' }}>
 
         {/* Table */}
-        <div className="rounded-lg overflow-hidden">
+        <div className="overflow-hidden" style={{ borderRadius: 'var(--radius)' }}>
           <Table className="w-full">
           <TableHeader>
             <TableRow className="bg-accent">
