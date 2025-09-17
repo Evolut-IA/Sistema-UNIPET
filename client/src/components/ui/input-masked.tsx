@@ -82,6 +82,7 @@ const InputMasked = React.forwardRef<HTMLInputElement, InputMaskedProps>(
         case "url-slug":
           return value
             .toLowerCase() // Converte para minúsculas
+            .replace(/\s+/g, '-') // Converte espaços em hífens
             .replace(/[^a-z0-9-]/g, '') // Remove caracteres inválidos
             .replace(/^-+|-+$/g, '') // Remove hífens do início e fim
             .replace(/-+/g, '-'); // Remove hífens consecutivos
