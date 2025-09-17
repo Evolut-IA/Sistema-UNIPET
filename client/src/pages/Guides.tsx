@@ -265,7 +265,7 @@ export default function Guides() {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 bg-accent">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div className="flex-1 min-w-0">
@@ -275,7 +275,7 @@ export default function Guides() {
       </div>
 
       {/* Modern Table Container */}
-      <div className="container my-10 space-y-4 border border-border rounded-lg bg-primary shadow-sm">
+      <div className="container my-10 space-y-4 border border-border rounded-lg bg-accent shadow-sm">
         {/* Filters and Column Controls */}
         <div className="flex flex-wrap gap-4 items-center justify-between mb-6 p-4">
           <div className="flex gap-2 flex-wrap">
