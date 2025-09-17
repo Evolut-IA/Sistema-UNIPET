@@ -167,24 +167,45 @@ export default function Procedures() {
   };
 
   const removePlan = (index: number) => {
-    setSelectedPlans(selectedPlans.filter((_, i) => i !== index));
+    setSelectedPlans(prev => prev.filter((_, i) => i !== index));
     
     // Reorganizar o estado de edições manuais após remoção
-    const updatedManualFields = {...manuallyEditedFields};
-    delete updatedManualFields[index];
-    
-    // Reindexar os campos manuais restantes
-    const reindexedManualFields: {[key: number]: {[field: string]: boolean}} = {};
-    Object.keys(updatedManualFields).forEach(key => {
-      const numKey = parseInt(key);
-      if (numKey < index) {
-        reindexedManualFields[numKey] = updatedManualFields[numKey];
-      } else if (numKey > index) {
-        reindexedManualFields[numKey - 1] = updatedManualFields[numKey];
-      }
+    setManuallyEditedFields(prev => {
+      const updatedManualFields = {...prev};
+      delete updatedManualFields[index];
+      
+      // Reindexar os campos manuais restantes
+      const reindexedManualFields: {[key: number]: {[field: string]: boolean}} = {};
+      Object.keys(updatedManualFields).forEach(key => {
+        const numKey = parseInt(key);
+        if (numKey < index) {
+          reindexedManualFields[numKey] = updatedManualFields[numKey];
+        } else if (numKey > index) {
+          reindexedManualFields[numKey - 1] = updatedManualFields[numKey];
+        }
+      });
+      
+      return reindexedManualFields;
     });
-    
-    setManuallyEditedFields(reindexedManualFields);
+
+    // Reorganizar os erros de planos após remoção
+    setPlanErrors(prev => {
+      const updatedErrors = {...prev};
+      delete updatedErrors[index];
+      
+      // Reindexar os erros restantes
+      const reindexedErrors: {[key: number]: string} = {};
+      Object.keys(updatedErrors).forEach(key => {
+        const numKey = parseInt(key);
+        if (numKey < index) {
+          reindexedErrors[numKey] = updatedErrors[numKey];
+        } else if (numKey > index) {
+          reindexedErrors[numKey - 1] = updatedErrors[numKey];
+        }
+      });
+      
+      return reindexedErrors;
+    });
   };
 
   // Funções para atualizar campos específicos
@@ -674,7 +695,7 @@ export default function Procedures() {
                       {selectedPlans.map((selectedPlan, index) => {
                         
                         return (
-                          <div key={index} className="p-4 border rounded-lg">
+                          <div key={selectedPlan.planId} className="p-4 border rounded-lg">
                             {/* Layout organizado em 2 linhas: 3 campos em cima, 3 embaixo */}
                             <div className="space-y-4">
                               {/* Primeira linha: Plano, Receber, Pagar */}
