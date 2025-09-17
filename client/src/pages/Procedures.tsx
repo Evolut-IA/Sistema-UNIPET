@@ -86,12 +86,19 @@ export default function Procedures() {
           maximumFractionDigits: 2
         }); // Converter de centavos para reais com formato PT-BR
         
-        // Usar o valor "pagar" salvo no banco de dados ao invés de recalcular automaticamente
-        // Isso preserva valores editados manualmente pelo usuário
-        const pagarValue = (item.price / 100).toLocaleString('pt-BR', {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        }); // Converter de centavos para reais com formato PT-BR
+        // Usar o valor "pagar" salvo no banco quando disponível,
+        // caso contrário calcular automaticamente baseado na porcentagem
+        let pagarValue;
+        if (item.payValue !== null && item.payValue !== undefined) {
+          // Usar o valor salvo no banco (editado manualmente pelo usuário)
+          pagarValue = (item.payValue / 100).toLocaleString('pt-BR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          });
+        } else {
+          // Calcular automaticamente se não houver valor salvo
+          pagarValue = calculatePayValue(receberValue);
+        }
         
         return {
           planId: item.planId,
@@ -347,6 +354,7 @@ export default function Procedures() {
         .filter(plan => plan.planId && plan.receber) // Filtrar entradas válidas
         .map(plan => {
           const numericReceber = convertPriceToNumber(plan.receber);
+          const numericPagar = convertPriceToNumber(plan.pagar);
           const numericCoparticipacao = convertPriceToNumber(plan.coparticipacao);
           
           // Determinar o valor final dos limites anuais
@@ -364,7 +372,8 @@ export default function Procedures() {
           return {
             procedureId,
             planId: plan.planId,
-            price: Math.round(numericReceber * 100), // Converter para centavos
+            price: Math.round(numericReceber * 100), // Converter valor a receber para centavos
+            payValue: Math.round(numericPagar * 100), // Converter valor a pagar para centavos (editável pelo usuário)
             coparticipacao: finalCoparticipacao,
             carencia: plan.carencia,
             limitesAnuais: finalLimitesAnuais
