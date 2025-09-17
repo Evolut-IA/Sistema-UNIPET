@@ -200,8 +200,8 @@ export default function Procedures() {
       } else {
         // Remove qualquer texto existente e mantém apenas números
         const numericValue = value.replace(/[^\d]/g, '');
-        // Se houver números, adiciona " dias", senão deixa vazio
-        updated[index].carencia = numericValue ? `${numericValue} dias` : '';
+        // Armazena apenas o valor numérico, o texto será adicionado na exibição
+        updated[index].carencia = numericValue;
       }
     } 
     // Tratamento especial para o campo limites anuais (apenas números)
@@ -212,8 +212,8 @@ export default function Procedures() {
       } else {
         // Remove qualquer texto existente e mantém apenas números
         const numericValue = value.replace(/[^\d]/g, '');
-        // Se houver números, adiciona " vezes no ano", senão deixa vazio
-        updated[index].limitesAnuais = numericValue ? `${numericValue} vezes no ano` : '';
+        // Armazena apenas o valor numérico, o texto será adicionado na exibição
+        updated[index].limitesAnuais = numericValue;
       }
     } else {
       // Handle other fields based on their type
@@ -390,13 +390,26 @@ export default function Procedures() {
             finalCoparticipacao = Math.round(numericCoparticipacao * 100);
           }
           
+          // Formatar carência para envio (adicionar " dias" se for apenas número)
+          let finalCarencia = plan.carencia;
+          if (plan.carencia && plan.carencia.trim() !== '' && /^\d+$/.test(plan.carencia.trim())) {
+            finalCarencia = `${plan.carencia.trim()} dias`;
+          }
+
+          // Formatar limites anuais para envio (adicionar " vezes no ano" se for apenas número)
+          if ((plan as any).enableLimitesAnuais && plan.limitesAnuais && plan.limitesAnuais.trim() !== "" && /^\d+$/.test(plan.limitesAnuais.trim())) {
+            finalLimitesAnuais = `${plan.limitesAnuais.trim()} vezes no ano`;
+          } else if ((plan as any).enableLimitesAnuais && plan.limitesAnuais && plan.limitesAnuais.trim() !== "") {
+            finalLimitesAnuais = plan.limitesAnuais;
+          }
+
           return {
             procedureId,
             planId: plan.planId,
             price: Math.round(numericReceber * 100), // Converter valor a receber para centavos
             payValue: Math.round(numericPagar * 100), // Converter valor a pagar para centavos (editável pelo usuário)
             coparticipacao: finalCoparticipacao,
-            carencia: plan.carencia,
+            carencia: finalCarencia,
             limitesAnuais: finalLimitesAnuais
           };
         })
