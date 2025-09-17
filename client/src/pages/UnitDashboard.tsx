@@ -15,6 +15,7 @@ interface NetworkUnit {
   id: string;
   name: string;
   address: string;
+  phone?: string;
   urlSlug: string;
 }
 
@@ -58,8 +59,11 @@ interface Pet {
   name: string;
   species: string;
   breed?: string;
+  sex: string;
+  age?: string;
   clientId: string;
   planId?: string;
+  plan?: Plan;
 }
 
 interface Plan {
