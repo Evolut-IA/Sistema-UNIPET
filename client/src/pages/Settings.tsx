@@ -143,7 +143,7 @@ export default function Settings() {
   useEffect(() => {
     if (rulesSettings && typeof rulesSettings === 'object' && !rulesLoading) {
       const mergedRulesSettings = {
-        fixedPercentage: Number((rulesSettings as any).fixedPercentage ?? 0).toString(),
+        fixedPercentage: Number((rulesSettings as any).fixedPercentage ?? 0),
       };
       
       rulesForm.reset(mergedRulesSettings);
