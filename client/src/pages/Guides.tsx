@@ -22,7 +22,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useLocation } from "wouter";
-import { Plus, Search, Edit, Trash2, FileText, Eye, Copy, Columns } from "lucide-react";
+import { Plus, Search, Edit, Trash2, FileText, Eye, Copy, Columns, ChevronLeft, ChevronRight } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { apiRequest } from "@/lib/queryClient";
@@ -52,13 +52,27 @@ export default function Guides() {
   const [selectedGuide, setSelectedGuide] = useState<any>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [visibleColumns, setVisibleColumns] = useState<string[]>([...allColumns]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const confirmDialog = useConfirmDialog();
   const passwordDialog = usePasswordDialog();
 
   const { data: guides, isLoading } = useQuery({
-    queryKey: ["/api/guides/with-network-units"],
+    queryKey: ["/api/guides/with-network-units", currentPage, searchQuery, statusFilter, typeFilter],
+    queryFn: async () => {
+      const params = new URLSearchParams({
+        page: currentPage.toString(),
+        limit: pageSize.toString(),
+        ...(searchQuery && { search: searchQuery }),
+        ...(statusFilter !== "all" && { status: statusFilter }),
+        ...(typeFilter !== "all" && { type: typeFilter })
+      });
+      const response = await fetch(`/api/guides/with-network-units?${params}`);
+      if (!response.ok) throw new Error('Failed to fetch guides');
+      return response.json();
+    },
   });
 
   const deleteGuideMutation = useMutation({
@@ -81,14 +95,10 @@ export default function Guides() {
     },
   });
 
-  const filteredGuides = Array.isArray(guides) ? guides?.filter((guide: any) => {
-    const matchesSearch = guide.procedure?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         guide.type?.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = statusFilter === "all" || guide.status === statusFilter;
-    const matchesType = typeFilter === "all" || guide.type === typeFilter;
-    
-    return matchesSearch && matchesStatus && matchesType;
-  }) : [];
+  const guidesData = guides?.data || [];
+  const totalGuides = guides?.total || 0;
+  const totalPages = guides?.totalPages || 1;
+  const currentPageData = guides?.page || 1;
 
   const toggleColumn = (col: string) => {
     setVisibleColumns((prev) =>
@@ -284,12 +294,18 @@ export default function Guides() {
               <Input
                 placeholder="Buscar por procedimento..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setCurrentPage(1); // Reset para página 1 ao buscar
+                }}
                 className="pl-10 w-64"
                 data-testid="input-search-guides"
               />
             </div>
-            <Select value={typeFilter} onValueChange={setTypeFilter}>
+            <Select value={typeFilter} onValueChange={(value) => {
+              setTypeFilter(value);
+              setCurrentPage(1); // Reset para página 1 ao filtrar
+            }}>
               <SelectTrigger className="w-48" data-testid="select-type-filter">
                 <SelectValue placeholder="Filtrar por tipo" />
               </SelectTrigger>
@@ -301,7 +317,10 @@ export default function Guides() {
                 ))}
               </SelectContent>
             </Select>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <Select value={statusFilter} onValueChange={(value) => {
+              setStatusFilter(value);
+              setCurrentPage(1); // Reset para página 1 ao filtrar
+            }}>
               <SelectTrigger className="w-48" data-testid="select-status-filter">
                 <SelectValue placeholder="Filtrar por status" />
               </SelectTrigger>
@@ -364,8 +383,8 @@ export default function Guides() {
                   </TableCell>
                 </TableRow>
               ))
-            ) : filteredGuides?.length ? (
-              filteredGuides.map((guide: any) => (
+            ) : guidesData?.length ? (
+              guidesData.map((guide: any) => (
                 <TableRow key={guide.id} className="bg-accent hover:bg-accent/80">
                   {visibleColumns.includes("Procedimento") && (
                     <TableCell className="font-medium whitespace-nowrap bg-accent">
@@ -448,6 +467,71 @@ export default function Guides() {
           </TableBody>
         </Table>
         </div>
+        
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-border">
+            <div className="text-sm text-muted-foreground">
+              Mostrando {(currentPage - 1) * pageSize + 1} a {Math.min(currentPage * pageSize, totalGuides)} de {totalGuides} guias
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1 || isLoading}
+                data-testid="button-previous-page"
+              >
+                <ChevronLeft className="h-4 w-4" />
+                Anterior
+              </Button>
+              
+              <div className="flex items-center space-x-1">
+                {[...Array(Math.min(5, totalPages))].map((_, i) => {
+                  let pageNumber;
+                  if (totalPages <= 5) {
+                    pageNumber = i + 1;
+                  } else {
+                    const start = Math.max(1, currentPage - 2);
+                    const end = Math.min(totalPages, start + 4);
+                    pageNumber = start + i;
+                    if (pageNumber > end) return null;
+                  }
+                  
+                  return (
+                    <Button
+                      key={pageNumber}
+                      variant={currentPage === pageNumber ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setCurrentPage(pageNumber)}
+                      disabled={isLoading}
+                      data-testid={`button-page-${pageNumber}`}
+                      className="w-10"
+                    >
+                      {pageNumber}
+                    </Button>
+                  );
+                })}
+              </div>
+              
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages || isLoading}
+                data-testid="button-next-page"
+              >
+                Próximo
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+            
+            <div className="text-sm text-muted-foreground">
+              Página {currentPage} de {totalPages}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Details Dialog */}

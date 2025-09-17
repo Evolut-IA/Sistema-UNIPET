@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as schema from "@shared/schema";
-import { eq, like, or, desc, count, sum, sql as sqlTemplate, gte, lt, and, inArray } from "drizzle-orm";
+import { eq, like, ilike, or, desc, count, sum, sql as sqlTemplate, gte, lt, and, inArray } from "drizzle-orm";
 import type {
   User, InsertUser,
   Client, InsertClient,
@@ -208,7 +208,7 @@ export interface IStorage {
   updateGuide(id: string, updates: Partial<InsertGuide>): Promise<Guide | undefined>;
   deleteGuide(id: string): Promise<boolean>;
   getGuides(startDate?: string, endDate?: string): Promise<Guide[]>;
-  getAllGuidesWithNetworkUnits(startDate?: string, endDate?: string, page?: number, limit?: number): Promise<{ data: any[], total: number, page: number, limit: number, totalPages: number }>;
+  getAllGuidesWithNetworkUnits(startDate?: string, endDate?: string, page?: number, limit?: number, search?: string, status?: string, type?: string): Promise<{ data: any[], total: number, page: number, limit: number, totalPages: number }>;
   getRecentGuides(limit?: number): Promise<Guide[]>;
   getGuidesByNetworkUnit(networkUnitId: string): Promise<Guide[]>;
   updateGuideUnitStatus(id: string, unitStatus: string): Promise<Guide | undefined>;
@@ -906,34 +906,48 @@ export class DatabaseStorage implements IStorage {
     startDate?: string, 
     endDate?: string, 
     page?: number, 
-    limit: number = 10
-  ): Promise<{ data: any[], total: number, page: number, limit: number, totalPages: number }> {
-    // Build date filter conditions
-    const dateConditions = [];
+    limit: number = 10,
+    search?: string,
+    status?: string,
+    type?: string
+  ): Promise<{ data: any[], total: number, page: number, limit: number, totalPages: number } | any[]> {
+    // Build filter conditions
+    const conditions = [];
+    
+    // Date filters
     if (startDate) {
-      dateConditions.push(gte(schema.guides.createdAt, new Date(startDate)));
+      conditions.push(gte(schema.guides.createdAt, new Date(startDate)));
     }
     if (endDate) {
       // Add one day to endDate to include the entire end date
       const endDateTime = new Date(endDate);
       endDateTime.setDate(endDateTime.getDate() + 1);
-      dateConditions.push(lt(schema.guides.createdAt, endDateTime));
-    }
-
-    // Count query to get total records
-    let countQuery = db
-      .select({ count: count() })
-      .from(schema.guides);
-    
-    if (dateConditions.length > 0) {
-      countQuery = countQuery.where(and(...dateConditions));
+      conditions.push(lt(schema.guides.createdAt, endDateTime));
     }
     
-    const totalResult = await countQuery;
-    const total = totalResult[0].count as number;
+    // Search filter - search in procedure, client name, and pet name
+    if (search && search.trim()) {
+      conditions.push(
+        or(
+          ilike(schema.guides.procedure, `%${search.trim()}%`),
+          ilike(schema.clients.fullName, `%${search.trim()}%`),
+          ilike(schema.pets.name, `%${search.trim()}%`)
+        )
+      );
+    }
+    
+    // Status filter
+    if (status && status !== 'all') {
+      conditions.push(eq(schema.guides.status, status));
+    }
+    
+    // Type filter
+    if (type && type !== 'all') {
+      conditions.push(eq(schema.guides.type, type));
+    }
 
-    // Main data query
-    let query = db
+    // Main data query with joins for both count and data
+    let baseQuery = db
       .select({
         id: schema.guides.id,
         clientId: schema.guides.clientId,
@@ -971,28 +985,44 @@ export class DatabaseStorage implements IStorage {
       .leftJoin(schema.clients, eq(schema.guides.clientId, schema.clients.id))
       .leftJoin(schema.pets, eq(schema.guides.petId, schema.pets.id));
     
-    if (dateConditions.length > 0) {
-      query = query.where(and(...dateConditions));
+    if (conditions.length > 0) {
+      baseQuery = baseQuery.where(and(...conditions));
     }
     
-    query = query.orderBy(desc(schema.guides.createdAt));
+    // If page is not provided, return all data (backward compatibility)
+    if (page === undefined) {
+      return await baseQuery.orderBy(desc(schema.guides.createdAt));
+    }
+
+    // For paginated requests, first get the total count
+    let countQuery = db
+      .select({ count: count() })
+      .from(schema.guides)
+      .leftJoin(schema.networkUnits, eq(schema.guides.networkUnitId, schema.networkUnits.id))
+      .leftJoin(schema.clients, eq(schema.guides.clientId, schema.clients.id))
+      .leftJoin(schema.pets, eq(schema.guides.petId, schema.pets.id));
     
-    // Add pagination if page is provided
-    if (page !== undefined) {
-      const offset = (page - 1) * limit;
-      query = query.limit(limit).offset(offset);
+    if (conditions.length > 0) {
+      countQuery = countQuery.where(and(...conditions));
     }
     
-    const data = await query;
+    const totalResult = await countQuery;
+    const total = Number(totalResult[0].count) || 0;
+
+    // Apply pagination to the main query
+    const offset = (page - 1) * limit;
+    const data = await baseQuery
+      .orderBy(desc(schema.guides.createdAt))
+      .limit(limit)
+      .offset(offset);
     
     // Calculate pagination metadata
-    const currentPage = page || 1;
-    const totalPages = Math.ceil(total / limit);
+    const totalPages = Math.max(1, Math.ceil(total / limit));
     
     return {
       data,
       total,
-      page: currentPage,
+      page,
       limit,
       totalPages
     };

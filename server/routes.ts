@@ -763,7 +763,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/guides/with-network-units", async (req, res) => {
     try {
-      const { startDate, endDate, page: pageParam, limit: limitParam } = req.query;
+      const { 
+        startDate, 
+        endDate, 
+        page: pageParam, 
+        limit: limitParam,
+        search,
+        status,
+        type
+      } = req.query;
       
       // Extract and validate pagination parameters
       const page = pageParam ? parseInt(pageParam as string) : 1;
@@ -782,7 +790,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         startDate as string | undefined,
         endDate as string | undefined,
         page,
-        limit
+        limit,
+        search as string | undefined,
+        status as string | undefined,
+        type as string | undefined
       );
       res.json(guides);
     } catch (error) {
