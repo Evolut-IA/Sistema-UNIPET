@@ -51,7 +51,8 @@ const CustomCheckbox = React.forwardRef<HTMLInputElement, CustomCheckboxProps>(
         {label && (
           <label 
             htmlFor={checkboxId} 
-            className="text-sm font-medium cursor-pointer select-none"
+            className="text-sm font-medium cursor-pointer select-none bg-transparent"
+            style={{ background: 'transparent' }}
           >
             {label}
           </label>
