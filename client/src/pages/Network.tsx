@@ -490,12 +490,30 @@ export default function Network() {
 
       {/* Details Dialog */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent className="">
-          <DialogHeader>
+        <DialogContent hideCloseButton>
+          <DialogHeader className="flex flex-row items-center justify-between pr-2">
             <DialogTitle className="flex items-center space-x-2">
               <Building2 className="h-5 w-5 text-primary" />
               <span>Detalhes da Unidade</span>
             </DialogTitle>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                onClick={handleCopyToClipboard}
+                className="gap-2 h-8"
+                data-testid="button-copy-details"
+              >
+                <Copy className="h-4 w-4" />
+                Copiar
+              </Button>
+              <Button
+                variant="outline" 
+                onClick={() => setDetailsOpen(false)}
+                className="h-8"
+              >
+                Fechar
+              </Button>
+            </div>
           </DialogHeader>
           
           {selectedUnit && (
@@ -524,18 +542,6 @@ export default function Network() {
                   </div>
                 </div>
 
-                {/* Botão Copiar Informações */}
-                <div>
-                  <Button
-                    variant="default"
-                    onClick={handleCopyToClipboard}
-                    className="w-full"
-                    data-testid="button-copy-unit-details"
-                  >
-                    <Copy className="h-4 w-4 mr-2" />
-                    Copiar Informações
-                  </Button>
-                </div>
 
                 {selectedUnit.services && selectedUnit.services.length > 0 && (
                   <div>
