@@ -23,10 +23,10 @@ const CustomCheckbox = React.forwardRef<HTMLInputElement, CustomCheckboxProps>(
             checked={checked}
             className={cn(
               "h-4 w-4 shrink-0 rounded border-2 cursor-pointer transition-all duration-200",
-              "focus:ring-2 focus:ring-[var(--chart-4)]/20 focus:outline-none",
+              "focus:ring-2 focus:ring-[#22c55e]/20 focus:outline-none",
               checked 
-                ? "bg-[var(--chart-4)] border-[var(--chart-4)]" 
-                : "border-input bg-background hover:border-[var(--chart-4)]/70",
+                ? "bg-[#22c55e] border-[#22c55e]" 
+                : "border-input bg-background hover:border-[#22c55e]/70",
               "disabled:cursor-not-allowed disabled:opacity-50",
               className
             )}
@@ -43,7 +43,7 @@ const CustomCheckbox = React.forwardRef<HTMLInputElement, CustomCheckboxProps>(
         {label && (
           <label 
             htmlFor={checkboxId} 
-            className="text-sm font-medium cursor-pointer select-none"
+            className="text-sm font-medium cursor-pointer select-none bg-transparent"
           >
             {label}
           </label>
