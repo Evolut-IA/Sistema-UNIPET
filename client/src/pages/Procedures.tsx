@@ -768,6 +768,11 @@ export default function Procedures() {
                                     mask="price"
                                     value={selectedPlan.coparticipacao}
                                     onChange={(e) => updatePlanField(index, 'coparticipacao', e.target.value)}
+                                    onFocus={() => {
+                                      if (!selectedPlan.enableCoparticipacao) {
+                                        updatePlanBooleanField(index, 'enableCoparticipacao', true);
+                                      }
+                                    }}
                                     placeholder="0,00"
                                     disabled={!selectedPlan.enableCoparticipacao}
                                     className={!selectedPlan.enableCoparticipacao ? 'bg-gray-100 text-gray-400' : ''}
@@ -788,6 +793,11 @@ export default function Procedures() {
                                   <Input
                                     value={selectedPlan.carencia}
                                     onChange={(e) => updatePlanField(index, 'carencia', e.target.value)}
+                                    onFocus={() => {
+                                      if (!selectedPlan.enableCarencia) {
+                                        updatePlanBooleanField(index, 'enableCarencia', true);
+                                      }
+                                    }}
                                     placeholder="Digite apenas números"
                                     disabled={!selectedPlan.enableCarencia}
                                     className={!selectedPlan.enableCarencia ? 'bg-gray-100 text-gray-400' : ''}
@@ -808,6 +818,11 @@ export default function Procedures() {
                                   <Input
                                     value={selectedPlan.limitesAnuais}
                                     onChange={(e) => updatePlanField(index, 'limitesAnuais', e.target.value)}
+                                    onFocus={() => {
+                                      if (!selectedPlan.enableLimitesAnuais) {
+                                        updatePlanBooleanField(index, 'enableLimitesAnuais', true);
+                                      }
+                                    }}
                                     placeholder="Ex: 2"
                                     disabled={!selectedPlan.enableLimitesAnuais}
                                     className={!selectedPlan.enableLimitesAnuais ? 'bg-gray-100 text-gray-400' : ''}
