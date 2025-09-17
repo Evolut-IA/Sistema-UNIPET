@@ -28,6 +28,7 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
 import { PasswordDialog } from "@/components/ui/password-dialog";
 import { usePasswordDialog } from "@/hooks/use-password-dialog";
+import { useColumnPreferences } from "@/hooks/use-column-preferences";
 import { cn } from "@/lib/utils";
 
 const allColumns = [
@@ -42,7 +43,7 @@ export default function Network() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedUnit, setSelectedUnit] = useState<any>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const [visibleColumns, setVisibleColumns] = useState<string[]>([...allColumns]);
+  const { visibleColumns, toggleColumn } = useColumnPreferences('network.columns', allColumns);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
   const queryClient = useQueryClient();
@@ -105,13 +106,6 @@ export default function Network() {
   const endIndex = startIndex + pageSize;
   const displayUnits = filteredUnits.slice(startIndex, endIndex);
 
-  const toggleColumn = (col: string) => {
-    setVisibleColumns((prev) =>
-      prev.includes(col)
-        ? prev.filter((c) => c !== col)
-        : [...prev, col]
-    );
-  };
 
   const handleDelete = (id: string, unitName: string) => {
     passwordDialog.openDialog({

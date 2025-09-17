@@ -32,6 +32,7 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
 import { PasswordDialog } from "@/components/ui/password-dialog";
 import { usePasswordDialog } from "@/hooks/use-password-dialog";
+import { useColumnPreferences } from "@/hooks/use-column-preferences";
 import { DateFilterComponent } from "@/components/DateFilterComponent";
 import { getDateRangeParams } from "@/lib/date-utils";
 import { GUIDE_TYPES } from "@/lib/constants";
@@ -54,7 +55,7 @@ export default function Guides() {
   const [typeFilter, setTypeFilter] = useState("all");
   const [selectedGuide, setSelectedGuide] = useState<any>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const [visibleColumns, setVisibleColumns] = useState<string[]>([...allColumns]);
+  const { visibleColumns, toggleColumn } = useColumnPreferences('guides.columns', allColumns);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
   const queryClient = useQueryClient();
@@ -131,13 +132,6 @@ export default function Guides() {
   const totalPages = guides?.totalPages || 1;
   const currentPageData = guides?.page || 1;
 
-  const toggleColumn = (col: string) => {
-    setVisibleColumns((prev) =>
-      prev.includes(col)
-        ? prev.filter((c) => c !== col)
-        : [...prev, col]
-    );
-  };
 
   const handleDelete = (id: string, procedureName: string) => {
     passwordDialog.openDialog({

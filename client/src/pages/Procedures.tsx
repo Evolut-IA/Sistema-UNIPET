@@ -33,6 +33,7 @@ import { cn } from "@/lib/utils";
 import { Plus, Search, Edit, Trash2, ClipboardList, Eye, DollarSign, X, Columns3 as Columns, ChevronLeft, ChevronRight } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useColumnPreferences } from "@/hooks/use-column-preferences";
 import { insertProcedureSchema } from "@shared/schema";
 import { PROCEDURE_TYPES, PROCEDURE_TYPE_LABELS } from "@/lib/constants";
 
@@ -49,7 +50,7 @@ export default function Procedures() {
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
   const [viewingItem, setViewingItem] = useState<any>(null);
-  const [visibleColumns, setVisibleColumns] = useState<string[]>([...allColumns]);
+  const { visibleColumns, toggleColumn } = useColumnPreferences('procedures.columns', allColumns);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
   const [selectedPlans, setSelectedPlans] = useState<{
@@ -548,13 +549,6 @@ export default function Procedures() {
     setCurrentPage(1);
   }, [searchQuery]);
 
-  const toggleColumn = (col: string) => {
-    setVisibleColumns((prev) =>
-      prev.includes(col)
-        ? prev.filter((c) => c !== col)
-        : [...prev, col]
-    );
-  };
 
   const handleEdit = async (item: any) => {
     setEditingItem(item);

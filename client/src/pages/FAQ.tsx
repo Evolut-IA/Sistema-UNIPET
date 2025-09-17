@@ -28,6 +28,7 @@ import {
 import { Plus, Search, Edit, Trash2, HelpCircle, Columns3 as Columns, ChevronLeft, ChevronRight } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useColumnPreferences } from "@/hooks/use-column-preferences";
 import { insertFaqItemSchema } from "@shared/schema";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
@@ -44,7 +45,7 @@ export default function FAQ() {
   const [searchQuery, setSearchQuery] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
-  const [visibleColumns, setVisibleColumns] = useState<string[]>([...allColumns]);
+  const { visibleColumns, toggleColumn } = useColumnPreferences('faq.columns', allColumns);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
   const queryClient = useQueryClient();
@@ -165,14 +166,6 @@ export default function FAQ() {
   };
 
   const activeItems = filteredItems?.filter((item: any) => item.isActive) || [];
-
-  const toggleColumn = (col: string) => {
-    setVisibleColumns((prev) =>
-      prev.includes(col)
-        ? prev.filter((c) => c !== col)
-        : [...prev, col]
-    );
-  };
 
   const getStatusColor = (isActive: boolean) => {
     return isActive 

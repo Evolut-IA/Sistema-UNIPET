@@ -45,6 +45,7 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
 import { PasswordDialog } from "@/components/ui/password-dialog";
 import { usePasswordDialog } from "@/hooks/use-password-dialog";
+import { useColumnPreferences } from "@/hooks/use-column-preferences";
 import { cn } from "@/lib/utils";
 
 const allColumns = [
@@ -59,7 +60,7 @@ export default function Clients() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedClient, setSelectedClient] = useState<any>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const [visibleColumns, setVisibleColumns] = useState<string[]>([...allColumns]);
+  const { visibleColumns, toggleColumn } = useColumnPreferences('clients.columns', allColumns);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
   const queryClient = useQueryClient();
@@ -109,13 +110,6 @@ export default function Clients() {
   const endIndex = startIndex + pageSize;
   const displayClients = filteredClients.slice(startIndex, endIndex);
 
-  const toggleColumn = (col: string) => {
-    setVisibleColumns((prev) =>
-      prev.includes(col)
-        ? prev.filter((c) => c !== col)
-        : [...prev, col]
-    );
-  };
 
   const handleDelete = (id: string, clientName: string) => {
     passwordDialog.openDialog({
