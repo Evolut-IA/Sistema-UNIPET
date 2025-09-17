@@ -505,12 +505,30 @@ export default function Clients() {
 
       {/* Details Dialog */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent className="flex flex-col" maxHeightMobile="max-h-[80vh]">
-          <DialogHeader className="flex-shrink-0">
+        <DialogContent hideCloseButton>
+          <DialogHeader className="flex flex-row items-center justify-between pr-2">
             <DialogTitle className="flex items-center space-x-2">
               <Eye className="h-5 w-5 text-primary" />
               <span>Detalhes do Cliente</span>
             </DialogTitle>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                onClick={handleCopyToClipboard}
+                className="gap-2 h-8"
+                data-testid="button-copy-details"
+              >
+                <Copy className="h-4 w-4" />
+                Copiar
+              </Button>
+              <Button
+                variant="outline" 
+                onClick={() => setDetailsOpen(false)}
+                className="h-8"
+              >
+                Fechar
+              </Button>
+            </div>
           </DialogHeader>
           
           {selectedClient && (
@@ -573,18 +591,6 @@ export default function Clients() {
                 </div>
               </div>
 
-              {/* Copy Button */}
-              <div className="flex justify-center pt-2">
-                <Button
-                  variant="default"
-                  size="sm"
-                  onClick={handleCopyToClipboard}
-                  className="flex items-center space-x-2"
-                >
-                  <Copy className="h-4 w-4" />
-                  <span>Copiar Informações</span>
-                </Button>
-              </div>
 
               {/* Seção de Pets */}
               <div>
