@@ -275,9 +275,9 @@ export default function Guides() {
       </div>
 
       {/* Modern Table Container */}
-      <div className="container my-10 space-y-4 p-4 border border-border rounded-lg bg-background shadow-sm overflow-x-auto">
+      <div className="container my-10 space-y-4 border border-border rounded-lg bg-background shadow-sm">
         {/* Filters and Column Controls */}
-        <div className="flex flex-wrap gap-4 items-center justify-between mb-6">
+        <div className="flex flex-wrap gap-4 items-center justify-between mb-6 p-4">
           <div className="flex gap-2 flex-wrap">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -342,7 +342,8 @@ export default function Guides() {
         </div>
 
         {/* Table */}
-        <Table className="w-full">
+        <div className="rounded-lg overflow-hidden">
+          <Table className="w-full">
           <TableHeader>
             <TableRow>
               {visibleColumns.includes("Procedimento") && <TableHead className="w-[200px]">Procedimento</TableHead>}
@@ -446,6 +447,7 @@ export default function Guides() {
             )}
           </TableBody>
         </Table>
+        </div>
       </div>
 
       {/* Details Dialog */}
