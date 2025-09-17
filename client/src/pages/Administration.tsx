@@ -17,7 +17,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { insertUserSchema } from "@shared/schema";
-import { UserCog, Plus, Search, Edit, Trash2, Shield, User, Key, Network, Lock, Eye, EyeOff, Globe } from "lucide-react";
+import { UserCog, Plus, Search, Edit, Trash2, Shield, User, Key, Network, Lock, Eye, EyeOff, Globe, Copy, RefreshCw, ExternalLink } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -179,6 +179,27 @@ export default function Administration() {
     },
   });
 
+  const regenerateSlugMutation = useMutation({
+    mutationFn: async (unitId: string) => {
+      const response = await apiRequest("PUT", `/api/network-units/${unitId}/regenerate-slug`);
+      return response;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/network-units/credentials"] });
+      toast({
+        title: "URL regenerada",
+        description: `Nova URL: ${data.newSlug}`,
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Erro",
+        description: "Falha ao regenerar URL da unidade.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const filteredUsers = users.filter((user: any) =>
     user.username?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     user.email?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -276,6 +297,61 @@ export default function Administration() {
     } else {
       form.setValue("permissions", currentPermissions.filter(p => p !== permission));
     }
+  };
+
+  // URL Management helper functions
+  const getDomain = () => {
+    if (typeof window !== 'undefined') {
+      return window.location.origin;
+    }
+    // Fallback to environment or localhost
+    return 'https://2872e078-80d4-4c88-990e-9aee3a3a947c-00-1t5v7l4nfgg9j.kirk.replit.dev';
+  };
+
+  const getFullUrl = (slug: string) => {
+    return `${getDomain()}/${slug}`;
+  };
+
+  const handleCopyUrl = async (slug: string) => {
+    if (!slug) {
+      toast({
+        title: "Erro",
+        description: "URL slug não definido para esta unidade.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const fullUrl = getFullUrl(slug);
+      await navigator.clipboard.writeText(fullUrl);
+      toast({
+        title: "URL copiada!",
+        description: `${fullUrl} foi copiada para o clipboard.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Erro",
+        description: "Falha ao copiar URL para o clipboard.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleRegenerateUrl = (unit: any) => {
+    if (confirm(`Tem certeza que deseja regenerar a URL para "${unit.name}"? Isso pode quebrar links existentes.`)) {
+      regenerateSlugMutation.mutate(unit.id);
+    }
+  };
+
+  const getUrlStatus = (unit: any) => {
+    if (!unit.urlSlug) {
+      return { text: "Não configurado", color: "bg-chart-5/20 text-chart-5" };
+    }
+    if (unit.isActive) {
+      return { text: "Ativo", color: "bg-chart-2/20 text-chart-2" };
+    }
+    return { text: "Inativo", color: "bg-chart-4/20 text-chart-4" };
   };
 
   return (

@@ -295,6 +295,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.put("/api/network-units/:id/regenerate-slug", async (req, res) => {
+    try {
+      // Get the network unit to regenerate slug for
+      const unit = await storage.getNetworkUnit(req.params.id);
+      if (!unit) {
+        return res.status(404).json({ message: "Network unit not found" });
+      }
+
+      // Generate a new unique slug based on the unit's name
+      const newSlug = await generateUniqueSlug(unit.name, req.params.id);
+      
+      // Update the unit with the new slug
+      const updatedUnit = await storage.updateNetworkUnit(req.params.id, {
+        urlSlug: newSlug
+      });
+
+      if (!updatedUnit) {
+        return res.status(500).json({ message: "Failed to update network unit slug" });
+      }
+
+      res.json({ 
+        message: "URL slug regenerated successfully",
+        newSlug: newSlug,
+        fullUrl: `https://${process.env.REPLIT_DEV_DOMAIN || 'localhost:5000'}/${newSlug}`
+      });
+    } catch (error) {
+      console.error("Error regenerating slug:", error);
+      res.status(500).json({ message: "Failed to regenerate URL slug" });
+    }
+  });
+
   app.get("/api/network-units/:id", async (req, res) => {
     try {
       const unit = await storage.getNetworkUnit(req.params.id);
