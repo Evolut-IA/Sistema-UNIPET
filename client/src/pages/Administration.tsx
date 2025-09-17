@@ -29,6 +29,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
+import { useColumnPreferences } from "@/hooks/use-column-preferences";
 import { apiRequest } from "@/lib/queryClient";
 import { insertUserSchema } from "@shared/schema";
 import { UserCog, Plus, Search, Edit, Trash2, Shield, User, Key, Network, Lock, Eye, EyeOff, Columns3 as Columns, ChevronLeft, ChevronRight } from "lucide-react";
@@ -71,8 +72,8 @@ export default function Administration() {
   const [editingNetworkUnit, setEditingNetworkUnit] = useState<any>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
-  const [visibleColumns, setVisibleColumns] = useState<string[]>([...allColumns]);
-  const [visibleNetworkColumns, setVisibleNetworkColumns] = useState<string[]>([...networkColumns]);
+  const { visibleColumns, toggleColumn } = useColumnPreferences('administration.users.columns', allColumns);
+  const { visibleColumns: visibleNetworkColumns, toggleColumn: toggleNetworkColumn } = useColumnPreferences('administration.network.columns', networkColumns);
   const [userCurrentPage, setUserCurrentPage] = useState(1);
   const [networkCurrentPage, setNetworkCurrentPage] = useState(1);
   const userPageSize = 10;
@@ -328,21 +329,6 @@ export default function Administration() {
     }
   };
 
-  const toggleColumn = (col: string) => {
-    setVisibleColumns((prev) =>
-      prev.includes(col)
-        ? prev.filter((c) => c !== col)
-        : [...prev, col]
-    );
-  };
-
-  const toggleNetworkColumn = (col: string) => {
-    setVisibleNetworkColumns((prev) =>
-      prev.includes(col)
-        ? prev.filter((c) => c !== col)
-        : [...prev, col]
-    );
-  };
 
 
   return (
