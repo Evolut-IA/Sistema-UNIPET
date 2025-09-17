@@ -162,7 +162,7 @@ export default function UnitDashboard() {
   // Cards functionality state
   const [petsWithClients, setPetsWithClients] = useState<Array<Pet & { client: Client, plan?: Plan }>>([]);
   const [loadingCards, setLoadingCards] = useState(false);
-  const [cardSearch, setCardSearch] = useState("");
+  const [cpfSearch, setCpfSearch] = useState("");
   
   // Coverage functionality state
   const [coverageSearch, setCoverageSearch] = useState("");
@@ -1310,9 +1310,9 @@ export default function UnitDashboard() {
                 <div className="flex items-center space-x-2 w-full sm:w-auto">
                   <Search className="h-4 w-4 text-gray-400" />
                   <Input
-                    placeholder="Buscar pet ou cliente..."
-                    value={cardSearch}
-                    onChange={(e) => setCardSearch(e.target.value)}
+                    placeholder="Buscar por CPF do cliente..."
+                    value={cpfSearch}
+                    onChange={(e) => setCpfSearch(e.target.value)}
                     className="max-w-sm"
                   />
                 </div>
@@ -1324,44 +1324,42 @@ export default function UnitDashboard() {
                   <span className="ml-2 text-muted-foreground">Carregando carteirinhas...</span>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="space-y-6">
                   {petsWithClients
                     .filter(pet => {
-                      const searchTerm = cardSearch.toLowerCase();
-                      return (
-                        pet.name.toLowerCase().includes(searchTerm) ||
-                        pet.client.fullName.toLowerCase().includes(searchTerm) ||
-                        pet.species.toLowerCase().includes(searchTerm) ||
-                        (pet.breed && pet.breed.toLowerCase().includes(searchTerm))
-                      );
+                      const searchTerm = cpfSearch.toLowerCase().replace(/[^0-9]/g, '');
+                      if (!searchTerm) return true;
+                      const clientCpf = pet.client.cpf.replace(/[^0-9]/g, '');
+                      return clientCpf.includes(searchTerm);
                     })
                     .map(pet => (
-                      <DigitalCard
-                        key={pet.id}
-                        pet={{
-                          id: pet.id,
-                          name: pet.name,
-                          species: pet.species,
-                          breed: pet.breed,
-                          sex: pet.sex || 'N/A',
-                          age: pet.age
-                        }}
-                        client={{
-                          id: pet.client.id,
-                          fullName: pet.client.fullName,
-                          phone: pet.client.phone,
-                          city: pet.client.city
-                        }}
-                        plan={pet.plan}
-                        unit={{
-                          id: authState.unit!.id,
-                          name: authState.unit!.name,
-                          phone: authState.unit!.phone || 'N/A',
-                          address: authState.unit!.address
-                        }}
-                        cardNumber={pet.id.replace(/-/g, '').substring(0, 9)}
-                        className="w-full max-w-sm mx-auto"
-                      />
+                      <div key={pet.id} className="flex justify-center">
+                        <DigitalCard
+                          pet={{
+                            id: pet.id,
+                            name: pet.name,
+                            species: pet.species,
+                            breed: pet.breed,
+                            sex: pet.sex || 'N/A',
+                            age: pet.age
+                          }}
+                          client={{
+                            id: pet.client.id,
+                            fullName: pet.client.fullName,
+                            phone: pet.client.phone,
+                            city: pet.client.city
+                          }}
+                          plan={pet.plan}
+                          unit={{
+                            id: authState.unit!.id,
+                            name: authState.unit!.name,
+                            phone: authState.unit!.phone || 'N/A',
+                            address: authState.unit!.address
+                          }}
+                          cardNumber={pet.id.replace(/-/g, '').substring(0, 9)}
+                          className="w-full max-w-sm"
+                        />
+                      </div>
                     ))}
                 </div>
               )}
@@ -1378,14 +1376,10 @@ export default function UnitDashboard() {
                 </Card>
               )}
 
-              {!loadingCards && cardSearch && petsWithClients.filter(pet => {
-                const searchTerm = cardSearch.toLowerCase();
-                return (
-                  pet.name.toLowerCase().includes(searchTerm) ||
-                  pet.client.fullName.toLowerCase().includes(searchTerm) ||
-                  pet.species.toLowerCase().includes(searchTerm) ||
-                  (pet.breed && pet.breed.toLowerCase().includes(searchTerm))
-                );
+              {!loadingCards && cpfSearch && petsWithClients.filter(pet => {
+                const searchTerm = cpfSearch.toLowerCase().replace(/[^0-9]/g, '');
+                const clientCpf = pet.client.cpf.replace(/[^0-9]/g, '');
+                return clientCpf.includes(searchTerm);
               }).length === 0 && petsWithClients.length > 0 && (
                 <Card>
                   <CardContent className="p-6 text-center">

@@ -259,12 +259,6 @@ export default function DigitalCard({
         </Card>
       </div>
       
-      {/* Flip indicator */}
-      <div className="flex justify-center mt-2">
-        <Badge variant="outline" className="text-xs bg-white/80">
-          {isFlipped ? 'Verso' : 'Frente'} • Clique para virar
-        </Badge>
-      </div>
     </div>
   );
 }
