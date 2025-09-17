@@ -341,17 +341,6 @@ export default function Guides() {
                         <Button
                           variant="default"
                           size="sm"
-                          onClick={() => {
-                            setSelectedGuide(guide);
-                            handleCopyToClipboard();
-                          }}
-                          data-testid={`button-copy-${guide.id}`}
-                        >
-                          <Copy className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="default"
-                          size="sm"
                           onClick={() => setLocation(`/guias/${guide.id}/editar`)}
                           data-testid={`button-edit-${guide.id}`}
                         >
@@ -379,17 +368,6 @@ export default function Guides() {
                           data-testid={`button-view-mobile-${guide.id}`}
                         >
                           <Eye className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="default"
-                          size="sm"
-                          onClick={() => {
-                            setSelectedGuide(guide);
-                            handleCopyToClipboard();
-                          }}
-                          data-testid={`button-copy-mobile-${guide.id}`}
-                        >
-                          <Copy className="h-4 w-4" />
                         </Button>
                         <Button
                           variant="default"
@@ -499,6 +477,19 @@ export default function Guides() {
                     )}
                   </div>
                 </div>
+              </div>
+              
+              {/* Copy Button */}
+              <div className="flex justify-center mt-4">
+                <Button
+                  variant="default"
+                  onClick={handleCopyToClipboard}
+                  className="flex items-center space-x-2"
+                  data-testid="button-copy-details"
+                >
+                  <Copy className="h-4 w-4" />
+                  <span>Copiar Informações</span>
+                </Button>
               </div>
             </div>
           )}
