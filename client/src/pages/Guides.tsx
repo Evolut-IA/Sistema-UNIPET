@@ -284,81 +284,82 @@ export default function Guides() {
         </div>
       </div>
 
+      {/* Filters and Column Controls */}
+      <div className="flex flex-wrap gap-4 items-center justify-between mb-6">
+        <div className="flex gap-2 flex-wrap">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Buscar por procedimento..."
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1); // Reset para página 1 ao buscar
+              }}
+              className="pl-10 w-64"
+              data-testid="input-search-guides"
+            />
+          </div>
+          <Select value={typeFilter} onValueChange={(value) => {
+            setTypeFilter(value);
+            setCurrentPage(1); // Reset para página 1 ao filtrar
+          }}>
+            <SelectTrigger className="w-48" data-testid="select-type-filter">
+              <SelectValue placeholder="Filtrar por tipo" />
+            </SelectTrigger>
+            <SelectContent>
+              {[{ value: "all", label: "Todos os tipos" }, ...GUIDE_TYPES.map(type => ({ value: type, label: getTypeLabel(type) }))].map((item) => (
+                <SelectItem key={item.value} value={item.value}>
+                  {item.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={statusFilter} onValueChange={(value) => {
+            setStatusFilter(value);
+            setCurrentPage(1); // Reset para página 1 ao filtrar
+          }}>
+            <SelectTrigger className="w-48" data-testid="select-status-filter">
+              <SelectValue placeholder="Filtrar por status" />
+            </SelectTrigger>
+            <SelectContent>
+              {[
+                { value: "all", label: "Todos os status" },
+                { value: "open", label: "Abertas" },
+                { value: "closed", label: "Fechadas" },
+                { value: "cancelled", label: "Canceladas" }
+              ].map((status) => (
+                <SelectItem key={status.value} value={status.value}>
+                  {status.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm">
+              <Columns className="h-4 w-4 mr-2" />
+              Colunas
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-48">
+            {allColumns.map((col) => (
+              <DropdownMenuCheckboxItem
+                key={col}
+                checked={visibleColumns.includes(col)}
+                onCheckedChange={() => toggleColumn(col)}
+              >
+                {col}
+              </DropdownMenuCheckboxItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
       {/* Modern Table Container */}
       <div className="container my-10 space-y-4 border border-border rounded-lg bg-accent shadow-sm">
-        {/* Filters and Column Controls */}
-        <div className="flex flex-wrap gap-4 items-center justify-between mb-6 p-4">
-          <div className="flex gap-2 flex-wrap">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Buscar por procedimento..."
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  setCurrentPage(1); // Reset para página 1 ao buscar
-                }}
-                className="pl-10 w-64"
-                data-testid="input-search-guides"
-              />
-            </div>
-            <Select value={typeFilter} onValueChange={(value) => {
-              setTypeFilter(value);
-              setCurrentPage(1); // Reset para página 1 ao filtrar
-            }}>
-              <SelectTrigger className="w-48" data-testid="select-type-filter">
-                <SelectValue placeholder="Filtrar por tipo" />
-              </SelectTrigger>
-              <SelectContent>
-                {[{ value: "all", label: "Todos os tipos" }, ...GUIDE_TYPES.map(type => ({ value: type, label: getTypeLabel(type) }))].map((item) => (
-                  <SelectItem key={item.value} value={item.value}>
-                    {item.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select value={statusFilter} onValueChange={(value) => {
-              setStatusFilter(value);
-              setCurrentPage(1); // Reset para página 1 ao filtrar
-            }}>
-              <SelectTrigger className="w-48" data-testid="select-status-filter">
-                <SelectValue placeholder="Filtrar por status" />
-              </SelectTrigger>
-              <SelectContent>
-                {[
-                  { value: "all", label: "Todos os status" },
-                  { value: "open", label: "Abertas" },
-                  { value: "closed", label: "Fechadas" },
-                  { value: "cancelled", label: "Canceladas" }
-                ].map((status) => (
-                  <SelectItem key={status.value} value={status.value}>
-                    {status.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                <Columns className="h-4 w-4 mr-2" />
-                Colunas
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-48">
-              {allColumns.map((col) => (
-                <DropdownMenuCheckboxItem
-                  key={col}
-                  checked={visibleColumns.includes(col)}
-                  onCheckedChange={() => toggleColumn(col)}
-                >
-                  {col}
-                </DropdownMenuCheckboxItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
 
         {/* Table */}
         <div className="rounded-lg overflow-hidden">
