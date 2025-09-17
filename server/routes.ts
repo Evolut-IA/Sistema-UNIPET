@@ -763,10 +763,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/guides/with-network-units", async (req, res) => {
     try {
-      const { startDate, endDate } = req.query;
+      const { startDate, endDate, page: pageParam, limit: limitParam } = req.query;
+      
+      // Extract and validate pagination parameters
+      const page = pageParam ? parseInt(pageParam as string) : 1;
+      const limit = limitParam ? parseInt(limitParam as string) : 10;
+      
+      // Validate pagination parameters
+      if (page < 1) {
+        return res.status(400).json({ message: "Page must be >= 1" });
+      }
+      
+      if (limit < 1 || limit > 100) {
+        return res.status(400).json({ message: "Limit must be between 1 and 100" });
+      }
+      
       const guides = await storage.getAllGuidesWithNetworkUnits(
         startDate as string | undefined,
-        endDate as string | undefined
+        endDate as string | undefined,
+        page,
+        limit
       );
       res.json(guides);
     } catch (error) {
