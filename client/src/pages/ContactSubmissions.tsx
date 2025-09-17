@@ -19,7 +19,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Mail, Search, Eye, Trash2, Calendar, User, Phone, MapPin, PawPrint, Copy, Columns3 as Columns } from "lucide-react";
+import { Mail, Search, Eye, Trash2, Calendar, User, Phone, MapPin, PawPrint, Copy, Columns3 as Columns, ChevronLeft, ChevronRight } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { apiRequest } from "@/lib/queryClient";
@@ -64,6 +64,8 @@ export default function ContactSubmissions() {
   const [selectedSubmission, setSelectedSubmission] = useState<any>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [visibleColumns, setVisibleColumns] = useState<string[]>([...allColumns]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const confirmDialog = useConfirmDialog();
@@ -93,12 +95,20 @@ export default function ContactSubmissions() {
     },
   });
 
-  const filteredSubmissions = Array.isArray(submissions) ? submissions?.filter((submission: any) =>
+  const allFilteredSubmissions = Array.isArray(submissions) ? submissions?.filter((submission: any) =>
     submission.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     submission.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     submission.phone?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     submission.petName?.toLowerCase().includes(searchQuery.toLowerCase())
   ) : [];
+
+  const totalSubmissions = allFilteredSubmissions.length;
+  const totalPages = Math.ceil(totalSubmissions / pageSize);
+
+  // Paginação client-side
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const filteredSubmissions = allFilteredSubmissions.slice(startIndex, endIndex);
 
   const toggleColumn = (col: string) => {
     setVisibleColumns((prev) =>
@@ -279,7 +289,10 @@ export default function ContactSubmissions() {
             <Input
               placeholder="Buscar por nome, email, telefone ou pet..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1); // Reset para página 1 ao buscar
+              }}
               className="pl-10 w-64"
               data-testid="input-search-submissions"
             />
@@ -451,6 +464,39 @@ export default function ContactSubmissions() {
         )}
       </div>
 
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-muted-foreground">
+            Mostrando {startIndex + 1} a {Math.min(endIndex, totalSubmissions)} de {totalSubmissions} formulários
+          </p>
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              data-testid="button-previous-page"
+            >
+              <ChevronLeft className="h-4 w-4" />
+              Anterior
+            </Button>
+            <span className="text-sm font-medium">
+              Página {currentPage} de {totalPages}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              data-testid="button-next-page"
+            >
+              Próxima
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      )}
 
       {/* Details Dialog */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
