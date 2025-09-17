@@ -208,6 +208,7 @@ export interface IStorage {
   updateGuide(id: string, updates: Partial<InsertGuide>): Promise<Guide | undefined>;
   deleteGuide(id: string): Promise<boolean>;
   getGuides(startDate?: string, endDate?: string): Promise<Guide[]>;
+  getAllGuidesWithNetworkUnits(startDate?: string, endDate?: string, page?: number, limit?: number): Promise<{ data: any[], total: number, page: number, limit: number, totalPages: number }>;
   getRecentGuides(limit?: number): Promise<Guide[]>;
   getGuidesByNetworkUnit(networkUnitId: string): Promise<Guide[]>;
   updateGuideUnitStatus(id: string, unitStatus: string): Promise<Guide | undefined>;
