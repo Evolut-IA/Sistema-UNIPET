@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,10 +10,12 @@ import { Separator } from "@/components/ui/separator";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
 import { insertThemeSettingsSchema } from "@shared/schema";
 import { Palette, Type, Layout, MousePointer, FormInput, Package, BarChart3, Save, Pipette } from "lucide-react";
 import { DEFAULT_THEME, applyThemeToCSSVariables } from "@/lib/theme-defaults";
+
+// Local storage key for theme settings
+const THEME_STORAGE_KEY = 'theme-settings';
 
 // Color input component with clean picker
 const ColorInput = ({ value, onChange, title, description, testId }: {
@@ -179,30 +180,36 @@ const COLOR_GROUPS = {
   }
 };
 
+// Local theme persistence functions
+const getLocalTheme = (): Record<string, any> => {
+  try {
+    const stored = localStorage.getItem(THEME_STORAGE_KEY);
+    return stored ? JSON.parse(stored) : DEFAULT_THEME;
+  } catch (error) {
+    console.warn('Failed to load theme from localStorage, using default theme');
+    return DEFAULT_THEME;
+  }
+};
+
+const saveLocalTheme = (themeData: Record<string, any>): void => {
+  try {
+    localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(themeData));
+  } catch (error) {
+    console.error('Failed to save theme to localStorage:', error);
+  }
+};
+
 export default function ThemeEditor() {
   const { toast } = useToast();
-  const queryClient = useQueryClient();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
-  // Try to get cached theme data from localStorage
-  const getCachedTheme = () => {
-    try {
-      const cached = localStorage.getItem('cached-theme');
-      return cached ? JSON.parse(cached) : null;
-    } catch {
-      return null;
-    }
-  };
-
-  const { data: themeSettings, isLoading } = useQuery({
-    queryKey: ["/api/settings/theme"],
-  });
-
-  // Use cached data if available, otherwise use DEFAULT_THEME
-  const initialValues = getCachedTheme() || DEFAULT_THEME;
+  // Load theme from localStorage on mount
+  const [themeData, setThemeData] = useState<Record<string, any>>(getLocalTheme);
 
   const form = useForm({
     resolver: zodResolver(insertThemeSettingsSchema),
-    defaultValues: initialValues,
+    defaultValues: themeData,
   });
 
   // Function to update all related fields when a main color changes
@@ -213,54 +220,64 @@ export default function ThemeEditor() {
     });
   };
 
-  const saveThemeMutation = useMutation({
-    mutationFn: async (data: any) => {
-      await apiRequest("PUT", "/api/settings/theme", data);
-      return data;
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/settings/theme"] });
+  // Apply theme changes in real-time
+  const watchedValues = form.watch();
+  useEffect(() => {
+    applyThemeToCSSVariables(watchedValues);
+  }, [watchedValues]);
+
+  // Load theme data on component mount
+  useEffect(() => {
+    const loadedTheme = getLocalTheme();
+    setThemeData(loadedTheme);
+    form.reset(loadedTheme);
+    applyThemeToCSSVariables(loadedTheme);
+  }, [form]);
+
+  const onSubmit = async (data: any) => {
+    setIsSaving(true);
+    
+    try {
+      // Save to localStorage
+      saveLocalTheme(data);
       
-      // Dispatch event to update cache for next page load
+      // Update local state
+      setThemeData(data);
+      
+      // Apply theme immediately
+      applyThemeToCSSVariables(data);
+      
+      // Dispatch custom event for other components to listen to
       const event = new CustomEvent('theme-updated', { detail: data });
       window.dispatchEvent(event);
       
-      // Update localStorage cache
-      localStorage.setItem('cached-theme', JSON.stringify(data));
-      
       toast({
         title: "Tema salvo",
-        description: "Configurações do tema foram salvas com sucesso.",
+        description: "Configurações do tema foram salvas localmente com sucesso.",
       });
-    },
-    onError: () => {
+    } catch (error) {
+      console.error('Error saving theme:', error);
       toast({
         title: "Erro",
         description: "Falha ao salvar configurações do tema.",
         variant: "destructive",
       });
-    },
-  });
-
-  // Update form when data loads
-  useEffect(() => {
-    if (themeSettings) {
-      form.reset(themeSettings);
+    } finally {
+      setIsSaving(false);
     }
-  }, [themeSettings, form]);
+  };
 
-  // Apply theme changes in real-time
-  const watchedValues = form.watch();
-  useEffect(() => {
-    // Only apply theme if we have loaded data from server or have cached data
-    // This prevents applying DEFAULT_THEME values before real data arrives
-    if (themeSettings || getCachedTheme()) {
-      applyThemeToCSSVariables(watchedValues);
-    }
-  }, [watchedValues, themeSettings]);
-
-  const onSubmit = (data: any) => {
-    saveThemeMutation.mutate(data);
+  // Reset to default theme
+  const resetToDefault = () => {
+    form.reset(DEFAULT_THEME);
+    setThemeData(DEFAULT_THEME);
+    saveLocalTheme(DEFAULT_THEME);
+    applyThemeToCSSVariables(DEFAULT_THEME);
+    
+    toast({
+      title: "Tema resetado",
+      description: "Configurações do tema foram resetadas para os valores padrão.",
+    });
   };
 
   if (isLoading) {
@@ -631,15 +648,26 @@ export default function ThemeEditor() {
               </AccordionItem>
             </Accordion>
 
-            <div className="flex justify-end pt-6">
+            <div className="flex justify-between items-center pt-6">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={resetToDefault}
+                className="flex items-center space-x-2"
+                data-testid="button-reset-theme"
+              >
+                <Palette className="h-4 w-4" />
+                <span>Resetar Padrão</span>
+              </Button>
+
               <Button
                 type="submit"
-                disabled={saveThemeMutation.isPending}
+                disabled={isSaving}
                 className="flex items-center space-x-2"
                 data-testid="button-save-theme"
               >
                 <Save className="h-4 w-4" />
-                <span>{saveThemeMutation.isPending ? "Salvando Alterações..." : "Aplicar Tema"}</span>
+                <span>{isSaving ? "Salvando..." : "Aplicar Tema"}</span>
               </Button>
             </div>
           </form>
