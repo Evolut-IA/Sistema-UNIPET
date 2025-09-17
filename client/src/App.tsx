@@ -30,7 +30,7 @@ import { applyThemeToCSSVariables } from "@/lib/theme-defaults";
 function Router() {
   return (
     <Switch>
-      {/* Admin routes with Layout */}
+      {/* Specific admin routes with Layout - more explicit routing */}
       <Route path="/" nest>
         <Layout>
           <Switch>
@@ -54,13 +54,15 @@ function Router() {
             <Route path="/formularios" component={ContactSubmissions} />
             <Route path="/configuracoes" component={Settings} />
             <Route path="/administracao" component={Administration} />
-            <Route component={NotFound} />
           </Switch>
         </Layout>
       </Route>
       
-      {/* Unit routes without admin Layout - catch-all for dynamic slugs */}
-      <Route component={UnitRoute} />
+      {/* Unit routes without admin Layout - handle unit specific routes */}
+      <Route path="/:slug" component={UnitRoute} />
+      
+      {/* Fallback 404 for unmatched routes */}
+      <Route component={NotFound} />
     </Switch>
   );
 }

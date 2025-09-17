@@ -14,13 +14,15 @@ export default function UnitRoute() {
   }, [location]);
 
   const checkUnitRoute = async () => {
-    // Extract slug from current path
-    const slug = location.substring(1); // Remove leading slash
+    // Extract slug from current path and remove query parameters
+    const pathWithoutQuery = location.split('?')[0]; // Remove query parameters
+    const slug = pathWithoutQuery.substring(1); // Remove leading slash
     
     // Skip known admin routes
     const adminRoutes = [
       '', 'clientes', 'pets', 'guias', 'planos', 'rede', 
-      'perguntas-frequentes', 'formularios', 'configuracoes', 'administracao'
+      'perguntas-frequentes', 'formularios', 'configuracoes', 'administracao',
+      'procedimentos'
     ];
     
     if (adminRoutes.includes(slug) || slug.includes('/')) {
@@ -35,10 +37,11 @@ export default function UnitRoute() {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       });
-
+      
       if (response.ok) {
         const data = await response.json();
-        setIsValidUnit(data.exists && data.isActive);
+        const isValid = data.exists && data.isActive;
+        setIsValidUnit(isValid);
       } else {
         setIsValidUnit(false);
       }
