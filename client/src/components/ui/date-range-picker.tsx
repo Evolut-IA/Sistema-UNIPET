@@ -107,15 +107,16 @@ const DateRangePicker = React.forwardRef<
           variant="outline"
           size="sm"
           onClick={handleClear}
-          className="flex-1"
+          className="flex-1 bg-input text-accent-foreground hover:bg-input/80"
         >
           <X className="mr-2 h-4 w-4" />
           Limpar
         </Button>
         <Button
+          variant="outline"
           size="sm"
           onClick={handleApply}
-          className="flex-1"
+          className="flex-1 bg-input text-accent-foreground hover:bg-input/80"
         >
           Aplicar
         </Button>
@@ -125,9 +126,9 @@ const DateRangePicker = React.forwardRef<
 
   const triggerButton = (
     <Button
-      variant="default"
+      variant="outline"
       className={cn(
-        "w-full justify-start text-left font-normal"
+        "w-full justify-start text-left font-normal bg-input text-accent-foreground hover:bg-input/80"
       )}
       disabled={disabled}
     >
