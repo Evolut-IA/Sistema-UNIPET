@@ -277,12 +277,9 @@ export default function Plans() {
                   )}
                   {visibleColumns.includes("Preço") && (
                     <TableCell className="whitespace-nowrap bg-accent">
-                      <div className="flex flex-col">
-                        <span className="font-bold text-foreground">
-                          R$ {(parseFloat(plan.price || 0) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                        </span>
-                        <span className="text-xs text-muted-foreground">/mês</span>
-                      </div>
+                      <span className="font-bold text-foreground">
+                        R$ {(parseFloat(plan.price || 0) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-xs text-muted-foreground">/mês</span>
+                      </span>
                     </TableCell>
                   )}
                   {visibleColumns.includes("Tipo") && (

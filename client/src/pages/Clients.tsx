@@ -51,9 +51,6 @@ const allColumns = [
   "Nome",
   "Telefone",
   "Email",
-  "CPF",
-  "Cidade",
-  "Data",
   "Ações",
 ] as const;
 

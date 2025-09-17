@@ -34,8 +34,6 @@ const allColumns = [
   "Nome",
   "Telefone", 
   "Email",
-  "Pet",
-  "Plano",
   "Data",
   "Ações",
 ] as const;
@@ -366,11 +364,8 @@ export default function ContactSubmissions() {
                 <TableRow key={submission.id} className="bg-accent hover:bg-accent/80">
                   {visibleColumns.includes("Nome") && (
                     <TableCell className="font-medium whitespace-nowrap bg-accent">
-                      <div>
-                        <div className="font-medium text-foreground" data-testid={`submission-name-${submission.id}`}>
-                          {submission.name}
-                        </div>
-                        <div className="text-sm text-muted-foreground">{submission.city}</div>
+                      <div className="font-medium text-foreground" data-testid={`submission-name-${submission.id}`}>
+                        {submission.name}
                       </div>
                     </TableCell>
                   )}
@@ -402,10 +397,7 @@ export default function ContactSubmissions() {
                   {visibleColumns.includes("Data") && (
                     <TableCell className="whitespace-nowrap bg-accent">
                       <div className="text-sm text-foreground">
-                        {submission.createdAt && format(new Date(submission.createdAt), "dd/MM/yyyy", { locale: ptBR })}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {submission.createdAt && format(new Date(submission.createdAt), "HH:mm", { locale: ptBR })}
+                        {submission.createdAt && format(new Date(submission.createdAt), "dd/MM/yyyy", { locale: ptBR })} {submission.createdAt && format(new Date(submission.createdAt), "HH:mm", { locale: ptBR })}
                       </div>
                     </TableCell>
                   )}

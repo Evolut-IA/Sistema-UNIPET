@@ -32,9 +32,7 @@ import { cn } from "@/lib/utils";
 
 const allColumns = [
   "Nome",
-  "Endereço",
   "Telefone",
-  "Serviços",
   "Status",
   "Ações",
 ] as const;
