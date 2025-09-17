@@ -269,12 +269,6 @@ export default function ContactSubmissions() {
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground break-words">Formulários de Contato</h1>
           <p className="text-sm text-muted-foreground">Visualize e gerencie os formulários recebidos</p>
         </div>
-        <div className="flex items-center gap-2 p-2 sm:p-0">
-          <Mail className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
-          <span className="text-xs sm:text-sm text-muted-foreground">
-            {Array.isArray(submissions) ? submissions.length : 0} formulários recebidos
-          </span>
-        </div>
       </div>
 
       {/* Filters and Column Controls */}
