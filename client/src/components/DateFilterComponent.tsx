@@ -152,31 +152,31 @@ const DateFilterComponent = React.memo(function DateFilterComponent({
               {/* Quick Selection Buttons - Mobile: above, Desktop: right side */}
               <div className="flex flex-wrap gap-2 md:flex-nowrap md:gap-2">
                 <Button
-                  variant="default"
+                  variant="outline"
                   size="sm"
                   onClick={handleCurrentMonth}
                   disabled={isLoading}
-                  className="h-10 px-3 text-xs"
+                  className="h-10 px-3 text-xs bg-input text-accent-foreground hover:bg-input/80"
                   aria-label="Filtrar por mês atual"
                 >
                   Mês atual
                 </Button>
                 <Button
-                  variant="default"
+                  variant="outline"
                   size="sm"
                   onClick={handleCurrentWeek}
                   disabled={isLoading}
-                  className="h-10 px-3 text-xs"
+                  className="h-10 px-3 text-xs bg-input text-accent-foreground hover:bg-input/80"
                   aria-label="Filtrar por semana atual"
                 >
                   Semana atual
                 </Button>
                 <Button
-                  variant="default"
+                  variant="outline"
                   size="sm"
                   onClick={handleToday}
                   disabled={isLoading}
-                  className="h-10 px-3 text-xs"
+                  className="h-10 px-3 text-xs bg-input text-accent-foreground hover:bg-input/80"
                   aria-label="Filtrar por hoje"
                 >
                   Hoje
