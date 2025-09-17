@@ -80,7 +80,9 @@ export default function Procedures() {
   // Carregar planos existentes quando estiver editando (apenas uma vez quando o modal abre)
   useEffect(() => {
     if (existingProcedurePlans && Array.isArray(existingProcedurePlans) && editingItem?.id) {
-      const planData = existingProcedurePlans.map((item: any) => {
+      const newManuallyEditedFields: {[key: number]: {[field: string]: boolean}} = {};
+      
+      const planData = existingProcedurePlans.map((item: any, index: number) => {
         const receberValue = (item.price / 100).toLocaleString('pt-BR', {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2
@@ -89,12 +91,28 @@ export default function Procedures() {
         // Usar o valor "pagar" salvo no banco quando disponível,
         // caso contrário calcular automaticamente baseado na porcentagem
         let pagarValue;
+        let wasPagarManuallyEdited = false;
+        
         if (item.payValue !== null && item.payValue !== undefined) {
           // Usar o valor salvo no banco (editado manualmente pelo usuário)
           pagarValue = (item.payValue / 100).toLocaleString('pt-BR', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
           });
+          
+          // Marcar como editado manualmente se o valor salvo for diferente do calculado
+          const calculatedValue = calculatePayValue(receberValue);
+          // Normalizar ambos os valores para comparação (remover formatação e comparar números)
+          const normalizedPagarValue = pagarValue.replace(/\./g, '').replace(',', '.');
+          const normalizedCalculatedValue = calculatedValue.replace(/\./g, '').replace(',', '.');
+          
+          if (Math.abs(parseFloat(normalizedPagarValue) - parseFloat(normalizedCalculatedValue)) > 0.01) {
+            wasPagarManuallyEdited = true;
+            if (!newManuallyEditedFields[index]) {
+              newManuallyEditedFields[index] = {};
+            }
+            newManuallyEditedFields[index].pagar = true;
+          }
         } else {
           // Calcular automaticamente se não houver valor salvo
           pagarValue = calculatePayValue(receberValue);
@@ -116,8 +134,8 @@ export default function Procedures() {
         };
       });
       setSelectedPlans(planData);
-      // Resetar estado de edições manuais ao carregar dados existentes
-      setManuallyEditedFields({});
+      // Definir campos que já foram editados manualmente em sessões anteriores
+      setManuallyEditedFields(newManuallyEditedFields);
     }
     // Limpar planos quando não estiver editando (criando novo)
     else if (!editingItem?.id) {
