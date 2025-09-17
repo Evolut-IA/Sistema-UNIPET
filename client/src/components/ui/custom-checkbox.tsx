@@ -14,30 +14,38 @@ const CustomCheckbox = React.forwardRef<HTMLInputElement, CustomCheckboxProps>(
     
     return (
       <div className="flex items-center gap-2">
-        <div className="relative">
+        <div className="relative flex items-center justify-center">
           <input
             {...props}
             ref={ref}
             type="checkbox"
             id={checkboxId}
             checked={checked}
+            className="sr-only peer"
+          />
+          <div 
             className={cn(
-              "appearance-none h-4 w-4 shrink-0 rounded border-2 cursor-pointer transition-all duration-200",
-              "focus:ring-2 focus:ring-[#22c55e]/20 focus:outline-none",
-              checked 
-                ? "bg-[#22c55e] border-[#22c55e]" 
-                : "border-input bg-white hover:border-[#22c55e]/70",
-              "disabled:cursor-not-allowed disabled:opacity-50",
+              "h-4 w-4 rounded-sm border flex items-center justify-center transition-all duration-200 cursor-pointer",
+              "peer-focus:ring-2 peer-focus:ring-[#22c55e]/20",
+              "hover:border-[#22c55e]/70",
+              "peer-disabled:cursor-not-allowed peer-disabled:opacity-50",
               className
             )}
-          />
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <Check 
-              className={cn(
-                "h-3 w-3 text-white transition-opacity duration-200",
-                checked ? "opacity-100" : "opacity-0"
-              )}
-            />
+            style={{
+              backgroundColor: checked ? '#22c55e' : 'white',
+              borderColor: checked ? '#22c55e' : '#e1eaef',
+            }}
+            onClick={() => {
+              const event = { target: { checked: !checked } } as React.ChangeEvent<HTMLInputElement>;
+              props.onChange?.(event);
+            }}
+          >
+            {checked && (
+              <Check 
+                className="h-3 w-3 text-white"
+                strokeWidth={3}
+              />
+            )}
           </div>
         </div>
         {label && (
