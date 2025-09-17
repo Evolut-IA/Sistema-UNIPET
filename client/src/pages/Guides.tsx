@@ -7,8 +7,22 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useLocation } from "wouter";
-import { Plus, Search, Edit, Trash2, FileText, Eye, Copy } from "lucide-react";
+import { Plus, Search, Edit, Trash2, FileText, Eye, Copy, Columns } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { apiRequest } from "@/lib/queryClient";
@@ -18,6 +32,17 @@ import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
 import { PasswordDialog } from "@/components/ui/password-dialog";
 import { usePasswordDialog } from "@/hooks/use-password-dialog";
 import { GUIDE_TYPES } from "@/lib/constants";
+import { cn } from "@/lib/utils";
+
+const allColumns = [
+  "Procedimento",
+  "Unidade",
+  "Tipo",
+  "Valor",
+  "Status",
+  "Data",
+  "Ações",
+] as const;
 
 export default function Guides() {
   const [, setLocation] = useLocation();
@@ -26,6 +51,7 @@ export default function Guides() {
   const [typeFilter, setTypeFilter] = useState("all");
   const [selectedGuide, setSelectedGuide] = useState<any>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [visibleColumns, setVisibleColumns] = useState<string[]>([...allColumns]);
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const confirmDialog = useConfirmDialog();
@@ -63,6 +89,14 @@ export default function Guides() {
     
     return matchesSearch && matchesStatus && matchesType;
   }) : [];
+
+  const toggleColumn = (col: string) => {
+    setVisibleColumns((prev) =>
+      prev.includes(col)
+        ? prev.filter((c) => c !== col)
+        : [...prev, col]
+    );
+  };
 
   const handleDelete = (id: string, procedureName: string) => {
     passwordDialog.openDialog({
@@ -240,35 +274,35 @@ export default function Guides() {
         </div>
       </div>
 
-      {/* Filters */}
-      <Card>
-        <CardContent className="p-3 sm:p-4 lg:p-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      {/* Modern Table Container */}
+      <div className="container my-10 space-y-4 p-4 border border-border rounded-lg bg-background shadow-sm overflow-x-auto">
+        {/* Filters and Column Controls */}
+        <div className="flex flex-wrap gap-4 items-center justify-between mb-6">
+          <div className="flex gap-2 flex-wrap">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4" style={{color: 'var(--input-foreground)'}} />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Buscar por procedimento..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
+                className="pl-10 w-64"
                 data-testid="input-search-guides"
               />
             </div>
             <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger data-testid="select-type-filter">
+              <SelectTrigger className="w-48" data-testid="select-type-filter">
                 <SelectValue placeholder="Filtrar por tipo" />
               </SelectTrigger>
               <SelectContent>
-                {[{ value: "all", label: "Todos os tipos" }, ...GUIDE_TYPES.map(type => ({ value: type, label: getTypeLabel(type) }))].flatMap((item, index, array) => [
-                  <SelectItem key={item.value} value={item.value} className="py-3 pl-10 pr-4">
+                {[{ value: "all", label: "Todos os tipos" }, ...GUIDE_TYPES.map(type => ({ value: type, label: getTypeLabel(type) }))].map((item) => (
+                  <SelectItem key={item.value} value={item.value}>
                     {item.label}
-                  </SelectItem>,
-                  ...(index < array.length - 1 ? [<Separator key={`separator-${item.value}`} />] : [])
-                ])}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger data-testid="select-status-filter">
+              <SelectTrigger className="w-48" data-testid="select-status-filter">
                 <SelectValue placeholder="Filtrar por status" />
               </SelectTrigger>
               <SelectContent>
@@ -277,63 +311,98 @@ export default function Guides() {
                   { value: "open", label: "Abertas" },
                   { value: "closed", label: "Fechadas" },
                   { value: "cancelled", label: "Canceladas" }
-                ].flatMap((status, index, array) => [
-                  <SelectItem key={status.value} value={status.value} className="py-3 pl-10 pr-4">
+                ].map((status) => (
+                  <SelectItem key={status.value} value={status.value}>
                     {status.label}
-                  </SelectItem>,
-                  ...(index < array.length - 1 ? [<Separator key={`separator-${status.value}`} />] : [])
-                ])}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
-        </CardContent>
-      </Card>
 
-      {/* Guides List */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-foreground">Guias ({filteredGuides?.length || 0})</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {isLoading ? (
-            <div className="space-y-4">
-              {[...Array(5)].map((_, i) => (
-                <div key={i} className="border rounded-lg p-4 animate-pulse">
-                  <div className="h-4 bg-muted rounded w-1/4 mb-2"></div>
-                  <div className="h-3 bg-muted rounded w-1/2 mb-1"></div>
-                  <div className="h-3 bg-muted rounded w-1/3"></div>
-                </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                <Columns className="h-4 w-4 mr-2" />
+                Colunas
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-48">
+              {allColumns.map((col) => (
+                <DropdownMenuCheckboxItem
+                  key={col}
+                  checked={visibleColumns.includes(col)}
+                  onCheckedChange={() => toggleColumn(col)}
+                >
+                  {col}
+                </DropdownMenuCheckboxItem>
               ))}
-            </div>
-          ) : filteredGuides?.length ? (
-            <div className="space-y-2">
-              {filteredGuides.map((guide: any) => (
-                <div key={guide.id} className="border rounded-lg p-3 hover:bg-muted/10 transition-colors">
-                  <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-3">
-                    <div className="flex-1 min-w-0">
-                      {/* Nome da Guia */}
-                      <div className="mb-2 lg:mb-0">
-                        <h3 className="font-semibold text-foreground break-words" data-testid={`guide-procedure-${guide.id}`}>
-                          {guide.procedure}
-                        </h3>
-                        {/* Informação da Unidade */}
-                        {guide.networkUnit ? (
-                          <p className="text-sm text-muted-foreground mt-1">
-                            <span className="font-medium">Unidade:</span> {guide.networkUnit.name}
-                          </p>
-                        ) : (
-                          <p className="text-sm text-muted-foreground mt-1 italic">
-                            Unidade não informada
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                    
-                    {/* Desktop: Botões */}
-                    <div className="hidden lg:flex lg:items-center lg:space-x-3">
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
+        {/* Table */}
+        <Table className="w-full">
+          <TableHeader>
+            <TableRow>
+              {visibleColumns.includes("Procedimento") && <TableHead className="w-[200px]">Procedimento</TableHead>}
+              {visibleColumns.includes("Unidade") && <TableHead className="w-[180px]">Unidade</TableHead>}
+              {visibleColumns.includes("Tipo") && <TableHead className="w-[120px]">Tipo</TableHead>}
+              {visibleColumns.includes("Valor") && <TableHead className="w-[120px]">Valor</TableHead>}
+              {visibleColumns.includes("Status") && <TableHead className="w-[100px]">Status</TableHead>}
+              {visibleColumns.includes("Data") && <TableHead className="w-[120px]">Data</TableHead>}
+              {visibleColumns.includes("Ações") && <TableHead className="w-[150px]">Ações</TableHead>}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {isLoading ? (
+              [...Array(5)].map((_, i) => (
+                <TableRow key={i}>
+                  <TableCell colSpan={visibleColumns.length} className="text-center py-6">
+                    <div className="h-4 bg-muted rounded w-full animate-pulse"></div>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : filteredGuides?.length ? (
+              filteredGuides.map((guide: any) => (
+                <TableRow key={guide.id}>
+                  {visibleColumns.includes("Procedimento") && (
+                    <TableCell className="font-medium whitespace-nowrap">
+                      {guide.procedure}
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Unidade") && (
+                    <TableCell className="whitespace-nowrap">
+                      {guide.networkUnit ? guide.networkUnit.name : "Não informada"}
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Tipo") && (
+                    <TableCell className="whitespace-nowrap">
+                      {getTypeLabel(guide.type)}
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Valor") && (
+                    <TableCell className="whitespace-nowrap">
+                      R$ {parseFloat(guide.value || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Status") && (
+                    <TableCell className="whitespace-nowrap">
+                      <Badge className={cn("whitespace-nowrap", getStatusColor(guide.status))}>
+                        {getStatusLabel(guide.status)}
+                      </Badge>
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Data") && (
+                    <TableCell className="whitespace-nowrap">
+                      {guide.createdAt && format(new Date(guide.createdAt), "dd/MM/yyyy", { locale: ptBR })}
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Ações") && (
+                    <TableCell className="whitespace-nowrap">
                       <div className="flex items-center space-x-1">
                         <Button
-                          variant="default"
+                          variant="outline"
                           size="sm"
                           onClick={() => handleViewDetails(guide)}
                           data-testid={`button-view-${guide.id}`}
@@ -341,7 +410,7 @@ export default function Guides() {
                           <Eye className="h-4 w-4" />
                         </Button>
                         <Button
-                          variant="default"
+                          variant="outline"
                           size="sm"
                           onClick={() => setLocation(`/guias/${guide.id}/editar`)}
                           data-testid={`button-edit-${guide.id}`}
@@ -349,7 +418,7 @@ export default function Guides() {
                           <Edit className="h-4 w-4" />
                         </Button>
                         <Button
-                          variant="default"
+                          variant="outline"
                           size="sm"
                           onClick={() => handleDelete(guide.id, guide.procedure)}
                           disabled={deleteGuideMutation.isPending}
@@ -358,59 +427,30 @@ export default function Guides() {
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
-                    </div>
-                    
-                    {/* Mobile: Botões */}
-                    <div className="flex lg:hidden items-center justify-start overflow-x-auto pb-2 scrollbar-hide">
-                      <div className="flex items-center space-x-1 min-w-max">
-                        <Button
-                          variant="default"
-                          size="sm"
-                          onClick={() => handleViewDetails(guide)}
-                          data-testid={`button-view-mobile-${guide.id}`}
-                        >
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="default"
-                          size="sm"
-                          onClick={() => setLocation(`/guias/${guide.id}/editar`)}
-                          data-testid={`button-edit-mobile-${guide.id}`}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="default"
-                          size="sm"
-                          onClick={() => handleDelete(guide.id, guide.procedure)}
-                          disabled={deleteGuideMutation.isPending}
-                          data-testid={`button-delete-mobile-${guide.id}`}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground">
-                {searchQuery || typeFilter !== "all" || statusFilter !== "all" 
-                  ? "Nenhuma guia encontrada com os filtros aplicados." 
-                  : "Nenhuma guia foi gerada pelas unidades da rede ainda."
-                }
-              </p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+                    </TableCell>
+                  )}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={visibleColumns.length} className="text-center py-12">
+                  <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground">
+                    {searchQuery || typeFilter !== "all" || statusFilter !== "all" 
+                      ? "Nenhuma guia encontrada com os filtros aplicados." 
+                      : "Nenhuma guia foi gerada pelas unidades da rede ainda."
+                    }
+                  </p>
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
 
       {/* Details Dialog */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent className="">
+        <DialogContent>
           <DialogHeader>
             <DialogTitle className="flex items-center space-x-2">
               <FileText className="h-5 w-5 text-primary" />
