@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useLocation } from "wouter";
-import { Plus, Search, Edit, Trash2, Building2, ExternalLink, Phone, MapPin, Eye, Copy } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Building2, ExternalLink, Phone, MapPin, Eye, Copy, Globe } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
@@ -282,6 +282,20 @@ export default function Network() {
                     
                     {/* Botões em linha horizontal */}
                     <div className="flex items-center space-x-1">
+                      {/* Botão para acessar a unidade */}
+                      {unit.urlSlug && unit.isActive && (
+                        <Button
+                          variant="default"
+                          size="sm"
+                          asChild
+                          data-testid={`button-access-unit-${unit.id}`}
+                          title={`Acessar página da unidade: ${unit.name}`}
+                        >
+                          <a href={`/${unit.urlSlug}`} target="_blank" rel="noopener noreferrer">
+                            <Globe className="h-4 w-4" />
+                          </a>
+                        </Button>
+                      )}
                       <Button
                         variant="default"
                         size="sm"
