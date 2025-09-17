@@ -322,138 +322,142 @@ export default function ContactSubmissions() {
 
       {/* Submissions Table */}
       <div className="container my-10 space-y-4 border border-border rounded-lg bg-accent shadow-sm">
-        {isLoading ? (
-          <div className="p-6 space-y-4">
-            {[...Array(5)].map((_, i) => (
-              <div key={i} className="border rounded-lg p-4 animate-pulse">
-                <div className="h-4 bg-muted rounded w-1/3 mb-2"></div>
-                <div className="h-3 bg-muted rounded w-1/2 mb-1"></div>
-                <div className="h-3 bg-muted rounded w-1/4"></div>
-              </div>
-            ))}
-          </div>
-        ) : filteredSubmissions?.length ? (
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-accent hover:bg-accent">
-                {visibleColumns.includes("Nome") && (
-                  <TableHead className="bg-accent">Nome</TableHead>
-                )}
-                {visibleColumns.includes("Telefone") && (
-                  <TableHead className="bg-accent">Telefone</TableHead>
-                )}
-                {visibleColumns.includes("Email") && (
-                  <TableHead className="bg-accent">Email</TableHead>
-                )}
-                {visibleColumns.includes("Pet") && (
-                  <TableHead className="bg-accent">Pet</TableHead>
-                )}
-                {visibleColumns.includes("Plano") && (
-                  <TableHead className="bg-accent">Plano</TableHead>
-                )}
-                {visibleColumns.includes("Data") && (
-                  <TableHead className="bg-accent">Data</TableHead>
-                )}
-                {visibleColumns.includes("Ações") && (
-                  <TableHead className="bg-accent">Ações</TableHead>
-                )}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredSubmissions.map((submission: any) => (
-                <TableRow key={submission.id} className="bg-accent hover:bg-accent/80">
+        
+        {/* Table */}
+        <div className="rounded-lg overflow-hidden">
+          {isLoading ? (
+            <div className="p-6 space-y-4">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="border rounded-lg p-4 animate-pulse">
+                  <div className="h-4 bg-muted rounded w-1/3 mb-2"></div>
+                  <div className="h-3 bg-muted rounded w-1/2 mb-1"></div>
+                  <div className="h-3 bg-muted rounded w-1/4"></div>
+                </div>
+              ))}
+            </div>
+          ) : filteredSubmissions?.length ? (
+            <Table className="w-full">
+              <TableHeader>
+                <TableRow className="bg-accent hover:bg-accent">
                   {visibleColumns.includes("Nome") && (
-                    <TableCell className="font-medium whitespace-nowrap bg-accent">
-                      <div className="font-medium text-foreground" data-testid={`submission-name-${submission.id}`}>
-                        {submission.name}
-                      </div>
-                    </TableCell>
+                    <TableHead className="bg-accent">Nome</TableHead>
                   )}
                   {visibleColumns.includes("Telefone") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
-                      <div className="text-sm text-foreground">{submission.phone}</div>
-                    </TableCell>
+                    <TableHead className="bg-accent">Telefone</TableHead>
                   )}
                   {visibleColumns.includes("Email") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
-                      <div className="text-sm text-foreground">{submission.email}</div>
-                    </TableCell>
+                    <TableHead className="bg-accent">Email</TableHead>
                   )}
                   {visibleColumns.includes("Pet") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
-                      <div>
-                        <div className="font-medium text-foreground">{submission.petName}</div>
-                        <div className="text-sm text-muted-foreground">{submission.animalType}, {submission.petAge}</div>
-                      </div>
-                    </TableCell>
+                    <TableHead className="bg-accent">Pet</TableHead>
                   )}
                   {visibleColumns.includes("Plano") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
-                      <Badge className={getPlanInterestColor(submission.planInterest)} data-testid={`badge-plan-interest-${submission.id}`}>
-                        {submission.planInterest}
-                      </Badge>
-                    </TableCell>
+                    <TableHead className="bg-accent">Plano</TableHead>
                   )}
                   {visibleColumns.includes("Data") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
-                      <div className="text-sm text-foreground">
-                        {submission.createdAt && format(new Date(submission.createdAt), "dd/MM/yyyy", { locale: ptBR })} {submission.createdAt && format(new Date(submission.createdAt), "HH:mm", { locale: ptBR })}
-                      </div>
-                    </TableCell>
+                    <TableHead className="bg-accent">Data</TableHead>
                   )}
                   {visibleColumns.includes("Ações") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
-                      <div className="flex items-center justify-center space-x-1">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleWhatsApp(submission)}
-                          data-testid={`button-whatsapp-${submission.id}`}
-                          title="Enviar mensagem no WhatsApp"
-                        >
-                          <WhatsAppIcon className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleViewDetails(submission)}
-                          data-testid={`button-view-${submission.id}`}
-                        >
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleDelete(submission.id, submission.name)}
-                          disabled={deleteMutation.isPending}
-                          data-testid={`button-delete-${submission.id}`}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
+                    <TableHead className="bg-accent">Ações</TableHead>
                   )}
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        ) : (
-          <Table>
-            <TableBody>
-              <TableRow className="bg-accent">
-                <TableCell colSpan={visibleColumns.length} className="text-center py-12 bg-accent">
-                  <Mail className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground">
-                    {searchQuery 
-                      ? "Nenhum formulário encontrado para a busca." 
-                      : "Nenhum formulário recebido ainda."
-                    }
-                  </p>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        )}
+              </TableHeader>
+              <TableBody>
+                {filteredSubmissions.map((submission: any) => (
+                  <TableRow key={submission.id} className="bg-accent hover:bg-accent/80">
+                    {visibleColumns.includes("Nome") && (
+                      <TableCell className="font-medium whitespace-nowrap bg-accent">
+                        <div className="font-medium text-foreground" data-testid={`submission-name-${submission.id}`}>
+                          {submission.name}
+                        </div>
+                      </TableCell>
+                    )}
+                    {visibleColumns.includes("Telefone") && (
+                      <TableCell className="whitespace-nowrap bg-accent">
+                        <div className="text-sm text-foreground">{submission.phone}</div>
+                      </TableCell>
+                    )}
+                    {visibleColumns.includes("Email") && (
+                      <TableCell className="whitespace-nowrap bg-accent">
+                        <div className="text-sm text-foreground">{submission.email}</div>
+                      </TableCell>
+                    )}
+                    {visibleColumns.includes("Pet") && (
+                      <TableCell className="whitespace-nowrap bg-accent">
+                        <div>
+                          <div className="font-medium text-foreground">{submission.petName}</div>
+                          <div className="text-sm text-muted-foreground">{submission.animalType}, {submission.petAge}</div>
+                        </div>
+                      </TableCell>
+                    )}
+                    {visibleColumns.includes("Plano") && (
+                      <TableCell className="whitespace-nowrap bg-accent">
+                        <Badge className={getPlanInterestColor(submission.planInterest)} data-testid={`badge-plan-interest-${submission.id}`}>
+                          {submission.planInterest}
+                        </Badge>
+                      </TableCell>
+                    )}
+                    {visibleColumns.includes("Data") && (
+                      <TableCell className="whitespace-nowrap bg-accent">
+                        <div className="text-sm text-foreground">
+                          {submission.createdAt && format(new Date(submission.createdAt), "dd/MM/yyyy", { locale: ptBR })} {submission.createdAt && format(new Date(submission.createdAt), "HH:mm", { locale: ptBR })}
+                        </div>
+                      </TableCell>
+                    )}
+                    {visibleColumns.includes("Ações") && (
+                      <TableCell className="whitespace-nowrap bg-accent">
+                        <div className="flex items-center justify-center space-x-1">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleWhatsApp(submission)}
+                            data-testid={`button-whatsapp-${submission.id}`}
+                            title="Enviar mensagem no WhatsApp"
+                          >
+                            <WhatsAppIcon className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleViewDetails(submission)}
+                            data-testid={`button-view-${submission.id}`}
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDelete(submission.id, submission.name)}
+                            disabled={deleteMutation.isPending}
+                            data-testid={`button-delete-${submission.id}`}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    )}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
+            <Table className="w-full">
+              <TableBody>
+                <TableRow className="bg-accent">
+                  <TableCell colSpan={visibleColumns.length} className="text-center py-12 bg-accent">
+                    <Mail className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground">
+                      {searchQuery 
+                        ? "Nenhum formulário encontrado para a busca." 
+                        : "Nenhum formulário recebido ainda."
+                      }
+                    </p>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          )}
+        </div>
       </div>
 
       {/* Pagination */}
