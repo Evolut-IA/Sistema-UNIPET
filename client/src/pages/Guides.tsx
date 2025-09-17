@@ -257,7 +257,7 @@ export default function Guides() {
 
   const getStatusLabel = (status: string) => {
     switch (status) {
-      case "pending": return "Pendente";
+      case "pending": return "Aberta";
       case "closed": return "Fechada";
       case "cancelled": return "Cancelada";
       default: return status;
@@ -327,7 +327,7 @@ export default function Guides() {
               <SelectContent>
                 {[
                   { value: "all", label: "Todos os status" },
-                  { value: "pending", label: "Pendentes" },
+                  { value: "pending", label: "Abertas" },
                   { value: "closed", label: "Fechadas" },
                   { value: "cancelled", label: "Canceladas" }
                 ].map((status) => (
