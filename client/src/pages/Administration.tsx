@@ -677,7 +677,7 @@ export default function Administration() {
       <div className="container my-10 space-y-4 border border-border rounded-lg bg-accent shadow-sm">
         <div className="p-4">
           <h2 className="text-xl font-semibold text-foreground">
-            Usuários ({filteredUsers?.length || 0})
+            Usuários
           </h2>
         </div>
 
@@ -841,7 +841,7 @@ export default function Administration() {
         <Card>
           <CardHeader>
             <CardTitle className="text-foreground">
-              Unidades da Rede ({networkUnits?.length || 0})
+              Unidades da Rede
             </CardTitle>
           </CardHeader>
           <CardContent>
