@@ -114,10 +114,10 @@ const DateRangePicker = React.forwardRef<
           Limpar
         </Button>
         <Button
-          variant="outline"
+          variant="default"
           size="sm"
           onClick={handleApply}
-          className="flex-1 bg-input text-accent-foreground hover:bg-input/80"
+          className="flex-1"
         >
           Aplicar
         </Button>
