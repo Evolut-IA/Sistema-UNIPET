@@ -25,7 +25,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Plus, Search, Edit, Trash2, HelpCircle, Columns3 as Columns } from "lucide-react";
+import { Plus, Search, Edit, Trash2, HelpCircle, Columns3 as Columns, ChevronLeft, ChevronRight } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { insertFaqItemSchema } from "@shared/schema";
@@ -45,6 +45,8 @@ export default function FAQ() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
   const [visibleColumns, setVisibleColumns] = useState<string[]>([...allColumns]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -132,6 +134,11 @@ export default function FAQ() {
     item.question?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     item.answer?.toLowerCase().includes(searchQuery.toLowerCase())
   ) : [];
+
+  const totalItems = filteredItems.length;
+  const totalPages = Math.ceil(totalItems / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const paginatedItems = filteredItems.slice(startIndex, startIndex + pageSize);
 
   const handleEdit = (item: any) => {
     setEditingItem(item);
@@ -300,7 +307,10 @@ export default function FAQ() {
             <Input
               placeholder="Buscar perguntas e respostas..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1); // Reset para página 1 ao buscar
+              }}
               className="pl-10 w-64"
               data-testid="input-search-faq"
             />
@@ -352,8 +362,8 @@ export default function FAQ() {
                   </TableCell>
                 </TableRow>
               ))
-            ) : filteredItems?.length ? (
-              filteredItems.map((item: any) => (
+            ) : paginatedItems?.length ? (
+              paginatedItems.map((item: any) => (
                 <TableRow key={item.id} className="bg-accent hover:bg-accent/80">
                   {visibleColumns.includes("Pergunta") && (
                     <TableCell className="font-medium bg-accent">
@@ -439,6 +449,40 @@ export default function FAQ() {
           </TableBody>
         </Table>
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between px-4 py-3 border-t">
+            <div className="flex items-center text-sm text-muted-foreground">
+              <span>Mostrando {startIndex + 1} a {Math.min(startIndex + pageSize, totalItems)} de {totalItems} itens</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                data-testid="button-prev-page"
+              >
+                <ChevronLeft className="h-4 w-4" />
+                Anterior
+              </Button>
+              <div className="flex items-center space-x-1">
+                <span className="text-sm text-muted-foreground">Página {currentPage} de {totalPages}</span>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+                data-testid="button-next-page"
+              >
+                Próxima
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
 
     </div>

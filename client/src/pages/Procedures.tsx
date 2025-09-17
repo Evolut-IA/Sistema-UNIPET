@@ -30,7 +30,7 @@ import {
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
-import { Plus, Search, Edit, Trash2, ClipboardList, Eye, DollarSign, X, Columns3 as Columns } from "lucide-react";
+import { Plus, Search, Edit, Trash2, ClipboardList, Eye, DollarSign, X, Columns3 as Columns, ChevronLeft, ChevronRight } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { insertProcedureSchema } from "@shared/schema";
@@ -51,6 +51,8 @@ export default function Procedures() {
   const [editingItem, setEditingItem] = useState<any>(null);
   const [viewingItem, setViewingItem] = useState<any>(null);
   const [visibleColumns, setVisibleColumns] = useState<string[]>([...allColumns]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
   const [selectedPlans, setSelectedPlans] = useState<{
     planId: string, 
     receber: string, 
@@ -534,6 +536,18 @@ export default function Procedures() {
     item.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     item.description?.toLowerCase().includes(searchQuery.toLowerCase())
   ) : [];
+
+  // Pagination logic
+  const totalItems = filteredItems.length;
+  const totalPages = Math.ceil(totalItems / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const paginatedItems = filteredItems.slice(startIndex, endIndex);
+
+  // Reset to page 1 when search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
 
   const toggleColumn = (col: string) => {
     setVisibleColumns((prev) =>
@@ -1032,7 +1046,10 @@ export default function Procedures() {
             <Input
               placeholder="Buscar procedimentos..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1); // Reset to page 1 when searching
+              }}
               className="pl-10"
               data-testid="input-search-procedures" 
             />
@@ -1045,8 +1062,13 @@ export default function Procedures() {
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 p-4 border-b border-border">
           <div className="flex-1">
             <h2 className="text-lg font-medium text-foreground">
-              Procedimentos ({filteredItems?.length || 0})
+              Procedimentos ({totalItems || 0})
             </h2>
+            {totalPages > 1 && (
+              <p className="text-sm text-muted-foreground">
+                Página {currentPage} de {totalPages} • Mostrando {startIndex + 1}-{Math.min(endIndex, totalItems)} de {totalItems} itens
+              </p>
+            )}
           </div>
           
           {/* Controle de Colunas */}
@@ -1085,7 +1107,7 @@ export default function Procedures() {
               ))}
             </div>
           </div>
-        ) : filteredItems?.length ? (
+        ) : paginatedItems?.length ? (
           <Table>
             <TableHeader>
               <TableRow className="bg-accent hover:bg-accent">
@@ -1107,7 +1129,7 @@ export default function Procedures() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredItems.map((item: any) => (
+              {paginatedItems.map((item: any) => (
                 <TableRow key={item.id} className="bg-accent hover:bg-accent/70">
                   {visibleColumns.includes("Nome") && (
                     <TableCell className="font-medium whitespace-nowrap bg-accent">
@@ -1231,6 +1253,64 @@ export default function Procedures() {
               </TableRow>
             </TableBody>
           </Table>
+        )}
+        
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between px-4 py-3 border-t border-border">
+            <div className="flex items-center text-sm text-muted-foreground">
+              Mostrando {startIndex + 1} a {Math.min(endIndex, totalItems)} de {totalItems} resultados
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                disabled={currentPage === 1}
+                className="h-8 w-8 p-0"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              
+              <div className="flex items-center space-x-1">
+                {Array.from({ length: totalPages }, (_, i) => i + 1)
+                  .filter(page => {
+                    const distance = Math.abs(page - currentPage);
+                    return distance === 0 || distance === 1 || page === 1 || page === totalPages;
+                  })
+                  .map((page, index, filteredPages) => {
+                    const prevPage = filteredPages[index - 1];
+                    const showEllipsis = prevPage && page - prevPage > 1;
+                    
+                    return (
+                      <div key={page} className="flex items-center">
+                        {showEllipsis && (
+                          <span className="px-2 text-muted-foreground">...</span>
+                        )}
+                        <Button
+                          variant={currentPage === page ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setCurrentPage(page)}
+                          className="h-8 w-8 p-0"
+                        >
+                          {page}
+                        </Button>
+                      </div>
+                    );
+                  })}
+              </div>
+              
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                disabled={currentPage === totalPages}
+                className="h-8 w-8 p-0"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         )}
       </div>
     </div>
