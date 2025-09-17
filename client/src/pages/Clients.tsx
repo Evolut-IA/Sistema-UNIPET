@@ -470,7 +470,7 @@ export default function Clients() {
         </div>
 
         {/* Pagination */}
-        {totalClients > 0 && (
+        {totalClients > 10 && (
           <div className="flex items-center justify-between px-2 py-4">
             <div className="flex items-center space-x-6 lg:space-x-8">
               <div className="flex items-center space-x-2">

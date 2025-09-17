@@ -832,7 +832,7 @@ export default function Administration() {
         </div>
         
         {/* Users Pagination */}
-        {totalUserPages > 1 && (
+        {totalUsers > 10 && (
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-border">
             <div className="text-sm text-muted-foreground">
               Mostrando {(userCurrentPage - 1) * userPageSize + 1} a {Math.min(userCurrentPage * userPageSize, totalUsers)} de {totalUsers} usuários
@@ -1037,7 +1037,7 @@ export default function Administration() {
         )}
         
         {/* Network Units Pagination */}
-        {totalNetworkPages > 1 && (
+        {networkUnits?.length > 10 && (
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-border">
             <div className="text-sm text-muted-foreground">
               Mostrando {(networkCurrentPage - 1) * networkPageSize + 1} a {Math.min(networkCurrentPage * networkPageSize, totalNetworkUnits)} de {totalNetworkUnits} unidades

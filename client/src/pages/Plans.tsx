@@ -355,7 +355,7 @@ export default function Plans() {
         </div>
         
         {/* Pagination */}
-        {totalPages > 1 && (
+        {totalPlans > 10 && (
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-border">
             <div className="text-sm text-muted-foreground">
               Mostrando {startIndex + 1} a {Math.min(endIndex, totalPlans)} de {totalPlans} planos

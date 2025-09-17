@@ -451,7 +451,7 @@ export default function FAQ() {
         </div>
 
         {/* Pagination */}
-        {totalPages > 1 && (
+        {totalItems > 10 && (
           <div className="flex items-center justify-between px-4 py-3 border-t">
             <div className="flex items-center text-sm text-muted-foreground">
               <span>Mostrando {startIndex + 1} a {Math.min(startIndex + pageSize, totalItems)} de {totalItems} itens</span>

@@ -459,7 +459,7 @@ export default function Network() {
         </div>
 
         {/* Pagination Controls */}
-        {totalUnits > 0 && (
+        {totalUnits > 10 && (
           <div className="flex items-center justify-between px-6 py-4 border-t border-border">
             <div className="flex items-center text-sm text-muted-foreground">
               <span>

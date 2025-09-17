@@ -465,7 +465,7 @@ export default function ContactSubmissions() {
       </div>
 
       {/* Pagination */}
-      {totalPages > 1 && (
+      {totalSubmissions > 10 && (
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
             Mostrando {startIndex + 1} a {Math.min(endIndex, totalSubmissions)} de {totalSubmissions} formulários
