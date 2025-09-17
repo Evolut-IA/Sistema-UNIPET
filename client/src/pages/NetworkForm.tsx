@@ -14,7 +14,6 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { insertNetworkUnitSchema } from "@shared/schema";
 import { ArrowLeft, ExternalLink } from "lucide-react";
-import { AVAILABLE_SERVICES } from "@/lib/constants";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { generateSlug } from "@/lib/utils";
 
@@ -32,6 +31,11 @@ export default function NetworkForm() {
   const { data: unit, isLoading } = useQuery({
     queryKey: ["/api/network-units", params.id],
     enabled: isEdit,
+  });
+
+  // Buscar procedimentos ativos para substituir os serviços
+  const { data: procedures } = useQuery({
+    queryKey: ["/api/procedures"],
   });
 
   const form = useForm({
@@ -347,27 +351,29 @@ export default function NetworkForm() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                {AVAILABLE_SERVICES.map((service) => (
-                  <div key={service} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={`service-${service}`}
-                      checked={selectedServices.includes(service)}
-                      onCheckedChange={(checked) => handleServiceChange(service, checked as boolean)}
-                      data-testid={`checkbox-service-${service.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '')}`}
-                    />
-                    <label 
-                      htmlFor={`service-${service}`}
-                      className="text-sm text-foreground cursor-pointer"
-                    >
-                      {service}
-                    </label>
-                  </div>
-                ))}
+                {Array.isArray(procedures) && procedures
+                  .filter((procedure: any) => procedure.isActive)
+                  .map((procedure: any) => (
+                    <div key={procedure.id} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`service-${procedure.id}`}
+                        checked={selectedServices.includes(procedure.name)}
+                        onCheckedChange={(checked) => handleServiceChange(procedure.name, checked as boolean)}
+                        data-testid={`checkbox-service-${procedure.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '')}`}
+                      />
+                      <label 
+                        htmlFor={`service-${procedure.id}`}
+                        className="text-sm text-foreground cursor-pointer"
+                      >
+                        {procedure.name}
+                      </label>
+                    </div>
+                  ))}
               </div>
               {selectedServices.length > 0 && (
                 <div className="mt-4 p-3 bg-accent border border-accent-foreground/20 rounded-lg">
                   <p className="text-sm font-medium text-accent-foreground mb-1">
-                    Serviços selecionados ({selectedServices.length}):
+                    Procedimentos selecionados ({selectedServices.length}):
                   </p>
                   <p className="text-sm text-accent-foreground/80">
                     {selectedServices.join(", ")}
