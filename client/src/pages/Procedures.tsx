@@ -773,6 +773,11 @@ export default function Procedures() {
                                         updatePlanBooleanField(index, 'enableCoparticipacao', true);
                                       }
                                     }}
+                                    onClick={() => {
+                                      if (!selectedPlan.enableCoparticipacao) {
+                                        updatePlanBooleanField(index, 'enableCoparticipacao', true);
+                                      }
+                                    }}
                                     placeholder="0,00"
                                     disabled={!selectedPlan.enableCoparticipacao}
                                     className={!selectedPlan.enableCoparticipacao ? 'bg-gray-100 text-gray-400' : ''}
@@ -798,6 +803,11 @@ export default function Procedures() {
                                         updatePlanBooleanField(index, 'enableCarencia', true);
                                       }
                                     }}
+                                    onClick={() => {
+                                      if (!selectedPlan.enableCarencia) {
+                                        updatePlanBooleanField(index, 'enableCarencia', true);
+                                      }
+                                    }}
                                     placeholder="Digite apenas números"
                                     disabled={!selectedPlan.enableCarencia}
                                     className={!selectedPlan.enableCarencia ? 'bg-gray-100 text-gray-400' : ''}
@@ -819,6 +829,11 @@ export default function Procedures() {
                                     value={selectedPlan.limitesAnuais}
                                     onChange={(e) => updatePlanField(index, 'limitesAnuais', e.target.value)}
                                     onFocus={() => {
+                                      if (!selectedPlan.enableLimitesAnuais) {
+                                        updatePlanBooleanField(index, 'enableLimitesAnuais', true);
+                                      }
+                                    }}
+                                    onClick={() => {
                                       if (!selectedPlan.enableLimitesAnuais) {
                                         updatePlanBooleanField(index, 'enableLimitesAnuais', true);
                                       }
