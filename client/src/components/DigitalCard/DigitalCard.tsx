@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { PawPrint, Phone, MapPin, Calendar, IdCard, QrCode, Shield, Heart } from "lucide-react";
+import { PawPrint, Phone, MapPin, Calendar, IdCard, QrCode, Shield, Heart, Camera, AlertCircle } from "lucide-react";
 
 interface Pet {
   id: string;
@@ -32,7 +32,7 @@ interface NetworkUnit {
   address: string;
 }
 
-interface DigitalCardProps {
+export interface DigitalCardProps {
   pet: Pet;
   client: Client;
   plan?: Plan;
@@ -80,16 +80,16 @@ export default function DigitalCard({
   };
 
   return (
-    <div className={`group perspective-1000 ${className}`}>
+    <div className={`group perspective-1000 w-full max-w-md mx-auto ${className}`}>
       <div 
-        className={`relative w-full h-56 transition-transform duration-700 transform-style-preserve-3d cursor-pointer ${
+        className={`relative w-full h-56 sm:h-64 transition-transform duration-700 transform-style-preserve-3d cursor-pointer ${
           isFlipped ? 'rotate-y-180' : ''
         }`}
         onClick={handleFlip}
       >
         {/* FRONT SIDE */}
         <Card className="absolute inset-0 w-full h-full backface-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 border-none shadow-xl">
-          <div className="relative h-full p-4 text-white overflow-hidden">
+          <div className="relative h-full p-4 sm:p-6 text-white overflow-hidden">
             {/* Background Pattern */}
             <div className="absolute inset-0 opacity-10">
               <div className="absolute top-4 right-4">
@@ -114,32 +114,47 @@ export default function DigitalCard({
             {/* Main Content */}
             <div className="flex space-x-4 relative z-10">
               {/* Pet Photo */}
-              <div className="flex-shrink-0">
-                <div className="w-16 h-16 rounded-lg bg-white/20 border-2 border-white/30 flex items-center justify-center overflow-hidden">
+              <div className="flex-shrink-0 relative">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg bg-white/10 border-2 border-white/40 flex items-center justify-center overflow-hidden relative backdrop-blur-sm">
                   {photoUrl ? (
                     <img 
                       src={photoUrl} 
                       alt={pet.name}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover rounded-md"
                     />
                   ) : (
-                    <PawPrint className="h-8 w-8 text-white/70" />
+                    <div className="flex flex-col items-center justify-center text-center">
+                      <div className="relative">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/20 flex items-center justify-center mb-1">
+                          <PawPrint className="h-5 w-5 sm:h-6 sm:w-6 text-white/80" />
+                        </div>
+                        <div className="absolute -top-1 -right-1 w-4 h-4 bg-orange-400 rounded-full flex items-center justify-center">
+                          <Camera className="h-2.5 w-2.5 text-white" />
+                        </div>
+                      </div>
+                      <span className="text-xs text-white/70 font-medium">Foto</span>
+                    </div>
                   )}
                 </div>
+                {!photoUrl && (
+                  <div className="absolute -top-2 -right-2 w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
+                    <AlertCircle className="h-3 w-3 text-yellow-800" />
+                  </div>
+                )}
               </div>
 
               {/* Pet Info */}
               <div className="flex-1 min-w-0">
-                <h3 className="text-lg font-bold mb-1 truncate">{pet.name}</h3>
-                <p className="text-sm text-blue-100 mb-1">
+                <h3 className="text-lg sm:text-xl font-bold mb-1 truncate">{pet.name}</h3>
+                <p className="text-sm sm:text-base text-blue-100 mb-1">
                   {pet.species} {pet.breed ? `• ${pet.breed}` : ''} {pet.sex ? `• ${pet.sex}` : ''}
                 </p>
                 {pet.age && (
-                  <p className="text-xs text-blue-100 mb-2">{pet.age}</p>
+                  <p className="text-xs sm:text-sm text-blue-100 mb-2">{pet.age}</p>
                 )}
-                <div className="text-xs text-blue-100">
-                  <p className="font-medium">{client.fullName}</p>
-                  <p>{client.phone}</p>
+                <div className="text-xs sm:text-sm text-blue-100">
+                  <p className="font-medium truncate">{client.fullName}</p>
+                  <p className="truncate">{client.phone}</p>
                 </div>
               </div>
             </div>
@@ -160,7 +175,7 @@ export default function DigitalCard({
 
         {/* BACK SIDE */}
         <Card className="absolute inset-0 w-full h-full backface-hidden rotate-y-180 bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200 shadow-xl">
-          <div className="h-full p-4 text-gray-800">
+          <div className="h-full p-4 sm:p-6 text-gray-800">
             {/* Header */}
             <div className="flex justify-between items-center mb-4">
               <div className="flex items-center space-x-2">
