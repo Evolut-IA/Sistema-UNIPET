@@ -157,7 +157,7 @@ export default function Procedures() {
           pagar: "0,00",
           coparticipacao: "0,00",
           carencia: "",
-          limitesAnuais: "",
+          limitesAnuais: "ilimitado",
           enableCarencia: false,
           enableLimitesAnuais: false,
           enableCoparticipacao: false
@@ -268,12 +268,12 @@ export default function Procedures() {
     const updated = [...selectedPlans];
     updated[index][field] = value;
     
-    // Clear the corresponding field value when disabling
+    // Reset to default values when disabling
     if (!value) {
       if (field === 'enableCarencia') {
         updated[index].carencia = '';
       } else if (field === 'enableLimitesAnuais') {
-        updated[index].limitesAnuais = '';
+        updated[index].limitesAnuais = 'ilimitado';
       } else if (field === 'enableCoparticipacao') {
         updated[index].coparticipacao = '0,00';
       }
@@ -526,7 +526,7 @@ export default function Procedures() {
       
       // Validate Limites Anuais when enabled
       if (plan.enableLimitesAnuais) {
-        if (!plan.limitesAnuais || plan.limitesAnuais.trim() === '') {
+        if (!plan.limitesAnuais || plan.limitesAnuais.trim() === '' || plan.limitesAnuais.trim().toLowerCase() === 'ilimitado') {
           errors[index] = 'Limites anuais é obrigatório quando habilitado';
           hasErrors = true;
         } else {
