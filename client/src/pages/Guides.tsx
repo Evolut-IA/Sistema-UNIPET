@@ -183,7 +183,7 @@ export default function Guides() {
     text += "-".repeat(25) + "\n";
     text += `Nome do Procedimento: ${selectedGuide.procedureName}\n`;
     text += `Tipo de Guia: ${selectedGuide.guideType}\n`;
-    text += `Status: ${selectedGuide.status === 'open' ? 'Aberta' : 'Fechada'}\n`;
+    text += `Status: ${getStatusLabel(selectedGuide.status)}\n`;
     text += `Valor: R$ ${selectedGuide.value || 'Não informado'}\n\n`;
 
     // Informações do Cliente e Pet
@@ -248,16 +248,16 @@ export default function Guides() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "open": return "bg-warning/20 text-warning";       // Ausente (amarelo)
-      case "closed": return "bg-chart-4/20 text-chart-4";     // Positivo (verde)
-      case "cancelled": return "bg-chart-5/20 text-chart-5";  // Negativo (vermelho)
-      default: return "bg-chart-4/20 text-chart-4";
+      case "open": return "bg-chart-4/20 text-accent-foreground";     // Positivo (verde) com cor de destaque
+      case "closed": return "bg-warning/20 text-accent-foreground";    // Aviso (amarelo) com cor de destaque
+      case "cancelled": return "bg-destructive/20 text-accent-foreground"; // Negativo (vermelho) com cor de destaque
+      default: return "bg-chart-4/20 text-accent-foreground";
     }
   };
 
   const getStatusLabel = (status: string) => {
     switch (status) {
-      case "open": return "Aberta";
+      case "open": return "Pendente";
       case "closed": return "Fechada";
       case "cancelled": return "Cancelada";
       default: return status;
