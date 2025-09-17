@@ -345,14 +345,14 @@ export default function Guides() {
         <div className="rounded-lg overflow-hidden">
           <Table className="w-full">
           <TableHeader>
-            <TableRow>
-              {visibleColumns.includes("Procedimento") && <TableHead className="w-[200px]">Procedimento</TableHead>}
-              {visibleColumns.includes("Unidade") && <TableHead className="w-[180px]">Unidade</TableHead>}
-              {visibleColumns.includes("Tipo") && <TableHead className="w-[120px]">Tipo</TableHead>}
-              {visibleColumns.includes("Valor") && <TableHead className="w-[120px]">Valor</TableHead>}
-              {visibleColumns.includes("Status") && <TableHead className="w-[100px]">Status</TableHead>}
-              {visibleColumns.includes("Data") && <TableHead className="w-[120px]">Data</TableHead>}
-              {visibleColumns.includes("Ações") && <TableHead className="w-[150px]">Ações</TableHead>}
+            <TableRow className="bg-accent">
+              {visibleColumns.includes("Procedimento") && <TableHead className="w-[200px] bg-accent">Procedimento</TableHead>}
+              {visibleColumns.includes("Unidade") && <TableHead className="w-[180px] bg-accent">Unidade</TableHead>}
+              {visibleColumns.includes("Tipo") && <TableHead className="w-[120px] bg-accent">Tipo</TableHead>}
+              {visibleColumns.includes("Valor") && <TableHead className="w-[120px] bg-accent">Valor</TableHead>}
+              {visibleColumns.includes("Status") && <TableHead className="w-[100px] bg-accent">Status</TableHead>}
+              {visibleColumns.includes("Data") && <TableHead className="w-[120px] bg-accent">Data</TableHead>}
+              {visibleColumns.includes("Ações") && <TableHead className="w-[150px] bg-accent">Ações</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -366,41 +366,41 @@ export default function Guides() {
               ))
             ) : filteredGuides?.length ? (
               filteredGuides.map((guide: any) => (
-                <TableRow key={guide.id}>
+                <TableRow key={guide.id} className="bg-accent hover:bg-accent/80">
                   {visibleColumns.includes("Procedimento") && (
-                    <TableCell className="font-medium whitespace-nowrap">
+                    <TableCell className="font-medium whitespace-nowrap bg-accent">
                       {guide.procedure}
                     </TableCell>
                   )}
                   {visibleColumns.includes("Unidade") && (
-                    <TableCell className="whitespace-nowrap">
+                    <TableCell className="whitespace-nowrap bg-accent">
                       {guide.networkUnit ? guide.networkUnit.name : "Não informada"}
                     </TableCell>
                   )}
                   {visibleColumns.includes("Tipo") && (
-                    <TableCell className="whitespace-nowrap">
+                    <TableCell className="whitespace-nowrap bg-accent">
                       {getTypeLabel(guide.type)}
                     </TableCell>
                   )}
                   {visibleColumns.includes("Valor") && (
-                    <TableCell className="whitespace-nowrap">
+                    <TableCell className="whitespace-nowrap bg-accent">
                       R$ {parseFloat(guide.value || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </TableCell>
                   )}
                   {visibleColumns.includes("Status") && (
-                    <TableCell className="whitespace-nowrap">
+                    <TableCell className="whitespace-nowrap bg-accent">
                       <Badge className={cn("whitespace-nowrap", getStatusColor(guide.status))}>
                         {getStatusLabel(guide.status)}
                       </Badge>
                     </TableCell>
                   )}
                   {visibleColumns.includes("Data") && (
-                    <TableCell className="whitespace-nowrap">
+                    <TableCell className="whitespace-nowrap bg-accent">
                       {guide.createdAt && format(new Date(guide.createdAt), "dd/MM/yyyy", { locale: ptBR })}
                     </TableCell>
                   )}
                   {visibleColumns.includes("Ações") && (
-                    <TableCell className="whitespace-nowrap">
+                    <TableCell className="whitespace-nowrap bg-accent">
                       <div className="flex items-center space-x-1">
                         <Button
                           variant="outline"
@@ -433,8 +433,8 @@ export default function Guides() {
                 </TableRow>
               ))
             ) : (
-              <TableRow>
-                <TableCell colSpan={visibleColumns.length} className="text-center py-12">
+              <TableRow className="bg-accent">
+                <TableCell colSpan={visibleColumns.length} className="text-center py-12 bg-accent">
                   <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                   <p className="text-muted-foreground">
                     {searchQuery || typeFilter !== "all" || statusFilter !== "all" 
