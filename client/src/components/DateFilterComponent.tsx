@@ -145,6 +145,7 @@ const DateFilterComponent = React.memo(function DateFilterComponent({
                   onChange={handleDateRangeChange}
                   placeholder="Selecionar período personalizado"
                   disabled={isLoading}
+                  isLoading={isLoading}
                   className="w-full"
                 />
               </div>
@@ -195,15 +196,6 @@ const DateFilterComponent = React.memo(function DateFilterComponent({
           </div>
 
 
-          {/* Loading State */}
-          {isLoading && (
-            <div className="flex items-center gap-2 p-2 bg-primary border border-border rounded-md">
-              <div className="h-3 w-3 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent flex-shrink-0" />
-              <span className="text-xs text-primary-foreground">
-                Aplicando filtro...
-              </span>
-            </div>
-          )}
         </div>
       </CardContent>
     </Card>

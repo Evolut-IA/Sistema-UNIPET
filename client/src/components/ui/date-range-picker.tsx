@@ -23,12 +23,13 @@ export interface DateRangePickerProps {
   placeholder?: string
   className?: string
   disabled?: boolean
+  isLoading?: boolean
 }
 
 const DateRangePicker = React.forwardRef<
   HTMLDivElement,
   DateRangePickerProps
->(({ value, onChange, placeholder = "Selecionar período", className, disabled = false }, ref) => {
+>(({ value, onChange, placeholder = "Selecionar período", className, disabled = false, isLoading = false }, ref) => {
   const [isOpen, setIsOpen] = React.useState(false)
   const [tempRange, setTempRange] = React.useState<DateRange>(
     value || { startDate: null, endDate: null }
@@ -130,10 +131,14 @@ const DateRangePicker = React.forwardRef<
       className={cn(
         "w-full justify-start text-left font-normal bg-input text-accent-foreground hover:bg-input/80"
       )}
-      disabled={disabled}
+      disabled={disabled || isLoading}
     >
-      <CalendarIcon className="mr-2 h-4 w-4" />
-      {formatDateRange(value || { startDate: null, endDate: null })}
+      {isLoading ? (
+        <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-accent-foreground border-t-transparent" />
+      ) : (
+        <CalendarIcon className="mr-2 h-4 w-4" />
+      )}
+      {isLoading ? "Aplicando filtro..." : formatDateRange(value || { startDate: null, endDate: null })}
     </Button>
   )
 
