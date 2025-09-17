@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useLocation } from "wouter";
 import type { Client } from "@shared/schema";
-import { Plus, Search, Edit, Trash2, Eye, Copy, FileText, Columns3 as Columns } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Eye, Copy, FileText, Columns3 as Columns, ChevronLeft, ChevronRight } from "lucide-react";
 
 // Componente do ícone de adicionar pet
 const AddPetIcon = ({ className }: { className?: string }) => (
@@ -63,6 +63,8 @@ export default function Clients() {
   const [selectedClient, setSelectedClient] = useState<any>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [visibleColumns, setVisibleColumns] = useState<string[]>([...allColumns]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const confirmDialog = useConfirmDialog();
@@ -103,7 +105,12 @@ export default function Clients() {
     },
   });
 
-  const displayClients = searchQuery.length > 2 ? searchResults : clients;
+  const filteredClients = searchQuery.length > 2 ? searchResults : clients;
+  const totalClients = filteredClients.length;
+  const totalPages = Math.ceil(totalClients / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const displayClients = filteredClients.slice(startIndex, endIndex);
 
   const toggleColumn = (col: string) => {
     setVisibleColumns((prev) =>
@@ -303,7 +310,10 @@ export default function Clients() {
             <Input
               placeholder="Buscar por nome, CPF, email ou telefone..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1); // Reset para página 1 ao buscar
+              }}
               className="pl-10 w-80"
               data-testid="input-search-clients"
             />
@@ -458,6 +468,48 @@ export default function Clients() {
           </TableBody>
         </Table>
         </div>
+
+        {/* Pagination */}
+        {totalClients > 0 && (
+          <div className="flex items-center justify-between px-2 py-4">
+            <div className="flex items-center space-x-6 lg:space-x-8">
+              <div className="flex items-center space-x-2">
+                <p className="text-sm font-medium">
+                  {totalClients > 0 ? (
+                    <>Mostrando {startIndex + 1} a {Math.min(endIndex, totalClients)} de {totalClients} clientes</>
+                  ) : (
+                    "Nenhum cliente encontrado"
+                  )}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(currentPage - 1)}
+                disabled={currentPage <= 1}
+              >
+                <ChevronLeft className="h-4 w-4" />
+                Anterior
+              </Button>
+              <div className="flex items-center space-x-1">
+                <span className="text-sm font-medium">
+                  Página {currentPage} de {totalPages}
+                </span>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(currentPage + 1)}
+                disabled={currentPage >= totalPages}
+              >
+                Próximo
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Details Dialog */}
