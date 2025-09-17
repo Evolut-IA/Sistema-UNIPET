@@ -30,7 +30,7 @@ import {
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
-import { Plus, Search, Edit, Trash2, ClipboardList, Eye, DollarSign, X, Columns3 as Columns, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, Search, Edit, Trash2, ClipboardList, Eye, DollarSign, X, Columns3 as Columns, ChevronLeft, ChevronRight, Copy, FileText } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useColumnPreferences } from "@/hooks/use-column-preferences";
@@ -563,8 +563,87 @@ export default function Procedures() {
 
   const handleView = async (item: any) => {
     setViewingItem(item);
-    setViewingItem(item);
     setViewDialogOpen(true);
+  };
+
+  const generateProcedureText = () => {
+    if (!viewingItem) return "";
+
+    let text = "";
+    
+    // Cabeçalho
+    text += "=".repeat(50) + "\n";
+    text += "INFORMAÇÕES DO PROCEDIMENTO\n";
+    text += "=".repeat(50) + "\n\n";
+
+    // Informações Básicas
+    text += "INFORMAÇÕES BÁSICAS:\n";
+    text += "-".repeat(25) + "\n";
+    text += `Nome: ${viewingItem.name}\n`;
+    text += `Tipo: ${PROCEDURE_TYPE_LABELS[viewingItem.procedureType as keyof typeof PROCEDURE_TYPE_LABELS] || 'Consultas'}\n`;
+    text += `Status: ${viewingItem.isActive ? 'Ativo' : 'Inativo'}\n`;
+    if (viewingItem.description) {
+      text += `Descrição: ${viewingItem.description}\n`;
+    }
+    text += "\n";
+
+    // Planos Vinculados
+    if (viewingProcedurePlans && Array.isArray(viewingProcedurePlans) && viewingProcedurePlans.length > 0) {
+      text += "PLANOS VINCULADOS:\n";
+      text += "-".repeat(20) + "\n";
+      
+      viewingProcedurePlans.forEach((planItem: any, index: number) => {
+        text += `${index + 1}. Plano: ${planItem.planName || 'Nome não informado'}\n`;
+        text += `   Valor a Receber: R$ ${planItem.price ? (planItem.price / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0,00'}\n`;
+        text += `   Valor a Pagar: R$ ${planItem.payValue ? (planItem.payValue / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0,00'}\n`;
+        if (planItem.coparticipacao && planItem.coparticipacao > 0) {
+          text += `   Coparticipação: R$ ${(planItem.coparticipacao / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}\n`;
+        }
+        if (planItem.carencia) {
+          text += `   Carência: ${planItem.carencia}\n`;
+        }
+        if (planItem.limitesAnuais) {
+          text += `   Limites Anuais: ${planItem.limitesAnuais}\n`;
+        }
+        text += "\n";
+      });
+    } else {
+      text += "PLANOS VINCULADOS:\n";
+      text += "-".repeat(20) + "\n";
+      text += "Nenhum plano vinculado a este procedimento.\n\n";
+    }
+
+    // Informações do Cadastro
+    text += "INFORMAÇÕES DO CADASTRO:\n";
+    text += "-".repeat(25) + "\n";
+    text += `Data de Criação: ${viewingItem.createdAt ? format(new Date(viewingItem.createdAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR }) : "Não informado"}\n`;
+    if (viewingItem.updatedAt) {
+      text += `Última Atualização: ${format(new Date(viewingItem.updatedAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}\n`;
+    }
+
+    text += "\n" + "=".repeat(50) + "\n";
+    text += `Gerado em: ${format(new Date(), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}\n`;
+    text += "=".repeat(50);
+
+    return text;
+  };
+
+  const handleCopyToClipboard = async () => {
+    try {
+      const text = generateProcedureText();
+      await navigator.clipboard.writeText(text);
+      toast({
+        title: "Copiado!",
+        description: "Informações do procedimento copiadas para a área de transferência.",
+        variant: "default",
+      });
+    } catch (error) {
+      toast({
+        title: "Erro",
+        description: "Não foi possível copiar as informações. Tente novamente.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleDelete = (id: string) => {
@@ -962,12 +1041,30 @@ export default function Procedures() {
 
       {/* View Dialog */}
       <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
-        <DialogContent className="overflow-y-auto" maxHeightMobile="max-h-[80vh]">
-          <DialogHeader>
-            <DialogTitle className="text-foreground">Visualizar Procedimento</DialogTitle>
-            <DialogDescription>
-              Visualize todas as informações do procedimento e os planos que o cobrem.
-            </DialogDescription>
+        <DialogContent hideCloseButton className="overflow-y-auto" maxHeightMobile="max-h-[80vh]">
+          <DialogHeader className="flex flex-row items-center justify-between pr-2">
+            <DialogTitle className="flex items-center space-x-2">
+              <FileText className="h-5 w-5 text-primary" />
+              <span>Visualizar Procedimento</span>
+            </DialogTitle>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                onClick={handleCopyToClipboard}
+                className="gap-2 h-8"
+                data-testid="button-copy-procedure"
+              >
+                <Copy className="h-4 w-4" />
+                Copiar
+              </Button>
+              <Button
+                variant="outline" 
+                onClick={() => setViewDialogOpen(false)}
+                className="h-8"
+              >
+                Fechar
+              </Button>
+            </div>
           </DialogHeader>
           
           {viewingItem && (
