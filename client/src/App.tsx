@@ -58,8 +58,10 @@ function Router() {
 
   return (
     <Switch>
+      {/* Root dashboard route */}
+      <Route path="/" component={() => <Layout><Dashboard /></Layout>} />
+      
       {/* Admin routes - explicit paths for proper precedence */}
-      <Route path="/" nest component={AdminRoutes} />
       <Route path="/clientes" nest component={AdminRoutes} />
       <Route path="/pets" nest component={AdminRoutes} />
       <Route path="/guias" nest component={AdminRoutes} />

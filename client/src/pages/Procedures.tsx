@@ -1063,11 +1063,6 @@ export default function Procedures() {
             <h2 className="text-lg font-medium text-foreground">
               Procedimentos ({totalItems || 0})
             </h2>
-            {totalItems > 10 && (
-              <p className="text-sm text-muted-foreground">
-                Página {currentPage} de {totalPages} • Mostrando {startIndex + 1}-{Math.min(endIndex, totalItems)} de {totalItems} itens
-              </p>
-            )}
           </div>
           
           {/* Controle de Colunas */}
