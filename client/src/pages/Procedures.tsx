@@ -40,7 +40,6 @@ const allColumns = [
   "Nome",
   "Tipo",
   "Status", 
-  "Data",
   "Ações",
 ] as const;
 
@@ -1120,9 +1119,6 @@ export default function Procedures() {
                 {visibleColumns.includes("Status") && (
                   <TableHead className="bg-accent">Status</TableHead>
                 )}
-                {visibleColumns.includes("Data") && (
-                  <TableHead className="bg-accent">Data</TableHead>
-                )}
                 {visibleColumns.includes("Ações") && (
                   <TableHead className="bg-accent">Ações</TableHead>
                 )}
@@ -1180,11 +1176,6 @@ export default function Procedures() {
                           {item.isActive ? "Ativo" : "Inativo"}
                         </Badge>
                       </div>
-                    </TableCell>
-                  )}
-                  {visibleColumns.includes("Data") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
-                      {item.createdAt ? format(new Date(item.createdAt), "dd/MM/yyyy", { locale: ptBR }) : "N/A"}
                     </TableCell>
                   )}
                   {visibleColumns.includes("Ações") && (
