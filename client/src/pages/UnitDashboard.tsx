@@ -614,10 +614,9 @@ export default function UnitDashboard() {
 
   const getStatusBadge = (status: string) => {
     const statusConfig = {
-      pending: { label: "Pendente", className: "bg-yellow-100 text-yellow-800" },
-      accepted: { label: "Aceito", className: "bg-green-100 text-green-800" },
-      rejected: { label: "Rejeitado", className: "bg-red-100 text-red-800" },
-      completed: { label: "Finalizado", className: "bg-blue-100 text-blue-800" }
+      open: { label: "Aberta", className: "bg-green-100 text-green-800" },
+      closed: { label: "Fechada", className: "bg-yellow-100 text-yellow-800" },
+      cancelled: { label: "Cancelada", className: "bg-red-100 text-red-800" }
     };
     
     const config = statusConfig[status as keyof typeof statusConfig] || 
@@ -784,15 +783,14 @@ export default function UnitDashboard() {
             <div className="space-y-4">
               <div className="mb-4">
                 <h3 className="text-lg font-semibold mb-4">Guias de Atendimento</h3>
-                <Tabs defaultValue="pending" className="space-y-4">
-                  <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 gap-1">
-                    <TabsTrigger value="pending">Pendentes</TabsTrigger>
-                    <TabsTrigger value="accepted">Aceitas</TabsTrigger>
-                    <TabsTrigger value="rejected">Rejeitadas</TabsTrigger>
-                    <TabsTrigger value="completed">Finalizadas</TabsTrigger>
+                <Tabs defaultValue="open" className="space-y-4">
+                  <TabsList className="grid w-full grid-cols-3 gap-1">
+                    <TabsTrigger value="open">Abertas</TabsTrigger>
+                    <TabsTrigger value="closed">Fechadas</TabsTrigger>
+                    <TabsTrigger value="cancelled">Canceladas</TabsTrigger>
                   </TabsList>
 
-                  {["pending", "accepted", "rejected", "completed"].map(status => (
+                  {["open", "closed", "cancelled"].map(status => (
                     <TabsContent key={status} value={status}>
                       <div className="grid gap-4">
                         {guides
@@ -804,7 +802,7 @@ export default function UnitDashboard() {
                                   <div className="flex-1">
                                     <div className="flex items-center space-x-3 mb-2">
                                       <h3 className="text-lg font-semibold">{guide.procedure}</h3>
-                                      {getStatusBadge(guide.unitStatus || "pending")}
+                                      {getStatusBadge(guide.unitStatus || "open")}
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
                                       <div className="flex items-center space-x-2">
@@ -837,11 +835,11 @@ export default function UnitDashboard() {
                                     >
                                       <Eye className="h-4 w-4" />
                                     </Button>
-                                    {status === "pending" && (
+                                    {status === "open" && (
                                       <>
                                         <Button
                                           size="sm"
-                                          onClick={() => updateGuideStatus(guide.id, "accepted")}
+                                          onClick={() => updateGuideStatus(guide.id, "closed")}
                                           className="bg-green-600 hover:bg-green-700"
                                         >
                                           <CheckCircle className="h-4 w-4" />
@@ -849,7 +847,7 @@ export default function UnitDashboard() {
                                         <Button
                                           size="sm"
                                           variant="destructive"
-                                          onClick={() => updateGuideStatus(guide.id, "rejected")}
+                                          onClick={() => updateGuideStatus(guide.id, "cancelled")}
                                         >
                                           <XCircle className="h-4 w-4" />
                                         </Button>
@@ -866,9 +864,9 @@ export default function UnitDashboard() {
                             <CardContent className="p-3 sm:p-4 lg:p-6 text-center">
                               <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                               <h3 className="text-lg font-medium text-gray-900 mb-2">
-                                Nenhuma guia {status === "pending" ? "pendente" : 
-                                              status === "accepted" ? "aceita" :
-                                              status === "rejected" ? "rejeitada" : "finalizada"}
+                                Nenhuma guia {status === "open" ? "aberta" : 
+                                              status === "closed" ? "fechada" :
+                                              status === "cancelled" ? "cancelada" : "encontrada"}
                               </h3>
                               <p className="text-gray-500">
                                 As guias aparecerão aqui quando houver solicitações.
@@ -1295,13 +1293,13 @@ export default function UnitDashboard() {
                 </Card>
                 <Card className="bg-green-50">
                   <CardContent className="p-4 text-center">
-                    <div className="text-2xl font-bold text-green-600">{guides.filter(g => g.unitStatus === 'accepted').length}</div>
-                    <div className="text-sm text-green-600">Guias Aceitas</div>
+                    <div className="text-2xl font-bold text-green-600">{guides.filter(g => g.unitStatus === 'closed').length}</div>
+                    <div className="text-sm text-green-600">Guias Fechadas</div>
                   </CardContent>
                 </Card>
                 <Card className="bg-yellow-50">
                   <CardContent className="p-4 text-center">
-                    <div className="text-2xl font-bold text-yellow-600">{guides.filter(g => g.unitStatus === 'pending').length}</div>
+                    <div className="text-2xl font-bold text-yellow-600">{guides.filter(g => g.unitStatus === 'open').length}</div>
                     <div className="text-sm text-yellow-600">Guias Pendentes</div>
                   </CardContent>
                 </Card>
@@ -1724,14 +1722,14 @@ export default function UnitDashboard() {
                 <div>
                   <Label className="text-sm font-medium text-primary">Status</Label>
                   <div className="mt-1">
-                    {getStatusBadge(selectedGuide.unitStatus || "pending")}
+                    {getStatusBadge(selectedGuide.unitStatus || "open")}
                   </div>
                 </div>
 
-                {selectedGuide.unitStatus === "pending" && (
+                {selectedGuide.unitStatus === "open" && (
                   <div className="flex space-x-2 pt-4">
                     <Button
-                      onClick={() => updateGuideStatus(selectedGuide.id, "accepted")}
+                      onClick={() => updateGuideStatus(selectedGuide.id, "closed")}
                       className="bg-green-600 hover:bg-green-700 flex-1"
                     >
                       <CheckCircle className="h-4 w-4 mr-2" />
@@ -1739,7 +1737,7 @@ export default function UnitDashboard() {
                     </Button>
                     <Button
                       variant="destructive"
-                      onClick={() => updateGuideStatus(selectedGuide.id, "rejected")}
+                      onClick={() => updateGuideStatus(selectedGuide.id, "cancelled")}
                       className="flex-1"
                     >
                       <XCircle className="h-4 w-4 mr-2" />
