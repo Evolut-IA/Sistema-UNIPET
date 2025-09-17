@@ -555,7 +555,7 @@ export default function Guides() {
 
       {/* Details Dialog */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent>
+        <DialogContent hideCloseButton>
           <DialogHeader className="flex flex-row items-center justify-between pr-2">
             <DialogTitle className="flex items-center space-x-2">
               <FileText className="h-5 w-5 text-primary" />

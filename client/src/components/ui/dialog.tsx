@@ -35,8 +35,9 @@ const DialogContent = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
     mobileFullscreen?: boolean
     maxHeightMobile?: string
+    hideCloseButton?: boolean
   }
->(({ className, children, mobileFullscreen = false, maxHeightMobile, ...props }, ref) => {
+>(({ className, children, mobileFullscreen = false, maxHeightMobile, hideCloseButton = false, ...props }, ref) => {
   const { isMobile, viewport } = useMobileViewport()
   const safeArea = useSafeArea()
   
@@ -116,15 +117,17 @@ const DialogContent = React.forwardRef<
         {...props}
       >
         {children}
-        <DialogPrimitive.Close className={cn(
-          "absolute rounded-sm opacity-70 transition-opacity hover:opacity-100",
-          "disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground",
-          // Responsive close button positioning
-          isMobile ? "right-3 top-3" : "right-4 top-4"
-        )}>
-          <X className="h-4 w-4" />
-          <span className="sr-only">Close</span>
-        </DialogPrimitive.Close>
+        {!hideCloseButton && (
+          <DialogPrimitive.Close className={cn(
+            "absolute rounded-sm opacity-70 transition-opacity hover:opacity-100",
+            "disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground",
+            // Responsive close button positioning
+            isMobile ? "right-3 top-3" : "right-4 top-4"
+          )}>
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </DialogPrimitive.Close>
+        )}
       </DialogPrimitive.Content>
     </DialogPortal>
   )
