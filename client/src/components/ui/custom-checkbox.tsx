@@ -17,7 +17,7 @@ const CustomCheckbox = React.forwardRef<HTMLInputElement, CustomCheckboxProps>(
       const style = document.createElement('style');
       style.textContent = `
         .custom-checkbox-wrapper,
-        .custom-checkbox-wrapper * {
+        .custom-checkbox-wrapper *:not(.custom-checkbox-input) {
           background: transparent !important;
           background-color: transparent !important;
           background-image: none !important;
