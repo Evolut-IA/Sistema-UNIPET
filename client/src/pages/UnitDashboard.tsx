@@ -163,11 +163,21 @@ export default function UnitDashboard() {
   const [petsWithClients, setPetsWithClients] = useState<Array<Pet & { client: Client, plan?: Plan }>>([]);
   const [loadingCards, setLoadingCards] = useState(false);
   const [cpfSearch, setCpfSearch] = useState("");
+  const [searchedCpf, setSearchedCpf] = useState("");
+  const [showCards, setShowCards] = useState(false);
   
   // Coverage functionality state
   const [coverageSearch, setCoverageSearch] = useState("");
   const [coverageTypeFilter, setCoverageTypeFilter] = useState("all");
   const [coverageStatusFilter, setCoverageStatusFilter] = useState("all");
+
+  // CPF search functionality
+  const handleCpfSearch = () => {
+    if (!cpfSearch.trim()) return;
+    
+    setSearchedCpf(cpfSearch.trim());
+    setShowCards(true);
+  };
 
   // Check authentication status on component mount
   useEffect(() => {
@@ -1307,14 +1317,28 @@ export default function UnitDashboard() {
                   <h3 className="text-lg font-semibold">Carteirinhas Digitais</h3>
                   <p className="text-sm text-gray-600">Carteirinhas dos pets da sua unidade</p>
                 </div>
-                <div className="flex items-center space-x-2 w-full sm:w-auto">
-                  <Search className="h-4 w-4 text-gray-400" />
-                  <Input
-                    placeholder="Buscar por CPF do cliente..."
-                    value={cpfSearch}
-                    onChange={(e) => setCpfSearch(e.target.value)}
-                    className="max-w-sm"
-                  />
+                <div className="flex items-center space-x-3 w-full">
+                  <div className="flex-1 max-w-md">
+                    <Input
+                      placeholder="Digite o CPF completo do cliente (000.000.000-00)"
+                      value={cpfSearch}
+                      onChange={(e) => setCpfSearch(e.target.value)}
+                      className="w-full"
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          handleCpfSearch();
+                        }
+                      }}
+                    />
+                  </div>
+                  <Button 
+                    onClick={handleCpfSearch}
+                    disabled={!cpfSearch.trim()}
+                    className="whitespace-nowrap"
+                  >
+                    <Search className="h-4 w-4 mr-2" />
+                    Buscar
+                  </Button>
                 </div>
               </div>
 
@@ -1323,14 +1347,13 @@ export default function UnitDashboard() {
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                   <span className="ml-2 text-muted-foreground">Carregando carteirinhas...</span>
                 </div>
-              ) : (
+              ) : showCards ? (
                 <div className="space-y-6">
                   {petsWithClients
                     .filter(pet => {
-                      const searchTerm = cpfSearch.toLowerCase().replace(/[^0-9]/g, '');
-                      if (!searchTerm) return true;
                       const clientCpf = pet.client.cpf.replace(/[^0-9]/g, '');
-                      return clientCpf.includes(searchTerm);
+                      const searchCpf = searchedCpf.replace(/[^0-9]/g, '');
+                      return clientCpf === searchCpf;
                     })
                     .map(pet => (
                       <div key={pet.id} className="flex justify-center">
@@ -1362,6 +1385,16 @@ export default function UnitDashboard() {
                       </div>
                     ))}
                 </div>
+              ) : (
+                <Card>
+                  <CardContent className="p-8 text-center">
+                    <IdCard className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-600 mb-2">Busque por CPF</h3>
+                    <p className="text-gray-500">
+                      Digite o CPF completo do cliente no campo acima e clique em "Buscar" para visualizar as carteirinhas dos pets.
+                    </p>
+                  </CardContent>
+                </Card>
               )}
 
               {!loadingCards && petsWithClients.length === 0 && (
@@ -1376,17 +1409,18 @@ export default function UnitDashboard() {
                 </Card>
               )}
 
-              {!loadingCards && cpfSearch && petsWithClients.filter(pet => {
-                const searchTerm = cpfSearch.toLowerCase().replace(/[^0-9]/g, '');
+              {showCards && searchedCpf && petsWithClients.filter(pet => {
                 const clientCpf = pet.client.cpf.replace(/[^0-9]/g, '');
-                return clientCpf.includes(searchTerm);
-              }).length === 0 && petsWithClients.length > 0 && (
+                const searchCpf = searchedCpf.replace(/[^0-9]/g, '');
+                return clientCpf === searchCpf;
+              }).length === 0 && (
                 <Card>
                   <CardContent className="p-6 text-center">
                     <Search className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhum resultado encontrado</h3>
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">CPF não encontrado</h3>
                     <p className="text-gray-500">
-                      Tente buscar por outro termo.
+                      Nenhum cliente encontrado com o CPF <strong>{searchedCpf}</strong>.
+                      Verifique se o CPF está correto.
                     </p>
                   </CardContent>
                 </Card>
