@@ -21,7 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useLocation } from "wouter";
-import { Plus, Search, Edit, Trash2, Building2, ExternalLink, Phone, MapPin, Eye, Copy, Globe, Columns3 as Columns } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Building2, ExternalLink, Phone, MapPin, Eye, Copy, Globe, Columns3 as Columns, ChevronLeft, ChevronRight } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
@@ -45,6 +45,8 @@ export default function Network() {
   const [selectedUnit, setSelectedUnit] = useState<any>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [visibleColumns, setVisibleColumns] = useState<string[]>([...allColumns]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const confirmDialog = useConfirmDialog();
@@ -98,6 +100,12 @@ export default function Network() {
     unit.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     unit.address?.toLowerCase().includes(searchQuery.toLowerCase())
   ) : [];
+  
+  const totalUnits = filteredUnits.length;
+  const totalPages = Math.ceil(totalUnits / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const displayUnits = filteredUnits.slice(startIndex, endIndex);
 
   const toggleColumn = (col: string) => {
     setVisibleColumns((prev) =>
@@ -260,7 +268,10 @@ export default function Network() {
             <Input
               placeholder="Buscar por nome ou endereço..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1); // Reset para página 1 ao buscar
+              }}
               className="pl-10 w-64"
               data-testid="input-search-units"
             />
@@ -314,8 +325,8 @@ export default function Network() {
                   </TableCell>
                 </TableRow>
               ))
-            ) : filteredUnits?.length ? (
-              filteredUnits.map((unit: any) => (
+            ) : displayUnits?.length ? (
+              displayUnits.map((unit: any) => (
                 <TableRow key={unit.id} className="bg-accent hover:bg-accent/80">
                   {visibleColumns.includes("Nome") && (
                     <TableCell className="font-medium whitespace-nowrap bg-accent" data-testid={`unit-name-${unit.id}`}>
@@ -446,6 +457,43 @@ export default function Network() {
           </TableBody>
           </Table>
         </div>
+
+        {/* Pagination Controls */}
+        {totalUnits > 0 && (
+          <div className="flex items-center justify-between px-6 py-4 border-t border-border">
+            <div className="flex items-center text-sm text-muted-foreground">
+              <span>
+                Mostrando {Math.min((currentPage - 1) * pageSize + 1, totalUnits)} até{" "}
+                {Math.min(currentPage * pageSize, totalUnits)} de {totalUnits} unidade{totalUnits !== 1 ? 's' : ''}
+              </span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(currentPage - 1)}
+                disabled={currentPage <= 1}
+                data-testid="button-previous-page"
+              >
+                <ChevronLeft className="h-4 w-4" />
+                Anterior
+              </Button>
+              <span className="flex items-center text-sm font-medium">
+                Página {currentPage} de {totalPages}
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(currentPage + 1)}
+                disabled={currentPage >= totalPages}
+                data-testid="button-next-page"
+              >
+                Próxima
+                <ChevronRight className="h-4 w-4 ml-1" />
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Details Dialog */}
