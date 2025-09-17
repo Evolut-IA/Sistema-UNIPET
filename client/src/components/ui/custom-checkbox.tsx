@@ -62,6 +62,7 @@ const CustomCheckbox = React.forwardRef<HTMLInputElement, CustomCheckboxProps>(
             style={{
               backgroundColor: checked ? '#22c55e' : 'white',
               borderColor: checked ? '#22c55e' : '#e1eaef',
+              boxShadow: props.disabled ? 'inset 0 0 0 1px rgba(0, 0, 0, 0.25)' : 'none',
             }}
             data-checked={checked ? "true" : "false"}
             onClick={() => {
