@@ -198,7 +198,7 @@ export default function PetForm() {
                         </FormControl>
                         <SelectContent>
                           {["Cão", "Gato", "Ave", "Roedor", "Réptil", "Outros"].flatMap((species, index, array) => [
-                            <SelectItem key={species} value={species} className="py-3 pl-10 pr-4">
+                            <SelectItem key={species} value={species} className="py-3 pl-10 pr-4 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground">
                               {species}
                             </SelectItem>,
                             ...(index < array.length - 1 ? [<Separator key={`separator-${species}`} />] : [])
@@ -252,7 +252,7 @@ export default function PetForm() {
                         </FormControl>
                         <SelectContent>
                           {["Macho", "Fêmea"].flatMap((sex, index, array) => [
-                            <SelectItem key={sex} value={sex} className="py-3 pl-10 pr-4">
+                            <SelectItem key={sex} value={sex} className="py-3 pl-10 pr-4 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground">
                               {sex}
                             </SelectItem>,
                             ...(index < array.length - 1 ? [<Separator key={`separator-${sex}`} />] : [])
@@ -338,12 +338,12 @@ export default function PetForm() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="none" className="py-3 pl-10 pr-4">
+                          <SelectItem value="none" className="py-3 pl-10 pr-4 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground">
                             Nenhum plano selecionado
                           </SelectItem>
                           <Separator />
                           {plans?.flatMap((plan: any, index: number) => [
-                            <SelectItem key={plan.id} value={plan.id} className="py-3 pl-10 pr-4">
+                            <SelectItem key={plan.id} value={plan.id} className="py-3 pl-10 pr-4 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground">
                               {plan.name} - {new Intl.NumberFormat('pt-BR', { 
                                 style: 'currency', 
                                 currency: 'BRL' 

@@ -1013,7 +1013,7 @@ export default function UnitDashboard() {
                           </SelectTrigger>
                           <SelectContent>
                             {availableClients.map(client => (
-                              <SelectItem key={client.id} value={client.id}>
+                              <SelectItem key={client.id} value={client.id} className="data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground">
                                 {client.fullName} - {client.cpf}
                               </SelectItem>
                             ))}
@@ -1035,7 +1035,7 @@ export default function UnitDashboard() {
                           </SelectTrigger>
                           <SelectContent>
                             {availablePets.map(pet => (
-                              <SelectItem key={pet.id} value={pet.id}>
+                              <SelectItem key={pet.id} value={pet.id} className="data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground">
                                 {pet.name} - {pet.species} {pet.breed ? `(${pet.breed})` : ''}
                               </SelectItem>
                             ))}
@@ -1061,13 +1061,13 @@ export default function UnitDashboard() {
                             <SelectValue placeholder="Selecione o tipo" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="consulta">Consulta</SelectItem>
-                            <SelectItem value="exames">Exames</SelectItem>
-                            <SelectItem value="cirurgia">Cirurgia</SelectItem>
-                            <SelectItem value="internacao">Internação</SelectItem>
-                            <SelectItem value="emergencia">Emergência</SelectItem>
-                            <SelectItem value="procedimento">Procedimento</SelectItem>
-                            <SelectItem value="reembolso">Reembolso</SelectItem>
+                            <SelectItem value="consulta" className="data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground">Consulta</SelectItem>
+                            <SelectItem value="exames" className="data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground">Exames</SelectItem>
+                            <SelectItem value="cirurgia" className="data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground">Cirurgia</SelectItem>
+                            <SelectItem value="internacao" className="data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground">Internação</SelectItem>
+                            <SelectItem value="emergencia" className="data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground">Emergência</SelectItem>
+                            <SelectItem value="procedimento" className="data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground">Procedimento</SelectItem>
+                            <SelectItem value="reembolso" className="data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground">Reembolso</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -1086,7 +1086,7 @@ export default function UnitDashboard() {
                           </SelectTrigger>
                           <SelectContent>
                             {availableProcedures.map(procedure => (
-                              <SelectItem key={procedure.id} value={procedure.id}>
+                              <SelectItem key={procedure.id} value={procedure.id} className="data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground">
                                 {procedure.name}
                                 {procedure.description && (
                                   <span className="text-xs text-gray-500 block">{procedure.description}</span>
@@ -1475,9 +1475,9 @@ export default function UnitDashboard() {
                             <SelectValue placeholder="Todos os tipos" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="all">Todos os tipos</SelectItem>
+                            <SelectItem value="all" className="data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground">Todos os tipos</SelectItem>
                             {Array.from(new Set(coverage.map(item => item.procedure.procedureType))).map(type => (
-                              <SelectItem key={type} value={type}>
+                              <SelectItem key={type} value={type} className="data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground">
                                 {type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                               </SelectItem>
                             ))}
@@ -1493,9 +1493,9 @@ export default function UnitDashboard() {
                             <SelectValue placeholder="Todas as coberturas" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="all">Todas as coberturas</SelectItem>
-                            <SelectItem value="included">Apenas incluídos</SelectItem>
-                            <SelectItem value="not_included">Apenas não incluídos</SelectItem>
+                            <SelectItem value="all" className="data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground">Todas as coberturas</SelectItem>
+                            <SelectItem value="included" className="data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground">Apenas incluídos</SelectItem>
+                            <SelectItem value="not_included" className="data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground">Apenas não incluídos</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
