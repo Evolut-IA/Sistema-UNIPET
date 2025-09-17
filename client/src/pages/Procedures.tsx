@@ -1090,19 +1090,19 @@ export default function Procedures() {
             <TableHeader>
               <TableRow className="bg-accent hover:bg-accent">
                 {visibleColumns.includes("Nome") && (
-                  <TableHead>Nome</TableHead>
+                  <TableHead className="bg-accent">Nome</TableHead>
                 )}
                 {visibleColumns.includes("Tipo") && (
-                  <TableHead>Tipo</TableHead>
+                  <TableHead className="bg-accent">Tipo</TableHead>
                 )}
                 {visibleColumns.includes("Status") && (
-                  <TableHead>Status</TableHead>
+                  <TableHead className="bg-accent">Status</TableHead>
                 )}
                 {visibleColumns.includes("Data") && (
-                  <TableHead>Data</TableHead>
+                  <TableHead className="bg-accent">Data</TableHead>
                 )}
                 {visibleColumns.includes("Ações") && (
-                  <TableHead>Ações</TableHead>
+                  <TableHead className="bg-accent">Ações</TableHead>
                 )}
               </TableRow>
             </TableHeader>
@@ -1110,7 +1110,7 @@ export default function Procedures() {
               {filteredItems.map((item: any) => (
                 <TableRow key={item.id} className="bg-accent hover:bg-accent/70">
                   {visibleColumns.includes("Nome") && (
-                    <TableCell>
+                    <TableCell className="font-medium whitespace-nowrap bg-accent">
                       <div className="font-medium" data-testid={`procedure-name-${item.id}`}>
                         {item.name}
                       </div>
@@ -1122,7 +1122,7 @@ export default function Procedures() {
                     </TableCell>
                   )}
                   {visibleColumns.includes("Tipo") && (
-                    <TableCell>
+                    <TableCell className="whitespace-nowrap bg-accent">
                       <Badge variant="outline" className={cn(
                         "text-xs",
                         {
@@ -1140,7 +1140,7 @@ export default function Procedures() {
                     </TableCell>
                   )}
                   {visibleColumns.includes("Status") && (
-                    <TableCell>
+                    <TableCell className="whitespace-nowrap bg-accent">
                       <div className="flex items-center space-x-2">
                         <Switch
                           checked={item.isActive}
@@ -1161,12 +1161,12 @@ export default function Procedures() {
                     </TableCell>
                   )}
                   {visibleColumns.includes("Data") && (
-                    <TableCell>
+                    <TableCell className="whitespace-nowrap bg-accent">
                       {item.createdAt ? format(new Date(item.createdAt), "dd/MM/yyyy", { locale: ptBR }) : "N/A"}
                     </TableCell>
                   )}
                   {visibleColumns.includes("Ações") && (
-                    <TableCell>
+                    <TableCell className="whitespace-nowrap bg-accent">
                       <div className="flex items-center space-x-1">
                         <Button
                           variant="ghost"
@@ -1206,24 +1206,31 @@ export default function Procedures() {
             </TableBody>
           </Table>
         ) : (
-          <div className="text-center py-12 p-4">
-            <p className="text-muted-foreground mb-4">
-              {searchQuery 
-                ? "Nenhum procedimento encontrado para a busca." 
-                : "Nenhum procedimento cadastrado ainda."
-              }
-            </p>
-            {!searchQuery && (
-              <Button
-                variant="default"
-                onClick={() => setDialogOpen(true)}
-                data-testid="button-add-first-procedure"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Criar Primeiro Procedimento
-              </Button>
-            )}
-          </div>
+          <Table>
+            <TableBody>
+              <TableRow className="bg-accent">
+                <TableCell colSpan={visibleColumns.length} className="text-center py-12 bg-accent">
+                  <ClipboardList className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground mb-4">
+                    {searchQuery 
+                      ? "Nenhum procedimento encontrado para a busca." 
+                      : "Nenhum procedimento cadastrado ainda."
+                    }
+                  </p>
+                  {!searchQuery && (
+                    <Button
+                      variant="default"
+                      onClick={() => setDialogOpen(true)}
+                      data-testid="button-add-first-procedure"
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Criar Primeiro Procedimento
+                    </Button>
+                  )}
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
         )}
       </div>
     </div>
