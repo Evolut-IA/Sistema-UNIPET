@@ -51,9 +51,15 @@ const allColumns = [
   "Nome",
   "Email",
   "Função",
-  "Permissões",
   "Status",
-  "Data",
+  "Ações",
+] as const;
+
+const networkColumns = [
+  "Nome",
+  "Login",
+  "URL",
+  "Status",
   "Ações",
 ] as const;
 
@@ -68,6 +74,7 @@ export default function Administration() {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const [visibleColumns, setVisibleColumns] = useState<string[]>([...allColumns]);
+  const [visibleNetworkColumns, setVisibleNetworkColumns] = useState<string[]>([...networkColumns]);
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -384,6 +391,14 @@ export default function Administration() {
     );
   };
 
+  const toggleNetworkColumn = (col: string) => {
+    setVisibleNetworkColumns((prev) =>
+      prev.includes(col)
+        ? prev.filter((c) => c !== col)
+        : [...prev, col]
+    );
+  };
+
   // URL Management helper functions
   const getDomain = () => {
     if (typeof window !== 'undefined') {
@@ -440,7 +455,8 @@ export default function Administration() {
   };
 
   return (
-    <div className="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
+    <>
+      <div className="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div className="flex-1">
@@ -689,9 +705,7 @@ export default function Administration() {
                 {visibleColumns.includes("Nome") && <TableHead className="w-[200px] bg-accent">Nome</TableHead>}
                 {visibleColumns.includes("Email") && <TableHead className="w-[250px] bg-accent">Email</TableHead>}
                 {visibleColumns.includes("Função") && <TableHead className="w-[120px] bg-accent">Função</TableHead>}
-                {visibleColumns.includes("Permissões") && <TableHead className="w-[200px] bg-accent">Permissões</TableHead>}
                 {visibleColumns.includes("Status") && <TableHead className="w-[100px] bg-accent">Status</TableHead>}
-                {visibleColumns.includes("Data") && <TableHead className="w-[120px] bg-accent">Data</TableHead>}
                 {visibleColumns.includes("Ações") && <TableHead className="w-[150px] bg-accent">Ações</TableHead>}
               </TableRow>
             </TableHeader>
@@ -727,31 +741,6 @@ export default function Administration() {
                         </Badge>
                       </TableCell>
                     )}
-                    {visibleColumns.includes("Permissões") && (
-                      <TableCell className="bg-accent">
-                        <div className="flex flex-wrap gap-1">
-                          {user.permissions && user.permissions.length > 0 ? (
-                            <>
-                              {user.permissions.slice(0, 2).map((permission: string) => {
-                                const permissionData = AVAILABLE_PERMISSIONS.find(p => p.id === permission);
-                                return permissionData ? (
-                                  <Badge key={permission} variant="outline" className="text-xs">
-                                    {permissionData.label}
-                                  </Badge>
-                                ) : null;
-                              })}
-                              {user.permissions.length > 2 && (
-                                <Badge variant="outline" className="text-xs">
-                                  +{user.permissions.length - 2}
-                                </Badge>
-                              )}
-                            </>
-                          ) : (
-                            <span className="text-muted-foreground text-sm">Nenhuma</span>
-                          )}
-                        </div>
-                      </TableCell>
-                    )}
                     {visibleColumns.includes("Status") && (
                       <TableCell className="whitespace-nowrap bg-accent">
                         <div className="flex items-center space-x-2">
@@ -765,11 +754,6 @@ export default function Administration() {
                             {user.isActive ? "Ativo" : "Inativo"}
                           </span>
                         </div>
-                      </TableCell>
-                    )}
-                    {visibleColumns.includes("Data") && (
-                      <TableCell className="whitespace-nowrap bg-accent">
-                        {user.createdAt && format(new Date(user.createdAt), "dd/MM/yyyy", { locale: ptBR })}
                       </TableCell>
                     )}
                     {visibleColumns.includes("Ações") && (
@@ -829,94 +813,144 @@ export default function Administration() {
       <Separator className="my-8" />
 
       {/* Network Credentials Section */}
-      <div className="space-y-4 sm:space-y-6">
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+      <div className="container my-10 space-y-4 border border-border rounded-lg bg-accent shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 p-4 border-b border-border">
           <div className="flex-1">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground break-words">Rede Credenciada</h2>
-            <p className="text-sm text-muted-foreground">Gerencie credenciais de acesso das unidades da rede</p>
+            <h2 className="text-lg font-medium text-foreground">
+              Rede Credenciada
+            </h2>
           </div>
+          
+          {/* Controle de Colunas da Rede */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                <Columns className="h-4 w-4 mr-2" />
+                Colunas
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {networkColumns.map((col) => (
+                <DropdownMenuCheckboxItem
+                  key={col}
+                  checked={visibleNetworkColumns.includes(col)}
+                  onCheckedChange={() => toggleNetworkColumn(col)}
+                >
+                  {col}
+                </DropdownMenuCheckboxItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
-
-        {/* Network Units List */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-foreground">
-              Unidades da Rede
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {isLoadingNetworkUnits ? (
-              <div className="space-y-4">
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className="border rounded-lg p-4 animate-pulse">
-                    <div className="h-4 bg-muted rounded w-1/4 mb-2"></div>
-                    <div className="h-3 bg-muted rounded w-1/2 mb-1"></div>
-                    <div className="h-3 bg-muted rounded w-1/3"></div>
-                  </div>
-                ))}
-              </div>
-            ) : networkUnits?.length ? (
-              <div className="space-y-4">
-                {networkUnits.map((unit: any) => {
-                  const status = getCredentialStatus(unit);
-                  return (
-                    <div key={unit.id} className="border rounded-lg p-4 hover:bg-muted/10 transition-colors">
-                      <div className="flex justify-between items-center">
-                        <div className="flex-1">
-                          <div className="flex items-center space-x-3 mb-3">
-                            <Network className="h-5 w-5 text-primary" />
-                            <h3 className="font-semibold text-foreground">
-                              {unit.name}
-                            </h3>
-                            <Badge className={status.color}>
-                              {status.text}
-                            </Badge>
-                          </div>
-
-                          <div className="flex items-center gap-6 text-sm text-muted-foreground">
-                            <p><span className="font-medium">URL Slug:</span> /{unit.urlSlug || "não-definido"}</p>
-                            <p><span className="font-medium">Login:</span> {unit.login || "Não configurado"}</p>
-                            
-                            <div className="flex gap-2 ml-auto">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleEditCredentials(unit)}
-                                className="flex items-center space-x-2"
-                              >
-                                <Key className="h-4 w-4" />
-                                <span>Editar Credenciais</span>
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleEditUrl(unit)}
-                                className="flex items-center space-x-2"
-                              >
-                                <Globe className="h-4 w-4" />
-                                <span>Editar URL</span>
-                              </Button>
-                            </div>
-                          </div>
+        
+        {isLoadingNetworkUnits ? (
+          <div className="p-4">
+            <div className="space-y-4">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="flex items-center space-x-4">
+                  <div className="h-4 bg-muted rounded w-1/4 animate-pulse"></div>
+                  <div className="h-4 bg-muted rounded w-1/6 animate-pulse"></div>
+                  <div className="h-4 bg-muted rounded w-1/8 animate-pulse"></div>
+                  <div className="h-4 bg-muted rounded w-1/6 animate-pulse"></div>
+                  <div className="h-4 bg-muted rounded w-1/4 animate-pulse"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : networkUnits?.length ? (
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-accent hover:bg-accent">
+                {visibleNetworkColumns.includes("Nome") && (
+                  <TableHead className="bg-accent">Nome</TableHead>
+                )}
+                {visibleNetworkColumns.includes("Login") && (
+                  <TableHead className="bg-accent">Login</TableHead>
+                )}
+                {visibleNetworkColumns.includes("URL") && (
+                  <TableHead className="bg-accent">URL</TableHead>
+                )}
+                {visibleNetworkColumns.includes("Status") && (
+                  <TableHead className="bg-accent">Status</TableHead>
+                )}
+                {visibleNetworkColumns.includes("Ações") && (
+                  <TableHead className="bg-accent">Ações</TableHead>
+                )}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {networkUnits.map((unit: any) => {
+                const status = getCredentialStatus(unit);
+                return (
+                  <TableRow key={unit.id} className="bg-accent hover:bg-accent/80">
+                    {visibleNetworkColumns.includes("Nome") && (
+                      <TableCell className="font-medium whitespace-nowrap bg-accent">
+                        <div className="flex items-center space-x-2">
+                          <Network className="h-4 w-4 text-primary" />
+                          <span>{unit.name}</span>
                         </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="text-center py-12">
-                <Network className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">
-                  Nenhuma unidade da rede cadastrada ainda.
-                </p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                      </TableCell>
+                    )}
+                    {visibleNetworkColumns.includes("Login") && (
+                      <TableCell className="whitespace-nowrap bg-accent">
+                        {unit.login || "Não configurado"}
+                      </TableCell>
+                    )}
+                    {visibleNetworkColumns.includes("URL") && (
+                      <TableCell className="whitespace-nowrap bg-accent">
+                        /{unit.urlSlug || "não-definido"}
+                      </TableCell>
+                    )}
+                    {visibleNetworkColumns.includes("Status") && (
+                      <TableCell className="whitespace-nowrap bg-accent">
+                        <Badge className={status.color}>
+                          {status.text}
+                        </Badge>
+                      </TableCell>
+                    )}
+                    {visibleNetworkColumns.includes("Ações") && (
+                      <TableCell className="whitespace-nowrap bg-accent">
+                        <div className="flex items-center space-x-1">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleEditCredentials(unit)}
+                          >
+                            <Key className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleEditUrl(unit)}
+                          >
+                            <Globe className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    )}
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        ) : (
+          <Table>
+            <TableBody>
+              <TableRow className="bg-accent">
+                <TableCell colSpan={visibleNetworkColumns.length} className="text-center py-12 bg-accent">
+                  <Network className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground">
+                    Nenhuma unidade da rede cadastrada ainda.
+                  </p>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        )}
+      </div>
 
-        {/* Credential Dialog */}
-        <Dialog open={credentialDialogOpen} onOpenChange={(open) => {
+      {/* Credential Dialog */}
+      <Dialog open={credentialDialogOpen} onOpenChange={(open) => {
           setCredentialDialogOpen(open);
           if (!open) {
             setEditingNetworkUnit(null);
@@ -1033,8 +1067,7 @@ export default function Administration() {
               </form>
             </Form>
           </DialogContent>
-        </Dialog>
-      </div>
+      </Dialog>
 
       {/* URL Dialog */}
       <Dialog open={urlDialogOpen} onOpenChange={(open) => {
@@ -1100,65 +1133,7 @@ export default function Administration() {
         </DialogContent>
       </Dialog>
 
-      {/* Separator before statistics */}
-      <Separator className="my-8" />
-
-      {/* Statistics */}
-      {filteredUsers && filteredUsers.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card>
-            <CardContent className="p-4 text-center">
-              <p className="text-2xl font-bold text-foreground">{filteredUsers.length}</p>
-              <p className="text-sm text-muted-foreground">Total de Usuários</p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardContent className="p-4 text-center">
-              <p className="text-2xl font-bold text-chart-4">
-                {filteredUsers.filter((u: any) => u.isActive).length}
-              </p>
-              <p className="text-sm text-muted-foreground">Usuários Ativos</p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardContent className="p-4 text-center">
-              <p className="text-2xl font-bold text-chart-5">
-                {filteredUsers.filter((u: any) => u.role === "delete").length}
-              </p>
-              <p className="text-sm text-muted-foreground">Excluir</p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardContent className="p-4 text-center">
-              <p className="text-2xl font-bold text-chart-1">
-                {filteredUsers.filter((u: any) => u.role === "edit").length}
-              </p>
-              <p className="text-sm text-muted-foreground">Editar</p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardContent className="p-4 text-center">
-              <p className="text-2xl font-bold text-chart-2">
-                {filteredUsers.filter((u: any) => u.role === "add").length}
-              </p>
-              <p className="text-sm text-muted-foreground">Adicionar</p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardContent className="p-4 text-center">
-              <p className="text-2xl font-bold text-chart-4">
-                {filteredUsers.filter((u: any) => u.role === "view").length}
-              </p>
-              <p className="text-sm text-muted-foreground">Visualizar</p>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-    </div>
+      </div>
+    </>
   );
 }
