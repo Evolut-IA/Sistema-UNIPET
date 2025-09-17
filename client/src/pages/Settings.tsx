@@ -14,7 +14,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { insertSiteSettingsSchema, insertRulesSettingsSchema } from "@shared/schema";
-import { Settings as SettingsIcon, Globe, Palette, Save, Loader2, FileText } from "lucide-react";
+import { Settings as SettingsIcon, Globe, Palette, Save, Loader2, FileText, Contact, Share2, Type, Image } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import ThemeEditor from "@/components/ThemeEditor";
 import { ImageUpload } from "@/components/ui/image-upload";
 
@@ -258,26 +259,208 @@ export default function Settings() {
           ) : (
             <Form {...siteForm}>
               <form onSubmit={siteForm.handleSubmit(onSubmitSite)} className="space-y-4 sm:space-y-6">
-                {/* Contact Information */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-foreground">Informações de Contato</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                <Accordion type="single" collapsible className="w-full">
+                  
+                  {/* Contact Information */}
+                  <AccordionItem value="contact" data-testid="accordion-contact">
+                    <AccordionTrigger className="flex items-center space-x-2">
+                      <Contact className="h-4 w-4" />
+                      <div>
+                        <span>Informações de Contato</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="space-y-6">
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                        <FormField
+                          control={siteForm.control}
+                          name="email"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Email</FormLabel>
+                              <FormControl>
+                                <InputMasked 
+                                  {...field} 
+                                  type="email" 
+                                  mask="email"
+                                  data-testid="input-site-email" 
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={siteForm.control}
+                          name="phone"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Telefone</FormLabel>
+                              <FormControl>
+                                <InputMasked 
+                                  mask="phone"
+                                  {...field} 
+                                  data-testid="input-site-phone" 
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={siteForm.control}
+                          name="whatsapp"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>WhatsApp</FormLabel>
+                              <FormControl>
+                                <InputMasked 
+                                  mask="whatsapp"
+                                  {...field} 
+                                  data-testid="input-site-whatsapp" 
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={siteForm.control}
+                          name="cnpj"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>CNPJ</FormLabel>
+                              <FormControl>
+                                <InputMasked 
+                                  mask="cnpj"
+                                  {...field} 
+                                  data-testid="input-site-cnpj" 
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={siteForm.control}
+                          name="address"
+                          render={({ field }) => (
+                            <FormItem className="md:col-span-2">
+                              <FormLabel>Endereço</FormLabel>
+                              <FormControl>
+                                <Input {...field} data-testid="input-site-address" />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={siteForm.control}
+                          name="businessHours"
+                          render={({ field }) => (
+                            <FormItem className="md:col-span-2">
+                              <FormLabel>Horário de Atendimento</FormLabel>
+                              <FormControl>
+                                <Input {...field} placeholder="Ex: Segunda à Sexta, 8h às 18h" data-testid="input-business-hours" />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  {/* Social Media */}
+                  <AccordionItem value="social" data-testid="accordion-social">
+                    <AccordionTrigger className="flex items-center space-x-2">
+                      <Share2 className="h-4 w-4" />
+                      <div>
+                        <span>Redes Sociais</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="space-y-6">
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                        <FormField
+                          control={siteForm.control}
+                          name="instagramUrl"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Instagram</FormLabel>
+                              <FormControl>
+                                <Input {...field} placeholder="https://instagram.com/..." data-testid="input-instagram" />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={siteForm.control}
+                          name="facebookUrl"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Facebook</FormLabel>
+                              <FormControl>
+                                <Input {...field} placeholder="https://facebook.com/..." data-testid="input-facebook" />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={siteForm.control}
+                          name="linkedinUrl"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>LinkedIn</FormLabel>
+                              <FormControl>
+                                <Input {...field} placeholder="https://linkedin.com/..." data-testid="input-linkedin" />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={siteForm.control}
+                          name="youtubeUrl"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>YouTube</FormLabel>
+                              <FormControl>
+                                <Input {...field} placeholder="https://youtube.com/..." data-testid="input-youtube" />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  {/* Content */}
+                  <AccordionItem value="content" data-testid="accordion-content">
+                    <AccordionTrigger className="flex items-center space-x-2">
+                      <Type className="h-4 w-4" />
+                      <div>
+                        <span>Conteúdo</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="space-y-6">
                       <FormField
                         control={siteForm.control}
-                        name="email"
+                        name="ourStory"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Email</FormLabel>
+                            <FormLabel>Nossa História</FormLabel>
                             <FormControl>
-                              <InputMasked 
-                                {...field} 
-                                type="email" 
-                                mask="email"
-                                data-testid="input-site-email" 
-                              />
+                              <Textarea {...field} rows={4} data-testid="textarea-our-story" />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -286,16 +469,12 @@ export default function Settings() {
 
                       <FormField
                         control={siteForm.control}
-                        name="phone"
+                        name="privacyPolicy"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Telefone</FormLabel>
+                            <FormLabel>Política de Privacidade</FormLabel>
                             <FormControl>
-                              <InputMasked 
-                                mask="phone"
-                                {...field} 
-                                data-testid="input-site-phone" 
-                              />
+                              <Textarea {...field} rows={6} data-testid="textarea-privacy-policy" />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -304,262 +483,88 @@ export default function Settings() {
 
                       <FormField
                         control={siteForm.control}
-                        name="whatsapp"
+                        name="termsOfUse"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>WhatsApp</FormLabel>
+                            <FormLabel>Termos de Uso</FormLabel>
                             <FormControl>
-                              <InputMasked 
-                                mask="whatsapp"
-                                {...field} 
-                                data-testid="input-site-whatsapp" 
-                              />
+                              <Textarea {...field} rows={6} data-testid="textarea-terms-of-use" />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
+                    </AccordionContent>
+                  </AccordionItem>
 
-                      <FormField
-                        control={siteForm.control}
-                        name="cnpj"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>CNPJ</FormLabel>
-                            <FormControl>
-                              <InputMasked 
-                                mask="cnpj"
-                                {...field} 
-                                data-testid="input-site-cnpj" 
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                  {/* Images */}
+                  <AccordionItem value="images" data-testid="accordion-images">
+                    <AccordionTrigger className="flex items-center space-x-2">
+                      <Image className="h-4 w-4" />
+                      <div>
+                        <span>Imagens</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="space-y-6">
+                      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+                        <FormField
+                          control={siteForm.control}
+                          name="mainImage"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Imagem Principal</FormLabel>
+                              <FormControl>
+                                <ImageUpload 
+                                  value={field.value} 
+                                  onChange={field.onChange}
+                                  data-testid="input-main-image"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
 
-                      <FormField
-                        control={siteForm.control}
-                        name="address"
-                        render={({ field }) => (
-                          <FormItem className="md:col-span-2">
-                            <FormLabel>Endereço</FormLabel>
-                            <FormControl>
-                              <Input {...field} data-testid="input-site-address" />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                        <FormField
+                          control={siteForm.control}
+                          name="networkImage"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Imagem da Rede</FormLabel>
+                              <FormControl>
+                                <ImageUpload 
+                                  value={field.value} 
+                                  onChange={field.onChange}
+                                  data-testid="input-network-image"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
 
-                      <FormField
-                        control={siteForm.control}
-                        name="businessHours"
-                        render={({ field }) => (
-                          <FormItem className="md:col-span-2">
-                            <FormLabel>Horário de Atendimento</FormLabel>
-                            <FormControl>
-                              <Input {...field} placeholder="Ex: Segunda à Sexta, 8h às 18h" data-testid="input-business-hours" />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </CardContent>
-                </Card>
+                        <FormField
+                          control={siteForm.control}
+                          name="aboutImage"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Imagem Sobre Nós</FormLabel>
+                              <FormControl>
+                                <ImageUpload 
+                                  value={field.value} 
+                                  onChange={field.onChange}
+                                  data-testid="input-about-image"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
 
-                {/* Social Media */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-foreground">Redes Sociais</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                      <FormField
-                        control={siteForm.control}
-                        name="instagramUrl"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Instagram</FormLabel>
-                            <FormControl>
-                              <Input {...field} placeholder="https://instagram.com/..." data-testid="input-instagram" />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={siteForm.control}
-                        name="facebookUrl"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Facebook</FormLabel>
-                            <FormControl>
-                              <Input {...field} placeholder="https://facebook.com/..." data-testid="input-facebook" />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={siteForm.control}
-                        name="linkedinUrl"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>LinkedIn</FormLabel>
-                            <FormControl>
-                              <Input {...field} placeholder="https://linkedin.com/..." data-testid="input-linkedin" />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={siteForm.control}
-                        name="youtubeUrl"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>YouTube</FormLabel>
-                            <FormControl>
-                              <Input {...field} placeholder="https://youtube.com/..." data-testid="input-youtube" />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Content */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-foreground">Conteúdo</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <FormField
-                      control={siteForm.control}
-                      name="ourStory"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Nossa História</FormLabel>
-                          <FormControl>
-                            <Textarea {...field} rows={4} data-testid="textarea-our-story" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={siteForm.control}
-                      name="privacyPolicy"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Política de Privacidade</FormLabel>
-                          <FormControl>
-                            <Textarea {...field} rows={6} data-testid="textarea-privacy-policy" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={siteForm.control}
-                      name="termsOfUse"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Termos de Uso</FormLabel>
-                          <FormControl>
-                            <Textarea {...field} rows={6} data-testid="textarea-terms-of-use" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </CardContent>
-                </Card>
-
-                {/* Images */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-foreground">Imagens</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-                      <FormField
-                        control={siteForm.control}
-                        name="mainImage"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Imagem Principal</FormLabel>
-                            <FormControl>
-                              <ImageUpload 
-                                value={field.value} 
-                                onChange={field.onChange}
-                                data-testid="input-main-image"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={siteForm.control}
-                        name="networkImage"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Imagem da Rede</FormLabel>
-                            <FormControl>
-                              <ImageUpload 
-                                value={field.value} 
-                                onChange={field.onChange}
-                                data-testid="input-network-image"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={siteForm.control}
-                        name="aboutImage"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Imagem Sobre Nós</FormLabel>
-                            <FormControl>
-                              <ImageUpload 
-                                value={field.value} 
-                                onChange={field.onChange}
-                                data-testid="input-about-image"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <div className="flex justify-end">
-                  <Button
-                    type="submit"
-                    className="btn-primary"
-                    disabled={saveSiteMutation.isPending}
-                    data-testid="button-save-site"
-                  >
-                    <Save className="h-4 w-4 mr-2" />
-                    {saveSiteMutation.isPending ? "Salvando..." : "Salvar Configurações"}
-                  </Button>
-                </div>
+                </Accordion>
               </form>
             </Form>
           )}
