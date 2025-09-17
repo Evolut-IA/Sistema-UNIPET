@@ -227,12 +227,15 @@ export default function Procedures() {
         updatedManualFields[index][field] = true;
         
         // Cálculo automático do campo 'pagar' quando 'receber' for alterado
-        // Só recalcula se o campo 'pagar' não foi editado manualmente
+        // SEMPRE recalcula quando 'receber' é alterado, independente de edição manual prévia
         if (field === 'receber' && value && value.trim() !== '') {
-          const wasPagarManuallyEdited = updatedManualFields[index]?.pagar;
-          if (!wasPagarManuallyEdited) {
-            const calculatedPayValue = calculatePayValue(value);
-            updated[index].pagar = calculatedPayValue;
+          const calculatedPayValue = calculatePayValue(value);
+          updated[index].pagar = calculatedPayValue;
+          
+          // Remover marcação de edição manual do campo 'pagar' quando 'receber' é alterado
+          // Isso permite que o usuário edite novamente o 'pagar' após o recálculo
+          if (updatedManualFields[index]?.pagar) {
+            delete updatedManualFields[index].pagar;
           }
         }
       }
