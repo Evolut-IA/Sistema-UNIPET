@@ -321,48 +321,36 @@ export default function Clients() {
                           data-testid={`button-view-${client.id}`}
                           className="text-xs shrink-0"
                         >
-                        <Eye className="h-3 w-3" />
-                      </Button>
+                          <Eye className="h-3 w-3" />
+                        </Button>
                         <Button
                           variant="default"
                           size="sm"
-                          onClick={() => {
-                            setSelectedClient(client);
-                            handleCopyToClipboard();
-                          }}
-                          data-testid={`button-copy-${client.id}`}
+                          onClick={() => setLocation(`/clientes/${client.id}/pets/novo`)}
+                          data-testid={`button-add-pet-${client.id}`}
+                          className="text-xs"
+                        >
+                          <AddPetIcon className="h-3 w-3" />
+                        </Button>
+                        <Button
+                          variant="default"
+                          size="sm"
+                          onClick={() => setLocation(`/clientes/${client.id}/editar`)}
+                          data-testid={`button-edit-${client.id}`}
+                          className="text-xs"
+                        >
+                          <Edit className="h-3 w-3" />
+                        </Button>
+                        <Button
+                          variant="default"
+                          size="sm"
+                          onClick={() => handleDelete(client.id, client.fullName)}
+                          disabled={deleteClientMutation.isPending}
+                          data-testid={`button-delete-${client.id}`}
                           className="text-xs shrink-0"
                         >
-                        <Copy className="h-3 w-3" />
-                      </Button>
-                      <Button
-                        variant="default"
-                        size="sm"
-                        onClick={() => setLocation(`/clientes/${client.id}/pets/novo`)}
-                        data-testid={`button-add-pet-${client.id}`}
-                        className="text-xs"
-                      >
-                        <AddPetIcon className="h-3 w-3" />
-                      </Button>
-                      <Button
-                        variant="default"
-                        size="sm"
-                        onClick={() => setLocation(`/clientes/${client.id}/editar`)}
-                        data-testid={`button-edit-${client.id}`}
-                        className="text-xs"
-                      >
-                        <Edit className="h-3 w-3" />
-                      </Button>
-                      <Button
-                        variant="default"
-                        size="sm"
-                        onClick={() => handleDelete(client.id, client.fullName)}
-                        disabled={deleteClientMutation.isPending}
-                        data-testid={`button-delete-${client.id}`}
-                        className="text-xs shrink-0"
-                      >
-                        <Trash2 className="h-3 w-3" />
-                      </Button>
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -457,6 +445,19 @@ export default function Clients() {
                     </div>
                   )}
                 </div>
+              </div>
+
+              {/* Copy Button */}
+              <div className="flex justify-center pt-2">
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={handleCopyToClipboard}
+                  className="flex items-center space-x-2"
+                >
+                  <Copy className="h-4 w-4" />
+                  <span>Copiar Informações</span>
+                </Button>
               </div>
 
               {/* Seção de Pets */}
