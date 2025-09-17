@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, FileText, User, PawPrint, MapPin, Clock, DollarSign, CheckCircle, XCircle, Eye, Users, CreditCard, Plus, IdCard, TableProperties, Search } from "lucide-react";
+import { Calendar, FileText, User, PawPrint, MapPin, Clock, DollarSign, CheckCircle, XCircle, Eye, Users, CreditCard, Plus, IdCard, TableProperties, Search, Calculator, AlertCircle, Info } from "lucide-react";
 import { Link } from "wouter";
 import DigitalCard from "@/components/DigitalCard";
 
@@ -69,6 +69,31 @@ interface Plan {
   price: number;
 }
 
+interface Procedure {
+  id: string;
+  name: string;
+  description?: string;
+  procedureType: string;
+  isActive: boolean;
+}
+
+interface ProcedureCoverage {
+  planId: string;
+  planName: string;
+  isIncluded: boolean;
+  price: number;
+  payValue: number;
+  coparticipacao: number;
+}
+
+interface CalculatedValues {
+  procedurePrice: number;
+  coparticipacao: number;
+  finalValue: number;
+  isIncluded: boolean;
+  planName?: string;
+}
+
 interface Coverage {
   procedure: {
     id: string;
@@ -116,13 +141,19 @@ export default function UnitDashboard() {
     petId: "",
     type: "",
     procedure: "",
+    procedureId: "",
     procedureNotes: "",
     generalNotes: "",
     value: ""
   });
   const [availableClients, setAvailableClients] = useState<Client[]>([]);
   const [availablePets, setAvailablePets] = useState<Pet[]>([]);
+  const [availableProcedures, setAvailableProcedures] = useState<Procedure[]>([]);
+  const [selectedPetData, setSelectedPetData] = useState<Pet & { plan?: Plan } | null>(null);
+  const [calculatedValues, setCalculatedValues] = useState<CalculatedValues | null>(null);
   const [submittingGuide, setSubmittingGuide] = useState(false);
+  const [loadingProcedures, setLoadingProcedures] = useState(false);
+  const [loadingCalculation, setLoadingCalculation] = useState(false);
   
   // Cards functionality state
   const [petsWithClients, setPetsWithClients] = useState<Array<Pet & { client: Client, plan?: Plan }>>([]);
@@ -150,6 +181,7 @@ export default function UnitDashboard() {
         loadCoverage();
       } else if (activeTab === 'create-guide') {
         loadClientsForGuides();
+        loadActiveProcedures();
       } else if (activeTab === 'cards') {
         loadCardsData();
       }
@@ -366,15 +398,135 @@ export default function UnitDashboard() {
   };
 
   const handleClientChange = (clientId: string) => {
-    setGuideForm(prev => ({ ...prev, clientId, petId: "" }));
+    setGuideForm(prev => ({ ...prev, clientId, petId: "", procedureId: "", value: "" }));
     setAvailablePets([]);
+    setSelectedPetData(null);
+    setCalculatedValues(null);
     if (clientId) {
       loadPetsForClient(clientId);
     }
   };
 
+  const handlePetChange = async (petId: string) => {
+    setGuideForm(prev => ({ ...prev, petId, procedureId: "", value: "" }));
+    setCalculatedValues(null);
+    
+    if (petId) {
+      const selectedPet = availablePets.find(pet => pet.id === petId);
+      if (selectedPet) {
+        try {
+          // Load pet details with plan info if it has a plan
+          let petWithPlan = { ...selectedPet };
+          
+          if (selectedPet.planId) {
+            const planResponse = await fetch(`/api/plans/${selectedPet.planId}`, {
+              credentials: 'include'
+            });
+            if (planResponse.ok) {
+              const planData = await planResponse.json();
+              petWithPlan = { ...selectedPet, plan: planData };
+            }
+          }
+          
+          setSelectedPetData(petWithPlan);
+        } catch (error) {
+          console.error("Failed to load pet details:", error);
+          setSelectedPetData(selectedPet);
+        }
+      }
+    } else {
+      setSelectedPetData(null);
+    }
+  };
+
+  const handleProcedureChange = async (procedureId: string) => {
+    setGuideForm(prev => ({ ...prev, procedureId, value: "" }));
+    setCalculatedValues(null);
+    
+    if (procedureId && selectedPetData) {
+      await calculateProcedureValues(procedureId, selectedPetData);
+    }
+  };
+
+  const loadActiveProcedures = async () => {
+    setLoadingProcedures(true);
+    try {
+      const response = await fetch('/api/procedures/active', {
+        credentials: 'include'
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setAvailableProcedures(data);
+      }
+    } catch (error) {
+      console.error("Failed to load procedures:", error);
+    } finally {
+      setLoadingProcedures(false);
+    }
+  };
+
+  const calculateProcedureValues = async (procedureId: string, petData: Pet & { plan?: Plan }) => {
+    if (!authState.unit?.id || !petData.planId) {
+      // If no plan, just show procedure price without coparticipação
+      const selectedProcedure = availableProcedures.find(p => p.id === procedureId);
+      if (selectedProcedure) {
+        setGuideForm(prev => ({ ...prev, procedure: selectedProcedure.name }));
+      }
+      return;
+    }
+
+    setLoadingCalculation(true);
+    try {
+      // Get coverage data for this unit
+      const coverageResponse = await fetch(`/api/unit/${authState.unit.id}/coverage`, {
+        credentials: 'include'
+      });
+      
+      if (coverageResponse.ok) {
+        const coverageData = await coverageResponse.json();
+        
+        // Find the specific procedure in coverage
+        const procedureCoverage = coverageData.find((c: Coverage) => 
+          c.procedure.id === procedureId
+        );
+        
+        if (procedureCoverage) {
+          // Find plan coverage for this pet's plan
+          const planCoverage = procedureCoverage.planCoverage.find(
+            (pc: ProcedureCoverage) => pc.planId === petData.planId
+          );
+          
+          if (planCoverage) {
+            const procedurePrice = planCoverage.price / 100; // Convert from cents
+            const coparticipacao = planCoverage.coparticipacao / 100; // Convert from cents
+            const finalValue = procedurePrice - coparticipacao;
+            
+            const calculatedData: CalculatedValues = {
+              procedurePrice,
+              coparticipacao,
+              finalValue: Math.max(0, finalValue),
+              isIncluded: planCoverage.isIncluded,
+              planName: planCoverage.planName
+            };
+            
+            setCalculatedValues(calculatedData);
+            setGuideForm(prev => ({ 
+              ...prev, 
+              procedure: procedureCoverage.procedure.name,
+              value: calculatedData.finalValue.toFixed(2)
+            }));
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Failed to calculate procedure values:", error);
+    } finally {
+      setLoadingCalculation(false);
+    }
+  };
+
   const createGuide = async () => {
-    if (!guideForm.clientId || !guideForm.petId || !guideForm.type || !guideForm.procedure) {
+    if (!guideForm.clientId || !guideForm.petId || !guideForm.type || !guideForm.procedureId) {
       alert("Por favor, preencha todos os campos obrigatórios.");
       return;
     }
@@ -403,11 +555,14 @@ export default function UnitDashboard() {
           petId: "",
           type: "",
           procedure: "",
+          procedureId: "",
           procedureNotes: "",
           generalNotes: "",
           value: ""
         });
         setAvailablePets([]);
+        setSelectedPetData(null);
+        setCalculatedValues(null);
         loadGuides(); // Reload guides
       } else {
         const error = await response.json();
@@ -832,7 +987,7 @@ export default function UnitDashboard() {
                         </Label>
                         <Select 
                           value={guideForm.petId} 
-                          onValueChange={(value) => setGuideForm(prev => ({ ...prev, petId: value }))}
+                          onValueChange={handlePetChange}
                           disabled={!guideForm.clientId}
                         >
                           <SelectTrigger>
@@ -881,20 +1036,122 @@ export default function UnitDashboard() {
                         <Label htmlFor="procedure" className="text-sm font-medium">
                           Procedimento <span className="text-red-500">*</span>
                         </Label>
-                        <Input
-                          id="procedure"
-                          placeholder="Descreva o procedimento"
-                          value={guideForm.procedure}
-                          onChange={(e) => setGuideForm(prev => ({ ...prev, procedure: e.target.value }))}
-                        />
+                        <Select 
+                          value={guideForm.procedureId} 
+                          onValueChange={handleProcedureChange}
+                          disabled={!guideForm.petId || loadingProcedures}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder={loadingProcedures ? "Carregando procedimentos..." : "Selecione um procedimento"} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {availableProcedures.map(procedure => (
+                              <SelectItem key={procedure.id} value={procedure.id}>
+                                {procedure.name}
+                                {procedure.description && (
+                                  <span className="text-xs text-gray-500 block">{procedure.description}</span>
+                                )}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        {!guideForm.petId && (
+                          <p className="text-xs text-gray-500">Selecione um pet primeiro</p>
+                        )}
                       </div>
                     </div>
 
-                    {/* Value */}
+                    {/* Pet Plan Information */}
+                    {selectedPetData && (
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <div className="flex items-center space-x-2 mb-2">
+                          <Info className="h-4 w-4 text-blue-600" />
+                          <h4 className="text-sm font-medium text-blue-900">Informações do Pet</h4>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                          <div>
+                            <span className="text-blue-700 font-medium">Pet:</span>
+                            <p className="text-blue-900">{selectedPetData.name} - {selectedPetData.species}</p>
+                          </div>
+                          <div>
+                            <span className="text-blue-700 font-medium">Plano:</span>
+                            <p className="text-blue-900">
+                              {selectedPetData.plan ? selectedPetData.plan.name : "Sem plano ativo"}
+                            </p>
+                          </div>
+                          <div>
+                            <span className="text-blue-700 font-medium">Status:</span>
+                            <p className={`font-medium ${
+                              selectedPetData.planId ? "text-green-600" : "text-orange-600"
+                            }`}>
+                              {selectedPetData.planId ? "Plano Ativo" : "Sem Cobertura"}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Calculated Values Preview */}
+                    {calculatedValues && (
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <div className="flex items-center space-x-2 mb-3">
+                          <Calculator className="h-4 w-4 text-green-600" />
+                          <h4 className="text-sm font-medium text-green-900">Cálculo Automático</h4>
+                        </div>
+                        
+                        {calculatedValues.isIncluded ? (
+                          <div className="space-y-2">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                              <div>
+                                <span className="text-green-700 font-medium">Valor do Procedimento:</span>
+                                <p className="text-lg font-semibold text-green-900">
+                                  R$ {calculatedValues.procedurePrice.toFixed(2)}
+                                </p>
+                              </div>
+                              <div>
+                                <span className="text-green-700 font-medium">Coparticipação:</span>
+                                <p className="text-lg font-semibold text-orange-600">
+                                  - R$ {calculatedValues.coparticipacao.toFixed(2)}
+                                </p>
+                              </div>
+                              <div>
+                                <span className="text-green-700 font-medium">Valor Final Cliente:</span>
+                                <p className="text-lg font-semibold text-green-600">
+                                  R$ {calculatedValues.finalValue.toFixed(2)}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="text-xs text-green-600 mt-2">
+                              ✓ Procedimento coberto pelo plano {calculatedValues.planName}
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="text-sm">
+                            <div className="flex items-center space-x-2 text-orange-600 mb-2">
+                              <AlertCircle className="h-4 w-4" />
+                              <span className="font-medium">Procedimento não coberto pelo plano</span>
+                            </div>
+                            <p className="text-gray-600">
+                              Este procedimento não está incluído no plano {calculatedValues.planName}. 
+                              O cliente pagará o valor integral.
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {loadingCalculation && (
+                      <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
+                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto mb-2"></div>
+                        <p className="text-sm text-gray-600">Calculando valores...</p>
+                      </div>
+                    )}
+
+                    {/* Value Input */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
                         <Label htmlFor="value" className="text-sm font-medium">
-                          Valor (R$)
+                          Valor Final (R$) {calculatedValues && <span className="text-xs text-gray-500">(calculado automaticamente)</span>}
                         </Label>
                         <Input
                           id="value"
@@ -903,7 +1160,13 @@ export default function UnitDashboard() {
                           placeholder="0,00"
                           value={guideForm.value}
                           onChange={(e) => setGuideForm(prev => ({ ...prev, value: e.target.value }))}
+                          className={calculatedValues ? "bg-gray-50" : ""}
                         />
+                        {calculatedValues && (
+                          <p className="text-xs text-gray-500">
+                            Valor calculado automaticamente. Você pode ajustar se necessário.
+                          </p>
+                        )}
                       </div>
                     </div>
 
@@ -947,18 +1210,21 @@ export default function UnitDashboard() {
                             petId: "",
                             type: "",
                             procedure: "",
+                            procedureId: "",
                             procedureNotes: "",
                             generalNotes: "",
                             value: ""
                           });
                           setAvailablePets([]);
+                          setSelectedPetData(null);
+                          setCalculatedValues(null);
                         }}
                       >
                         Cancelar
                       </Button>
                       <Button 
                         type="submit" 
-                        disabled={submittingGuide || !guideForm.clientId || !guideForm.petId || !guideForm.type || !guideForm.procedure}
+                        disabled={submittingGuide || !guideForm.clientId || !guideForm.petId || !guideForm.type || !guideForm.procedureId}
                       >
                         {submittingGuide ? (
                           <>
