@@ -335,7 +335,7 @@ export default function ContactSubmissions() {
         ) : filteredSubmissions?.length ? (
           <Table>
             <TableHeader>
-              <TableRow className="bg-accent hover:bg-accent">
+              <TableRow className="bg-accent">
                 {visibleColumns.includes("Nome") && (
                   <TableHead className="bg-accent">Nome</TableHead>
                 )}
@@ -361,26 +361,26 @@ export default function ContactSubmissions() {
             </TableHeader>
             <TableBody>
               {filteredSubmissions.map((submission: any) => (
-                <TableRow key={submission.id} className="hover:bg-accent/80">
+                <TableRow key={submission.id} className="bg-accent hover:bg-accent/80">
                   {visibleColumns.includes("Nome") && (
-                    <TableCell className="font-medium whitespace-nowrap">
+                    <TableCell className="font-medium whitespace-nowrap bg-accent">
                       <div className="font-medium text-foreground" data-testid={`submission-name-${submission.id}`}>
                         {submission.name}
                       </div>
                     </TableCell>
                   )}
                   {visibleColumns.includes("Telefone") && (
-                    <TableCell className="whitespace-nowrap">
+                    <TableCell className="whitespace-nowrap bg-accent">
                       <div className="text-sm text-foreground">{submission.phone}</div>
                     </TableCell>
                   )}
                   {visibleColumns.includes("Email") && (
-                    <TableCell className="whitespace-nowrap">
+                    <TableCell className="whitespace-nowrap bg-accent">
                       <div className="text-sm text-foreground">{submission.email}</div>
                     </TableCell>
                   )}
                   {visibleColumns.includes("Pet") && (
-                    <TableCell className="whitespace-nowrap">
+                    <TableCell className="whitespace-nowrap bg-accent">
                       <div>
                         <div className="font-medium text-foreground">{submission.petName}</div>
                         <div className="text-sm text-muted-foreground">{submission.animalType}, {submission.petAge}</div>
@@ -388,21 +388,21 @@ export default function ContactSubmissions() {
                     </TableCell>
                   )}
                   {visibleColumns.includes("Plano") && (
-                    <TableCell className="whitespace-nowrap">
+                    <TableCell className="whitespace-nowrap bg-accent">
                       <Badge className={getPlanInterestColor(submission.planInterest)} data-testid={`badge-plan-interest-${submission.id}`}>
                         {submission.planInterest}
                       </Badge>
                     </TableCell>
                   )}
                   {visibleColumns.includes("Data") && (
-                    <TableCell className="whitespace-nowrap">
+                    <TableCell className="whitespace-nowrap bg-accent">
                       <div className="text-sm text-foreground">
                         {submission.createdAt && format(new Date(submission.createdAt), "dd/MM/yyyy", { locale: ptBR })} {submission.createdAt && format(new Date(submission.createdAt), "HH:mm", { locale: ptBR })}
                       </div>
                     </TableCell>
                   )}
                   {visibleColumns.includes("Ações") && (
-                    <TableCell className="whitespace-nowrap">
+                    <TableCell className="whitespace-nowrap bg-accent">
                       <div className="flex items-center justify-center space-x-1">
                         <Button
                           variant="outline"
@@ -440,8 +440,8 @@ export default function ContactSubmissions() {
         ) : (
           <Table>
             <TableBody>
-              <TableRow>
-                <TableCell colSpan={visibleColumns.length} className="text-center py-12">
+              <TableRow className="bg-accent">
+                <TableCell colSpan={visibleColumns.length} className="text-center py-12 bg-accent">
                   <Mail className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                   <p className="text-muted-foreground">
                     {searchQuery 
