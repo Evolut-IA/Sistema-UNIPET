@@ -688,7 +688,7 @@ export default function Procedures() {
                               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 {/* Coparticipação */}
                                 <div>
-                                  <div className="mb-2">
+                                  <div className="mb-2" style={{ background: 'transparent' }}>
                                     <CustomCheckbox
                                       id={`enable-coparticipacao-${index}`}
                                       checked={selectedPlan.enableCoparticipacao || false}
@@ -709,7 +709,7 @@ export default function Procedures() {
 
                                 {/* Carência */}
                                 <div>
-                                  <div className="mb-2">
+                                  <div className="mb-2" style={{ background: 'transparent' }}>
                                     <CustomCheckbox
                                       id={`enable-carencia-${index}`}
                                       checked={selectedPlan.enableCarencia || false}
@@ -729,7 +729,7 @@ export default function Procedures() {
                                 
                                 {/* Limites Anuais */}
                                 <div>
-                                  <div className="mb-2">
+                                  <div className="mb-2" style={{ background: 'transparent' }}>
                                     <CustomCheckbox
                                       id={`enable-limites-${index}`}
                                       checked={selectedPlan.enableLimitesAnuais || false}

@@ -331,3 +331,23 @@ img:hover, svg:hover {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;  /* Safari and Chrome */
 }
+
+/* Force transparent background for checkbox components */
+.custom-checkbox-wrapper,
+.custom-checkbox-wrapper *,
+.mb-2:has(.custom-checkbox-wrapper),
+.mb-2:has(.custom-checkbox-wrapper) * {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+/* Preserve checkbox visual styles */
+.custom-checkbox-input {
+  box-shadow: none !important;
+}
+
+.custom-checkbox-input[data-checked="true"] {
+  background-color: #22c55e !important;
+}

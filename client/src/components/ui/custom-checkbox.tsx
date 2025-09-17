@@ -12,9 +12,37 @@ const CustomCheckbox = React.forwardRef<HTMLInputElement, CustomCheckboxProps>(
     const stableId = React.useId();
     const checkboxId = id || `checkbox-${stableId}`;
     
+    // CSS to force transparent background
+    React.useEffect(() => {
+      const style = document.createElement('style');
+      style.textContent = `
+        .custom-checkbox-wrapper,
+        .custom-checkbox-wrapper * {
+          background: transparent !important;
+          background-color: transparent !important;
+          background-image: none !important;
+          box-shadow: none !important;
+        }
+        .custom-checkbox-wrapper label {
+          background: none !important;
+          background-color: transparent !important;
+          box-shadow: none !important;
+        }
+        /* Ensure parent containers don't apply background */
+        .mb-2:has(.custom-checkbox-wrapper) {
+          background: transparent !important;
+          background-color: transparent !important;
+        }
+      `;
+      document.head.appendChild(style);
+      return () => {
+        document.head.removeChild(style);
+      };
+    }, []);
+    
     return (
-      <div className="flex items-center gap-2">
-        <div className="relative flex items-center justify-center">
+      <div className="custom-checkbox-wrapper flex items-center gap-2" style={{ background: 'none !important', backgroundColor: 'transparent !important' }}>
+        <div className="relative flex items-center justify-center" style={{ background: 'none' }}>
           <input
             {...props}
             ref={ref}
@@ -25,7 +53,7 @@ const CustomCheckbox = React.forwardRef<HTMLInputElement, CustomCheckboxProps>(
           />
           <div 
             className={cn(
-              "h-4 w-4 rounded-sm border flex items-center justify-center transition-all duration-200 cursor-pointer",
+              "custom-checkbox-input h-4 w-4 rounded-sm border flex items-center justify-center transition-all duration-200 cursor-pointer",
               "peer-focus:ring-2 peer-focus:ring-[#22c55e]/20",
               "hover:border-[#22c55e]/70",
               "peer-disabled:cursor-not-allowed peer-disabled:opacity-50",
@@ -35,6 +63,7 @@ const CustomCheckbox = React.forwardRef<HTMLInputElement, CustomCheckboxProps>(
               backgroundColor: checked ? '#22c55e' : 'white',
               borderColor: checked ? '#22c55e' : '#e1eaef',
             }}
+            data-checked={checked ? "true" : "false"}
             onClick={() => {
               const event = { target: { checked: !checked } } as React.ChangeEvent<HTMLInputElement>;
               props.onChange?.(event);
@@ -51,8 +80,12 @@ const CustomCheckbox = React.forwardRef<HTMLInputElement, CustomCheckboxProps>(
         {label && (
           <label 
             htmlFor={checkboxId} 
-            className="text-sm font-medium cursor-pointer select-none bg-transparent"
-            style={{ background: 'transparent' }}
+            className="text-sm font-medium cursor-pointer select-none"
+            style={{ 
+              background: 'transparent !important',
+              backgroundColor: 'transparent !important',
+              backgroundImage: 'none !important'
+            }}
           >
             {label}
           </label>
