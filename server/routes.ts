@@ -761,6 +761,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/guides/with-network-units", async (req, res) => {
+    try {
+      const { startDate, endDate } = req.query;
+      const guides = await storage.getAllGuidesWithNetworkUnits(
+        startDate as string | undefined,
+        endDate as string | undefined
+      );
+      res.json(guides);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch guides with network units" });
+    }
+  });
+
   app.get("/api/guides/recent", async (req, res) => {
     try {
       const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;

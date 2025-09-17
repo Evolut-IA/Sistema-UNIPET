@@ -901,6 +901,64 @@ export class DatabaseStorage implements IStorage {
     return await query.orderBy(desc(schema.guides.createdAt));
   }
 
+  async getAllGuidesWithNetworkUnits(startDate?: string, endDate?: string): Promise<any[]> {
+    let query = db
+      .select({
+        id: schema.guides.id,
+        clientId: schema.guides.clientId,
+        petId: schema.guides.petId,
+        networkUnitId: schema.guides.networkUnitId,
+        type: schema.guides.type,
+        procedure: schema.guides.procedure,
+        procedureNotes: schema.guides.procedureNotes,
+        generalNotes: schema.guides.generalNotes,
+        value: schema.guides.value,
+        status: schema.guides.status,
+        unitStatus: schema.guides.unitStatus,
+        createdAt: schema.guides.createdAt,
+        updatedAt: schema.guides.updatedAt,
+        networkUnit: {
+          id: schema.networkUnits.id,
+          name: schema.networkUnits.name,
+          address: schema.networkUnits.address,
+          phone: schema.networkUnits.phone,
+          isActive: schema.networkUnits.isActive,
+        },
+        client: {
+          name: schema.clients.fullName,
+          email: schema.clients.email,
+          phone: schema.clients.phone,
+        },
+        pet: {
+          name: schema.pets.name,
+          species: schema.pets.species,
+          breed: schema.pets.breed,
+        }
+      })
+      .from(schema.guides)
+      .leftJoin(schema.networkUnits, eq(schema.guides.networkUnitId, schema.networkUnits.id))
+      .leftJoin(schema.clients, eq(schema.guides.clientId, schema.clients.id))
+      .leftJoin(schema.pets, eq(schema.guides.petId, schema.pets.id));
+    
+    // Build date filter conditions
+    const dateConditions = [];
+    if (startDate) {
+      dateConditions.push(gte(schema.guides.createdAt, new Date(startDate)));
+    }
+    if (endDate) {
+      // Add one day to endDate to include the entire end date
+      const endDateTime = new Date(endDate);
+      endDateTime.setDate(endDateTime.getDate() + 1);
+      dateConditions.push(lt(schema.guides.createdAt, endDateTime));
+    }
+    
+    if (dateConditions.length > 0) {
+      query = query.where(and(...dateConditions));
+    }
+    
+    return await query.orderBy(desc(schema.guides.createdAt));
+  }
+
   async getRecentGuides(limit: number = 10): Promise<Guide[]> {
     return await db.select().from(schema.guides).orderBy(desc(schema.guides.createdAt)).limit(limit);
   }

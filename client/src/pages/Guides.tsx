@@ -32,7 +32,7 @@ export default function Guides() {
   const passwordDialog = usePasswordDialog();
 
   const { data: guides, isLoading } = useQuery({
-    queryKey: ["/api/guides"],
+    queryKey: ["/api/guides/with-network-units"],
   });
 
   const deleteGuideMutation = useMutation({
@@ -40,7 +40,7 @@ export default function Guides() {
       await apiRequest("DELETE", `/api/guides/${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/guides"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/guides/with-network-units"] });
       toast({
         title: "Guia removida",
         description: "Guia foi removida com sucesso.",
@@ -236,16 +236,8 @@ export default function Guides() {
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div className="flex-1 min-w-0">
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground break-words">Guias de Atendimento</h1>
-          <p className="text-sm text-muted-foreground">Gerencie as guias de atendimento</p>
+          <p className="text-sm text-muted-foreground">Visualize todas as guias geradas pelas unidades da rede</p>
         </div>
-        <Button 
-          className="btn-primary w-full sm:w-auto"
-          onClick={() => setLocation("/guias/novo")}
-          data-testid="button-new-guide"
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          Nova Guia
-        </Button>
       </div>
 
       {/* Filters */}
@@ -324,6 +316,16 @@ export default function Guides() {
                         <h3 className="font-semibold text-foreground break-words" data-testid={`guide-procedure-${guide.id}`}>
                           {guide.procedure}
                         </h3>
+                        {/* Informação da Unidade */}
+                        {guide.networkUnit ? (
+                          <p className="text-sm text-muted-foreground mt-1">
+                            <span className="font-medium">Unidade:</span> {guide.networkUnit.name}
+                          </p>
+                        ) : (
+                          <p className="text-sm text-muted-foreground mt-1 italic">
+                            Unidade não informada
+                          </p>
+                        )}
                       </div>
                     </div>
                     
@@ -395,22 +397,12 @@ export default function Guides() {
           ) : (
             <div className="text-center py-12">
               <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground mb-4">
+              <p className="text-muted-foreground">
                 {searchQuery || typeFilter !== "all" || statusFilter !== "all" 
                   ? "Nenhuma guia encontrada com os filtros aplicados." 
-                  : "Nenhuma guia cadastrada ainda."
+                  : "Nenhuma guia foi gerada pelas unidades da rede ainda."
                 }
               </p>
-              {!searchQuery && typeFilter === "all" && statusFilter === "all" && (
-                <Button 
-                  className="btn-primary"
-                  onClick={() => setLocation("/guias/novo")}
-                  data-testid="button-add-first-guide"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Criar Primeira Guia
-                </Button>
-              )}
             </div>
           )}
         </CardContent>
