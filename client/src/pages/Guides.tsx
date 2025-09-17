@@ -22,7 +22,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useLocation } from "wouter";
-import { Plus, Search, Edit, Trash2, FileText, Eye, Copy, Columns, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, Search, Edit, Trash2, FileText, Eye, Copy, Columns3 as Columns, ChevronLeft, ChevronRight } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { apiRequest } from "@/lib/queryClient";

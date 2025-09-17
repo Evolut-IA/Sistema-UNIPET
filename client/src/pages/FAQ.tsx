@@ -25,7 +25,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Plus, Search, Edit, Trash2, HelpCircle, Columns } from "lucide-react";
+import { Plus, Search, Edit, Trash2, HelpCircle, Columns3 as Columns } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { insertFaqItemSchema } from "@shared/schema";
@@ -329,90 +329,116 @@ export default function FAQ() {
         </DropdownMenu>
       </div>
 
-      <div className="grid grid-cols-1 gap-6">
-        {/* Management Panel */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-foreground">
-              Itens ({filteredItems?.length || 0})
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+      {/* Modern Table Container */}
+      <div className="container my-10 space-y-4 border border-border rounded-lg bg-accent shadow-sm">
+
+        {/* Table */}
+        <div className="rounded-lg overflow-hidden">
+          <Table className="w-full">
+          <TableHeader>
+            <TableRow className="bg-accent">
+              {visibleColumns.includes("Pergunta") && <TableHead className="w-[300px] bg-accent">Pergunta</TableHead>}
+              {visibleColumns.includes("Status") && <TableHead className="w-[100px] bg-accent">Status</TableHead>}
+              {visibleColumns.includes("Data") && <TableHead className="w-[120px] bg-accent">Data</TableHead>}
+              {visibleColumns.includes("Ações") && <TableHead className="w-[200px] bg-accent">Ações</TableHead>}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {isLoading ? (
-              <div className="space-y-4">
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className="border rounded-lg p-4 animate-pulse">
-                    <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
-                    <div className="h-3 bg-muted rounded w-1/2"></div>
-                  </div>
-                ))}
-              </div>
+              [...Array(5)].map((_, i) => (
+                <TableRow key={i}>
+                  <TableCell colSpan={visibleColumns.length} className="text-center py-6">
+                    <div className="h-4 bg-muted rounded w-full animate-pulse"></div>
+                  </TableCell>
+                </TableRow>
+              ))
             ) : filteredItems?.length ? (
-              <div className="space-y-3">
-                {filteredItems.map((item: any) => (
-                  <div key={item.id} className="border rounded-lg p-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <h4 className="font-medium text-foreground text-sm" data-testid={`faq-question-${item.id}`}>
-                        {item.question}
-                      </h4>
-                    </div>
-                    
-                    <p className="text-xs text-muted-foreground mb-3 line-clamp-2">
-                      {item.answer}
-                    </p>
-                    
-                    <div className="flex items-center space-x-2">
-                      <Switch
-                        checked={item.isActive}
-                        onCheckedChange={() => handleToggleStatus(item.id, item.isActive)}
-                        disabled={toggleMutation.isPending}
-                        data-testid={`switch-faq-status-${item.id}`}
-                      />
-                      
-                      <Button
-                        variant="default"
-                        size="sm"
-                        onClick={() => handleEdit(item)}
-                        data-testid={`button-edit-${item.id}`}
-                      >
-                        <Edit className="h-3 w-3" />
-                      </Button>
-                      
-                      <Button
-                        variant="default"
-                        size="sm"
-                        onClick={() => handleDelete(item.id)}
-                        disabled={deleteMutation.isPending}
-                        data-testid={`button-delete-${item.id}`}
-                      >
-                        <Trash2 className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              filteredItems.map((item: any) => (
+                <TableRow key={item.id} className="bg-accent hover:bg-accent/80">
+                  {visibleColumns.includes("Pergunta") && (
+                    <TableCell className="font-medium bg-accent">
+                      <div className="max-w-[280px]">
+                        <p className="truncate" title={item.question} data-testid={`faq-question-${item.id}`}>
+                          {item.question}
+                        </p>
+                        <p className="text-xs text-muted-foreground truncate mt-1" title={item.answer}>
+                          {item.answer}
+                        </p>
+                      </div>
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Status") && (
+                    <TableCell className="whitespace-nowrap bg-accent">
+                      <Badge className={cn("whitespace-nowrap", getStatusColor(item.isActive))}>
+                        {getStatusLabel(item.isActive)}
+                      </Badge>
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Data") && (
+                    <TableCell className="whitespace-nowrap bg-accent">
+                      {item.createdAt && format(new Date(item.createdAt), "dd/MM/yyyy", { locale: ptBR })}
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Ações") && (
+                    <TableCell className="whitespace-nowrap bg-accent">
+                      <div className="flex items-center space-x-2">
+                        <Switch
+                          checked={item.isActive}
+                          onCheckedChange={() => handleToggleStatus(item.id, item.isActive)}
+                          disabled={toggleMutation.isPending}
+                          data-testid={`switch-faq-status-${item.id}`}
+                        />
+                        
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleEdit(item)}
+                          data-testid={`button-edit-${item.id}`}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDelete(item.id)}
+                          disabled={deleteMutation.isPending}
+                          data-testid={`button-delete-${item.id}`}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  )}
+                </TableRow>
+              ))
             ) : (
-              <div className="text-center py-8">
-                <p className="text-muted-foreground mb-4">
-                  {searchQuery 
-                    ? "Nenhum item encontrado para a busca." 
-                    : "Nenhum item cadastrado ainda."
-                  }
-                </p>
-                {!searchQuery && (
-                  <Button
-                    variant="default"
-                    onClick={() => setDialogOpen(true)}
-                    data-testid="button-add-first-faq"
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Criar Primeiro Item
-                  </Button>
-                )}
-              </div>
+              <TableRow className="bg-accent">
+                <TableCell colSpan={visibleColumns.length} className="text-center py-12 bg-accent">
+                  <HelpCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground">
+                    {searchQuery 
+                      ? "Nenhum item encontrado para a busca." 
+                      : "Nenhum item cadastrado ainda."
+                    }
+                  </p>
+                  {!searchQuery && (
+                    <Button
+                      variant="outline"
+                      onClick={() => setDialogOpen(true)}
+                      data-testid="button-add-first-faq"
+                      className="mt-4"
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Criar Primeiro Item
+                    </Button>
+                  )}
+                </TableCell>
+              </TableRow>
             )}
-          </CardContent>
-        </Card>
+          </TableBody>
+        </Table>
+        </div>
       </div>
 
     </div>

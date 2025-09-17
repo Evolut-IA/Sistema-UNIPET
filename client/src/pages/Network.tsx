@@ -21,7 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useLocation } from "wouter";
-import { Plus, Search, Edit, Trash2, Building2, ExternalLink, Phone, MapPin, Eye, Copy, Globe, Columns } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Building2, ExternalLink, Phone, MapPin, Eye, Copy, Globe, Columns3 as Columns } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";

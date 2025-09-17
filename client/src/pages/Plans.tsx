@@ -1,22 +1,46 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useLocation } from "wouter";
-import { Plus, Search, Edit, Trash2, CreditCard } from "lucide-react";
+import { Plus, Search, Edit, Trash2, CreditCard, Columns3 as Columns } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
 import { PasswordDialog } from "@/components/ui/password-dialog";
 import { usePasswordDialog } from "@/hooks/use-password-dialog";
+import { cn } from "@/lib/utils";
+
+const allColumns = [
+  "Nome",
+  "Preço",
+  "Tipo",
+  "Status",
+  "Ações",
+] as const;
 
 export default function Plans() {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
+  const [visibleColumns, setVisibleColumns] = useState<string[]>([...allColumns]);
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const confirmDialog = useConfirmDialog();
@@ -69,6 +93,14 @@ export default function Plans() {
   const filteredPlans = Array.isArray(plans) ? plans.filter((plan: any) =>
     plan.name?.toLowerCase().includes(searchQuery.toLowerCase())
   ) : [];
+
+  const toggleColumn = (col: string) => {
+    setVisibleColumns((prev) =>
+      prev.includes(col)
+        ? prev.filter((c) => c !== col)
+        : [...prev, col]
+    );
+  };
 
   const handleDelete = (id: string, planName: string) => {
     passwordDialog.openDialog({
@@ -146,12 +178,12 @@ export default function Plans() {
   };
 
   return (
-    <div className="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
+    <div className="p-6 space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div className="flex-1 min-w-0">
-          <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground break-words">Planos de Saúde</h1>
-          <p className="text-sm sm:text-base text-muted-foreground">Gerencie os planos de saúde disponíveis</p>
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground break-words">Planos de Saúde</h1>
+          <p className="text-sm text-muted-foreground">Gerencie os planos de saúde disponíveis</p>
         </div>
         <Button 
           className="btn-primary w-full sm:w-auto"
@@ -163,116 +195,153 @@ export default function Plans() {
         </Button>
       </div>
 
-      {/* Search */}
-      <Card>
-        <CardContent className="p-3 sm:p-4 lg:p-6">
-          <div className="flex space-x-4">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4" style={{color: 'var(--input-foreground)'}} />
-              <Input
-                placeholder="Buscar por nome do plano..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-                data-testid="input-search-plans"
-              />
-            </div>
+      {/* Filters and Column Controls */}
+      <div className="flex flex-wrap gap-4 items-center justify-between mb-6">
+        <div className="flex gap-2 flex-wrap">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Buscar por nome do plano..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 w-64"
+              data-testid="input-search-plans"
+            />
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Plans Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-        {isLoading ? (
-          [...Array(6)].map((_, i) => (
-            <Card key={i} className="animate-pulse">
-              <CardContent className="p-3 sm:p-4 lg:p-6">
-                <div className="h-6 bg-muted rounded mb-2"></div>
-                <div className="h-4 bg-muted rounded w-3/4 mb-4"></div>
-                <div className="h-8 bg-muted rounded mb-4"></div>
-                <div className="space-y-2">
-                  <div className="h-3 bg-muted rounded"></div>
-                  <div className="h-3 bg-muted rounded"></div>
-                  <div className="h-3 bg-muted rounded"></div>
-                </div>
-              </CardContent>
-            </Card>
-          ))
-        ) : filteredPlans?.length ? (
-          filteredPlans.map((plan: any) => (
-            <Card key={plan.id} className="hover:shadow-md transition-shadow">
-              <CardHeader className="pb-3">
-                <div className="flex justify-between items-start">
-                  <div className="flex items-center space-x-2">
-                    <CardTitle className="text-foreground text-lg" data-testid={`plan-name-${plan.id}`}>
-                      {plan.name}
-                    </CardTitle>
-                  </div>
-                  <Switch
-                    checked={plan.isActive}
-                    onCheckedChange={() => handleToggleStatus(plan.id, plan.isActive)}
-                    disabled={togglePlanMutation.isPending}
-                    data-testid={`switch-plan-status-${plan.id}`}
-                  />
-                </div>
-                <Badge className={getPlanTypeColor(plan.planType)}>
-                  {getPlanTypeLabel(plan.planType)}
-                </Badge>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="mb-4">
-                  <p className="text-3xl font-bold text-foreground">
-                    R$ {(parseFloat(plan.price || 0) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                    <span className="text-lg font-normal text-muted-foreground">/mês</span>
-                  </p>
-                </div>
-
-
-                <div className="flex space-x-2 pt-3 border-t">
-                  <Button
-                    variant="default"
-                    size="sm"
-                    className="flex-1"
-                    onClick={() => setLocation(`/planos/${plan.id}/editar`)}
-                    data-testid={`button-edit-${plan.id}`}
-                  >
-                    <Edit className="h-4 w-4 mr-1" />
-                    Editar
-                  </Button>
-                  <Button
-                    variant="default"
-                    size="sm"
-                    onClick={() => handleDelete(plan.id, plan.name)}
-                    disabled={deletePlanMutation.isPending}
-                    data-testid={`button-delete-${plan.id}`}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))
-        ) : (
-          <div className="col-span-full text-center py-12">
-            <CreditCard className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <p className="text-muted-foreground mb-4">
-              {searchQuery 
-                ? "Nenhum plano encontrado para a busca." 
-                : "Nenhum plano cadastrado ainda."
-              }
-            </p>
-            {!searchQuery && (
-              <Button 
-                className="btn-primary"
-                onClick={() => setLocation("/planos/novo")}
-                data-testid="button-add-first-plan"
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm">
+              <Columns className="h-4 w-4 mr-2" />
+              Colunas
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-48">
+            {allColumns.map((col) => (
+              <DropdownMenuCheckboxItem
+                key={col}
+                checked={visibleColumns.includes(col)}
+                onCheckedChange={() => toggleColumn(col)}
+                className="data-[state=checked]:bg-transparent focus:bg-muted/50"
               >
-                <Plus className="h-4 w-4 mr-2" />
-                Criar Primeiro Plano
-              </Button>
+                {col}
+              </DropdownMenuCheckboxItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      {/* Modern Table Container */}
+      <div className="container my-10 space-y-4 border border-border rounded-lg bg-accent shadow-sm">
+
+        {/* Table */}
+        <div className="rounded-lg overflow-hidden">
+          <Table className="w-full">
+          <TableHeader>
+            <TableRow className="bg-accent">
+              {visibleColumns.includes("Nome") && <TableHead className="w-[200px] bg-accent">Nome</TableHead>}
+              {visibleColumns.includes("Preço") && <TableHead className="w-[150px] bg-accent">Preço</TableHead>}
+              {visibleColumns.includes("Tipo") && <TableHead className="w-[180px] bg-accent">Tipo</TableHead>}
+              {visibleColumns.includes("Status") && <TableHead className="w-[100px] bg-accent">Status</TableHead>}
+              {visibleColumns.includes("Ações") && <TableHead className="w-[150px] bg-accent">Ações</TableHead>}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {isLoading ? (
+              [...Array(5)].map((_, i) => (
+                <TableRow key={i}>
+                  <TableCell colSpan={visibleColumns.length} className="text-center py-6">
+                    <div className="h-4 bg-muted rounded w-full animate-pulse"></div>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : filteredPlans?.length ? (
+              filteredPlans.map((plan: any) => (
+                <TableRow key={plan.id} className="bg-accent hover:bg-accent/80">
+                  {visibleColumns.includes("Nome") && (
+                    <TableCell className="font-medium whitespace-nowrap bg-accent" data-testid={`plan-name-${plan.id}`}>
+                      {plan.name}
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Preço") && (
+                    <TableCell className="whitespace-nowrap bg-accent">
+                      <div className="flex flex-col">
+                        <span className="font-bold text-foreground">
+                          R$ {(parseFloat(plan.price || 0) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </span>
+                        <span className="text-xs text-muted-foreground">/mês</span>
+                      </div>
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Tipo") && (
+                    <TableCell className="whitespace-nowrap bg-accent">
+                      <Badge className={cn("whitespace-nowrap", getPlanTypeColor(plan.planType))}>
+                        {getPlanTypeLabel(plan.planType)}
+                      </Badge>
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Status") && (
+                    <TableCell className="whitespace-nowrap bg-accent">
+                      <Switch
+                        checked={plan.isActive}
+                        onCheckedChange={() => handleToggleStatus(plan.id, plan.isActive)}
+                        disabled={togglePlanMutation.isPending}
+                        data-testid={`switch-plan-status-${plan.id}`}
+                      />
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Ações") && (
+                    <TableCell className="whitespace-nowrap bg-accent">
+                      <div className="flex items-center space-x-1">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setLocation(`/planos/${plan.id}/editar`)}
+                          data-testid={`button-edit-${plan.id}`}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDelete(plan.id, plan.name)}
+                          disabled={deletePlanMutation.isPending}
+                          data-testid={`button-delete-${plan.id}`}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  )}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow className="bg-accent">
+                <TableCell colSpan={visibleColumns.length} className="text-center py-12 bg-accent">
+                  <CreditCard className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground mb-4">
+                    {searchQuery 
+                      ? "Nenhum plano encontrado para a busca." 
+                      : "Nenhum plano cadastrado ainda."
+                    }
+                  </p>
+                  {!searchQuery && (
+                    <Button 
+                      className="btn-primary"
+                      onClick={() => setLocation("/planos/novo")}
+                      data-testid="button-add-first-plan"
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Criar Primeiro Plano
+                    </Button>
+                  )}
+                </TableCell>
+              </TableRow>
             )}
-          </div>
-        )}
+          </TableBody>
+        </Table>
+        </div>
       </div>
 
       {/* Password Dialog */}

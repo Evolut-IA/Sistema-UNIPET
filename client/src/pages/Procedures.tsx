@@ -30,7 +30,7 @@ import {
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
-import { Plus, Search, Edit, Trash2, ClipboardList, Eye, DollarSign, X, Columns } from "lucide-react";
+import { Plus, Search, Edit, Trash2, ClipboardList, Eye, DollarSign, X, Columns3 as Columns } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { insertProcedureSchema } from "@shared/schema";

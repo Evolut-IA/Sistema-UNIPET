@@ -14,10 +14,24 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { insertUserSchema } from "@shared/schema";
-import { UserCog, Plus, Search, Edit, Trash2, Shield, User, Key, Network, Lock, Eye, EyeOff, Globe, Copy, RefreshCw, ExternalLink } from "lucide-react";
+import { UserCog, Plus, Search, Edit, Trash2, Shield, User, Key, Network, Lock, Eye, EyeOff, Globe, Copy, RefreshCw, ExternalLink, Columns3 as Columns } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -33,6 +47,16 @@ const AVAILABLE_PERMISSIONS = [
   { id: "administration", label: "Administração", description: "Acesso à seção de administração de usuários" },
 ];
 
+const allColumns = [
+  "Nome",
+  "Email",
+  "Função",
+  "Permissões",
+  "Status",
+  "Data",
+  "Ações",
+] as const;
+
 export default function Administration() {
   const [searchQuery, setSearchQuery] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -43,6 +67,7 @@ export default function Administration() {
   const [editingUrlUnit, setEditingUrlUnit] = useState<any>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
+  const [visibleColumns, setVisibleColumns] = useState<string[]>([...allColumns]);
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -351,6 +376,14 @@ export default function Administration() {
     }
   };
 
+  const toggleColumn = (col: string) => {
+    setVisibleColumns((prev) =>
+      prev.includes(col)
+        ? prev.filter((c) => c !== col)
+        : [...prev, col]
+    );
+  };
+
   // URL Management helper functions
   const getDomain = () => {
     if (typeof window !== 'undefined') {
@@ -603,141 +636,194 @@ export default function Administration() {
           </DialogContent>
         </Dialog>
 
-      {/* Search */}
-      <Card>
-        <CardContent className="p-3 sm:p-4 lg:p-6">
+      {/* Search and Column Controls */}
+      <div className="flex flex-wrap gap-4 items-center justify-between mb-6">
+        <div className="flex gap-2 flex-wrap">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4" style={{color: 'var(--input-foreground)'}} />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Buscar usuários por nome ou email..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
+              className="pl-10 w-64"
               data-testid="input-search-users"
             />
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Users List */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-foreground">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm">
+              <Columns className="h-4 w-4 mr-2" />
+              Colunas
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-48">
+            {allColumns.map((col) => (
+              <DropdownMenuCheckboxItem
+                key={col}
+                checked={visibleColumns.includes(col)}
+                onCheckedChange={() => toggleColumn(col)}
+                className="data-[state=checked]:bg-transparent focus:bg-muted/50"
+              >
+                {col}
+              </DropdownMenuCheckboxItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      {/* Modern Table Container */}
+      <div className="container my-10 space-y-4 border border-border rounded-lg bg-accent shadow-sm">
+        <div className="p-4">
+          <h2 className="text-xl font-semibold text-foreground">
             Usuários ({filteredUsers?.length || 0})
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-3 sm:p-4 lg:p-6">
-          {isLoading ? (
-            <div className="space-y-4">
-              {[...Array(5)].map((_, i) => (
-                <div key={i} className="border rounded-lg p-4 animate-pulse">
-                  <div className="h-4 bg-muted rounded w-1/4 mb-2"></div>
-                  <div className="h-3 bg-muted rounded w-1/2 mb-1"></div>
-                  <div className="h-3 bg-muted rounded w-1/3"></div>
-                </div>
-              ))}
-            </div>
-          ) : filteredUsers?.length ? (
-            <div className="space-y-4">
-              {filteredUsers.map((user: any) => (
-                <div key={user.id} className="border rounded-lg p-4 hover:bg-muted/10 transition-colors">
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-3 mb-2">
-                        <User className="h-5 w-5 text-primary" />
-                        <h3 className="font-semibold text-foreground" data-testid={`user-name-${user.id}`}>
-                          {user.username}
-                        </h3>
+          </h2>
+        </div>
+
+        {/* Table */}
+        <div className="rounded-lg overflow-hidden">
+          <Table className="w-full">
+            <TableHeader>
+              <TableRow className="bg-accent">
+                {visibleColumns.includes("Nome") && <TableHead className="w-[200px] bg-accent">Nome</TableHead>}
+                {visibleColumns.includes("Email") && <TableHead className="w-[250px] bg-accent">Email</TableHead>}
+                {visibleColumns.includes("Função") && <TableHead className="w-[120px] bg-accent">Função</TableHead>}
+                {visibleColumns.includes("Permissões") && <TableHead className="w-[200px] bg-accent">Permissões</TableHead>}
+                {visibleColumns.includes("Status") && <TableHead className="w-[100px] bg-accent">Status</TableHead>}
+                {visibleColumns.includes("Data") && <TableHead className="w-[120px] bg-accent">Data</TableHead>}
+                {visibleColumns.includes("Ações") && <TableHead className="w-[150px] bg-accent">Ações</TableHead>}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {isLoading ? (
+                [...Array(5)].map((_, i) => (
+                  <TableRow key={i}>
+                    <TableCell colSpan={visibleColumns.length} className="text-center py-6">
+                      <div className="h-4 bg-muted rounded w-full animate-pulse"></div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : filteredUsers?.length ? (
+                filteredUsers.map((user: any) => (
+                  <TableRow key={user.id} className="bg-accent hover:bg-accent/80">
+                    {visibleColumns.includes("Nome") && (
+                      <TableCell className="font-medium whitespace-nowrap bg-accent" data-testid={`user-name-${user.id}`}>
+                        <div className="flex items-center space-x-2">
+                          <User className="h-4 w-4 text-primary" />
+                          <span>{user.username}</span>
+                        </div>
+                      </TableCell>
+                    )}
+                    {visibleColumns.includes("Email") && (
+                      <TableCell className="whitespace-nowrap bg-accent">
+                        {user.email}
+                      </TableCell>
+                    )}
+                    {visibleColumns.includes("Função") && (
+                      <TableCell className="whitespace-nowrap bg-accent">
                         <Badge className={getRoleColor(user.role)}>
                           {getRoleLabel(user.role)}
                         </Badge>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-muted-foreground mb-3">
-                        <p><span className="font-medium">Email:</span> {user.email}</p>
-                        <p><span className="font-medium">Criado em:</span> {user.createdAt && format(new Date(user.createdAt), "dd/MM/yyyy", { locale: ptBR })}</p>
-                        <p><span className="font-medium">Locais:</span> {user.permissions?.length || 0}</p>
-                      </div>
-
-                      {user.permissions && user.permissions.length > 0 && (
-                        <div className="flex flex-wrap gap-1 mb-3">
-                          {user.permissions.slice(0, 3).map((permission: string) => {
-                            const permissionData = AVAILABLE_PERMISSIONS.find(p => p.id === permission);
-                            return permissionData ? (
-                              <Badge key={permission} variant="outline" className="text-xs">
-                                {permissionData.label}
-                              </Badge>
-                            ) : null;
-                          })}
-                          {user.permissions.length > 3 && (
-                            <Badge variant="outline" className="text-xs">
-                              +{user.permissions.length - 3} mais
-                            </Badge>
+                      </TableCell>
+                    )}
+                    {visibleColumns.includes("Permissões") && (
+                      <TableCell className="bg-accent">
+                        <div className="flex flex-wrap gap-1">
+                          {user.permissions && user.permissions.length > 0 ? (
+                            <>
+                              {user.permissions.slice(0, 2).map((permission: string) => {
+                                const permissionData = AVAILABLE_PERMISSIONS.find(p => p.id === permission);
+                                return permissionData ? (
+                                  <Badge key={permission} variant="outline" className="text-xs">
+                                    {permissionData.label}
+                                  </Badge>
+                                ) : null;
+                              })}
+                              {user.permissions.length > 2 && (
+                                <Badge variant="outline" className="text-xs">
+                                  +{user.permissions.length - 2}
+                                </Badge>
+                              )}
+                            </>
+                          ) : (
+                            <span className="text-muted-foreground text-sm">Nenhuma</span>
                           )}
                         </div>
-                      )}
-                    </div>
-
-                    <div className="flex flex-col space-y-2 ml-4">
-                      <div className="flex items-center space-x-2">
-                        <Switch
-                          checked={user.isActive}
-                          onCheckedChange={() => handleToggleStatus(user.id, user.isActive)}
-                          disabled={toggleUserMutation.isPending}
-                          data-testid={`switch-user-status-${user.id}`}
-                        />
-                        <span className="text-sm text-muted-foreground">
-                          {user.isActive ? "Ativo" : "Inativo"}
-                        </span>
-                      </div>
-
-                      <div className="flex space-x-2">
-                        <Button
-                          variant="default"
-                          size="sm"
-                          onClick={() => handleEdit(user)}
-                          data-testid={`button-edit-${user.id}`}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="default"
-                          size="sm"
-                          onClick={() => handleDelete(user.id)}
-                          disabled={deleteMutation.isPending}
-                          data-testid={`button-delete-${user.id}`}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <UserCog className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground mb-4">
-                {searchQuery 
-                  ? "Nenhum usuário encontrado para a busca." 
-                  : "Nenhum usuário cadastrado ainda."
-                }
-              </p>
-              {!searchQuery && (
-                <Button 
-                  variant="outline"
-                  onClick={() => setDialogOpen(true)}
-                  data-testid="button-add-first-user"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Criar Primeiro Usuário
-                </Button>
+                      </TableCell>
+                    )}
+                    {visibleColumns.includes("Status") && (
+                      <TableCell className="whitespace-nowrap bg-accent">
+                        <div className="flex items-center space-x-2">
+                          <Switch
+                            checked={user.isActive}
+                            onCheckedChange={() => handleToggleStatus(user.id, user.isActive)}
+                            disabled={toggleUserMutation.isPending}
+                            data-testid={`switch-user-status-${user.id}`}
+                          />
+                          <span className="text-sm text-muted-foreground">
+                            {user.isActive ? "Ativo" : "Inativo"}
+                          </span>
+                        </div>
+                      </TableCell>
+                    )}
+                    {visibleColumns.includes("Data") && (
+                      <TableCell className="whitespace-nowrap bg-accent">
+                        {user.createdAt && format(new Date(user.createdAt), "dd/MM/yyyy", { locale: ptBR })}
+                      </TableCell>
+                    )}
+                    {visibleColumns.includes("Ações") && (
+                      <TableCell className="whitespace-nowrap bg-accent">
+                        <div className="flex items-center space-x-1">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleEdit(user)}
+                            data-testid={`button-edit-${user.id}`}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDelete(user.id)}
+                            disabled={deleteMutation.isPending}
+                            data-testid={`button-delete-${user.id}`}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    )}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow className="bg-accent">
+                  <TableCell colSpan={visibleColumns.length} className="text-center py-12 bg-accent">
+                    <UserCog className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground mb-4">
+                      {searchQuery 
+                        ? "Nenhum usuário encontrado para a busca." 
+                        : "Nenhum usuário cadastrado ainda."
+                      }
+                    </p>
+                    {!searchQuery && (
+                      <Button 
+                        variant="outline"
+                        onClick={() => setDialogOpen(true)}
+                        data-testid="button-add-first-user"
+                      >
+                        <Plus className="h-4 w-4 mr-2" />
+                        Criar Primeiro Usuário
+                      </Button>
+                    )}
+                  </TableCell>
+                </TableRow>
               )}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+            </TableBody>
+          </Table>
+        </div>
+      </div>
 
       {/* Separator between sections */}
       <Separator className="my-8" />

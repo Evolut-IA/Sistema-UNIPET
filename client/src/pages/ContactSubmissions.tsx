@@ -19,7 +19,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Mail, Search, Eye, Trash2, Calendar, User, Phone, MapPin, PawPrint, Copy, Columns } from "lucide-react";
+import { Mail, Search, Eye, Trash2, Calendar, User, Phone, MapPin, PawPrint, Copy, Columns3 as Columns } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { apiRequest } from "@/lib/queryClient";
