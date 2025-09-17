@@ -275,7 +275,7 @@ export default function Guides() {
   };
 
   return (
-    <div className="p-6 space-y-6 bg-accent">
+    <div className="p-6 space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div className="flex-1 min-w-0">
