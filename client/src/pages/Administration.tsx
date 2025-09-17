@@ -802,42 +802,44 @@ export default function Administration() {
       {/* Network Credentials Table Container */}
       <div className="container my-10 space-y-4 border border-border rounded-lg bg-accent shadow-sm">
         
-        {isLoadingNetworkUnits ? (
-          <div className="p-4">
-            <div className="space-y-4">
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="flex items-center space-x-4">
-                  <div className="h-4 bg-muted rounded w-1/4 animate-pulse"></div>
-                  <div className="h-4 bg-muted rounded w-1/6 animate-pulse"></div>
-                  <div className="h-4 bg-muted rounded w-1/8 animate-pulse"></div>
-                  <div className="h-4 bg-muted rounded w-1/6 animate-pulse"></div>
-                  <div className="h-4 bg-muted rounded w-1/4 animate-pulse"></div>
-                </div>
-              ))}
+        {/* Table */}
+        <div className="rounded-lg overflow-hidden">
+          {isLoadingNetworkUnits ? (
+            <div className="p-4">
+              <div className="space-y-4">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="flex items-center space-x-4">
+                    <div className="h-4 bg-muted rounded w-1/4 animate-pulse"></div>
+                    <div className="h-4 bg-muted rounded w-1/6 animate-pulse"></div>
+                    <div className="h-4 bg-muted rounded w-1/8 animate-pulse"></div>
+                    <div className="h-4 bg-muted rounded w-1/6 animate-pulse"></div>
+                    <div className="h-4 bg-muted rounded w-1/4 animate-pulse"></div>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        ) : paginatedNetworkUnits?.length ? (
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-accent hover:bg-accent">
-                {visibleNetworkColumns.includes("Nome") && (
-                  <TableHead className="bg-accent">Nome</TableHead>
-                )}
-                {visibleNetworkColumns.includes("Login") && (
-                  <TableHead className="bg-accent">Login</TableHead>
-                )}
-                {visibleNetworkColumns.includes("URL") && (
-                  <TableHead className="bg-accent">URL</TableHead>
-                )}
-                {visibleNetworkColumns.includes("Status") && (
-                  <TableHead className="bg-accent">Status</TableHead>
-                )}
-                {visibleNetworkColumns.includes("Ações") && (
-                  <TableHead className="bg-accent">Ações</TableHead>
-                )}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
+          ) : paginatedNetworkUnits?.length ? (
+            <Table className="w-full">
+              <TableHeader>
+                <TableRow className="bg-accent">
+                  {visibleNetworkColumns.includes("Nome") && (
+                    <TableHead className="bg-accent">Nome</TableHead>
+                  )}
+                  {visibleNetworkColumns.includes("Login") && (
+                    <TableHead className="bg-accent">Login</TableHead>
+                  )}
+                  {visibleNetworkColumns.includes("URL") && (
+                    <TableHead className="bg-accent">URL</TableHead>
+                  )}
+                  {visibleNetworkColumns.includes("Status") && (
+                    <TableHead className="bg-accent">Status</TableHead>
+                  )}
+                  {visibleNetworkColumns.includes("Ações") && (
+                    <TableHead className="bg-accent">Ações</TableHead>
+                  )}
+                </TableRow>
+              </TableHeader>
+              <TableBody>
               {paginatedNetworkUnits.map((unit: any) => {
                 const status = getCredentialStatus(unit);
                 return (
@@ -886,7 +888,7 @@ export default function Administration() {
             </TableBody>
           </Table>
         ) : (
-          <Table>
+          <Table className="w-full">
             <TableBody>
               <TableRow className="bg-accent">
                 <TableCell colSpan={visibleNetworkColumns.length} className="text-center py-12 bg-accent">
@@ -899,6 +901,7 @@ export default function Administration() {
             </TableBody>
           </Table>
         )}
+        </div>
         
         {/* Network Units Pagination */}
         {networkUnits?.length > 10 && (
@@ -1085,7 +1088,6 @@ export default function Administration() {
             </Form>
           </DialogContent>
       </Dialog>
-
 
       </div>
     </>
