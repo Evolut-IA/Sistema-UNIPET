@@ -39,6 +39,8 @@ export default function Administration() {
   const [editingUser, setEditingUser] = useState<any>(null);
   const [credentialDialogOpen, setCredentialDialogOpen] = useState(false);
   const [editingNetworkUnit, setEditingNetworkUnit] = useState<any>(null);
+  const [urlDialogOpen, setUrlDialogOpen] = useState(false);
+  const [editingUrlUnit, setEditingUrlUnit] = useState<any>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const queryClient = useQueryClient();
@@ -81,6 +83,22 @@ export default function Administration() {
       login: "",
       password: "",
       confirmPassword: "",
+    },
+  });
+
+  const urlForm = useForm({
+    resolver: zodResolver(
+      z.object({
+        urlSlug: z.string()
+          .min(3, "URL deve ter pelo menos 3 caracteres")
+          .max(100, "URL não pode ter mais de 100 caracteres")
+          .regex(/^[a-z0-9-]+$/, "URL deve conter apenas letras minúsculas, números e hífens")
+          .regex(/^[a-z0-9]/, "URL deve começar com letra ou número")
+          .regex(/[a-z0-9]$/, "URL deve terminar com letra ou número"),
+      })
+    ),
+    defaultValues: {
+      urlSlug: "",
     },
   });
 
@@ -200,6 +218,31 @@ export default function Administration() {
     },
   });
 
+  const updateUrlMutation = useMutation({
+    mutationFn: async (data: { id: string; urlSlug: string }) => {
+      await apiRequest("PUT", `/api/network-units/${data.id}`, {
+        urlSlug: data.urlSlug,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/network-units/credentials"] });
+      toast({
+        title: "URL atualizada",
+        description: "URL da unidade foi atualizada com sucesso.",
+      });
+      setUrlDialogOpen(false);
+      setEditingUrlUnit(null);
+      urlForm.reset();
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Erro",
+        description: error.message || "Falha ao atualizar URL da unidade.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const filteredUsers = users.filter((user: any) =>
     user.username?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     user.email?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -249,8 +292,11 @@ export default function Administration() {
   };
 
   const handleEditUrl = (networkUnit: any) => {
-    // Navigate to the network unit edit page
-    window.location.href = `/rede/${networkUnit.id}/editar`;
+    setEditingUrlUnit(networkUnit);
+    urlForm.reset({
+      urlSlug: networkUnit.urlSlug || "",
+    });
+    setUrlDialogOpen(true);
   };
 
   const onCredentialSubmit = (data: any) => {
@@ -259,6 +305,15 @@ export default function Administration() {
         id: editingNetworkUnit.id,
         login: data.login,
         password: data.password,
+      });
+    }
+  };
+
+  const onUrlSubmit = (data: any) => {
+    if (editingUrlUnit) {
+      updateUrlMutation.mutate({
+        id: editingUrlUnit.id,
+        urlSlug: data.urlSlug,
       });
     }
   };
@@ -897,6 +952,74 @@ export default function Administration() {
           </DialogContent>
         </Dialog>
       </div>
+
+      {/* URL Dialog */}
+      <Dialog open={urlDialogOpen} onOpenChange={(open) => {
+        setUrlDialogOpen(open);
+        if (!open) {
+          setEditingUrlUnit(null);
+          urlForm.reset();
+        }
+      }}>
+        <DialogContent className="overflow-y-auto" maxHeightMobile="max-h-[90vh]">
+          <DialogHeader>
+            <DialogTitle className="text-foreground">
+              Editar URL da Unidade
+            </DialogTitle>
+            <p className="text-sm text-muted-foreground">
+              {editingUrlUnit ? `Editando URL para: ${editingUrlUnit.name}` : ''}
+            </p>
+          </DialogHeader>
+          <Form {...urlForm}>
+            <form onSubmit={urlForm.handleSubmit(onUrlSubmit)} className="space-y-4">
+              <FormField
+                control={urlForm.control}
+                name="urlSlug"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>URL Personalizada *</FormLabel>
+                    <FormControl>
+                      <div className="space-y-2">
+                        <Input 
+                          {...field} 
+                          placeholder="minha-clinica-veterinaria"
+                          className="font-mono"
+                        />
+                        <div className="text-xs text-muted-foreground space-y-1">
+                          <p><strong>Exemplo:</strong> minha-clinica-veterinaria</p>
+                          <p><strong>URL final:</strong> {field.value ? getFullUrl(field.value) : getDomain() + '/sua-url-aqui'}</p>
+                          <p className="text-yellow-600">
+                            <strong>Importante:</strong> Use apenas letras minúsculas, números e hífens. 
+                            Deve começar e terminar com letra ou número.
+                          </p>
+                        </div>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="flex justify-end space-x-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setUrlDialogOpen(false)}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  type="submit"
+                  className="btn-primary"
+                  disabled={updateUrlMutation.isPending}
+                >
+                  {updateUrlMutation.isPending ? "Salvando..." : "Salvar URL"}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
 
       {/* Separator before statistics */}
       <Separator className="my-8" />
