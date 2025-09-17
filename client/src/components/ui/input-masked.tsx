@@ -3,7 +3,7 @@ import { Input } from "./input";
 import { cn } from "@/lib/utils";
 
 export interface InputMaskedProps extends React.ComponentProps<typeof Input> {
-  mask?: "cpf" | "cnpj" | "phone" | "whatsapp" | "email" | "price" | "cep";
+  mask?: "cpf" | "cnpj" | "phone" | "whatsapp" | "email" | "price" | "cep" | "url-slug";
   onMaskedChange?: (value: string) => void;
 }
 
@@ -78,6 +78,13 @@ const InputMasked = React.forwardRef<HTMLInputElement, InputMaskedProps>(
         
         case "email":
           return value.toLowerCase().trim();
+        
+        case "url-slug":
+          return value
+            .toLowerCase() // Converte para minúsculas
+            .replace(/[^a-z0-9-]/g, '') // Remove caracteres inválidos
+            .replace(/^-+|-+$/g, '') // Remove hífens do início e fim
+            .replace(/-+/g, '-'); // Remove hífens consecutivos
         
         default:
           return value;

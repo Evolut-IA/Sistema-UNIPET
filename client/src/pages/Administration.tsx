@@ -92,9 +92,6 @@ export default function Administration() {
         urlSlug: z.string()
           .min(3, "URL deve ter pelo menos 3 caracteres")
           .max(100, "URL não pode ter mais de 100 caracteres")
-          .regex(/^[a-z0-9-]+$/, "URL deve conter apenas letras minúsculas, números e hífens")
-          .regex(/^[a-z0-9]/, "URL deve começar com letra ou número")
-          .regex(/[a-z0-9]$/, "URL deve terminar com letra ou número"),
       })
     ),
     defaultValues: {
@@ -980,18 +977,14 @@ export default function Administration() {
                     <FormLabel>URL Personalizada *</FormLabel>
                     <FormControl>
                       <div className="space-y-2">
-                        <Input 
+                        <InputMasked 
                           {...field} 
+                          mask="url-slug"
                           placeholder="minha-clinica-veterinaria"
                           className="font-mono"
                         />
-                        <div className="text-xs text-muted-foreground space-y-1">
-                          <p><strong>Exemplo:</strong> minha-clinica-veterinaria</p>
+                        <div className="text-xs text-muted-foreground">
                           <p><strong>URL final:</strong> {field.value ? getFullUrl(field.value) : getDomain() + '/sua-url-aqui'}</p>
-                          <p className="text-yellow-600">
-                            <strong>Importante:</strong> Use apenas letras minúsculas, números e hífens. 
-                            Deve começar e terminar com letra ou número.
-                          </p>
                         </div>
                       </div>
                     </FormControl>
