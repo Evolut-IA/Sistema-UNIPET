@@ -66,7 +66,9 @@ export const applyThemeToCSSVariables = (themeSettings: Record<string, any>) => 
   root.style.setProperty('--font-mono', `'${themeSettings.monospaceFont || DEFAULT_THEME.monospaceFont}', monospace`);
   
   // Shape & Spacing
-  root.style.setProperty('--radius', `${themeSettings.borderRadius || DEFAULT_THEME.borderRadius}rem`);
+  const r = String(themeSettings.borderRadius ?? DEFAULT_THEME.borderRadius);
+  const radius = /rem\s*$/i.test(r) ? r : `${r}rem`;
+  root.style.setProperty('--radius', radius);
   
   // Actions
   root.style.setProperty('--primary', themeSettings.primaryBackground || DEFAULT_THEME.primaryBackground);
