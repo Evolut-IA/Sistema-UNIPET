@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -159,6 +159,11 @@ export default function UnitDashboard() {
   const [petsWithClients, setPetsWithClients] = useState<Array<Pet & { client: Client, plan?: Plan }>>([]);
   const [loadingCards, setLoadingCards] = useState(false);
   const [cardSearch, setCardSearch] = useState("");
+  
+  // Coverage functionality state
+  const [coverageSearch, setCoverageSearch] = useState("");
+  const [coverageTypeFilter, setCoverageTypeFilter] = useState("all");
+  const [coverageStatusFilter, setCoverageStatusFilter] = useState("all");
 
   // Check authentication status on component mount
   useEffect(() => {
@@ -614,6 +619,29 @@ export default function UnitDashboard() {
       currency: 'BRL'
     }).format(parseFloat(value));
   };
+
+  // Memoized filtered coverage for performance optimization
+  const filteredCoverage = useMemo(() => {
+    return coverage.filter(item => {
+      // Search filter
+      const searchMatch = !coverageSearch || 
+        item.procedure.name.toLowerCase().includes(coverageSearch.toLowerCase()) ||
+        (item.procedure.description && item.procedure.description.toLowerCase().includes(coverageSearch.toLowerCase()));
+      
+      // Type filter
+      const typeMatch = coverageTypeFilter === 'all' || item.procedure.procedureType === coverageTypeFilter;
+      
+      // Status filter
+      let statusMatch = true;
+      if (coverageStatusFilter === 'included') {
+        statusMatch = item.planCoverage.some(plan => plan.isIncluded);
+      } else if (coverageStatusFilter === 'not_included') {
+        statusMatch = item.planCoverage.every(plan => !plan.isIncluded);
+      }
+      
+      return searchMatch && typeMatch && statusMatch;
+    });
+  }, [coverage, coverageSearch, coverageTypeFilter, coverageStatusFilter]);
 
   if (loading) {
     return (
@@ -1371,16 +1399,80 @@ export default function UnitDashboard() {
           {/* Coverage Tab */}
           <TabsContent value="coverage">
             <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold">Tabela de Cobertura</h3>
+              {/* Header with Actions */}
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                  <h3 className="text-lg font-semibold">Tabela de Cobertura</h3>
+                  <p className="text-sm text-gray-600">
+                    Visualize a cobertura de procedimentos por plano
+                  </p>
+                </div>
                 <Button 
                   onClick={loadCoverage} 
                   disabled={loadingCoverage}
                   variant="outline"
+                  className="w-full sm:w-auto"
                 >
                   {loadingCoverage ? "Carregando..." : "Atualizar"}
                 </Button>
               </div>
+
+              {/* Filters */}
+              {!loadingCoverage && coverage.length > 0 && (
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex flex-col lg:flex-row gap-4">
+                      {/* Search */}
+                      <div className="flex-1">
+                        <Label htmlFor="coverage-search" className="text-sm font-medium">Buscar Procedimento</Label>
+                        <div className="relative mt-1">
+                          <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                          <Input
+                            id="coverage-search"
+                            placeholder="Digite o nome do procedimento..."
+                            value={coverageSearch}
+                            onChange={(e) => setCoverageSearch(e.target.value)}
+                            className="pl-10"
+                          />
+                        </div>
+                      </div>
+                      
+                      {/* Type Filter */}
+                      <div className="min-w-[200px]">
+                        <Label htmlFor="type-filter" className="text-sm font-medium">Filtrar por Tipo</Label>
+                        <Select value={coverageTypeFilter} onValueChange={setCoverageTypeFilter}>
+                          <SelectTrigger className="mt-1">
+                            <SelectValue placeholder="Todos os tipos" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">Todos os tipos</SelectItem>
+                            {Array.from(new Set(coverage.map(item => item.procedure.procedureType))).map(type => (
+                              <SelectItem key={type} value={type}>
+                                {type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      {/* Status Filter */}
+                      <div className="min-w-[200px]">
+                        <Label htmlFor="status-filter" className="text-sm font-medium">Filtrar por Cobertura</Label>
+                        <Select value={coverageStatusFilter} onValueChange={setCoverageStatusFilter}>
+                          <SelectTrigger className="mt-1">
+                            <SelectValue placeholder="Todas as coberturas" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">Todas as coberturas</SelectItem>
+                            <SelectItem value="included">Apenas incluídos</SelectItem>
+                            <SelectItem value="not_included">Apenas não incluídos</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
 
               {loadingCoverage ? (
                 <div className="text-center py-8">
@@ -1389,66 +1481,132 @@ export default function UnitDashboard() {
                 </div>
               ) : coverage.length > 0 ? (
                 <div className="space-y-4">
-                  <p className="text-sm text-gray-600">
-                    Visualize a cobertura de procedimentos por plano. ✅ = Incluído, ❌ = Não incluído
-                  </p>
+                  {/* Legend */}
+                  <div className="flex flex-wrap gap-4 text-sm text-gray-600 bg-blue-50 p-3 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">✅</span>
+                      <span>Incluído no plano</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">❌</span>
+                      <span>Não incluído</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-orange-200 rounded"></div>
+                      <span>Com coparticipação</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-green-200 rounded"></div>
+                      <span>Valor final do cliente</span>
+                    </div>
+                  </div>
                   
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full border border-gray-200 rounded-lg">
-                      <thead className="bg-gray-50">
-                        <tr>
-                          <th className="px-4 py-3 text-left text-sm font-medium text-gray-900 border-b">
-                            Procedimento
-                          </th>
-                          <th className="px-4 py-3 text-left text-sm font-medium text-gray-900 border-b">
-                            Tipo
-                          </th>
-                          {coverage.length > 0 && coverage[0].planCoverage.map(plan => (
-                            <th key={plan.planId} className="px-4 py-3 text-center text-sm font-medium text-gray-900 border-b">
-                              {plan.planName}
+                  <div className="border border-gray-200 rounded-lg overflow-hidden">
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="px-4 py-3 text-left text-sm font-medium text-gray-900 border-b">
+                              Procedimento
                             </th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
-                        {coverage.map((item, index) => (
-                          <tr key={item.procedure.id} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                            <td className="px-4 py-3 text-sm text-gray-900">
-                              <div>
-                                <div className="font-medium">{item.procedure.name}</div>
-                                {item.procedure.description && (
-                                  <div className="text-xs text-gray-500 mt-1">{item.procedure.description}</div>
-                                )}
-                              </div>
-                            </td>
-                            <td className="px-4 py-3 text-sm text-gray-600">
-                              <Badge variant="outline" className="text-xs">
-                                {item.procedure.procedureType.replace(/_/g, ' ')}
-                              </Badge>
-                            </td>
-                            {item.planCoverage.map(plan => (
-                              <td key={plan.planId} className="px-4 py-3 text-center">
-                                <div className="flex flex-col items-center space-y-1">
-                                  <span className="text-lg">
-                                    {plan.isIncluded ? "✅" : "❌"}
-                                  </span>
-                                  {plan.isIncluded && plan.coparticipacao > 0 && (
-                                    <div className="text-xs text-orange-600 font-medium">
-                                      Coparticipação: {formatCurrency((plan.coparticipacao / 100).toString())}
-                                    </div>
-                                  )}
-                                  {plan.isIncluded && plan.payValue > 0 && (
-                                    <div className="text-xs text-blue-600">
-                                      Valor: {formatCurrency((plan.payValue / 100).toString())}
-                                    </div>
+                            <th className="px-4 py-3 text-left text-sm font-medium text-gray-900 border-b">
+                              Categoria
+                            </th>
+                            {coverage.length > 0 && coverage[0].planCoverage.map(plan => (
+                              <th key={plan.planId} className="px-6 py-3 text-center text-sm font-medium text-gray-900 border-b">
+                                <div className="flex flex-col">
+                                  <span className="font-semibold">{plan.planName}</span>
+                                  <span className="text-xs text-gray-500 font-normal">Cobertura</span>
+                                </div>
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          {filteredCoverage.map((item, index) => (
+                            <tr key={item.procedure.id} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                              <td className="px-4 py-4">
+                                <div>
+                                  <div className="font-medium text-gray-900">{item.procedure.name}</div>
+                                  {item.procedure.description && (
+                                    <div className="text-xs text-gray-500 mt-1 max-w-xs">{item.procedure.description}</div>
                                   )}
                                 </div>
                               </td>
-                            ))}
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                              <td className="px-4 py-4">
+                                <Badge variant="outline" className="text-xs">
+                                  {item.procedure.procedureType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                </Badge>
+                              </td>
+                              {item.planCoverage.map(plan => (
+                                <td key={plan.planId} className="px-6 py-4">
+                                  <div className="flex flex-col items-center space-y-2">
+                                    {/* Status Icon */}
+                                    <div className="flex items-center justify-center">
+                                      <span className="text-xl">
+                                        {plan.isIncluded ? "✅" : "❌"}
+                                      </span>
+                                    </div>
+                                    
+                                    {plan.isIncluded && (
+                                      <div className="text-center space-y-1 min-w-[120px]">
+                                        {/* Procedure Price */}
+                                        {plan.price > 0 && (
+                                          <div className="text-xs text-gray-600">
+                                            <span className="font-medium">Valor Proc.:</span><br/>
+                                            <span className="text-blue-600 font-semibold">
+                                              {formatCurrency((plan.price / 100).toString())}
+                                            </span>
+                                          </div>
+                                        )}
+                                        
+                                        {/* Coparticipação */}
+                                        {plan.coparticipacao > 0 && (
+                                          <div className="text-xs bg-orange-50 border border-orange-200 rounded px-2 py-1">
+                                            <span className="text-orange-700 font-medium">Copart.:</span><br/>
+                                            <span className="text-orange-600 font-semibold">
+                                              - {formatCurrency((plan.coparticipacao / 100).toString())}
+                                            </span>
+                                          </div>
+                                        )}
+                                        
+                                        {/* Final Value */}
+                                        {plan.payValue > 0 && (
+                                          <div className="text-xs bg-green-50 border border-green-200 rounded px-2 py-1">
+                                            <span className="text-green-700 font-medium">Cliente paga:</span><br/>
+                                            <span className="text-green-600 font-semibold">
+                                              {formatCurrency((plan.payValue / 100).toString())}
+                                            </span>
+                                          </div>
+                                        )}
+                                        
+                                        {/* Free procedure */}
+                                        {plan.price === 0 && plan.payValue === 0 && plan.coparticipacao === 0 && (
+                                          <div className="text-xs text-green-600 font-medium bg-green-50 border border-green-200 rounded px-2 py-1">
+                                            Gratuito
+                                          </div>
+                                        )}
+                                      </div>
+                                    )}
+                                    
+                                    {!plan.isIncluded && (
+                                      <div className="text-xs text-gray-500 text-center">
+                                        Não coberto
+                                      </div>
+                                    )}
+                                  </div>
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  
+                  {/* Results Summary */}
+                  <div className="text-sm text-gray-600 text-center bg-gray-50 p-3 rounded-lg">
+                    Mostrando {filteredCoverage.length} de {coverage.length} procedimentos
                   </div>
                 </div>
               ) : (
@@ -1456,9 +1614,12 @@ export default function UnitDashboard() {
                   <CardContent className="p-6 text-center">
                     <TableProperties className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                     <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhuma cobertura encontrada</h3>
-                    <p className="text-gray-500">
+                    <p className="text-gray-500 mb-4">
                       Não foi possível carregar a tabela de cobertura. Verifique se existem procedimentos e planos cadastrados.
                     </p>
+                    <Button onClick={loadCoverage} variant="outline">
+                      Tentar novamente
+                    </Button>
                   </CardContent>
                 </Card>
               )}
