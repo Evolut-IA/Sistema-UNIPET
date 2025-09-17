@@ -248,16 +248,16 @@ export default function Guides() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "open": return "bg-chart-4/20 text-accent-foreground";     // Positivo (verde) com cor de destaque
+      case "pending": return "bg-chart-4/20 text-accent-foreground";     // Positivo (verde) com cor de destaque
       case "closed": return "bg-warning/20 text-accent-foreground";    // Aviso (amarelo) com cor de destaque
-      case "cancelled": return "bg-destructive/20 text-accent-foreground"; // Negativo (vermelho) com cor de destaque
+      case "cancelled": return "bg-chart-5/20 text-accent-foreground"; // Negativo (vermelho) com cor de destaque
       default: return "bg-chart-4/20 text-accent-foreground";
     }
   };
 
   const getStatusLabel = (status: string) => {
     switch (status) {
-      case "open": return "Pendente";
+      case "pending": return "Pendente";
       case "closed": return "Fechada";
       case "cancelled": return "Cancelada";
       default: return status;
@@ -327,7 +327,7 @@ export default function Guides() {
               <SelectContent>
                 {[
                   { value: "all", label: "Todos os status" },
-                  { value: "open", label: "Abertas" },
+                  { value: "pending", label: "Pendentes" },
                   { value: "closed", label: "Fechadas" },
                   { value: "cancelled", label: "Canceladas" }
                 ].map((status) => (
