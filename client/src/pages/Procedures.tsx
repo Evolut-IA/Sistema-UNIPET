@@ -86,8 +86,12 @@ export default function Procedures() {
           maximumFractionDigits: 2
         }); // Converter de centavos para reais com formato PT-BR
         
-        // Calcular automaticamente o campo "pagar" baseado na porcentagem configurada
-        const pagarValue = calculatePayValue(receberValue);
+        // Usar o valor "pagar" salvo no banco de dados ao invés de recalcular automaticamente
+        // Isso preserva valores editados manualmente pelo usuário
+        const pagarValue = (item.price / 100).toLocaleString('pt-BR', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }); // Converter de centavos para reais com formato PT-BR
         
         return {
           planId: item.planId,
