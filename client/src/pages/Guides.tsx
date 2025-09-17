@@ -451,11 +451,29 @@ export default function Guides() {
       {/* Details Dialog */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
         <DialogContent>
-          <DialogHeader>
+          <DialogHeader className="flex flex-row items-center justify-between pr-2">
             <DialogTitle className="flex items-center space-x-2">
               <FileText className="h-5 w-5 text-primary" />
               <span>Detalhes da Guia</span>
             </DialogTitle>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                onClick={handleCopyToClipboard}
+                className="gap-2 h-8"
+                data-testid="button-copy-details"
+              >
+                <Copy className="h-4 w-4" />
+                Copiar
+              </Button>
+              <Button
+                variant="outline" 
+                onClick={() => setDetailsOpen(false)}
+                className="h-8"
+              >
+                Fechar
+              </Button>
+            </div>
           </DialogHeader>
           
           {selectedGuide && (
@@ -509,19 +527,6 @@ export default function Guides() {
                     )}
                   </div>
                 </div>
-              </div>
-              
-              {/* Copy Button */}
-              <div className="flex justify-center mt-4">
-                <Button
-                  variant="default"
-                  onClick={handleCopyToClipboard}
-                  className="flex items-center space-x-2"
-                  data-testid="button-copy-details"
-                >
-                  <Copy className="h-4 w-4" />
-                  <span>Copiar Informações</span>
-                </Button>
               </div>
             </div>
           )}

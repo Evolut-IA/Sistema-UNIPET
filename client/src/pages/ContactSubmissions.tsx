@@ -345,8 +345,26 @@ export default function ContactSubmissions() {
       {/* Details Dialog */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
         <DialogContent className="">
-          <DialogHeader>
+          <DialogHeader className="flex flex-row items-center justify-between pr-2">
             <DialogTitle className="text-primary">Detalhes do Formulário</DialogTitle>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                onClick={handleCopyToClipboard}
+                className="gap-2 h-8"
+                data-testid="button-copy-submission-details"
+              >
+                <Copy className="h-4 w-4" />
+                Copiar
+              </Button>
+              <Button
+                variant="outline" 
+                onClick={() => setDetailsOpen(false)}
+                className="h-8"
+              >
+                Fechar
+              </Button>
+            </div>
           </DialogHeader>
           {selectedSubmission && (
             <div className="space-y-4">
@@ -393,19 +411,6 @@ export default function ContactSubmissions() {
                     {selectedSubmission.createdAt && format(new Date(selectedSubmission.createdAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
                   </p>
                 </div>
-              </div>
-              
-              {/* Copy Button */}
-              <div className="flex justify-end mt-4">
-                <Button
-                  variant="outline"
-                  onClick={handleCopyToClipboard}
-                  className="gap-2"
-                  data-testid="button-copy-submission-details"
-                >
-                  <Copy className="h-4 w-4" />
-                  Copiar Informações
-                </Button>
               </div>
               
               {selectedSubmission.message && (
