@@ -5,7 +5,21 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Mail, Search, Eye, Trash2, Calendar, User, Phone, MapPin, PawPrint, Copy } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Mail, Search, Eye, Trash2, Calendar, User, Phone, MapPin, PawPrint, Copy, Columns } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { apiRequest } from "@/lib/queryClient";
@@ -14,6 +28,17 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
 import { PasswordDialog } from "@/components/ui/password-dialog";
 import { usePasswordDialog } from "@/hooks/use-password-dialog";
+import { cn } from "@/lib/utils";
+
+const allColumns = [
+  "Nome",
+  "Telefone", 
+  "Email",
+  "Pet",
+  "Plano",
+  "Data",
+  "Ações",
+] as const;
 
 // Componente do ícone oficial do WhatsApp
 const WhatsAppIcon = ({ className }: { className?: string }) => (
@@ -38,6 +63,7 @@ export default function ContactSubmissions() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubmission, setSelectedSubmission] = useState<any>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [visibleColumns, setVisibleColumns] = useState<string[]>([...allColumns]);
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const confirmDialog = useConfirmDialog();
@@ -73,6 +99,14 @@ export default function ContactSubmissions() {
     submission.phone?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     submission.petName?.toLowerCase().includes(searchQuery.toLowerCase())
   ) : [];
+
+  const toggleColumn = (col: string) => {
+    setVisibleColumns((prev) =>
+      prev.includes(col)
+        ? prev.filter((c) => c !== col)
+        : [...prev, col]
+    );
+  };
 
   const handleViewDetails = (submission: any) => {
     setSelectedSubmission(submission);
@@ -243,103 +277,179 @@ export default function ContactSubmissions() {
         </div>
       </div>
 
-      {/* Search */}
-      <Card>
-        <CardContent className="p-3 sm:p-4 lg:p-6">
+      {/* Filters and Column Controls */}
+      <div className="flex flex-wrap gap-4 items-center justify-between mb-6">
+        <div className="flex gap-2 flex-wrap">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4" style={{color: 'var(--input-foreground)'}} />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Buscar por nome, email, telefone ou pet..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
+              className="pl-10 w-64"
               data-testid="input-search-submissions"
             />
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Submissions List */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-foreground">
-            Formulários ({filteredSubmissions?.length || 0})
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {isLoading ? (
-            <div className="space-y-4">
-              {[...Array(5)].map((_, i) => (
-                <div key={i} className="border rounded-lg p-4 animate-pulse">
-                  <div className="h-4 bg-muted rounded w-1/3 mb-2"></div>
-                  <div className="h-3 bg-muted rounded w-1/2 mb-1"></div>
-                  <div className="h-3 bg-muted rounded w-1/4"></div>
-                </div>
+        <div className="flex gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-2" data-testid="button-columns">
+                <Columns className="h-4 w-4" />
+                Colunas
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {allColumns.map((col) => (
+                <DropdownMenuCheckboxItem
+                  key={col}
+                  checked={visibleColumns.includes(col)}
+                  onCheckedChange={() => toggleColumn(col)}
+                >
+                  {col}
+                </DropdownMenuCheckboxItem>
               ))}
-            </div>
-          ) : filteredSubmissions?.length ? (
-            <div className="space-y-2">
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
+
+      {/* Submissions Table */}
+      <div className="container my-10 space-y-4 border border-border rounded-lg bg-accent shadow-sm">
+        {isLoading ? (
+          <div className="p-6 space-y-4">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="border rounded-lg p-4 animate-pulse">
+                <div className="h-4 bg-muted rounded w-1/3 mb-2"></div>
+                <div className="h-3 bg-muted rounded w-1/2 mb-1"></div>
+                <div className="h-3 bg-muted rounded w-1/4"></div>
+              </div>
+            ))}
+          </div>
+        ) : filteredSubmissions?.length ? (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                {visibleColumns.includes("Nome") && (
+                  <TableHead className="text-left bg-accent border-r border-border">Nome</TableHead>
+                )}
+                {visibleColumns.includes("Telefone") && (
+                  <TableHead className="text-left bg-accent border-r border-border">Telefone</TableHead>
+                )}
+                {visibleColumns.includes("Email") && (
+                  <TableHead className="text-left bg-accent border-r border-border">Email</TableHead>
+                )}
+                {visibleColumns.includes("Pet") && (
+                  <TableHead className="text-left bg-accent border-r border-border">Pet</TableHead>
+                )}
+                {visibleColumns.includes("Plano") && (
+                  <TableHead className="text-left bg-accent border-r border-border">Plano</TableHead>
+                )}
+                {visibleColumns.includes("Data") && (
+                  <TableHead className="text-left bg-accent border-r border-border">Data</TableHead>
+                )}
+                {visibleColumns.includes("Ações") && (
+                  <TableHead className="text-center bg-accent">Ações</TableHead>
+                )}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {filteredSubmissions.map((submission: any) => (
-                <div key={submission.id} className="border rounded-lg p-3 hover:bg-muted/10 transition-colors">
-                  <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-3">
-                    <div className="flex-1 min-w-0 flex items-center">
-                      {/* Nome do Formulário */}
-                      <div className="w-full">
-                        <h3 className="font-semibold text-foreground break-words" data-testid={`submission-name-${submission.id}`}>
+                <TableRow key={submission.id} className="border-b border-border bg-accent hover:bg-accent/80">
+                  {visibleColumns.includes("Nome") && (
+                    <TableCell className="bg-accent border-r border-border">
+                      <div>
+                        <div className="font-medium text-foreground" data-testid={`submission-name-${submission.id}`}>
                           {submission.name}
-                        </h3>
-                        <Badge className={`${getPlanInterestColor(submission.planInterest)} lg:hidden`} data-testid={`badge-plan-interest-${submission.id}`}>
-                          {submission.planInterest}
-                        </Badge>
+                        </div>
+                        <div className="text-sm text-muted-foreground">{submission.city}</div>
                       </div>
-                    </div>
-
-                    {/* Botões em linha horizontal */}
-                    <div className="flex items-center space-x-1 w-full sm:w-auto sm:ml-3">
-                      <Button
-                        variant="default"
-                        size="sm"
-                        onClick={() => handleWhatsApp(submission)}
-                        data-testid={`button-whatsapp-${submission.id}`}
-                        title="Enviar mensagem no WhatsApp"
-                      >
-                        <WhatsAppIcon className="h-5 w-5" />
-                      </Button>
-                      <Button
-                        variant="default"
-                        size="sm"
-                        onClick={() => handleViewDetails(submission)}
-                        data-testid={`button-view-${submission.id}`}
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="default"
-                        size="sm"
-                        onClick={() => handleDelete(submission.id, submission.name)}
-                        disabled={deleteMutation.isPending}
-                        data-testid={`button-delete-${submission.id}`}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </div>
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Telefone") && (
+                    <TableCell className="bg-accent border-r border-border">
+                      <div className="text-sm text-foreground">{submission.phone}</div>
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Email") && (
+                    <TableCell className="bg-accent border-r border-border">
+                      <div className="text-sm text-foreground">{submission.email}</div>
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Pet") && (
+                    <TableCell className="bg-accent border-r border-border">
+                      <div>
+                        <div className="font-medium text-foreground">{submission.petName}</div>
+                        <div className="text-sm text-muted-foreground">{submission.animalType}, {submission.petAge}</div>
+                      </div>
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Plano") && (
+                    <TableCell className="bg-accent border-r border-border">
+                      <Badge className={getPlanInterestColor(submission.planInterest)} data-testid={`badge-plan-interest-${submission.id}`}>
+                        {submission.planInterest}
+                      </Badge>
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Data") && (
+                    <TableCell className="bg-accent border-r border-border">
+                      <div className="text-sm text-foreground">
+                        {submission.createdAt && format(new Date(submission.createdAt), "dd/MM/yyyy", { locale: ptBR })}
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        {submission.createdAt && format(new Date(submission.createdAt), "HH:mm", { locale: ptBR })}
+                      </div>
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Ações") && (
+                    <TableCell className="bg-accent">
+                      <div className="flex items-center justify-center space-x-1">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleWhatsApp(submission)}
+                          data-testid={`button-whatsapp-${submission.id}`}
+                          title="Enviar mensagem no WhatsApp"
+                        >
+                          <WhatsAppIcon className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleViewDetails(submission)}
+                          data-testid={`button-view-${submission.id}`}
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDelete(submission.id, submission.name)}
+                          disabled={deleteMutation.isPending}
+                          data-testid={`button-delete-${submission.id}`}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  )}
+                </TableRow>
               ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <Mail className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground">
-                {searchQuery 
-                  ? "Nenhum formulário encontrado para a busca." 
-                  : "Nenhum formulário recebido ainda."
-                }
-              </p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+            </TableBody>
+          </Table>
+        ) : (
+          <div className="text-center py-12">
+            <Mail className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <p className="text-muted-foreground">
+              {searchQuery 
+                ? "Nenhum formulário encontrado para a busca." 
+                : "Nenhum formulário recebido ainda."
+              }
+            </p>
+          </div>
+        )}
+      </div>
 
 
       {/* Details Dialog */}

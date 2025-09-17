@@ -13,11 +13,36 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { CustomCheckbox } from "@/components/ui/custom-checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Search, Edit, Trash2, ClipboardList, Eye, DollarSign, X } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { cn } from "@/lib/utils";
+import { Plus, Search, Edit, Trash2, ClipboardList, Eye, DollarSign, X, Columns } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { insertProcedureSchema } from "@shared/schema";
 import { PROCEDURE_TYPES, PROCEDURE_TYPE_LABELS } from "@/lib/constants";
+
+const allColumns = [
+  "Nome",
+  "Tipo",
+  "Status", 
+  "Data",
+  "Ações",
+] as const;
 
 export default function Procedures() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -25,6 +50,7 @@ export default function Procedures() {
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
   const [viewingItem, setViewingItem] = useState<any>(null);
+  const [visibleColumns, setVisibleColumns] = useState<string[]>([...allColumns]);
   const [selectedPlans, setSelectedPlans] = useState<{
     planId: string, 
     receber: string, 
@@ -508,6 +534,14 @@ export default function Procedures() {
     item.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     item.description?.toLowerCase().includes(searchQuery.toLowerCase())
   ) : [];
+
+  const toggleColumn = (col: string) => {
+    setVisibleColumns((prev) =>
+      prev.includes(col)
+        ? prev.filter((c) => c !== col)
+        : [...prev, col]
+    );
+  };
 
   const handleEdit = async (item: any) => {
     setEditingItem(item);
@@ -1000,103 +1034,197 @@ export default function Procedures() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
-              data-testid="input-search-procedures"
+              data-testid="input-search-procedures" 
             />
           </div>
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 gap-6">
-        {/* Management Panel */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-foreground">
+      {/* Table with Column Control */}
+      <div className="container my-10 space-y-4 border border-border rounded-lg bg-accent shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 p-4 border-b border-border">
+          <div className="flex-1">
+            <h2 className="text-lg font-medium text-foreground">
               Procedimentos ({filteredItems?.length || 0})
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {isLoading ? (
-              <div className="space-y-4">
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className="border rounded-lg p-4 animate-pulse">
-                    <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
-                    <div className="h-3 bg-muted rounded w-1/2"></div>
-                  </div>
-                ))}
-              </div>
-            ) : filteredItems?.length ? (
-              <div className="space-y-2">
-                {filteredItems.map((item: any) => (
-                  <div key={item.id} className="border rounded-lg p-3 hover:bg-muted/10 transition-colors">
-                    <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-3">
-                      <div className="flex-1 min-w-0 flex items-center">
-                        {/* Nome do Procedimento */}
-                        <div className="w-full">
-                          <h3 className="font-semibold text-foreground break-words" data-testid={`procedure-name-${item.id}`}>
-                            {item.name}
-                          </h3>
-                        </div>
+            </h2>
+          </div>
+          
+          {/* Controle de Colunas */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                <Columns className="h-4 w-4 mr-2" />
+                Colunas
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {allColumns.map((col) => (
+                <DropdownMenuCheckboxItem
+                  key={col}
+                  checked={visibleColumns.includes(col)}
+                  onCheckedChange={() => toggleColumn(col)}
+                >
+                  {col}
+                </DropdownMenuCheckboxItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        
+        {isLoading ? (
+          <div className="p-4">
+            <div className="space-y-4">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="flex items-center space-x-4">
+                  <div className="h-4 bg-muted rounded w-1/4 animate-pulse"></div>
+                  <div className="h-4 bg-muted rounded w-1/6 animate-pulse"></div>
+                  <div className="h-4 bg-muted rounded w-1/8 animate-pulse"></div>
+                  <div className="h-4 bg-muted rounded w-1/6 animate-pulse"></div>
+                  <div className="h-4 bg-muted rounded w-1/4 animate-pulse"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : filteredItems?.length ? (
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-accent hover:bg-accent">
+                {visibleColumns.includes("Nome") && (
+                  <TableHead>Nome</TableHead>
+                )}
+                {visibleColumns.includes("Tipo") && (
+                  <TableHead>Tipo</TableHead>
+                )}
+                {visibleColumns.includes("Status") && (
+                  <TableHead>Status</TableHead>
+                )}
+                {visibleColumns.includes("Data") && (
+                  <TableHead>Data</TableHead>
+                )}
+                {visibleColumns.includes("Ações") && (
+                  <TableHead>Ações</TableHead>
+                )}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredItems.map((item: any) => (
+                <TableRow key={item.id} className="bg-accent hover:bg-accent/70">
+                  {visibleColumns.includes("Nome") && (
+                    <TableCell>
+                      <div className="font-medium" data-testid={`procedure-name-${item.id}`}>
+                        {item.name}
                       </div>
-                      
-                      {/* Botões em linha horizontal */}
-                      <div className="flex items-center space-x-1 w-full sm:w-auto">
+                      {item.description && (
+                        <div className="text-sm text-muted-foreground mt-1">
+                          {item.description}
+                        </div>
+                      )}
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Tipo") && (
+                    <TableCell>
+                      <Badge variant="outline" className={cn(
+                        "text-xs",
+                        {
+                          "bg-blue-50 text-blue-700 border-blue-200": item.procedureType === "consultas",
+                          "bg-green-50 text-green-700 border-green-200": item.procedureType === "exames",
+                          "bg-purple-50 text-purple-700 border-purple-200": item.procedureType === "cirurgias",
+                          "bg-orange-50 text-orange-700 border-orange-200": item.procedureType === "internacao",
+                          "bg-red-50 text-red-700 border-red-200": item.procedureType === "emergencia",
+                          "bg-teal-50 text-teal-700 border-teal-200": item.procedureType === "vacinas",
+                          "bg-pink-50 text-pink-700 border-pink-200": item.procedureType === "outros"
+                        }
+                      )}>
+                        {PROCEDURE_TYPE_LABELS[item.procedureType as keyof typeof PROCEDURE_TYPE_LABELS] || item.procedureType}
+                      </Badge>
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Status") && (
+                    <TableCell>
+                      <div className="flex items-center space-x-2">
+                        <Switch
+                          checked={item.isActive}
+                          onCheckedChange={() => handleToggleStatus(item.id, item.isActive)}
+                        />
+                        <Badge 
+                          variant={item.isActive ? "default" : "secondary"}
+                          className={cn(
+                            "text-xs",
+                            item.isActive 
+                              ? "bg-green-100 text-green-800 border-green-300" 
+                              : "bg-gray-100 text-gray-600 border-gray-300"
+                          )}
+                        >
+                          {item.isActive ? "Ativo" : "Inativo"}
+                        </Badge>
+                      </div>
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Data") && (
+                    <TableCell>
+                      {item.createdAt ? format(new Date(item.createdAt), "dd/MM/yyyy", { locale: ptBR }) : "N/A"}
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Ações") && (
+                    <TableCell>
+                      <div className="flex items-center space-x-1">
                         <Button
-                          variant="default"
+                          variant="ghost"
                           size="sm"
                           onClick={() => handleView(item)}
                           data-testid={`button-view-${item.id}`}
-                          className="text-xs"
+                          className="text-xs p-1 h-8 w-8"
                         >
                           <Eye className="h-3 w-3" />
                         </Button>
                         
                         <Button
-                          variant="default"
+                          variant="ghost"
                           size="sm"
                           onClick={() => handleEdit(item)}
                           data-testid={`button-edit-${item.id}`}
-                          className="text-xs"
+                          className="text-xs p-1 h-8 w-8"
                         >
                           <Edit className="h-3 w-3" />
                         </Button>
                         
                         <Button
-                          variant="default"
+                          variant="ghost"
                           size="sm"
                           onClick={() => handleDelete(item.id)}
                           disabled={deleteMutation.isPending}
                           data-testid={`button-delete-${item.id}`}
-                          className="text-xs"
+                          className="text-xs p-1 h-8 w-8"
                         >
                           <Trash2 className="h-3 w-3" />
                         </Button>
                       </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-8">
-                <p className="text-muted-foreground mb-4">
-                  {searchQuery 
-                    ? "Nenhum procedimento encontrado para a busca." 
-                    : "Nenhum procedimento cadastrado ainda."
-                  }
-                </p>
-                {!searchQuery && (
-                  <Button
-                    variant="default"
-                    onClick={() => setDialogOpen(true)}
-                    data-testid="button-add-first-procedure"
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Criar Primeiro Procedimento
-                  </Button>
-                )}
-              </div>
+                    </TableCell>
+                  )}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        ) : (
+          <div className="text-center py-12 p-4">
+            <p className="text-muted-foreground mb-4">
+              {searchQuery 
+                ? "Nenhum procedimento encontrado para a busca." 
+                : "Nenhum procedimento cadastrado ainda."
+              }
+            </p>
+            {!searchQuery && (
+              <Button
+                variant="default"
+                onClick={() => setDialogOpen(true)}
+                data-testid="button-add-first-procedure"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Criar Primeiro Procedimento
+              </Button>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        )}
       </div>
     </div>
   );

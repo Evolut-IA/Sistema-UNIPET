@@ -6,20 +6,45 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useLocation } from "wouter";
-import { Plus, Search, Edit, Trash2, Building2, ExternalLink, Phone, MapPin, Eye, Copy, Globe } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Building2, ExternalLink, Phone, MapPin, Eye, Copy, Globe, Columns } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
 import { PasswordDialog } from "@/components/ui/password-dialog";
 import { usePasswordDialog } from "@/hooks/use-password-dialog";
+import { cn } from "@/lib/utils";
+
+const allColumns = [
+  "Nome",
+  "Endereço",
+  "Telefone",
+  "Serviços",
+  "Status",
+  "Ações",
+] as const;
 
 export default function Network() {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedUnit, setSelectedUnit] = useState<any>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [visibleColumns, setVisibleColumns] = useState<string[]>([...allColumns]);
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const confirmDialog = useConfirmDialog();
@@ -73,6 +98,14 @@ export default function Network() {
     unit.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     unit.address?.toLowerCase().includes(searchQuery.toLowerCase())
   ) : [];
+
+  const toggleColumn = (col: string) => {
+    setVisibleColumns((prev) =>
+      prev.includes(col)
+        ? prev.filter((c) => c !== col)
+        : [...prev, col]
+    );
+  };
 
   const handleDelete = (id: string, unitName: string) => {
     passwordDialog.openDialog({
@@ -219,151 +252,201 @@ export default function Network() {
         </Button>
       </div>
 
-      {/* Search */}
-      <Card>
-        <CardContent className="p-3 sm:p-4 lg:p-6">
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4" style={{color: 'var(--input-foreground)'}} />
-              <Input
-                placeholder="Buscar por nome ou endereço..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-                data-testid="input-search-units"
-              />
-            </div>
+      {/* Filters and Column Controls */}
+      <div className="flex flex-wrap gap-4 items-center justify-between mb-6">
+        <div className="flex gap-2 flex-wrap">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Buscar por nome ou endereço..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 w-64"
+              data-testid="input-search-units"
+            />
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Units List */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-foreground">
-            Unidades ({filteredUnits?.length || 0})
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
-        {isLoading ? (
-          [...Array(5)].map((_, i) => (
-            <Card key={i} className="animate-pulse">
-              <CardContent className="p-4">
-                <div className="h-6 bg-muted rounded w-1/3 mb-2"></div>
-                <div className="h-4 bg-muted rounded w-1/2 mb-2"></div>
-                <div className="h-4 bg-muted rounded w-1/4"></div>
-              </CardContent>
-            </Card>
-          ))
-        ) : filteredUnits?.length ? (
-          filteredUnits.map((unit: any) => (
-            <div key={unit.id} className="border rounded-lg p-3 hover:bg-muted/10 transition-colors">
-                <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-3">
-                  <div className="flex-1 min-w-0 flex items-center">
-                    {/* Nome da Unidade */}
-                    <div className="w-full">
-                      <h3 className="font-semibold text-foreground break-words" data-testid={`unit-name-${unit.id}`}>
-                        {unit.name}
-                      </h3>
-                    </div>
-                  </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm">
+              <Columns className="h-4 w-4 mr-2" />
+              Colunas
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-48">
+            {allColumns.map((col) => (
+              <DropdownMenuCheckboxItem
+                key={col}
+                checked={visibleColumns.includes(col)}
+                onCheckedChange={() => toggleColumn(col)}
+                className="data-[state=checked]:bg-transparent focus:bg-muted/50"
+              >
+                {col}
+              </DropdownMenuCheckboxItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
 
-                  <div className="flex items-center gap-3 w-full sm:w-auto sm:ml-3">
-                    {/* Switch com Badge do lado direito */}
-                    <div className="flex items-center">
+      {/* Modern Table Container */}
+      <div className="container my-10 space-y-4 border border-border rounded-lg bg-accent shadow-sm">
+
+        {/* Table */}
+        <div className="rounded-lg overflow-hidden">
+          <Table className="w-full">
+          <TableHeader>
+            <TableRow className="bg-accent">
+              {visibleColumns.includes("Nome") && <TableHead className="w-[200px] bg-accent">Nome</TableHead>}
+              {visibleColumns.includes("Endereço") && <TableHead className="w-[250px] bg-accent">Endereço</TableHead>}
+              {visibleColumns.includes("Telefone") && <TableHead className="w-[140px] bg-accent">Telefone</TableHead>}
+              {visibleColumns.includes("Serviços") && <TableHead className="w-[200px] bg-accent">Serviços</TableHead>}
+              {visibleColumns.includes("Status") && <TableHead className="w-[100px] bg-accent">Status</TableHead>}
+              {visibleColumns.includes("Ações") && <TableHead className="w-[200px] bg-accent">Ações</TableHead>}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {isLoading ? (
+              [...Array(5)].map((_, i) => (
+                <TableRow key={i}>
+                  <TableCell colSpan={visibleColumns.length} className="text-center py-6">
+                    <div className="h-4 bg-muted rounded w-full animate-pulse"></div>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : filteredUnits?.length ? (
+              filteredUnits.map((unit: any) => (
+                <TableRow key={unit.id} className="bg-accent hover:bg-accent/80">
+                  {visibleColumns.includes("Nome") && (
+                    <TableCell className="font-medium whitespace-nowrap bg-accent" data-testid={`unit-name-${unit.id}`}>
+                      {unit.name}
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Endereço") && (
+                    <TableCell className="whitespace-nowrap bg-accent">
+                      {unit.address || "Não informado"}
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Telefone") && (
+                    <TableCell className="whitespace-nowrap bg-accent">
+                      {unit.phone || "Não informado"}
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Serviços") && (
+                    <TableCell className="bg-accent">
+                      {unit.services && unit.services.length > 0 ? (
+                        <div className="flex flex-wrap gap-1">
+                          {unit.services.slice(0, 2).map((service: string, index: number) => (
+                            <Badge key={index} variant="outline" className="text-xs">
+                              {service}
+                            </Badge>
+                          ))}
+                          {unit.services.length > 2 && (
+                            <Badge variant="outline" className="text-xs">
+                              +{unit.services.length - 2}
+                            </Badge>
+                          )}
+                        </div>
+                      ) : (
+                        "Não informado"
+                      )}
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Status") && (
+                    <TableCell className="whitespace-nowrap bg-accent">
                       <Switch
                         checked={unit.isActive}
                         onCheckedChange={() => handleToggleStatus(unit.id, unit.isActive)}
                         disabled={toggleUnitMutation.isPending}
                         data-testid={`switch-unit-status-${unit.id}`}
                       />
-                    </div>
-                    
-                    {/* Botões em linha horizontal */}
-                    <div className="flex items-center space-x-1">
-                      {/* Botão para acessar a unidade */}
-                      {unit.urlSlug && unit.isActive && (
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Ações") && (
+                    <TableCell className="whitespace-nowrap bg-accent">
+                      <div className="flex items-center space-x-1">
+                        {unit.urlSlug && unit.isActive && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            asChild
+                            data-testid={`button-access-unit-${unit.id}`}
+                            title={`Acessar página da unidade: ${unit.name}`}
+                          >
+                            <a href={`/${unit.urlSlug}`} target="_blank" rel="noopener noreferrer">
+                              <Globe className="h-4 w-4" />
+                            </a>
+                          </Button>
+                        )}
                         <Button
-                          variant="default"
+                          variant="outline"
                           size="sm"
-                          asChild
-                          data-testid={`button-access-unit-${unit.id}`}
-                          title={`Acessar página da unidade: ${unit.name}`}
+                          onClick={() => handleViewDetails(unit)}
+                          data-testid={`button-view-${unit.id}`}
                         >
-                          <a href={`/${unit.urlSlug}`} target="_blank" rel="noopener noreferrer">
-                            <Globe className="h-4 w-4" />
-                          </a>
+                          <Eye className="h-4 w-4" />
                         </Button>
-                      )}
-                      <Button
-                        variant="default"
-                        size="sm"
-                        onClick={() => handleViewDetails(unit)}
-                        data-testid={`button-view-${unit.id}`}
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      {unit.googleMapsUrl && (
+                        {unit.googleMapsUrl && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            asChild
+                            data-testid={`button-maps-${unit.id}`}
+                          >
+                            <a href={unit.googleMapsUrl} target="_blank" rel="noopener noreferrer">
+                              <ExternalLink className="h-4 w-4" />
+                            </a>
+                          </Button>
+                        )}
                         <Button
-                          variant="default"
+                          variant="outline"
                           size="sm"
-                          asChild
-                          data-testid={`button-maps-${unit.id}`}
+                          onClick={() => setLocation(`/rede/${unit.id}/editar`)}
+                          data-testid={`button-edit-${unit.id}`}
                         >
-                          <a href={unit.googleMapsUrl} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink className="h-4 w-4" />
-                          </a>
+                          <Edit className="h-4 w-4" />
                         </Button>
-                      )}
-                      <Button
-                        variant="default"
-                        size="sm"
-                        onClick={() => setLocation(`/rede/${unit.id}/editar`)}
-                        data-testid={`button-edit-${unit.id}`}
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="default"
-                        size="sm"
-                        onClick={() => handleDelete(unit.id, unit.name)}
-                        disabled={deleteUnitMutation.isPending}
-                        data-testid={`button-delete-${unit.id}`}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-            </div>
-          ))
-        ) : (
-          <Card>
-            <CardContent className="text-center py-12">
-              <Building2 className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground mb-4">
-                {searchQuery 
-                  ? "Nenhuma unidade encontrada." 
-                  : "Nenhuma unidade cadastrada ainda."
-                }
-              </p>
-              {!searchQuery && (
-                <Button 
-                  className="btn-primary"
-                  onClick={() => setLocation("/rede/novo")}
-                  data-testid="button-add-first-unit"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Cadastrar Primeira Unidade
-                </Button>
-              )}
-            </CardContent>
-          </Card>
-        )}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDelete(unit.id, unit.name)}
+                          disabled={deleteUnitMutation.isPending}
+                          data-testid={`button-delete-${unit.id}`}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  )}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow className="bg-accent">
+                <TableCell colSpan={visibleColumns.length} className="text-center py-12 bg-accent">
+                  <Building2 className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground mb-4">
+                    {searchQuery 
+                      ? "Nenhuma unidade encontrada." 
+                      : "Nenhuma unidade cadastrada ainda."
+                    }
+                  </p>
+                  {!searchQuery && (
+                    <Button 
+                      className="btn-primary"
+                      onClick={() => setLocation("/rede/novo")}
+                      data-testid="button-add-first-unit"
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Cadastrar Primeira Unidade
+                    </Button>
+                  )}
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+          </Table>
         </div>
-        </CardContent>
-      </Card>
+      </div>
 
       {/* Details Dialog */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>

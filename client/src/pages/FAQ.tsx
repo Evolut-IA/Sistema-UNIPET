@@ -11,15 +11,40 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Plus, Search, Edit, Trash2, HelpCircle } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Plus, Search, Edit, Trash2, HelpCircle, Columns } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { insertFaqItemSchema } from "@shared/schema";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+
+const allColumns = [
+  "Pergunta",
+  "Status", 
+  "Data",
+  "Ações",
+] as const;
 
 export default function FAQ() {
   const [searchQuery, setSearchQuery] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
+  const [visibleColumns, setVisibleColumns] = useState<string[]>([...allColumns]);
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -133,6 +158,24 @@ export default function FAQ() {
   };
 
   const activeItems = filteredItems?.filter((item: any) => item.isActive) || [];
+
+  const toggleColumn = (col: string) => {
+    setVisibleColumns((prev) =>
+      prev.includes(col)
+        ? prev.filter((c) => c !== col)
+        : [...prev, col]
+    );
+  };
+
+  const getStatusColor = (isActive: boolean) => {
+    return isActive 
+      ? "bg-chart-4/20 text-accent-foreground"
+      : "bg-chart-5/20 text-accent-foreground";
+  };
+
+  const getStatusLabel = (isActive: boolean) => {
+    return isActive ? "Ativo" : "Inativo";
+  };
 
   return (
     <div className="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
@@ -249,21 +292,42 @@ export default function FAQ() {
           </DialogContent>
         </Dialog>
 
-      {/* Search */}
-      <Card>
-        <CardContent className="p-3 sm:p-4 lg:p-6">
+      {/* Filters and Column Controls */}
+      <div className="flex flex-wrap gap-4 items-center justify-between mb-6">
+        <div className="flex gap-2 flex-wrap">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4" style={{color: 'var(--input-foreground)'}} />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Buscar perguntas e respostas..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
+              className="pl-10 w-64"
               data-testid="input-search-faq"
             />
           </div>
-        </CardContent>
-      </Card>
+        </div>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm">
+              <Columns className="h-4 w-4 mr-2" />
+              Colunas
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-48">
+            {allColumns.map((col) => (
+              <DropdownMenuCheckboxItem
+                key={col}
+                checked={visibleColumns.includes(col)}
+                onCheckedChange={() => toggleColumn(col)}
+                className="data-[state=checked]:bg-transparent focus:bg-muted/50"
+              >
+                {col}
+              </DropdownMenuCheckboxItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
 
       <div className="grid grid-cols-1 gap-6">
         {/* Management Panel */}

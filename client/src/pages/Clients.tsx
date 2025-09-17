@@ -6,9 +6,23 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useLocation } from "wouter";
 import type { Client } from "@shared/schema";
-import { Plus, Search, Edit, Trash2, Eye, Copy, FileText } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Eye, Copy, FileText, Columns } from "lucide-react";
 
 // Componente do ícone de adicionar pet
 const AddPetIcon = ({ className }: { className?: string }) => (
@@ -31,12 +45,24 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
 import { PasswordDialog } from "@/components/ui/password-dialog";
 import { usePasswordDialog } from "@/hooks/use-password-dialog";
+import { cn } from "@/lib/utils";
+
+const allColumns = [
+  "Nome",
+  "Telefone",
+  "Email",
+  "CPF",
+  "Cidade",
+  "Data",
+  "Ações",
+] as const;
 
 export default function Clients() {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedClient, setSelectedClient] = useState<any>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [visibleColumns, setVisibleColumns] = useState<string[]>([...allColumns]);
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const confirmDialog = useConfirmDialog();
@@ -78,6 +104,14 @@ export default function Clients() {
   });
 
   const displayClients = searchQuery.length > 2 ? searchResults : clients;
+
+  const toggleColumn = (col: string) => {
+    setVisibleColumns((prev) =>
+      prev.includes(col)
+        ? prev.filter((c) => c !== col)
+        : [...prev, col]
+    );
+  };
 
   const handleDelete = (id: string, clientName: string) => {
     passwordDialog.openDialog({
@@ -261,121 +295,170 @@ export default function Clients() {
         </Button>
       </div>
 
-      {/* Search */}
-      <Card>
-        <CardContent className="p-3 sm:p-4 lg:p-6">
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4" style={{color: 'var(--input-foreground)'}} />
-              <Input
-                placeholder="Buscar por nome, CPF, email ou telefone..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-                data-testid="input-search-clients"
-              />
-            </div>
+      {/* Filters and Column Controls */}
+      <div className="flex flex-wrap gap-4 items-center justify-between mb-6">
+        <div className="flex gap-2 flex-wrap">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Buscar por nome, CPF, email ou telefone..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 w-80"
+              data-testid="input-search-clients"
+            />
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Clients List */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-foreground">
-            {searchQuery.length > 2 ? `Resultados da Busca (${displayClients?.length || 0})` : `Clientes (${displayClients?.length || 0})`}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {isLoading || searchLoading ? (
-            <div className="space-y-4">
-              {[...Array(5)].map((_, i) => (
-                <div key={i} className="border rounded-lg p-4 animate-pulse">
-                  <div className="h-4 bg-muted rounded w-1/4 mb-2"></div>
-                  <div className="h-3 bg-muted rounded w-1/2 mb-1"></div>
-                  <div className="h-3 bg-muted rounded w-1/3"></div>
-                </div>
-              ))}
-            </div>
-          ) : displayClients?.length ? (
-            <div className="space-y-2">
-              {displayClients.map((client: any) => (
-                <div key={client.id} className="border rounded-lg p-3 hover:bg-muted/10 transition-colors">
-                  <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-3">
-                    <div className="flex-1 min-w-0 flex items-center">
-                      {/* Nome do Cliente */}
-                      <div className="w-full">
-                        <h3 className="font-semibold text-foreground break-words" data-testid={`client-name-${client.id}`}>
-                          {client.fullName}
-                        </h3>
-                      </div>
-                    </div>
-                    
-                    {/* Botões - Mobile: Scroll horizontal; Desktop: Em linha */}
-                    <div className="flex items-center space-x-1 w-full sm:w-auto overflow-x-auto pb-2 pe-4 ps-1 sm:pb-0 sm:pe-0 sm:ps-0 sm:overflow-visible scrollbar-hide">
-                      <div className="inline-flex whitespace-nowrap gap-x-1">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm">
+              <Columns className="h-4 w-4 mr-2" />
+              Colunas
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-48">
+            {allColumns.map((col) => (
+              <DropdownMenuCheckboxItem
+                key={col}
+                checked={visibleColumns.includes(col)}
+                onCheckedChange={() => toggleColumn(col)}
+                className="data-[state=checked]:bg-transparent focus:bg-muted/50"
+              >
+                {col}
+              </DropdownMenuCheckboxItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      {/* Modern Table Container */}
+      <div className="container my-10 space-y-4 border border-border rounded-lg bg-accent shadow-sm">
+
+        {/* Table */}
+        <div className="rounded-lg overflow-hidden">
+          <Table className="w-full">
+          <TableHeader>
+            <TableRow className="bg-accent">
+              {visibleColumns.includes("Nome") && <TableHead className="w-[200px] bg-accent">Nome</TableHead>}
+              {visibleColumns.includes("Telefone") && <TableHead className="w-[140px] bg-accent">Telefone</TableHead>}
+              {visibleColumns.includes("Email") && <TableHead className="w-[180px] bg-accent">Email</TableHead>}
+              {visibleColumns.includes("CPF") && <TableHead className="w-[120px] bg-accent">CPF</TableHead>}
+              {visibleColumns.includes("Cidade") && <TableHead className="w-[120px] bg-accent">Cidade</TableHead>}
+              {visibleColumns.includes("Data") && <TableHead className="w-[120px] bg-accent">Data</TableHead>}
+              {visibleColumns.includes("Ações") && <TableHead className="w-[200px] bg-accent">Ações</TableHead>}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {isLoading || searchLoading ? (
+              [...Array(5)].map((_, i) => (
+                <TableRow key={i}>
+                  <TableCell colSpan={visibleColumns.length} className="text-center py-6">
+                    <div className="h-4 bg-muted rounded w-full animate-pulse"></div>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : displayClients?.length ? (
+              displayClients.map((client: any) => (
+                <TableRow key={client.id} className="bg-accent hover:bg-accent/80">
+                  {visibleColumns.includes("Nome") && (
+                    <TableCell className="font-medium whitespace-nowrap bg-accent">
+                      {client.fullName}
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Telefone") && (
+                    <TableCell className="whitespace-nowrap bg-accent">
+                      {client.phone}
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Email") && (
+                    <TableCell className="whitespace-nowrap bg-accent">
+                      {client.email || "Não informado"}
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("CPF") && (
+                    <TableCell className="whitespace-nowrap bg-accent">
+                      {client.cpf}
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Cidade") && (
+                    <TableCell className="whitespace-nowrap bg-accent">
+                      {client.city || "Não informado"}
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Data") && (
+                    <TableCell className="whitespace-nowrap bg-accent">
+                      {client.createdAt && format(new Date(client.createdAt), "dd/MM/yyyy", { locale: ptBR })}
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("Ações") && (
+                    <TableCell className="whitespace-nowrap bg-accent">
+                      <div className="flex items-center space-x-1">
                         <Button
-                          variant="default"
+                          variant="outline"
                           size="sm"
                           onClick={() => handleViewDetails(client)}
                           data-testid={`button-view-${client.id}`}
-                          className="text-xs shrink-0"
                         >
-                          <Eye className="h-3 w-3" />
+                          <Eye className="h-4 w-4" />
                         </Button>
                         <Button
-                          variant="default"
+                          variant="outline"
                           size="sm"
                           onClick={() => setLocation(`/clientes/${client.id}/pets/novo`)}
                           data-testid={`button-add-pet-${client.id}`}
-                          className="text-xs"
                         >
-                          <AddPetIcon className="h-3 w-3" />
+                          <AddPetIcon className="h-4 w-4" />
                         </Button>
                         <Button
-                          variant="default"
+                          variant="outline"
                           size="sm"
                           onClick={() => setLocation(`/clientes/${client.id}/editar`)}
                           data-testid={`button-edit-${client.id}`}
-                          className="text-xs"
                         >
-                          <Edit className="h-3 w-3" />
+                          <Edit className="h-4 w-4" />
                         </Button>
                         <Button
-                          variant="default"
+                          variant="outline"
                           size="sm"
                           onClick={() => handleDelete(client.id, client.fullName)}
                           disabled={deleteClientMutation.isPending}
                           data-testid={`button-delete-${client.id}`}
-                          className="text-xs shrink-0"
                         >
-                          <Trash2 className="h-3 w-3" />
+                          <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground">
-                {searchQuery.length > 2 ? "Nenhum cliente encontrado para a busca." : "Nenhum cliente cadastrado ainda."}
-              </p>
-              {searchQuery.length <= 2 && (
-                <Button 
-                  className="mt-4"
-                  onClick={() => setLocation("/clientes/novo")}
-                  data-testid="button-add-first-client"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Cadastrar Primeiro Cliente
-                </Button>
-              )}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+                    </TableCell>
+                  )}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow className="bg-accent">
+                <TableCell colSpan={visibleColumns.length} className="text-center py-12 bg-accent">
+                  <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground">
+                    {searchQuery.length > 2
+                      ? "Nenhum cliente encontrado para a busca."
+                      : "Nenhum cliente cadastrado ainda."
+                    }
+                  </p>
+                  {searchQuery.length <= 2 && (
+                    <Button 
+                      className="mt-4"
+                      onClick={() => setLocation("/clientes/novo")}
+                      data-testid="button-add-first-client"
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Cadastrar Primeiro Cliente
+                    </Button>
+                  )}
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+        </div>
+      </div>
 
       {/* Details Dialog */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
