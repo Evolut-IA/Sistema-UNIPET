@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -25,12 +25,15 @@ import { useLocation } from "wouter";
 import { Plus, Search, Edit, Trash2, FileText, Eye, Copy, Columns3 as Columns, ChevronLeft, ChevronRight } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { CalendarDate } from "@internationalized/date";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
 import { PasswordDialog } from "@/components/ui/password-dialog";
 import { usePasswordDialog } from "@/hooks/use-password-dialog";
+import { DateFilterComponent } from "@/components/DateFilterComponent";
+import { getDateRangeParams } from "@/lib/date-utils";
 import { GUIDE_TYPES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
@@ -59,15 +62,43 @@ export default function Guides() {
   const confirmDialog = useConfirmDialog();
   const passwordDialog = usePasswordDialog();
 
+  const [dateFilter, setDateFilter] = useState<{
+    startDate: CalendarDate | null;
+    endDate: CalendarDate | null;
+  }>({ startDate: null, endDate: null });
+
+  const [debouncedDateFilter, setDebouncedDateFilter] = useState<{
+    startDate: CalendarDate | null;
+    endDate: CalendarDate | null;
+  }>({ startDate: null, endDate: null });
+
+  // Debounce date filter changes
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedDateFilter(dateFilter);
+    }, 500); // 500ms debounce
+
+    return () => clearTimeout(timer);
+  }, [dateFilter]);
+
+  const handleDateRangeChange = (startDate: CalendarDate | null, endDate: CalendarDate | null) => {
+    setDateFilter({ startDate, endDate });
+    setCurrentPage(1); // Reset para página 1 ao filtrar por data
+  };
+
+  // Get date range parameters for API calls using debounced values
+  const dateParams = getDateRangeParams(debouncedDateFilter.startDate, debouncedDateFilter.endDate);
+
   const { data: guides, isLoading } = useQuery({
-    queryKey: ["/api/guides/with-network-units", currentPage, searchQuery, statusFilter, typeFilter],
+    queryKey: ["/api/guides/with-network-units", currentPage, searchQuery, statusFilter, typeFilter, dateParams],
     queryFn: async () => {
       const params = new URLSearchParams({
         page: currentPage.toString(),
         limit: pageSize.toString(),
         ...(searchQuery && { search: searchQuery }),
         ...(statusFilter !== "all" && { status: statusFilter }),
-        ...(typeFilter !== "all" && { type: typeFilter })
+        ...(typeFilter !== "all" && { type: typeFilter }),
+        ...dateParams
       });
       const response = await fetch(`/api/guides/with-network-units?${params}`);
       if (!response.ok) throw new Error('Failed to fetch guides');
@@ -283,6 +314,15 @@ export default function Guides() {
           <p className="text-sm text-muted-foreground">Visualize todas as guias geradas pelas unidades da rede</p>
         </div>
       </div>
+
+      {/* Date Filter */}
+      <DateFilterComponent
+        onDateRangeChange={handleDateRangeChange}
+        isLoading={isLoading ||
+          (dateFilter.startDate !== debouncedDateFilter.startDate ||
+            dateFilter.endDate !== debouncedDateFilter.endDate)}
+        initialRange={dateFilter}
+      />
 
       {/* Filters and Column Controls */}
       <div className="flex flex-wrap gap-4 items-center justify-between mb-6">
