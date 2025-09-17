@@ -141,7 +141,8 @@ export const procedurePlans = pgTable("plan_procedures", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   planId: varchar("plan_id").notNull().references(() => plans.id, { onDelete: "cascade" }),
   procedureId: varchar("procedure_id").notNull().references(() => procedures.id, { onDelete: "cascade" }),
-  price: integer("price").default(0), // preço em centavos
+  price: integer("price").default(0), // preço a receber em centavos
+  payValue: integer("pay_value").default(0), // valor a pagar em centavos (editável pelo usuário)
   coparticipacao: integer("coparticipacao").default(0), // coparticipação em centavos
   carencia: text("carencia"), // período de carência (ex: "30 dias")
   limitesAnuais: text("limites_anuais"), // limites anuais (ex: "2 vezes no ano" ou "ilimitado")
