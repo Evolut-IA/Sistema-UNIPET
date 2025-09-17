@@ -28,40 +28,54 @@ import type { ThemeSettings } from "@shared/schema";
 import { applyThemeToCSSVariables } from "@/lib/theme-defaults";
 
 function Router() {
+  // Admin routes component to avoid duplication
+  const AdminRoutes = () => (
+    <Layout>
+      <Switch>
+        <Route path="/" component={Dashboard} />
+        <Route path="/clientes" component={Clients} />
+        <Route path="/clientes/novo" component={ClientForm} />
+        <Route path="/clientes/:id/editar" component={ClientForm} />
+        <Route path="/clientes/:clientId/pets/novo" component={PetForm} />
+        <Route path="/pets/:id/editar" component={PetForm} />
+        <Route path="/guias" component={Guides} />
+        <Route path="/guias/novo" component={GuideForm} />
+        <Route path="/guias/:id/editar" component={GuideForm} />
+        <Route path="/planos" component={Plans} />
+        <Route path="/planos/novo" component={PlanForm} />
+        <Route path="/planos/:id/editar" component={PlanForm} />
+        <Route path="/rede" component={Network} />
+        <Route path="/rede/novo" component={NetworkForm} />
+        <Route path="/rede/:id/editar" component={NetworkForm} />
+        <Route path="/procedimentos" component={Procedures} />
+        <Route path="/perguntas-frequentes" component={FAQ} />
+        <Route path="/formularios" component={ContactSubmissions} />
+        <Route path="/configuracoes" component={Settings} />
+        <Route path="/administracao" component={Administration} />
+      </Switch>
+    </Layout>
+  );
+
   return (
     <Switch>
-      {/* Specific admin routes with Layout - more explicit routing */}
-      <Route path="/" nest>
-        <Layout>
-          <Switch>
-            <Route path="/" component={Dashboard} />
-            <Route path="/clientes" component={Clients} />
-            <Route path="/clientes/novo" component={ClientForm} />
-            <Route path="/clientes/:id/editar" component={ClientForm} />
-            <Route path="/clientes/:clientId/pets/novo" component={PetForm} />
-            <Route path="/pets/:id/editar" component={PetForm} />
-            <Route path="/guias" component={Guides} />
-            <Route path="/guias/novo" component={GuideForm} />
-            <Route path="/guias/:id/editar" component={GuideForm} />
-            <Route path="/planos" component={Plans} />
-            <Route path="/planos/novo" component={PlanForm} />
-            <Route path="/planos/:id/editar" component={PlanForm} />
-            <Route path="/rede" component={Network} />
-            <Route path="/rede/novo" component={NetworkForm} />
-            <Route path="/rede/:id/editar" component={NetworkForm} />
-            <Route path="/procedimentos" component={Procedures} />
-            <Route path="/perguntas-frequentes" component={FAQ} />
-            <Route path="/formularios" component={ContactSubmissions} />
-            <Route path="/configuracoes" component={Settings} />
-            <Route path="/administracao" component={Administration} />
-          </Switch>
-        </Layout>
-      </Route>
-      
-      {/* Unit routes without admin Layout - handle unit specific routes */}
+      {/* Admin root */}
+      <Route path="/" component={AdminRoutes} />
+      {/* Admin sections (prefix match) */}
+      <Route path="/clientes" nest component={AdminRoutes} />
+      <Route path="/pets" nest component={AdminRoutes} />
+      <Route path="/guias" nest component={AdminRoutes} />
+      <Route path="/planos" nest component={AdminRoutes} />
+      <Route path="/rede" nest component={AdminRoutes} />
+      <Route path="/procedimentos" nest component={AdminRoutes} />
+      <Route path="/perguntas-frequentes" nest component={AdminRoutes} />
+      <Route path="/formularios" nest component={AdminRoutes} />
+      <Route path="/configuracoes" nest component={AdminRoutes} />
+      <Route path="/administracao" nest component={AdminRoutes} />
+
+      {/* Unit (partner) routes */}
       <Route path="/:slug" component={UnitRoute} />
-      
-      {/* Fallback 404 for unmatched routes */}
+
+      {/* Fallback */}
       <Route component={NotFound} />
     </Switch>
   );
