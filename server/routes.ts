@@ -1204,6 +1204,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get clients linked to authenticated unit (via guides)
+  app.get("/api/unit/:unitId/clients", authenticateUnit, async (req: any, res) => {
+    try {
+      const { unitId } = req.params;
+      
+      // Critical security check: unit can only access its own clients
+      if (req.unit.id !== unitId) {
+        return res.status(403).json({ message: "Acesso negado - unidade não autorizada" });
+      }
+
+      const clients = await storage.getClientsByNetworkUnit(unitId);
+      res.json(clients);
+    } catch (error) {
+      console.error("Error fetching unit clients:", error);
+      res.status(500).json({ message: "Erro ao buscar clientes" });
+    }
+  });
+
+  // Get coverage table for authenticated unit
+  app.get("/api/unit/:unitId/coverage", authenticateUnit, async (req: any, res) => {
+    try {
+      const { unitId } = req.params;
+      
+      // Critical security check: unit can only access its own coverage
+      if (req.unit.id !== unitId) {
+        return res.status(403).json({ message: "Acesso negado - unidade não autorizada" });
+      }
+
+      const coverage = await storage.getCoverageByNetworkUnit(unitId);
+      res.json(coverage);
+    } catch (error) {
+      console.error("Error fetching unit coverage:", error);
+      res.status(500).json({ message: "Erro ao buscar cobertura" });
+    }
+  });
+
+  // Create new guide from unit dashboard
+  app.post("/api/unit/guides", authenticateUnit, async (req: any, res) => {
+    try {
+      // Parse and validate guide data
+      const guideData = insertGuideSchema.parse({
+        ...req.body,
+        networkUnitId: req.unit.id, // Ensure guide is assigned to authenticated unit
+        unitStatus: 'accepted' // Guides created by units are automatically accepted
+      });
+
+      const guide = await storage.createGuide(guideData);
+      res.status(201).json(guide);
+    } catch (error) {
+      console.error("Error creating guide from unit:", error);
+      if (error instanceof Error && error.name === "ZodError") {
+        res.status(400).json({ message: "Dados da guia inválidos", details: error.message });
+      } else {
+        res.status(400).json({ message: "Erro ao criar guia" });
+      }
+    }
+  });
+
   // API route to check if slug corresponds to a valid network unit
   app.get("/api/unit/:slug", async (req, res) => {
     try {

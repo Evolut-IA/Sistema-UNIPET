@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, FileText, User, PawPrint, MapPin, Clock, DollarSign, CheckCircle, XCircle, Eye } from "lucide-react";
+import { Calendar, FileText, User, PawPrint, MapPin, Clock, DollarSign, CheckCircle, XCircle, Eye, Users, CreditCard, Plus, IdCard, TableProperties, Search } from "lucide-react";
 import { Link } from "wouter";
 
 interface NetworkUnit {
@@ -41,6 +41,50 @@ interface Guide {
   };
 }
 
+interface Client {
+  id: string;
+  fullName: string;
+  email?: string;
+  phone: string;
+  cpf: string;
+  address?: string;
+  city?: string;
+  createdAt: string;
+}
+
+interface Pet {
+  id: string;
+  name: string;
+  species: string;
+  breed?: string;
+  clientId: string;
+  planId?: string;
+}
+
+interface Plan {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+}
+
+interface Coverage {
+  procedure: {
+    id: string;
+    name: string;
+    description?: string;
+    procedureType: string;
+  };
+  planCoverage: {
+    planId: string;
+    planName: string;
+    isIncluded: boolean;
+    price: number;
+    payValue: number;
+    coparticipacao: number;
+  }[];
+}
+
 interface AuthState {
   isAuthenticated: boolean;
   unit: NetworkUnit | null;
@@ -54,10 +98,30 @@ export default function UnitDashboard() {
     token: null
   });
   const [guides, setGuides] = useState<Guide[]>([]);
+  const [clients, setClients] = useState<Client[]>([]);
+  const [coverage, setCoverage] = useState<Coverage[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingClients, setLoadingClients] = useState(false);
+  const [loadingCoverage, setLoadingCoverage] = useState(false);
   const [loginData, setLoginData] = useState({ login: "", password: "" });
   const [loginError, setLoginError] = useState("");
   const [selectedGuide, setSelectedGuide] = useState<Guide | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [activeTab, setActiveTab] = useState("guides");
+  
+  // Guide creation form state
+  const [guideForm, setGuideForm] = useState({
+    clientId: "",
+    petId: "",
+    type: "",
+    procedure: "",
+    procedureNotes: "",
+    generalNotes: "",
+    value: ""
+  });
+  const [availableClients, setAvailableClients] = useState<Client[]>([]);
+  const [availablePets, setAvailablePets] = useState<Pet[]>([]);
+  const [submittingGuide, setSubmittingGuide] = useState(false);
 
   // Check authentication status on component mount
   useEffect(() => {
@@ -70,6 +134,19 @@ export default function UnitDashboard() {
       loadGuides();
     }
   }, [authState.isAuthenticated, authState.unit]);
+
+  // Load data when tab changes
+  useEffect(() => {
+    if (authState.isAuthenticated && authState.unit) {
+      if (activeTab === 'clients') {
+        loadClients();
+      } else if (activeTab === 'coverage') {
+        loadCoverage();
+      } else if (activeTab === 'create-guide') {
+        loadClientsForGuides();
+      }
+    }
+  }, [activeTab, authState.isAuthenticated, authState.unit]);
 
   const checkAuthentication = async () => {
     try {
@@ -153,6 +230,138 @@ export default function UnitDashboard() {
       }
     } catch (error) {
       console.error("Failed to load guides:", error);
+    }
+  };
+
+  const loadClients = async () => {
+    if (!authState.unit?.id) return;
+    
+    setLoadingClients(true);
+    try {
+      const response = await fetch(`/api/unit/${authState.unit.id}/clients`, {
+        credentials: 'include'
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setClients(data);
+      }
+    } catch (error) {
+      console.error("Failed to load clients:", error);
+    } finally {
+      setLoadingClients(false);
+    }
+  };
+
+  const loadCoverage = async () => {
+    if (!authState.unit?.id) return;
+    
+    setLoadingCoverage(true);
+    try {
+      const response = await fetch(`/api/unit/${authState.unit.id}/coverage`, {
+        credentials: 'include'
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setCoverage(data);
+      }
+    } catch (error) {
+      console.error("Failed to load coverage:", error);
+    } finally {
+      setLoadingCoverage(false);
+    }
+  };
+
+  const loadClientsForGuides = async () => {
+    if (!authState.unit?.id) return;
+    
+    try {
+      const response = await fetch(`/api/unit/${authState.unit.id}/clients`, {
+        credentials: 'include'
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setAvailableClients(data);
+      }
+    } catch (error) {
+      console.error("Failed to load unit clients for guide creation:", error);
+    }
+  };
+
+  const loadPetsForClient = async (clientId: string) => {
+    // Validação de segurança: só busca pets de clientes carregados para esta unidade
+    const isClientFromThisUnit = availableClients.some(client => client.id === clientId);
+    if (!isClientFromThisUnit) {
+      console.error("Security violation: Trying to load pets for client not from this unit");
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/clients/${clientId}/pets`, {
+        credentials: 'include'
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setAvailablePets(data);
+      }
+    } catch (error) {
+      console.error("Failed to load pets:", error);
+    }
+  };
+
+  const handleClientChange = (clientId: string) => {
+    setGuideForm(prev => ({ ...prev, clientId, petId: "" }));
+    setAvailablePets([]);
+    if (clientId) {
+      loadPetsForClient(clientId);
+    }
+  };
+
+  const createGuide = async () => {
+    if (!guideForm.clientId || !guideForm.petId || !guideForm.type || !guideForm.procedure) {
+      alert("Por favor, preencha todos os campos obrigatórios.");
+      return;
+    }
+
+    setSubmittingGuide(true);
+    try {
+      const response = await fetch('/api/unit/guides', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          clientId: guideForm.clientId,
+          petId: guideForm.petId,
+          type: guideForm.type,
+          procedure: guideForm.procedure,
+          procedureNotes: guideForm.procedureNotes,
+          generalNotes: guideForm.generalNotes,
+          value: guideForm.value
+        })
+      });
+
+      if (response.ok) {
+        alert("Guia criada com sucesso!");
+        setGuideForm({
+          clientId: "",
+          petId: "",
+          type: "",
+          procedure: "",
+          procedureNotes: "",
+          generalNotes: "",
+          value: ""
+        });
+        setAvailablePets([]);
+        loadGuides(); // Reload guides
+      } else {
+        const error = await response.json();
+        alert(`Erro ao criar guia: ${error.message}`);
+      }
+    } catch (error) {
+      alert("Erro de conexão ao criar guia.");
+    } finally {
+      setSubmittingGuide(false);
     }
   };
 
@@ -284,107 +493,568 @@ export default function UnitDashboard() {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-2 break-words">Painel de Guias</h2>
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-2 break-words">Painel da Unidade</h2>
           <p className="text-sm sm:text-base text-gray-600">
-            Gerencie as guias de atendimento enviadas para sua unidade
+            Gerencie todas as operações da sua unidade credenciada
           </p>
         </div>
 
-        <Tabs defaultValue="pending" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 gap-1">
-            <TabsTrigger value="pending">Pendentes</TabsTrigger>
-            <TabsTrigger value="accepted">Aceitas</TabsTrigger>
-            <TabsTrigger value="rejected">Rejeitadas</TabsTrigger>
-            <TabsTrigger value="completed">Finalizadas</TabsTrigger>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3 sm:grid-cols-6 gap-1">
+            <TabsTrigger value="guides" className="flex items-center gap-2">
+              <FileText className="h-4 w-4" />
+              <span className="hidden sm:inline">Guias</span>
+            </TabsTrigger>
+            <TabsTrigger value="clients" className="flex items-center gap-2">
+              <Users className="h-4 w-4" />
+              <span className="hidden sm:inline">Clientes</span>
+            </TabsTrigger>
+            <TabsTrigger value="plans" className="flex items-center gap-2">
+              <CreditCard className="h-4 w-4" />
+              <span className="hidden sm:inline">Planos</span>
+            </TabsTrigger>
+            <TabsTrigger value="create-guide" className="flex items-center gap-2">
+              <Plus className="h-4 w-4" />
+              <span className="hidden sm:inline">Lançar</span>
+            </TabsTrigger>
+            <TabsTrigger value="cards" className="flex items-center gap-2">
+              <IdCard className="h-4 w-4" />
+              <span className="hidden sm:inline">Carteirinhas</span>
+            </TabsTrigger>
+            <TabsTrigger value="coverage" className="flex items-center gap-2">
+              <TableProperties className="h-4 w-4" />
+              <span className="hidden sm:inline">Cobertura</span>
+            </TabsTrigger>
           </TabsList>
 
-          {["pending", "accepted", "rejected", "completed"].map(status => (
-            <TabsContent key={status} value={status}>
-              <div className="grid gap-4">
-                {guides
-                  .filter(guide => guide.unitStatus === status)
-                  .map(guide => (
-                    <Card key={guide.id} className="hover:shadow-md transition-shadow">
-                      <CardContent className="p-3 sm:p-4 lg:p-6">
-                        <div className="flex justify-between items-start mb-4">
-                          <div className="flex-1">
-                            <div className="flex items-center space-x-3 mb-2">
-                              <h3 className="text-lg font-semibold">{guide.procedure}</h3>
-                              {getStatusBadge(guide.unitStatus || "pending")}
+          {/* Guides Tab */}
+          <TabsContent value="guides">
+            <div className="space-y-4">
+              <div className="mb-4">
+                <h3 className="text-lg font-semibold mb-4">Guias de Atendimento</h3>
+                <Tabs defaultValue="pending" className="space-y-4">
+                  <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 gap-1">
+                    <TabsTrigger value="pending">Pendentes</TabsTrigger>
+                    <TabsTrigger value="accepted">Aceitas</TabsTrigger>
+                    <TabsTrigger value="rejected">Rejeitadas</TabsTrigger>
+                    <TabsTrigger value="completed">Finalizadas</TabsTrigger>
+                  </TabsList>
+
+                  {["pending", "accepted", "rejected", "completed"].map(status => (
+                    <TabsContent key={status} value={status}>
+                      <div className="grid gap-4">
+                        {guides
+                          .filter(guide => guide.unitStatus === status)
+                          .map(guide => (
+                            <Card key={guide.id} className="hover:shadow-md transition-shadow">
+                              <CardContent className="p-3 sm:p-4 lg:p-6">
+                                <div className="flex justify-between items-start mb-4">
+                                  <div className="flex-1">
+                                    <div className="flex items-center space-x-3 mb-2">
+                                      <h3 className="text-lg font-semibold">{guide.procedure}</h3>
+                                      {getStatusBadge(guide.unitStatus || "pending")}
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
+                                      <div className="flex items-center space-x-2">
+                                        <User className="h-4 w-4" />
+                                        <span>{guide.client?.name || "Cliente não encontrado"}</span>
+                                      </div>
+                                      <div className="flex items-center space-x-2">
+                                        <PawPrint className="h-4 w-4" />
+                                        <span>{guide.pet?.name || "Pet não encontrado"}</span>
+                                      </div>
+                                      <div className="flex items-center space-x-2">
+                                        <Clock className="h-4 w-4" />
+                                        <span>{new Date(guide.createdAt).toLocaleDateString('pt-BR')}</span>
+                                      </div>
+                                    </div>
+                                    {guide.value && (
+                                      <div className="flex items-center space-x-2 mt-2 text-sm">
+                                        <DollarSign className="h-4 w-4 text-green-600" />
+                                        <span className="font-medium text-green-600">
+                                          {formatCurrency(guide.value)}
+                                        </span>
+                                      </div>
+                                    )}
+                                  </div>
+                                  <div className="flex space-x-2">
+                                    <Button
+                                      variant="default"
+                                      size="sm"
+                                      onClick={() => setSelectedGuide(guide)}
+                                    >
+                                      <Eye className="h-4 w-4" />
+                                    </Button>
+                                    {status === "pending" && (
+                                      <>
+                                        <Button
+                                          size="sm"
+                                          onClick={() => updateGuideStatus(guide.id, "accepted")}
+                                          className="bg-green-600 hover:bg-green-700"
+                                        >
+                                          <CheckCircle className="h-4 w-4" />
+                                        </Button>
+                                        <Button
+                                          size="sm"
+                                          variant="destructive"
+                                          onClick={() => updateGuideStatus(guide.id, "rejected")}
+                                        >
+                                          <XCircle className="h-4 w-4" />
+                                        </Button>
+                                      </>
+                                    )}
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          ))}
+                        
+                        {guides.filter(guide => guide.unitStatus === status).length === 0 && (
+                          <Card>
+                            <CardContent className="p-3 sm:p-4 lg:p-6 text-center">
+                              <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                                Nenhuma guia {status === "pending" ? "pendente" : 
+                                              status === "accepted" ? "aceita" :
+                                              status === "rejected" ? "rejeitada" : "finalizada"}
+                              </h3>
+                              <p className="text-gray-500">
+                                As guias aparecerão aqui quando houver solicitações.
+                              </p>
+                            </CardContent>
+                          </Card>
+                        )}
+                      </div>
+                    </TabsContent>
+                  ))}
+                </Tabs>
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Clients Tab */}
+          <TabsContent value="clients">
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-semibold">Clientes Vinculados</h3>
+                <Button 
+                  onClick={loadClients} 
+                  disabled={loadingClients}
+                  variant="outline"
+                >
+                  {loadingClients ? "Carregando..." : "Atualizar"}
+                </Button>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <Search className="h-4 w-4 text-gray-400" />
+                <Input
+                  placeholder="Buscar clientes..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="max-w-sm"
+                />
+              </div>
+
+              {loadingClients ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+                  <p className="mt-2 text-muted-foreground">Carregando clientes...</p>
+                </div>
+              ) : (
+                <div className="grid gap-4">
+                  {clients
+                    .filter(client => 
+                      client.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                      client.cpf.includes(searchTerm) ||
+                      (client.email && client.email.toLowerCase().includes(searchTerm.toLowerCase()))
+                    )
+                    .map(client => (
+                      <Card key={client.id} className="hover:shadow-md transition-shadow">
+                        <CardContent className="p-4">
+                          <div className="flex justify-between items-start">
+                            <div className="flex-1">
+                              <h4 className="text-lg font-semibold">{client.fullName}</h4>
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600 mt-2">
+                                <div className="flex items-center space-x-2">
+                                  <User className="h-4 w-4" />
+                                  <span>{client.cpf}</span>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                  <span>📞</span>
+                                  <span>{client.phone}</span>
+                                </div>
+                                {client.email && (
+                                  <div className="flex items-center space-x-2">
+                                    <span>📧</span>
+                                    <span>{client.email}</span>
+                                  </div>
+                                )}
+                              </div>
+                              <div className="mt-2 text-xs text-gray-500">
+                                Cliente desde: {new Date(client.createdAt).toLocaleDateString('pt-BR')}
+                              </div>
                             </div>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
-                              <div className="flex items-center space-x-2">
-                                <User className="h-4 w-4" />
-                                <span>{guide.client?.name || "Cliente não encontrado"}</span>
-                              </div>
-                              <div className="flex items-center space-x-2">
-                                <PawPrint className="h-4 w-4" />
-                                <span>{guide.pet?.name || "Pet não encontrado"}</span>
-                              </div>
-                              <div className="flex items-center space-x-2">
-                                <Clock className="h-4 w-4" />
-                                <span>{new Date(guide.createdAt).toLocaleDateString('pt-BR')}</span>
-                              </div>
-                            </div>
-                            {guide.value && (
-                              <div className="flex items-center space-x-2 mt-2 text-sm">
-                                <DollarSign className="h-4 w-4 text-green-600" />
-                                <span className="font-medium text-green-600">
-                                  {formatCurrency(guide.value)}
-                                </span>
-                              </div>
-                            )}
                           </div>
-                          <div className="flex space-x-2">
-                            <Button
-                              variant="default"
-                              size="sm"
-                              onClick={() => setSelectedGuide(guide)}
-                            >
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                            {status === "pending" && (
-                              <>
-                                <Button
-                                  size="sm"
-                                  onClick={() => updateGuideStatus(guide.id, "accepted")}
-                                  className="bg-green-600 hover:bg-green-700"
-                                >
-                                  <CheckCircle className="h-4 w-4" />
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="destructive"
-                                  onClick={() => updateGuideStatus(guide.id, "rejected")}
-                                >
-                                  <XCircle className="h-4 w-4" />
-                                </Button>
-                              </>
-                            )}
-                          </div>
-                        </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  
+                  {clients.filter(client => 
+                    client.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    client.cpf.includes(searchTerm) ||
+                    (client.email && client.email.toLowerCase().includes(searchTerm.toLowerCase()))
+                  ).length === 0 && (
+                    <Card>
+                      <CardContent className="p-6 text-center">
+                        <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">
+                          {searchTerm ? "Nenhum cliente encontrado" : "Nenhum cliente vinculado"}
+                        </h3>
+                        <p className="text-gray-500">
+                          {searchTerm ? "Tente ajustar os termos de busca." : "Os clientes aparecerão aqui quando realizarem atendimentos na unidade."}
+                        </p>
                       </CardContent>
                     </Card>
-                  ))}
-                
-                {guides.filter(guide => guide.unitStatus === status).length === 0 && (
-                  <Card>
-                    <CardContent className="p-3 sm:p-4 lg:p-6 text-center">
-                      <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">
-                        Nenhuma guia {status === "pending" ? "pendente" : 
-                                      status === "accepted" ? "aceita" :
-                                      status === "rejected" ? "rejeitada" : "finalizada"}
-                      </h3>
-                      <p className="text-gray-500">
-                        As guias aparecerão aqui quando houver solicitações.
-                      </p>
-                    </CardContent>
-                  </Card>
-                )}
+                  )}
+                </div>
+              )}
+            </div>
+          </TabsContent>
+
+          {/* Plans Tab - Placeholder */}
+          <TabsContent value="plans">
+            <Card>
+              <CardContent className="p-6 text-center">
+                <CreditCard className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Consulta de Planos</h3>
+                <p className="text-gray-500">
+                  Funcionalidade em desenvolvimento. Aqui você poderá consultar os planos dos clientes com detalhes de coparticipação.
+                </p>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Create Guide Tab */}
+          <TabsContent value="create-guide">
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold">Lançar Nova Guia</h3>
+                <p className="text-sm text-gray-600">
+                  Crie uma nova guia de atendimento para um cliente
+                </p>
               </div>
-            </TabsContent>
-          ))}
+
+              <Card>
+                <CardContent className="p-6">
+                  <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); createGuide(); }}>
+                    {/* Client Selection */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="client" className="text-sm font-medium">
+                          Cliente <span className="text-red-500">*</span>
+                        </Label>
+                        <Select 
+                          value={guideForm.clientId} 
+                          onValueChange={handleClientChange}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione um cliente" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {availableClients.map(client => (
+                              <SelectItem key={client.id} value={client.id}>
+                                {client.fullName} - {client.cpf}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="pet" className="text-sm font-medium">
+                          Pet <span className="text-red-500">*</span>
+                        </Label>
+                        <Select 
+                          value={guideForm.petId} 
+                          onValueChange={(value) => setGuideForm(prev => ({ ...prev, petId: value }))}
+                          disabled={!guideForm.clientId}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione um pet" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {availablePets.map(pet => (
+                              <SelectItem key={pet.id} value={pet.id}>
+                                {pet.name} - {pet.species} {pet.breed ? `(${pet.breed})` : ''}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        {!guideForm.clientId && (
+                          <p className="text-xs text-gray-500">Selecione um cliente primeiro</p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Service Type and Procedure */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="type" className="text-sm font-medium">
+                          Tipo de Atendimento <span className="text-red-500">*</span>
+                        </Label>
+                        <Select 
+                          value={guideForm.type} 
+                          onValueChange={(value) => setGuideForm(prev => ({ ...prev, type: value }))}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione o tipo" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="consulta">Consulta</SelectItem>
+                            <SelectItem value="exames">Exames</SelectItem>
+                            <SelectItem value="cirurgia">Cirurgia</SelectItem>
+                            <SelectItem value="internacao">Internação</SelectItem>
+                            <SelectItem value="emergencia">Emergência</SelectItem>
+                            <SelectItem value="procedimento">Procedimento</SelectItem>
+                            <SelectItem value="reembolso">Reembolso</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="procedure" className="text-sm font-medium">
+                          Procedimento <span className="text-red-500">*</span>
+                        </Label>
+                        <Input
+                          id="procedure"
+                          placeholder="Descreva o procedimento"
+                          value={guideForm.procedure}
+                          onChange={(e) => setGuideForm(prev => ({ ...prev, procedure: e.target.value }))}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Value */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="value" className="text-sm font-medium">
+                          Valor (R$)
+                        </Label>
+                        <Input
+                          id="value"
+                          type="number"
+                          step="0.01"
+                          placeholder="0,00"
+                          value={guideForm.value}
+                          onChange={(e) => setGuideForm(prev => ({ ...prev, value: e.target.value }))}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Notes */}
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="procedureNotes" className="text-sm font-medium">
+                          Observações do Procedimento
+                        </Label>
+                        <Textarea
+                          id="procedureNotes"
+                          placeholder="Detalhes específicos sobre o procedimento..."
+                          rows={3}
+                          value={guideForm.procedureNotes}
+                          onChange={(e) => setGuideForm(prev => ({ ...prev, procedureNotes: e.target.value }))}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="generalNotes" className="text-sm font-medium">
+                          Observações Gerais
+                        </Label>
+                        <Textarea
+                          id="generalNotes"
+                          placeholder="Informações adicionais, contexto, etc..."
+                          rows={3}
+                          value={guideForm.generalNotes}
+                          onChange={(e) => setGuideForm(prev => ({ ...prev, generalNotes: e.target.value }))}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Submit Button */}
+                    <div className="flex justify-end space-x-4 pt-4 border-t">
+                      <Button 
+                        type="button" 
+                        variant="outline"
+                        onClick={() => {
+                          setGuideForm({
+                            clientId: "",
+                            petId: "",
+                            type: "",
+                            procedure: "",
+                            procedureNotes: "",
+                            generalNotes: "",
+                            value: ""
+                          });
+                          setAvailablePets([]);
+                        }}
+                      >
+                        Cancelar
+                      </Button>
+                      <Button 
+                        type="submit" 
+                        disabled={submittingGuide || !guideForm.clientId || !guideForm.petId || !guideForm.type || !guideForm.procedure}
+                      >
+                        {submittingGuide ? (
+                          <>
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                            Criando...
+                          </>
+                        ) : (
+                          <>
+                            <Plus className="h-4 w-4 mr-2" />
+                            Criar Guia
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </form>
+                </CardContent>
+              </Card>
+
+              {/* Quick Stats */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <Card className="bg-blue-50">
+                  <CardContent className="p-4 text-center">
+                    <div className="text-2xl font-bold text-blue-600">{availableClients.length}</div>
+                    <div className="text-sm text-blue-600">Clientes Disponíveis</div>
+                  </CardContent>
+                </Card>
+                <Card className="bg-green-50">
+                  <CardContent className="p-4 text-center">
+                    <div className="text-2xl font-bold text-green-600">{guides.filter(g => g.unitStatus === 'accepted').length}</div>
+                    <div className="text-sm text-green-600">Guias Aceitas</div>
+                  </CardContent>
+                </Card>
+                <Card className="bg-yellow-50">
+                  <CardContent className="p-4 text-center">
+                    <div className="text-2xl font-bold text-yellow-600">{guides.filter(g => g.unitStatus === 'pending').length}</div>
+                    <div className="text-sm text-yellow-600">Guias Pendentes</div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Cards Tab - Placeholder */}
+          <TabsContent value="cards">
+            <Card>
+              <CardContent className="p-6 text-center">
+                <IdCard className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Carteirinhas Digitais</h3>
+                <p className="text-gray-500">
+                  Funcionalidade em desenvolvimento. Aqui você poderá visualizar as carteirinhas digitais dos clientes.
+                </p>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Coverage Tab */}
+          <TabsContent value="coverage">
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-semibold">Tabela de Cobertura</h3>
+                <Button 
+                  onClick={loadCoverage} 
+                  disabled={loadingCoverage}
+                  variant="outline"
+                >
+                  {loadingCoverage ? "Carregando..." : "Atualizar"}
+                </Button>
+              </div>
+
+              {loadingCoverage ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+                  <p className="mt-2 text-muted-foreground">Carregando cobertura...</p>
+                </div>
+              ) : coverage.length > 0 ? (
+                <div className="space-y-4">
+                  <p className="text-sm text-gray-600">
+                    Visualize a cobertura de procedimentos por plano. ✅ = Incluído, ❌ = Não incluído
+                  </p>
+                  
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full border border-gray-200 rounded-lg">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-4 py-3 text-left text-sm font-medium text-gray-900 border-b">
+                            Procedimento
+                          </th>
+                          <th className="px-4 py-3 text-left text-sm font-medium text-gray-900 border-b">
+                            Tipo
+                          </th>
+                          {coverage.length > 0 && coverage[0].planCoverage.map(plan => (
+                            <th key={plan.planId} className="px-4 py-3 text-center text-sm font-medium text-gray-900 border-b">
+                              {plan.planName}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {coverage.map((item, index) => (
+                          <tr key={item.procedure.id} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                            <td className="px-4 py-3 text-sm text-gray-900">
+                              <div>
+                                <div className="font-medium">{item.procedure.name}</div>
+                                {item.procedure.description && (
+                                  <div className="text-xs text-gray-500 mt-1">{item.procedure.description}</div>
+                                )}
+                              </div>
+                            </td>
+                            <td className="px-4 py-3 text-sm text-gray-600">
+                              <Badge variant="outline" className="text-xs">
+                                {item.procedure.procedureType.replace(/_/g, ' ')}
+                              </Badge>
+                            </td>
+                            {item.planCoverage.map(plan => (
+                              <td key={plan.planId} className="px-4 py-3 text-center">
+                                <div className="flex flex-col items-center space-y-1">
+                                  <span className="text-lg">
+                                    {plan.isIncluded ? "✅" : "❌"}
+                                  </span>
+                                  {plan.isIncluded && plan.coparticipacao > 0 && (
+                                    <div className="text-xs text-orange-600 font-medium">
+                                      Coparticipação: {formatCurrency((plan.coparticipacao / 100).toString())}
+                                    </div>
+                                  )}
+                                  {plan.isIncluded && plan.payValue > 0 && (
+                                    <div className="text-xs text-blue-600">
+                                      Valor: {formatCurrency((plan.payValue / 100).toString())}
+                                    </div>
+                                  )}
+                                </div>
+                              </td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              ) : (
+                <Card>
+                  <CardContent className="p-6 text-center">
+                    <TableProperties className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhuma cobertura encontrada</h3>
+                    <p className="text-gray-500">
+                      Não foi possível carregar a tabela de cobertura. Verifique se existem procedimentos e planos cadastrados.
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </TabsContent>
         </Tabs>
 
         {/* Guide Details Modal */}

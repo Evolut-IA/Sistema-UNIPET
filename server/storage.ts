@@ -211,6 +211,13 @@ export interface IStorage {
   getRecentGuides(limit?: number): Promise<Guide[]>;
   getGuidesByNetworkUnit(networkUnitId: string): Promise<Guide[]>;
   updateGuideUnitStatus(id: string, unitStatus: string): Promise<Guide | undefined>;
+  
+  // Unit-specific methods
+  getClientsByNetworkUnit(networkUnitId: string): Promise<Client[]>;
+  getCoverageByNetworkUnit(networkUnitId: string): Promise<{
+    procedure: Procedure;
+    planCoverage: { planId: string; planName: string; isIncluded: boolean; price: number; payValue: number; coparticipacao: number; }[];
+  }[]>;
 
   // Procedure methods
   getProcedure(id: string): Promise<Procedure | undefined>;
@@ -915,7 +922,7 @@ export class DatabaseStorage implements IStorage {
         createdAt: schema.guides.createdAt,
         updatedAt: schema.guides.updatedAt,
         client: {
-          name: schema.clients.name,
+          name: schema.clients.fullName,
           email: schema.clients.email,
           phone: schema.clients.phone,
         },
@@ -942,6 +949,93 @@ export class DatabaseStorage implements IStorage {
       .where(eq(schema.guides.id, id))
       .returning();
     return result[0];
+  }
+
+  // Unit-specific methods
+  async getClientsByNetworkUnit(networkUnitId: string): Promise<Client[]> {
+    // Get unique clients who have guides associated with this network unit
+    const clientsWithGuides = await db
+      .selectDistinct({
+        id: schema.clients.id,
+        fullName: schema.clients.fullName,
+        email: schema.clients.email,
+        phone: schema.clients.phone,
+        cpf: schema.clients.cpf,
+        cep: schema.clients.cep,
+        address: schema.clients.address,
+        number: schema.clients.number,
+        complement: schema.clients.complement,
+        district: schema.clients.district,
+        state: schema.clients.state,
+        city: schema.clients.city,
+        createdAt: schema.clients.createdAt,
+        updatedAt: schema.clients.updatedAt,
+      })
+      .from(schema.clients)
+      .innerJoin(schema.guides, eq(schema.clients.id, schema.guides.clientId))
+      .where(eq(schema.guides.networkUnitId, networkUnitId))
+      .orderBy(schema.clients.fullName);
+    
+    return clientsWithGuides;
+  }
+
+  async getCoverageByNetworkUnit(networkUnitId: string): Promise<{
+    procedure: Procedure;
+    planCoverage: { planId: string; planName: string; isIncluded: boolean; price: number; payValue: number; coparticipacao: number; }[];
+  }[]> {
+    // Get all active procedures
+    const procedures = await db
+      .select()
+      .from(schema.procedures)
+      .where(eq(schema.procedures.isActive, true))
+      .orderBy(schema.procedures.displayOrder, schema.procedures.name);
+
+    // Get all active plans
+    const plans = await db
+      .select()
+      .from(schema.plans)
+      .where(eq(schema.plans.isActive, true))
+      .orderBy(schema.plans.displayOrder, schema.plans.name);
+
+    // Get all procedure-plan relationships
+    const procedurePlans = await db
+      .select({
+        procedureId: schema.procedurePlans.procedureId,
+        planId: schema.procedurePlans.planId,
+        price: schema.procedurePlans.price,
+        payValue: schema.procedurePlans.payValue,
+        coparticipacao: schema.procedurePlans.coparticipacao,
+        isIncluded: schema.procedurePlans.isIncluded,
+        planName: schema.plans.name
+      })
+      .from(schema.procedurePlans)
+      .innerJoin(schema.plans, eq(schema.procedurePlans.planId, schema.plans.id))
+      .where(eq(schema.plans.isActive, true));
+
+    // Build coverage table
+    const coverage = procedures.map(procedure => {
+      const planCoverage = plans.map(plan => {
+        const planProcedure = procedurePlans.find(
+          pp => pp.procedureId === procedure.id && pp.planId === plan.id
+        );
+        
+        return {
+          planId: plan.id,
+          planName: plan.name,
+          isIncluded: planProcedure?.isIncluded ?? false,
+          price: planProcedure?.price ?? 0,
+          payValue: planProcedure?.payValue ?? 0,
+          coparticipacao: planProcedure?.coparticipacao ?? 0,
+        };
+      });
+
+      return {
+        procedure,
+        planCoverage
+      };
+    });
+
+    return coverage;
   }
 
   // Dashboard analytics
