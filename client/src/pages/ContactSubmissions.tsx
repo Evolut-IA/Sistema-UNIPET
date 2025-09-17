@@ -316,17 +316,6 @@ export default function ContactSubmissions() {
                       <Button
                         variant="default"
                         size="sm"
-                        onClick={() => {
-                          setSelectedSubmission(submission);
-                          handleCopyToClipboard();
-                        }}
-                        data-testid={`button-copy-${submission.id}`}
-                      >
-                        <Copy className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="default"
-                        size="sm"
                         onClick={() => handleDelete(submission.id, submission.name)}
                         disabled={deleteMutation.isPending}
                         data-testid={`button-delete-${submission.id}`}
@@ -404,6 +393,19 @@ export default function ContactSubmissions() {
                     {selectedSubmission.createdAt && format(new Date(selectedSubmission.createdAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
                   </p>
                 </div>
+              </div>
+              
+              {/* Copy Button */}
+              <div className="flex justify-end mt-4">
+                <Button
+                  variant="outline"
+                  onClick={handleCopyToClipboard}
+                  className="gap-2"
+                  data-testid="button-copy-submission-details"
+                >
+                  <Copy className="h-4 w-4" />
+                  Copiar Informações
+                </Button>
               </div>
               
               {selectedSubmission.message && (
