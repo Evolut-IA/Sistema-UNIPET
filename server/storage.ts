@@ -901,7 +901,37 @@ export class DatabaseStorage implements IStorage {
     return await query.orderBy(desc(schema.guides.createdAt));
   }
 
-  async getAllGuidesWithNetworkUnits(startDate?: string, endDate?: string): Promise<any[]> {
+  async getAllGuidesWithNetworkUnits(
+    startDate?: string, 
+    endDate?: string, 
+    page?: number, 
+    limit: number = 10
+  ): Promise<{ data: any[], total: number, page: number, limit: number, totalPages: number }> {
+    // Build date filter conditions
+    const dateConditions = [];
+    if (startDate) {
+      dateConditions.push(gte(schema.guides.createdAt, new Date(startDate)));
+    }
+    if (endDate) {
+      // Add one day to endDate to include the entire end date
+      const endDateTime = new Date(endDate);
+      endDateTime.setDate(endDateTime.getDate() + 1);
+      dateConditions.push(lt(schema.guides.createdAt, endDateTime));
+    }
+
+    // Count query to get total records
+    let countQuery = db
+      .select({ count: count() })
+      .from(schema.guides);
+    
+    if (dateConditions.length > 0) {
+      countQuery = countQuery.where(and(...dateConditions));
+    }
+    
+    const totalResult = await countQuery;
+    const total = totalResult[0].count as number;
+
+    // Main data query
     let query = db
       .select({
         id: schema.guides.id,
@@ -940,23 +970,31 @@ export class DatabaseStorage implements IStorage {
       .leftJoin(schema.clients, eq(schema.guides.clientId, schema.clients.id))
       .leftJoin(schema.pets, eq(schema.guides.petId, schema.pets.id));
     
-    // Build date filter conditions
-    const dateConditions = [];
-    if (startDate) {
-      dateConditions.push(gte(schema.guides.createdAt, new Date(startDate)));
-    }
-    if (endDate) {
-      // Add one day to endDate to include the entire end date
-      const endDateTime = new Date(endDate);
-      endDateTime.setDate(endDateTime.getDate() + 1);
-      dateConditions.push(lt(schema.guides.createdAt, endDateTime));
-    }
-    
     if (dateConditions.length > 0) {
       query = query.where(and(...dateConditions));
     }
     
-    return await query.orderBy(desc(schema.guides.createdAt));
+    query = query.orderBy(desc(schema.guides.createdAt));
+    
+    // Add pagination if page is provided
+    if (page !== undefined) {
+      const offset = (page - 1) * limit;
+      query = query.limit(limit).offset(offset);
+    }
+    
+    const data = await query;
+    
+    // Calculate pagination metadata
+    const currentPage = page || 1;
+    const totalPages = Math.ceil(total / limit);
+    
+    return {
+      data,
+      total,
+      page: currentPage,
+      limit,
+      totalPages
+    };
   }
 
   async getRecentGuides(limit: number = 10): Promise<Guide[]> {
