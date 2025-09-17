@@ -275,7 +275,7 @@ export default function Guides() {
       </div>
 
       {/* Modern Table Container */}
-      <div className="container my-10 space-y-4 border border-border rounded-lg bg-background shadow-sm">
+      <div className="container my-10 space-y-4 border border-border rounded-lg bg-primary shadow-sm">
         {/* Filters and Column Controls */}
         <div className="flex flex-wrap gap-4 items-center justify-between mb-6 p-4">
           <div className="flex gap-2 flex-wrap">
