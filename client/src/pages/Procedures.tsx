@@ -767,7 +767,12 @@ export default function Procedures() {
                                   <InputMasked
                                     mask="price"
                                     value={selectedPlan.coparticipacao}
-                                    onChange={(e) => updatePlanField(index, 'coparticipacao', e.target.value)}
+                                    onChange={(e) => {
+                                      if (!selectedPlan.enableCoparticipacao) {
+                                        updatePlanBooleanField(index, 'enableCoparticipacao', true);
+                                      }
+                                      updatePlanField(index, 'coparticipacao', e.target.value);
+                                    }}
                                     onFocus={() => {
                                       if (!selectedPlan.enableCoparticipacao) {
                                         updatePlanBooleanField(index, 'enableCoparticipacao', true);
@@ -779,8 +784,7 @@ export default function Procedures() {
                                       }
                                     }}
                                     placeholder="0,00"
-                                    disabled={!selectedPlan.enableCoparticipacao}
-                                    className={!selectedPlan.enableCoparticipacao ? 'bg-gray-100 text-gray-400' : ''}
+                                    className={!selectedPlan.enableCoparticipacao ? 'bg-gray-100 text-gray-400 cursor-pointer' : ''}
                                     data-testid={`input-plan-coparticipacao-${index}`}
                                   />
                                 </div>
@@ -797,7 +801,12 @@ export default function Procedures() {
                                   </div>
                                   <Input
                                     value={selectedPlan.carencia}
-                                    onChange={(e) => updatePlanField(index, 'carencia', e.target.value)}
+                                    onChange={(e) => {
+                                      if (!selectedPlan.enableCarencia) {
+                                        updatePlanBooleanField(index, 'enableCarencia', true);
+                                      }
+                                      updatePlanField(index, 'carencia', e.target.value);
+                                    }}
                                     onFocus={() => {
                                       if (!selectedPlan.enableCarencia) {
                                         updatePlanBooleanField(index, 'enableCarencia', true);
@@ -809,8 +818,7 @@ export default function Procedures() {
                                       }
                                     }}
                                     placeholder="Digite apenas números"
-                                    disabled={!selectedPlan.enableCarencia}
-                                    className={!selectedPlan.enableCarencia ? 'bg-gray-100 text-gray-400' : ''}
+                                    className={!selectedPlan.enableCarencia ? 'bg-gray-100 text-gray-400 cursor-pointer' : ''}
                                     data-testid={`input-plan-carencia-${index}`}
                                   />
                                 </div>
@@ -827,7 +835,12 @@ export default function Procedures() {
                                   </div>
                                   <Input
                                     value={selectedPlan.limitesAnuais}
-                                    onChange={(e) => updatePlanField(index, 'limitesAnuais', e.target.value)}
+                                    onChange={(e) => {
+                                      if (!selectedPlan.enableLimitesAnuais) {
+                                        updatePlanBooleanField(index, 'enableLimitesAnuais', true);
+                                      }
+                                      updatePlanField(index, 'limitesAnuais', e.target.value);
+                                    }}
                                     onFocus={() => {
                                       if (!selectedPlan.enableLimitesAnuais) {
                                         updatePlanBooleanField(index, 'enableLimitesAnuais', true);
@@ -839,8 +852,7 @@ export default function Procedures() {
                                       }
                                     }}
                                     placeholder="Ex: 2"
-                                    disabled={!selectedPlan.enableLimitesAnuais}
-                                    className={!selectedPlan.enableLimitesAnuais ? 'bg-gray-100 text-gray-400' : ''}
+                                    className={!selectedPlan.enableLimitesAnuais ? 'bg-gray-100 text-gray-400 cursor-pointer' : ''}
                                     data-testid={`input-plan-limites-${index}`}
                                   />
                                   {planErrors[index] && selectedPlan.enableLimitesAnuais && planErrors[index].includes('Limites anuais') && (
