@@ -431,23 +431,6 @@ export default function Guides() {
                         >
                           <Eye className="h-4 w-4" />
                         </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setLocation(`/guias/${guide.id}/editar`)}
-                          data-testid={`button-edit-${guide.id}`}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleDelete(guide.id, guide.procedure)}
-                          disabled={deleteGuideMutation.isPending}
-                          data-testid={`button-delete-${guide.id}`}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
                       </div>
                     </TableCell>
                   )}
