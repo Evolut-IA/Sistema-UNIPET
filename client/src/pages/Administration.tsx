@@ -31,7 +31,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { insertUserSchema } from "@shared/schema";
-import { UserCog, Plus, Search, Edit, Trash2, Shield, User, Key, Network, Lock, Eye, EyeOff, Globe, Copy, RefreshCw, ExternalLink, Columns3 as Columns } from "lucide-react";
+import { UserCog, Plus, Search, Edit, Trash2, Shield, User, Key, Network, Lock, Eye, EyeOff, Globe, Copy, RefreshCw, ExternalLink, Columns3 as Columns, ChevronLeft, ChevronRight } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -75,6 +75,10 @@ export default function Administration() {
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const [visibleColumns, setVisibleColumns] = useState<string[]>([...allColumns]);
   const [visibleNetworkColumns, setVisibleNetworkColumns] = useState<string[]>([...networkColumns]);
+  const [userCurrentPage, setUserCurrentPage] = useState(1);
+  const [networkCurrentPage, setNetworkCurrentPage] = useState(1);
+  const userPageSize = 10;
+  const networkPageSize = 10;
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -275,6 +279,22 @@ export default function Administration() {
   const filteredUsers = users.filter((user: any) =>
     user.username?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     user.email?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // User pagination logic
+  const totalUsers = filteredUsers.length;
+  const totalUserPages = Math.ceil(totalUsers / userPageSize);
+  const paginatedUsers = filteredUsers.slice(
+    (userCurrentPage - 1) * userPageSize,
+    userCurrentPage * userPageSize
+  );
+
+  // Network Units pagination logic  
+  const totalNetworkUnits = networkUnits.length;
+  const totalNetworkPages = Math.ceil(totalNetworkUnits / networkPageSize);
+  const paginatedNetworkUnits = networkUnits.slice(
+    (networkCurrentPage - 1) * networkPageSize,
+    networkCurrentPage * networkPageSize
   );
 
   const handleEdit = (user: any) => {
@@ -660,7 +680,10 @@ export default function Administration() {
             <Input
               placeholder="Buscar usuários por nome ou email..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setUserCurrentPage(1); // Reset to page 1 when searching
+              }}
               className="pl-10 w-64"
               data-testid="input-search-users"
             />
@@ -718,8 +741,8 @@ export default function Administration() {
                     </TableCell>
                   </TableRow>
                 ))
-              ) : filteredUsers?.length ? (
-                filteredUsers.map((user: any) => (
+              ) : paginatedUsers?.length ? (
+                paginatedUsers.map((user: any) => (
                   <TableRow key={user.id} className="bg-accent hover:bg-accent/80">
                     {visibleColumns.includes("Nome") && (
                       <TableCell className="font-medium whitespace-nowrap bg-accent" data-testid={`user-name-${user.id}`}>
@@ -807,6 +830,71 @@ export default function Administration() {
             </TableBody>
           </Table>
         </div>
+        
+        {/* Users Pagination */}
+        {totalUserPages > 1 && (
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-border">
+            <div className="text-sm text-muted-foreground">
+              Mostrando {(userCurrentPage - 1) * userPageSize + 1} a {Math.min(userCurrentPage * userPageSize, totalUsers)} de {totalUsers} usuários
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setUserCurrentPage(prev => Math.max(prev - 1, 1))}
+                disabled={userCurrentPage === 1 || isLoading}
+                data-testid="button-users-previous-page"
+              >
+                <ChevronLeft className="h-4 w-4" />
+                Anterior
+              </Button>
+              
+              <div className="flex items-center space-x-1">
+                {[...Array(Math.min(5, totalUserPages))].map((_, i) => {
+                  let pageNumber;
+                  if (totalUserPages <= 5) {
+                    pageNumber = i + 1;
+                  } else {
+                    const start = Math.max(1, userCurrentPage - 2);
+                    const end = Math.min(totalUserPages, start + 4);
+                    pageNumber = start + i;
+                    if (pageNumber > end) return null;
+                  }
+                  
+                  return (
+                    <Button
+                      key={pageNumber}
+                      variant={userCurrentPage === pageNumber ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setUserCurrentPage(pageNumber)}
+                      disabled={isLoading}
+                      data-testid={`button-users-page-${pageNumber}`}
+                      className="w-10"
+                    >
+                      {pageNumber}
+                    </Button>
+                  );
+                })}
+              </div>
+              
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setUserCurrentPage(prev => Math.min(prev + 1, totalUserPages))}
+                disabled={userCurrentPage === totalUserPages || isLoading}
+                data-testid="button-users-next-page"
+              >
+                Próximo
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+            
+            <div className="text-sm text-muted-foreground">
+              Página {userCurrentPage} de {totalUserPages}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Separator between sections */}
@@ -857,7 +945,7 @@ export default function Administration() {
               ))}
             </div>
           </div>
-        ) : networkUnits?.length ? (
+        ) : paginatedNetworkUnits?.length ? (
           <Table>
             <TableHeader>
               <TableRow className="bg-accent hover:bg-accent">
@@ -879,7 +967,7 @@ export default function Administration() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {networkUnits.map((unit: any) => {
+              {paginatedNetworkUnits.map((unit: any) => {
                 const status = getCredentialStatus(unit);
                 return (
                   <TableRow key={unit.id} className="bg-accent hover:bg-accent/80">
@@ -946,6 +1034,71 @@ export default function Administration() {
               </TableRow>
             </TableBody>
           </Table>
+        )}
+        
+        {/* Network Units Pagination */}
+        {totalNetworkPages > 1 && (
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-border">
+            <div className="text-sm text-muted-foreground">
+              Mostrando {(networkCurrentPage - 1) * networkPageSize + 1} a {Math.min(networkCurrentPage * networkPageSize, totalNetworkUnits)} de {totalNetworkUnits} unidades
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setNetworkCurrentPage(prev => Math.max(prev - 1, 1))}
+                disabled={networkCurrentPage === 1 || isLoadingNetworkUnits}
+                data-testid="button-network-previous-page"
+              >
+                <ChevronLeft className="h-4 w-4" />
+                Anterior
+              </Button>
+              
+              <div className="flex items-center space-x-1">
+                {[...Array(Math.min(5, totalNetworkPages))].map((_, i) => {
+                  let pageNumber;
+                  if (totalNetworkPages <= 5) {
+                    pageNumber = i + 1;
+                  } else {
+                    const start = Math.max(1, networkCurrentPage - 2);
+                    const end = Math.min(totalNetworkPages, start + 4);
+                    pageNumber = start + i;
+                    if (pageNumber > end) return null;
+                  }
+                  
+                  return (
+                    <Button
+                      key={pageNumber}
+                      variant={networkCurrentPage === pageNumber ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setNetworkCurrentPage(pageNumber)}
+                      disabled={isLoadingNetworkUnits}
+                      data-testid={`button-network-page-${pageNumber}`}
+                      className="w-10"
+                    >
+                      {pageNumber}
+                    </Button>
+                  );
+                })}
+              </div>
+              
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setNetworkCurrentPage(prev => Math.min(prev + 1, totalNetworkPages))}
+                disabled={networkCurrentPage === totalNetworkPages || isLoadingNetworkUnits}
+                data-testid="button-network-next-page"
+              >
+                Próximo
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+            
+            <div className="text-sm text-muted-foreground">
+              Página {networkCurrentPage} de {totalNetworkPages}
+            </div>
+          </div>
         )}
       </div>
 

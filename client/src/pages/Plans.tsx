@@ -20,7 +20,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useLocation } from "wouter";
-import { Plus, Search, Edit, Trash2, CreditCard, Columns3 as Columns } from "lucide-react";
+import { Plus, Search, Edit, Trash2, CreditCard, Columns3 as Columns, ChevronLeft, ChevronRight } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
@@ -41,6 +41,8 @@ export default function Plans() {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [visibleColumns, setVisibleColumns] = useState<string[]>([...allColumns]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const confirmDialog = useConfirmDialog();
@@ -90,9 +92,15 @@ export default function Plans() {
     },
   });
 
-  const filteredPlans = Array.isArray(plans) ? plans.filter((plan: any) =>
+  const allFilteredPlans = Array.isArray(plans) ? plans.filter((plan: any) =>
     plan.name?.toLowerCase().includes(searchQuery.toLowerCase())
   ) : [];
+
+  const totalPlans = allFilteredPlans.length;
+  const totalPages = Math.ceil(totalPlans / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const filteredPlans = allFilteredPlans.slice(startIndex, endIndex);
 
   const toggleColumn = (col: string) => {
     setVisibleColumns((prev) =>
@@ -203,7 +211,10 @@ export default function Plans() {
             <Input
               placeholder="Buscar por nome do plano..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1); // Reset para página 1 ao buscar
+              }}
               className="pl-10 w-64"
               data-testid="input-search-plans"
             />
@@ -342,6 +353,71 @@ export default function Plans() {
           </TableBody>
         </Table>
         </div>
+        
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-border">
+            <div className="text-sm text-muted-foreground">
+              Mostrando {startIndex + 1} a {Math.min(endIndex, totalPlans)} de {totalPlans} planos
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1 || isLoading}
+                data-testid="button-previous-page"
+              >
+                <ChevronLeft className="h-4 w-4" />
+                Anterior
+              </Button>
+              
+              <div className="flex items-center space-x-1">
+                {[...Array(Math.min(5, totalPages))].map((_, i) => {
+                  let pageNumber;
+                  if (totalPages <= 5) {
+                    pageNumber = i + 1;
+                  } else {
+                    const start = Math.max(1, currentPage - 2);
+                    const end = Math.min(totalPages, start + 4);
+                    pageNumber = start + i;
+                    if (pageNumber > end) return null;
+                  }
+                  
+                  return (
+                    <Button
+                      key={pageNumber}
+                      variant={currentPage === pageNumber ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setCurrentPage(pageNumber)}
+                      disabled={isLoading}
+                      data-testid={`button-page-${pageNumber}`}
+                      className="w-10"
+                    >
+                      {pageNumber}
+                    </Button>
+                  );
+                })}
+              </div>
+              
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages || isLoading}
+                data-testid="button-next-page"
+              >
+                Próximo
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+            
+            <div className="text-sm text-muted-foreground">
+              Página {currentPage} de {totalPages}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Password Dialog */}
