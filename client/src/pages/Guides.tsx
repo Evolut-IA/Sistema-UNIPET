@@ -309,7 +309,7 @@ export default function Guides() {
             </SelectTrigger>
             <SelectContent>
               {[{ value: "all", label: "Todos os tipos" }, ...GUIDE_TYPES.map(type => ({ value: type, label: getTypeLabel(type) }))].map((item) => (
-                <SelectItem key={item.value} value={item.value} className="data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground">
+                <SelectItem key={item.value} value={item.value} className="data-[state=selected]:bg-primary data-[state=selected]:text-primary-foreground">
                   {item.label}
                 </SelectItem>
               ))}
@@ -329,7 +329,7 @@ export default function Guides() {
                 { value: "closed", label: "Fechadas" },
                 { value: "cancelled", label: "Canceladas" }
               ].map((status) => (
-                <SelectItem key={status.value} value={status.value} className="data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground">
+                <SelectItem key={status.value} value={status.value} className="data-[state=selected]:bg-primary data-[state=selected]:text-primary-foreground">
                   {status.label}
                 </SelectItem>
               ))}
