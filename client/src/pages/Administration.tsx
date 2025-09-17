@@ -32,7 +32,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useColumnPreferences } from "@/hooks/use-column-preferences";
 import { apiRequest } from "@/lib/queryClient";
 import { insertUserSchema } from "@shared/schema";
-import { UserCog, Plus, Search, Edit, Trash2, Shield, User, Key, Network, Lock, Eye, EyeOff, Columns3 as Columns, ChevronLeft, ChevronRight } from "lucide-react";
+import { UserCog, Plus, Search, Edit, Trash2, Shield, User, Key, Network, Lock, Eye, EyeOff, Columns3 as Columns, ChevronLeft, ChevronRight, Globe } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -858,6 +858,19 @@ export default function Administration() {
                     {visibleNetworkColumns.includes("Ações") && (
                       <TableCell className="whitespace-nowrap bg-accent">
                         <div className="flex items-center space-x-1">
+                          {unit.urlSlug && unit.isActive && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              asChild
+                              data-testid={`button-access-unit-${unit.id}`}
+                              title={`Acessar página da unidade: ${unit.name}`}
+                            >
+                              <a href={`/${unit.urlSlug}`} target="_blank" rel="noopener noreferrer">
+                                <Globe className="h-4 w-4" />
+                              </a>
+                            </Button>
+                          )}
                           <Button
                             variant="outline"
                             size="sm"
