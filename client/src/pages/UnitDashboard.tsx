@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar, FileText, User, PawPrint, MapPin, Clock, DollarSign, CheckCircle, XCircle, Eye, Users, CreditCard, Plus, IdCard, TableProperties, Search } from "lucide-react";
 import { Link } from "wouter";
+import DigitalCard from "@/components/DigitalCard";
 
 interface NetworkUnit {
   id: string;
@@ -122,6 +123,11 @@ export default function UnitDashboard() {
   const [availableClients, setAvailableClients] = useState<Client[]>([]);
   const [availablePets, setAvailablePets] = useState<Pet[]>([]);
   const [submittingGuide, setSubmittingGuide] = useState(false);
+  
+  // Cards functionality state
+  const [petsWithClients, setPetsWithClients] = useState<Array<Pet & { client: Client, plan?: Plan }>>([]);
+  const [loadingCards, setLoadingCards] = useState(false);
+  const [cardSearch, setCardSearch] = useState("");
 
   // Check authentication status on component mount
   useEffect(() => {
@@ -144,6 +150,8 @@ export default function UnitDashboard() {
         loadCoverage();
       } else if (activeTab === 'create-guide') {
         loadClientsForGuides();
+      } else if (activeTab === 'cards') {
+        loadCardsData();
       }
     }
   }, [activeTab, authState.isAuthenticated, authState.unit]);
@@ -270,6 +278,53 @@ export default function UnitDashboard() {
       console.error("Failed to load coverage:", error);
     } finally {
       setLoadingCoverage(false);
+    }
+  };
+
+  const loadCardsData = async () => {
+    if (!authState.unit?.id) return;
+    
+    setLoadingCards(true);
+    try {
+      // Load clients with their pets and plan information
+      const clientsResponse = await fetch(`/api/unit/${authState.unit.id}/clients`, {
+        credentials: 'include'
+      });
+
+      if (clientsResponse.ok) {
+        const clientsData = await clientsResponse.json();
+        
+        // For each client, fetch their pets
+        const petsWithClientsPromises = clientsData.map(async (client: Client) => {
+          try {
+            const petsResponse = await fetch(`/api/clients/${client.id}/pets`, {
+              credentials: 'include'
+            });
+            if (petsResponse.ok) {
+              const pets = await petsResponse.json();
+              
+              // For each pet, add client data and potentially plan data
+              return pets.map((pet: Pet) => ({
+                ...pet,
+                client,
+                plan: pet.planId ? { id: pet.planId, name: "Plano Ativo", description: "Cobertura ativa" } : undefined
+              }));
+            }
+            return [];
+          } catch (error) {
+            console.error(`Failed to load pets for client ${client.id}:`, error);
+            return [];
+          }
+        });
+
+        const petsArrays = await Promise.all(petsWithClientsPromises);
+        const allPets = petsArrays.flat();
+        setPetsWithClients(allPets);
+      }
+    } catch (error) {
+      console.error("Failed to load cards data:", error);
+    } finally {
+      setLoadingCards(false);
     }
   };
 
@@ -946,17 +1001,105 @@ export default function UnitDashboard() {
             </div>
           </TabsContent>
 
-          {/* Cards Tab - Placeholder */}
+          {/* Cards Tab */}
           <TabsContent value="cards">
-            <Card>
-              <CardContent className="p-6 text-center">
-                <IdCard className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Carteirinhas Digitais</h3>
-                <p className="text-gray-500">
-                  Funcionalidade em desenvolvimento. Aqui você poderá visualizar as carteirinhas digitais dos clientes.
-                </p>
-              </CardContent>
-            </Card>
+            <div className="space-y-4">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                  <h3 className="text-lg font-semibold">Carteirinhas Digitais</h3>
+                  <p className="text-sm text-gray-600">Carteirinhas dos pets da sua unidade</p>
+                </div>
+                <div className="flex items-center space-x-2 w-full sm:w-auto">
+                  <Search className="h-4 w-4 text-gray-400" />
+                  <Input
+                    placeholder="Buscar pet ou cliente..."
+                    value={cardSearch}
+                    onChange={(e) => setCardSearch(e.target.value)}
+                    className="max-w-sm"
+                  />
+                </div>
+              </div>
+
+              {loadingCards ? (
+                <div className="flex items-center justify-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                  <span className="ml-2 text-muted-foreground">Carregando carteirinhas...</span>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {petsWithClients
+                    .filter(pet => {
+                      const searchTerm = cardSearch.toLowerCase();
+                      return (
+                        pet.name.toLowerCase().includes(searchTerm) ||
+                        pet.client.fullName.toLowerCase().includes(searchTerm) ||
+                        pet.species.toLowerCase().includes(searchTerm) ||
+                        (pet.breed && pet.breed.toLowerCase().includes(searchTerm))
+                      );
+                    })
+                    .map(pet => (
+                      <DigitalCard
+                        key={pet.id}
+                        pet={{
+                          id: pet.id,
+                          name: pet.name,
+                          species: pet.species,
+                          breed: pet.breed,
+                          sex: pet.sex || 'N/A',
+                          age: pet.age
+                        }}
+                        client={{
+                          id: pet.client.id,
+                          fullName: pet.client.fullName,
+                          phone: pet.client.phone,
+                          city: pet.client.city
+                        }}
+                        plan={pet.plan}
+                        unit={{
+                          id: authState.unit!.id,
+                          name: authState.unit!.name,
+                          phone: authState.unit!.phone || 'N/A',
+                          address: authState.unit!.address
+                        }}
+                        cardNumber={pet.id.replace(/-/g, '').substring(0, 9)}
+                        className="w-full max-w-sm mx-auto"
+                      />
+                    ))}
+                </div>
+              )}
+
+              {!loadingCards && petsWithClients.length === 0 && (
+                <Card>
+                  <CardContent className="p-6 text-center">
+                    <PawPrint className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhuma carteirinha encontrada</h3>
+                    <p className="text-gray-500">
+                      Ainda não há pets cadastrados para sua unidade.
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+
+              {!loadingCards && cardSearch && petsWithClients.filter(pet => {
+                const searchTerm = cardSearch.toLowerCase();
+                return (
+                  pet.name.toLowerCase().includes(searchTerm) ||
+                  pet.client.fullName.toLowerCase().includes(searchTerm) ||
+                  pet.species.toLowerCase().includes(searchTerm) ||
+                  (pet.breed && pet.breed.toLowerCase().includes(searchTerm))
+                );
+              }).length === 0 && petsWithClients.length > 0 && (
+                <Card>
+                  <CardContent className="p-6 text-center">
+                    <Search className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhum resultado encontrado</h3>
+                    <p className="text-gray-500">
+                      Tente buscar por outro termo.
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
           </TabsContent>
 
           {/* Coverage Tab */}
