@@ -26,6 +26,7 @@ import { useEffect, memo } from "react";
 import { useLocation } from "wouter";
 import type { ThemeSettings } from "@shared/schema";
 import { applyThemeToCSSVariables } from "@/lib/theme-defaults";
+import { queryClient, queryOptions } from "./lib/queryClient";
 
 function Router() {
   // Memoized Admin routes component to avoid re-renders
@@ -98,8 +99,32 @@ function App() {
 
     window.addEventListener('theme-updated' as any, handleThemeUpdate as any);
     
+    // Prefetch critical data when app loads
+    const prefetchCriticalData = async () => {
+      try {
+        // Prefetch settings data with longer cache time
+        await queryClient.prefetchQuery({
+          queryKey: ['/api/settings/theme'],
+          ...queryOptions.settings
+        });
+        
+        // Prefetch dashboard data
+        await queryClient.prefetchQuery({
+          queryKey: ['/api/dashboard/all'],
+          ...queryOptions.dashboard
+        });
+      } catch (error) {
+        // Silently fail prefetch - not critical for app functionality
+        console.log('Prefetch completed with some errors - not critical');
+      }
+    };
+
+    // Start prefetch after a small delay to not block initial render
+    const prefetchTimeout = setTimeout(prefetchCriticalData, 100);
+    
     return () => {
       window.removeEventListener('theme-updated' as any, handleThemeUpdate as any);
+      clearTimeout(prefetchTimeout);
     };
   }, []);
 
