@@ -1801,7 +1801,7 @@ export class DatabaseStorage implements IStorage {
           petCount: sql<number>`(SELECT COUNT(*) FROM ${schema.pets})`,
           procedureCount: sql<number>`(SELECT COUNT(*) FROM ${schema.procedures})`,
           planCount: sql<number>`(SELECT COUNT(*) FROM ${schema.plans})`
-        }).limit(1)
+        })
       ]);
 
       const dbQueryTime = Date.now() - dbStartTime;
