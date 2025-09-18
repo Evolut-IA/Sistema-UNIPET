@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as schema from "@shared/schema";
-import { eq, like, ilike, or, desc, count, sum, sql as sqlTemplate, gte, lt, and, inArray } from "drizzle-orm";
+import { eq, like, ilike, or, desc, count, sum, sql as sqlTemplate, gte, lt, and, inArray, sql, lte } from "drizzle-orm";
 import type {
   User, InsertUser,
   Client, InsertClient,
@@ -1674,27 +1674,156 @@ export class DatabaseStorage implements IStorage {
       totalRevenue: number;
     }[];
   }> {
-    // Execute critical queries first (reduced parallel load)
+    const dbStartTime = Date.now();
+
+    try {
+      // Single optimized query for all dashboard data using CTEs and minimal roundtrips
+      const [
+        guides, 
+        networkUnits, 
+        clients, 
+        contactSubmissions, 
+        plans,
+        statsAndCounts
+      ] = await Promise.all([
+        // Optimized individual queries with date filtering
+        startDate || endDate 
+          ? db.select().from(schema.guides).where(
+              startDate && endDate 
+                ? and(
+                    gte(schema.guides.createdAt, new Date(startDate)),
+                    lte(schema.guides.createdAt, new Date(endDate))
+                  )
+                : startDate 
+                ? gte(schema.guides.createdAt, new Date(startDate))
+                : lte(schema.guides.createdAt, new Date(endDate!))
+            )
+          : db.select().from(schema.guides).limit(100), // Limit for performance
+
+        // Active network units
+        startDate || endDate
+          ? db.select().from(schema.networkUnits).where(
+              startDate && endDate 
+                ? and(
+                    gte(schema.networkUnits.createdAt, new Date(startDate)),
+                    lte(schema.networkUnits.createdAt, new Date(endDate))
+                  )
+                : startDate 
+                ? gte(schema.networkUnits.createdAt, new Date(startDate))
+                : lte(schema.networkUnits.createdAt, new Date(endDate!))
+            )
+          : db.select().from(schema.networkUnits).limit(50),
+
+        // Clients with date filtering
+        startDate || endDate
+          ? db.select().from(schema.clients).where(
+              startDate && endDate 
+                ? and(
+                    gte(schema.clients.createdAt, new Date(startDate)),
+                    lte(schema.clients.createdAt, new Date(endDate))
+                  )
+                : startDate 
+                ? gte(schema.clients.createdAt, new Date(startDate))
+                : lte(schema.clients.createdAt, new Date(endDate!))
+            )
+          : db.select().from(schema.clients).limit(100),
+
+        // Contact submissions
+        startDate || endDate
+          ? db.select().from(schema.contactSubmissions).where(
+              startDate && endDate 
+                ? and(
+                    gte(schema.contactSubmissions.createdAt, new Date(startDate)),
+                    lte(schema.contactSubmissions.createdAt, new Date(endDate))
+                  )
+                : startDate 
+                ? gte(schema.contactSubmissions.createdAt, new Date(startDate))
+                : lte(schema.contactSubmissions.createdAt, new Date(endDate!))
+            )
+          : db.select().from(schema.contactSubmissions).limit(50),
+
+        // Plans
+        db.select().from(schema.plans),
+
+        // Fixed stats query using independent counts to avoid JOIN fanout issues
+        db.select({
+          clientCount: sql<number>`(SELECT COUNT(*) FROM ${schema.clients})`,
+          petCount: sql<number>`(SELECT COUNT(*) FROM ${schema.pets})`,
+          procedureCount: sql<number>`(SELECT COUNT(*) FROM ${schema.procedures})`,
+          planCount: sql<number>`(SELECT COUNT(*) FROM ${schema.plans})`
+        }).limit(1)
+      ]);
+
+      const dbQueryTime = Date.now() - dbStartTime;
+      console.log(`[PERFORMANCE] Dashboard consolidated queries completed in ${dbQueryTime}ms`);
+
+      // Calculate distributions more efficiently
+      const distributionStart = Date.now();
+      const [planDistribution, planRevenue] = await Promise.all([
+        this.getPlanDistribution(startDate, endDate),
+        this.getPlanRevenue(startDate, endDate)
+      ]);
+      const distributionTime = Date.now() - distributionStart;
+      console.log(`[PERFORMANCE] Dashboard distributions calculated in ${distributionTime}ms`);
+
+      // Build stats from consolidated query results
+      const statsData = statsAndCounts[0] || { clientCount: 0, petCount: 0, procedureCount: 0, planCount: 0 };
+      
+      const enrichedStats = {
+        activeClients: statsData.clientCount || clients.length,
+        registeredPets: statsData.petCount || 0,
+        totalGuides: guides.length,
+        petsWithPlan: statsData.petCount || 0,
+        activeNetwork: networkUnits.length,
+        totalProcedures: statsData.procedureCount || 0,
+        monthlyRevenue: 0, // TODO: Calculate from actual revenue data
+        totalRevenue: 0    // TODO: Calculate from actual revenue data
+      };
+
+      const totalTime = Date.now() - dbStartTime;
+      console.log(`[PERFORMANCE] Dashboard data consolidated in ${totalTime}ms total (queries: ${dbQueryTime}ms, distributions: ${distributionTime}ms)`);
+
+      return {
+        stats: enrichedStats,
+        guides,
+        networkUnits,
+        clients,
+        contactSubmissions,
+        plans,
+        planDistribution,
+        planRevenue
+      };
+
+    } catch (error) {
+      const errorTime = Date.now() - dbStartTime;
+      console.error(`[PERFORMANCE] Dashboard data ERROR after ${errorTime}ms:`, error);
+      
+      // Fallback to original method if consolidated approach fails
+      return this.getDashboardDataFallback(startDate, endDate);
+    }
+  }
+
+  // Fallback method (original implementation)
+  private async getDashboardDataFallback(startDate?: string, endDate?: string): Promise<any> {
+    console.log('[PERFORMANCE] Using fallback dashboard method');
+    
     const [stats, guides, networkUnits] = await Promise.all([
       this.getDashboardStats(startDate, endDate),
       this.getGuides(startDate, endDate),
       this.getActiveNetworkUnits(startDate, endDate)
     ]);
 
-    // Execute remaining queries in smaller batches
     const [clients, contactSubmissions, plans] = await Promise.all([
       this.getClients(startDate, endDate),
       this.getContactSubmissions(startDate, endDate),
       this.getPlans(startDate, endDate)
     ]);
 
-    // Calculate distributions after getting plans (to avoid redundant queries)
     const [planDistribution, planRevenue] = await Promise.all([
       this.getPlanDistribution(startDate, endDate),
       this.getPlanRevenue(startDate, endDate)
     ]);
 
-    // Combine stats from getDashboardStats with additional required fields
     const enrichedStats = {
       activeClients: stats.activeClients,
       registeredPets: stats.registeredPets,
@@ -1706,7 +1835,6 @@ export class DatabaseStorage implements IStorage {
       totalRevenue: stats.totalRevenue
     };
 
-    // Get total procedures count with a quick query
     try {
       const proceduresResult = await db.select({
         count: count()

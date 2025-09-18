@@ -984,47 +984,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Cache para theme settings (settings mudam raramente)
   let themeCache: any = null;
   let themeCacheTime = 0;
+  let themeCacheEtag = '';
   const THEME_CACHE_TTL = 5 * 60 * 1000; // 5 minutos
 
   // Theme settings routes  
   app.get("/api/settings/theme", async (req, res) => {
+    const startTime = Date.now();
     try {
-      // Verificar cache primeiro
       const now = Date.now();
-      if (themeCache && (now - themeCacheTime) < THEME_CACHE_TTL) {
-        res.set('Cache-Control', 'public, max-age=300'); // 5 minutos
-        return res.json(themeCache);
+      const isFromCache = themeCache && (now - themeCacheTime) < THEME_CACHE_TTL;
+      
+      // Check if client has cached version
+      const clientEtag = req.headers['if-none-match'];
+      if (clientEtag && clientEtag === themeCacheEtag && isFromCache) {
+        console.log(`[PERFORMANCE] /api/settings/theme 304 from cache in ${Date.now() - startTime}ms`);
+        res.status(304).end();
+        return;
       }
 
-      const settings = await storage.getThemeSettings();
-      const result = settings || {};
+      let result;
+      if (isFromCache) {
+        result = themeCache;
+        console.log(`[PERFORMANCE] /api/settings/theme 200 from memory cache in ${Date.now() - startTime}ms`);
+      } else {
+        result = await storage.getThemeSettings() || {};
+        
+        // Atualizar cache
+        themeCache = result;
+        themeCacheTime = now;
+        themeCacheEtag = `"${now}-${JSON.stringify(result).length}"`;
+        console.log(`[PERFORMANCE] /api/settings/theme 200 from DB in ${Date.now() - startTime}ms`);
+      }
       
-      // Atualizar cache
-      themeCache = result;
-      themeCacheTime = now;
-      
-      res.set('Cache-Control', 'public, max-age=300'); // 5 minutos
+      // Set proper cache headers
+      res.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=60');
+      res.set('ETag', themeCacheEtag);
       res.json(result);
     } catch (error) {
       console.error("Theme settings API error:", error);
+      console.log(`[PERFORMANCE] /api/settings/theme ERROR in ${Date.now() - startTime}ms`);
       res.json({}); // Return empty object instead of 500 to allow fallback
     }
   });
 
 
   app.put("/api/settings/theme", async (req, res) => {
+    const startTime = Date.now();
     try {
       console.log("Theme settings request body:", JSON.stringify(req.body, null, 2));
       const settingsData = insertThemeSettingsSchema.parse(req.body);
       const settings = await storage.updateThemeSettings(settingsData);
       
-      // Invalidar cache
+      // Invalidar cache completamente
       themeCache = null;
       themeCacheTime = 0;
+      themeCacheEtag = '';
       
+      console.log(`[PERFORMANCE] PUT /api/settings/theme completed in ${Date.now() - startTime}ms`);
       res.json(settings);
     } catch (error) {
       console.error("Theme validation error:", error);
+      console.log(`[PERFORMANCE] PUT /api/settings/theme ERROR in ${Date.now() - startTime}ms`);
       res.status(400).json({ message: "Invalid theme settings data" });
     }
   });
@@ -1073,11 +1093,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Cache para dashboard data (dados mudam com menos frequência)
-  let dashboardCache: Map<string, {data: any, timestamp: number}> = new Map();
+  let dashboardCache: Map<string, {data: any, timestamp: number, etag: string}> = new Map();
   const DASHBOARD_CACHE_TTL = 2 * 60 * 1000; // 2 minutos
 
   // Aggregated dashboard endpoint - reduces 8 API calls to 1
   app.get("/api/dashboard/all", async (req, res) => {
+    const startTime = Date.now();
     try {
       const { startDate, endDate } = req.query;
       const cacheKey = `${startDate || 'all'}-${endDate || 'all'}`;
@@ -1085,32 +1106,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Verificar cache primeiro
       const cached = dashboardCache.get(cacheKey);
-      if (cached && (now - cached.timestamp) < DASHBOARD_CACHE_TTL) {
-        res.set('Cache-Control', 'public, max-age=120'); // 2 minutos
-        return res.json(cached.data);
+      const isFromCache = cached && (now - cached.timestamp) < DASHBOARD_CACHE_TTL;
+      
+      // Check if client has cached version
+      const clientEtag = req.headers['if-none-match'];
+      if (clientEtag && cached && clientEtag === cached.etag && isFromCache) {
+        console.log(`[PERFORMANCE] /api/dashboard/all 304 from cache in ${Date.now() - startTime}ms`);
+        res.status(304).end();
+        return;
       }
 
-      const dashboardData = await storage.getDashboardData(
-        startDate as string | undefined,
-        endDate as string | undefined
-      );
+      let dashboardData;
+      let etag;
 
-      // Atualizar cache
-      dashboardCache.set(cacheKey, {
-        data: dashboardData,
-        timestamp: now
-      });
+      if (isFromCache) {
+        dashboardData = cached.data;
+        etag = cached.etag;
+        console.log(`[PERFORMANCE] /api/dashboard/all 200 from memory cache in ${Date.now() - startTime}ms`);
+      } else {
+        dashboardData = await storage.getDashboardData(
+          startDate as string | undefined,
+          endDate as string | undefined
+        );
 
-      // Limpar cache antigo (manter só os últimos 10 itens)
-      if (dashboardCache.size > 10) {
-        const firstKey = dashboardCache.keys().next().value;
-        dashboardCache.delete(firstKey);
+        etag = `"${now}-${JSON.stringify(dashboardData).length}"`;
+        
+        // Atualizar cache
+        dashboardCache.set(cacheKey, {
+          data: dashboardData,
+          timestamp: now,
+          etag: etag
+        });
+
+        // Limpar cache antigo (manter só os últimos 10 itens)
+        if (dashboardCache.size > 10) {
+          const firstKey = dashboardCache.keys().next().value;
+          dashboardCache.delete(firstKey);
+        }
+
+        console.log(`[PERFORMANCE] /api/dashboard/all 200 from DB in ${Date.now() - startTime}ms`);
       }
 
-      res.set('Cache-Control', 'public, max-age=120'); // 2 minutos
+      res.set('Cache-Control', 'private, max-age=120, stale-while-revalidate=30');
+      res.set('ETag', etag);
       res.json(dashboardData);
     } catch (error) {
       console.error("Dashboard all data error:", error);
+      console.log(`[PERFORMANCE] /api/dashboard/all ERROR in ${Date.now() - startTime}ms`);
       res.status(500).json({ message: "Failed to fetch dashboard data" });
     }
   });

@@ -1,5 +1,5 @@
 import { Switch, Route } from "wouter";
-import { queryClient } from "./lib/queryClient";
+import { queryClient, queryOptions } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -26,7 +26,6 @@ import { useEffect, memo } from "react";
 import { useLocation } from "wouter";
 import type { ThemeSettings } from "@shared/schema";
 import { applyThemeToCSSVariables } from "@/lib/theme-defaults";
-import { queryClient, queryOptions } from "./lib/queryClient";
 
 function Router() {
   // Memoized Admin routes component to avoid re-renders
