@@ -205,7 +205,7 @@ export default function Settings() {
             ) : (
               <>
                 <Save className="h-4 w-4 mr-2" />
-                Salvar Configurações
+                Salvar Alterações
               </>
             )}
           </Button>
@@ -638,7 +638,7 @@ export default function Settings() {
                     data-testid="button-save-rules"
                   >
                     <Save className="h-4 w-4 mr-2" />
-                    {saveRulesMutation.isPending ? "Salvando..." : "Salvar Regras"}
+                    {saveRulesMutation.isPending ? "Salvando..." : "Salvar Alterações"}
                   </Button>
                 </div>
               </form>

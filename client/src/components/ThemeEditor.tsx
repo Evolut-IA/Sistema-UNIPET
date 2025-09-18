@@ -648,7 +648,7 @@ export default function ThemeEditor() {
               </AccordionItem>
             </Accordion>
 
-            <div className="flex justify-between items-center pt-6">
+            <div className="flex justify-end items-center pt-6 gap-2">
               <Button
                 type="button"
                 variant="outline"
@@ -667,7 +667,7 @@ export default function ThemeEditor() {
                 data-testid="button-save-theme"
               >
                 <Save className="h-4 w-4" />
-                <span>{isSaving ? "Salvando..." : "Aplicar Tema"}</span>
+                <span>{isSaving ? "Salvando..." : "Salvar Alterações"}</span>
               </Button>
             </div>
           </form>
