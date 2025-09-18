@@ -1237,23 +1237,10 @@ export default function Procedures() {
                   )}
                   {visibleColumns.includes("Status") && (
                     <TableCell className="whitespace-nowrap bg-accent">
-                      <div className="flex items-center space-x-2">
-                        <Switch
-                          checked={item.isActive}
-                          onCheckedChange={() => handleToggleStatus(item.id, item.isActive)}
-                        />
-                        <Badge 
-                          variant={item.isActive ? "default" : "secondary"}
-                          className={cn(
-                            "text-xs",
-                            item.isActive 
-                              ? "bg-chart-2/20 text-chart-2 border-chart-2/30" 
-                              : "bg-muted text-muted-foreground border-muted"
-                          )}
-                        >
-                          {item.isActive ? "Ativo" : "Inativo"}
-                        </Badge>
-                      </div>
+                      <Switch
+                        checked={item.isActive}
+                        onCheckedChange={() => handleToggleStatus(item.id, item.isActive)}
+                      />
                     </TableCell>
                   )}
                   {visibleColumns.includes("Ações") && (
