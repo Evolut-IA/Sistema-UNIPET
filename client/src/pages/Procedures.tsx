@@ -1297,7 +1297,7 @@ export default function Procedures() {
                   </p>
                   {!searchQuery && (
                     <Button
-                      variant="default"
+                      className="btn-primary"
                       onClick={() => setDialogOpen(true)}
                       data-testid="button-add-first-procedure"
                     >

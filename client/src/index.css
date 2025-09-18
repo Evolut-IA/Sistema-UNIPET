@@ -130,6 +130,25 @@
   }
 }
 
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50;
+    @apply [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0;
+    background-color: #277677;
+    color: #ffffff;
+    border: none;
+  }
+  
+  .btn-primary:hover {
+    background-color: #1f5e5f;
+  }
+  
+  .btn-primary:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
 /* REMOÇÃO TOTAL DE OUTLINE E FOCUS - PRIORIDADE MÁXIMA */
 /* EXCEÇÃO CRÍTICA: Popups e dialogs PRECISAM de box-shadow para funcionar */
 *, *::before, *::after {
