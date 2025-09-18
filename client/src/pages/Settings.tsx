@@ -176,40 +176,6 @@ export default function Settings() {
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground break-words">Configurações</h1>
           <p className="text-sm text-muted-foreground">Gerencie as configurações do sistema</p>
         </div>
-        <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-3 xs:gap-4">
-          <Button 
-            className="btn-primary w-full xs:w-auto"
-            onClick={() => {
-              const activeTab = document.querySelector('[data-state="active"]')?.getAttribute('value');
-              if (activeTab === 'site') {
-                siteForm.handleSubmit(onSubmitSite)();
-              } else if (activeTab === 'rules') {
-                rulesForm.handleSubmit(onSubmitRules)();
-              } else if (activeTab === 'theme') {
-                // Na aba tema, instruir o usuário a usar o botão "Aplicar Tema"
-                toast({
-                  title: "Use o botão 'Aplicar Tema'",
-                  description: "Para salvar as configurações de tema, use o botão 'Aplicar Tema' localizado na parte inferior da aba Tema.",
-                  variant: "default",
-                });
-              }
-            }}
-            disabled={saveSiteMutation.isPending || saveRulesMutation.isPending}
-            data-testid="button-save-settings"
-          >
-            {(saveSiteMutation.isPending || saveRulesMutation.isPending) ? (
-              <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Salvando...
-              </>
-            ) : (
-              <>
-                <Save className="h-4 w-4 mr-2" />
-                Salvar Alterações
-              </>
-            )}
-          </Button>
-        </div>
       </div>
 
       <Tabs defaultValue="site" className="space-y-4 sm:space-y-6">
@@ -565,6 +531,18 @@ export default function Settings() {
                   </AccordionItem>
 
                 </Accordion>
+
+                <div className="flex justify-end pt-6">
+                  <Button
+                    type="submit"
+                    className="btn-primary"
+                    disabled={saveSiteMutation.isPending}
+                    data-testid="button-save-site"
+                  >
+                    <Save className="h-4 w-4 mr-2" />
+                    {saveSiteMutation.isPending ? "Salvando..." : "Salvar Alterações"}
+                  </Button>
+                </div>
               </form>
             </Form>
           )}
