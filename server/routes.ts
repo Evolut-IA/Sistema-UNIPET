@@ -981,11 +981,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
 
+  // Cache para theme settings (settings mudam raramente)
+  let themeCache: any = null;
+  let themeCacheTime = 0;
+  const THEME_CACHE_TTL = 5 * 60 * 1000; // 5 minutos
+
   // Theme settings routes  
   app.get("/api/settings/theme", async (req, res) => {
     try {
+      // Verificar cache primeiro
+      const now = Date.now();
+      if (themeCache && (now - themeCacheTime) < THEME_CACHE_TTL) {
+        res.set('Cache-Control', 'public, max-age=300'); // 5 minutos
+        return res.json(themeCache);
+      }
+
       const settings = await storage.getThemeSettings();
-      res.json(settings || {});
+      const result = settings || {};
+      
+      // Atualizar cache
+      themeCache = result;
+      themeCacheTime = now;
+      
+      res.set('Cache-Control', 'public, max-age=300'); // 5 minutos
+      res.json(result);
     } catch (error) {
       console.error("Theme settings API error:", error);
       res.json({}); // Return empty object instead of 500 to allow fallback
@@ -998,6 +1017,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log("Theme settings request body:", JSON.stringify(req.body, null, 2));
       const settingsData = insertThemeSettingsSchema.parse(req.body);
       const settings = await storage.updateThemeSettings(settingsData);
+      
+      // Invalidar cache
+      themeCache = null;
+      themeCacheTime = 0;
+      
       res.json(settings);
     } catch (error) {
       console.error("Theme validation error:", error);
@@ -1048,14 +1072,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Cache para dashboard data (dados mudam com menos frequência)
+  let dashboardCache: Map<string, {data: any, timestamp: number}> = new Map();
+  const DASHBOARD_CACHE_TTL = 2 * 60 * 1000; // 2 minutos
+
   // Aggregated dashboard endpoint - reduces 8 API calls to 1
   app.get("/api/dashboard/all", async (req, res) => {
     try {
       const { startDate, endDate } = req.query;
+      const cacheKey = `${startDate || 'all'}-${endDate || 'all'}`;
+      const now = Date.now();
+
+      // Verificar cache primeiro
+      const cached = dashboardCache.get(cacheKey);
+      if (cached && (now - cached.timestamp) < DASHBOARD_CACHE_TTL) {
+        res.set('Cache-Control', 'public, max-age=120'); // 2 minutos
+        return res.json(cached.data);
+      }
+
       const dashboardData = await storage.getDashboardData(
         startDate as string | undefined,
         endDate as string | undefined
       );
+
+      // Atualizar cache
+      dashboardCache.set(cacheKey, {
+        data: dashboardData,
+        timestamp: now
+      });
+
+      // Limpar cache antigo (manter só os últimos 10 itens)
+      if (dashboardCache.size > 10) {
+        const firstKey = dashboardCache.keys().next().value;
+        dashboardCache.delete(firstKey);
+      }
+
+      res.set('Cache-Control', 'public, max-age=120'); // 2 minutos
       res.json(dashboardData);
     } catch (error) {
       console.error("Dashboard all data error:", error);

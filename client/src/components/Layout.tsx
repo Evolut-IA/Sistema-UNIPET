@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import Sidebar from "./Sidebar.tsx";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
@@ -7,7 +7,7 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-export default function Layout({ children }: LayoutProps) {
+function Layout({ children }: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -59,3 +59,5 @@ export default function Layout({ children }: LayoutProps) {
     </div>
   );
 }
+
+export default memo(Layout);

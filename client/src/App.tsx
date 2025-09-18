@@ -22,14 +22,14 @@ import Administration from "@/pages/Administration";
 import UnitDashboard from "@/pages/UnitDashboard";
 import UnitRoute from "@/components/UnitRoute";
 import NotFound from "@/pages/not-found";
-import { useEffect } from "react";
+import { useEffect, memo } from "react";
 import { useLocation } from "wouter";
 import type { ThemeSettings } from "@shared/schema";
 import { applyThemeToCSSVariables } from "@/lib/theme-defaults";
 
 function Router() {
-  // Admin routes component to avoid duplication
-  const AdminRoutes = () => (
+  // Memoized Admin routes component to avoid re-renders
+  const AdminRoutes = memo(() => (
     <Layout>
       <Switch>
         <Route path="/" component={Dashboard} />
@@ -54,7 +54,7 @@ function Router() {
         <Route path="/administracao" component={Administration} />
       </Switch>
     </Layout>
-  );
+  ));
 
   return (
     <Switch>

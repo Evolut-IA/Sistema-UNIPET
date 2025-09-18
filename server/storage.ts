@@ -1643,7 +1643,7 @@ export class DatabaseStorage implements IStorage {
     return planRevenue.sort((a, b) => b.totalRevenue - a.totalRevenue);
   }
 
-  // Aggregated dashboard data - optimized single query for all dashboard data
+  // Aggregated dashboard data - optimized to reduce parallel query load
   async getDashboardData(startDate?: string, endDate?: string): Promise<{
     stats: {
       activeClients: number;
@@ -1674,23 +1674,22 @@ export class DatabaseStorage implements IStorage {
       totalRevenue: number;
     }[];
   }> {
-    // Execute all queries in parallel for maximum efficiency
-    const [
-      stats,
-      guides,
-      networkUnits,
-      clients,
-      contactSubmissions,
-      plans,
-      planDistribution,
-      planRevenue
-    ] = await Promise.all([
+    // Execute critical queries first (reduced parallel load)
+    const [stats, guides, networkUnits] = await Promise.all([
       this.getDashboardStats(startDate, endDate),
       this.getGuides(startDate, endDate),
-      this.getActiveNetworkUnits(startDate, endDate),
+      this.getActiveNetworkUnits(startDate, endDate)
+    ]);
+
+    // Execute remaining queries in smaller batches
+    const [clients, contactSubmissions, plans] = await Promise.all([
       this.getClients(startDate, endDate),
       this.getContactSubmissions(startDate, endDate),
-      this.getPlans(startDate, endDate),
+      this.getPlans(startDate, endDate)
+    ]);
+
+    // Calculate distributions after getting plans (to avoid redundant queries)
+    const [planDistribution, planRevenue] = await Promise.all([
       this.getPlanDistribution(startDate, endDate),
       this.getPlanRevenue(startDate, endDate)
     ]);
@@ -1699,15 +1698,15 @@ export class DatabaseStorage implements IStorage {
     const enrichedStats = {
       activeClients: stats.activeClients,
       registeredPets: stats.registeredPets,
-      totalGuides: guides.length, // Total guides in the period
-      petsWithPlan: stats.registeredPets, // This is already pets with plans
-      activeNetwork: networkUnits.length, // Active network units count
-      totalProcedures: 0, // Will be calculated if needed
+      totalGuides: guides.length,
+      petsWithPlan: stats.registeredPets,
+      activeNetwork: networkUnits.length,
+      totalProcedures: 0,
       monthlyRevenue: stats.monthlyRevenue,
       totalRevenue: stats.totalRevenue
     };
 
-    // Get total procedures if needed
+    // Get total procedures count with a quick query
     try {
       const proceduresResult = await db.select({
         count: count()
