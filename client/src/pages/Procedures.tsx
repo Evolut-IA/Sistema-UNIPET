@@ -1147,36 +1147,38 @@ export default function Procedures() {
         </CardContent>
       </Card>
 
-      {/* Table with Column Control */}
-      <div className="container my-10 space-y-4 border border-border rounded-lg bg-accent shadow-sm">
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 p-4 border-b border-border">
-          <div className="flex-1">
-            <h2 className="text-lg font-medium text-foreground">
-              Procedimentos ({totalItems || 0})
-            </h2>
-          </div>
-          
-          {/* Controle de Colunas */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                <Columns className="h-4 w-4 mr-2" />
-                Colunas
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {allColumns.map((col) => (
-                <DropdownMenuCheckboxItem
-                  key={col}
-                  checked={visibleColumns.includes(col)}
-                  onCheckedChange={() => toggleColumn(col)}
-                >
-                  {col}
-                </DropdownMenuCheckboxItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+      {/* Title and Column Control */}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+        <div className="flex-1">
+          <h2 className="text-lg font-medium text-foreground">
+            Procedimentos ({totalItems || 0})
+          </h2>
         </div>
+        
+        {/* Controle de Colunas */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm">
+              <Columns className="h-4 w-4 mr-2" />
+              Colunas
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {allColumns.map((col) => (
+              <DropdownMenuCheckboxItem
+                key={col}
+                checked={visibleColumns.includes(col)}
+                onCheckedChange={() => toggleColumn(col)}
+              >
+                {col}
+              </DropdownMenuCheckboxItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      {/* Table Container */}
+      <div className="container my-10 space-y-4 border border-border rounded-lg bg-accent shadow-sm">
         
         {isLoading ? (
           <div className="p-4">
