@@ -24,6 +24,20 @@ import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, 
 import { CalendarDate } from "@internationalized/date";
 import { getDateRangeParams } from "@/lib/date-utils";
 
+// Type definitions for dashboard data
+type PlanRevenue = {
+  planId: string;
+  planName: string;
+  totalRevenue: number;
+};
+
+type PlanDistribution = {
+  planId: string;
+  planName: string;
+  petCount: number;
+  percentage: number;
+};
+
 export default function Dashboard() {
   const [, setLocation] = useLocation();
   const [dateFilter, setDateFilter] = useState<{
@@ -75,8 +89,8 @@ export default function Dashboard() {
   const clients = dashboardData?.clients || [] as Client[];
   const contactSubmissions = dashboardData?.contactSubmissions || [] as ContactSubmission[];
   const plans = dashboardData?.plans || [];
-  const planDistribution = dashboardData?.planDistribution || [];
-  const planRevenue = dashboardData?.planRevenue || [];
+  const planDistribution = (dashboardData?.planDistribution || []) as PlanDistribution[];
+  const planRevenue = (dashboardData?.planRevenue || []) as PlanRevenue[];
 
   // Map loading and error states for backward compatibility
   const statsLoading = isLoadingDashboard;
