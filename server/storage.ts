@@ -195,6 +195,7 @@ export interface IStorage {
 
   // Site settings methods
   getSiteSettings(): Promise<SiteSettings | undefined>;
+  getSiteImage(imageType: 'main' | 'network' | 'about'): Promise<Buffer | undefined>;
   updateSiteSettings(settings: InsertSiteSettings): Promise<SiteSettings>;
 
   // Rules settings methods
@@ -872,18 +873,67 @@ export class DatabaseStorage implements IStorage {
   // Site settings methods
   async getSiteSettings(): Promise<SiteSettings | undefined> {
     try {
-      console.log("Fetching site settings from database...");
-      const result = await db.select().from(schema.siteSettings).limit(1);
-      console.log("Site settings query result:", result);
+      console.log("Fetching site settings from database (optimized - no image data)...");
+      // Select only non-image columns for performance - images are served separately
+      const result = await db.select({
+        id: schema.siteSettings.id,
+        whatsapp: schema.siteSettings.whatsapp,
+        email: schema.siteSettings.email,
+        phone: schema.siteSettings.phone,
+        instagramUrl: schema.siteSettings.instagramUrl,
+        facebookUrl: schema.siteSettings.facebookUrl,
+        linkedinUrl: schema.siteSettings.linkedinUrl,
+        youtubeUrl: schema.siteSettings.youtubeUrl,
+        cnpj: schema.siteSettings.cnpj,
+        businessHours: schema.siteSettings.businessHours,
+        ourStory: schema.siteSettings.ourStory,
+        privacyPolicy: schema.siteSettings.privacyPolicy,
+        termsOfUse: schema.siteSettings.termsOfUse,
+        address: schema.siteSettings.address,
+        cores: schema.siteSettings.cores,
+        createdAt: schema.siteSettings.createdAt,
+        updatedAt: schema.siteSettings.updatedAt,
+        // Exclude image columns for performance - they are served via /api/images/site/:type
+        mainImage: sqlTemplate`NULL`.as('mainImage'),
+        networkImage: sqlTemplate`NULL`.as('networkImage'),
+        aboutImage: sqlTemplate`NULL`.as('aboutImage'),
+      }).from(schema.siteSettings).limit(1);
       
-      if (result[0]) {
-        console.log("First result keys:", Object.keys(result[0]));
-        console.log("First result values:", result[0]);
-      }
-      
+      console.log(`Site settings fetched without large binary images for performance`);
       return result[0];
     } catch (error) {
       console.error("Error in getSiteSettings:", error);
+      throw error;
+    }
+  }
+
+  async getSiteImage(imageType: 'main' | 'network' | 'about'): Promise<Buffer | undefined> {
+    try {
+      console.log(`Fetching ${imageType} image from database...`);
+      
+      // Map imageType to database column names
+      const columnMap = {
+        main: 'mainImage',
+        network: 'networkImage', 
+        about: 'aboutImage'
+      } as const;
+      
+      const columnName = columnMap[imageType];
+      
+      // Query specific image column only for performance
+      const result = await db.select({
+        image: schema.siteSettings[columnName]
+      }).from(schema.siteSettings).limit(1);
+      
+      if (!result[0] || !result[0].image) {
+        console.log(`No ${imageType} image found`);
+        return undefined;
+      }
+      
+      console.log(`${imageType} image found, size: ${result[0].image.length} bytes`);
+      return result[0].image;
+    } catch (error) {
+      console.error(`Error fetching ${imageType} image:`, error);
       throw error;
     }
   }

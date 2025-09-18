@@ -202,24 +202,13 @@ export const siteSettings = pgTable("site_settings", {
   privacyPolicy: text("privacy_policy"),
   termsOfUse: text("terms_of_use"),
   address: text("address"),
-  mainImage: text("main_image"),
-  networkImage: text("network_image"),
-  aboutImage: text("about_image"),
+  // Converted from text (base64) to bytea (binary) for better performance
+  mainImage: bytea("main_image"),
+  networkImage: bytea("network_image"),
+  aboutImage: bytea("about_image"),
   cores: json("cores").$type<{[key: string]: string}>().default({}),
-  // Changed from base64 text to image IDs for better performance
-  mainImageId: varchar("main_image_id").references(() => images.id),
-  networkImageId: varchar("network_image_id").references(() => images.id),
-  aboutImageId: varchar("about_image_id").references(() => images.id),
-});
-
-// Images table for optimal storage (replaces base64 in site settings)
-export const images = pgTable("images", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  filename: text("filename").notNull(),
-  contentType: text("content_type").notNull(), // e.g., "image/jpeg", "image/png"
-  data: bytea("data").notNull(), // Binary data instead of base64
-  size: integer("size").notNull(), // Size in bytes
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 // Rules settings table
@@ -318,18 +307,11 @@ export const insertFaqItemSchema = createInsertSchema(faqItems).omit({ id: true,
 export const insertProcedureSchema = createInsertSchema(procedures).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertProcedurePlanSchema = createInsertSchema(procedurePlans).omit({ id: true, createdAt: true, isIncluded: true, displayOrder: true });
 export const insertContactSubmissionSchema = createInsertSchema(contactSubmissions).omit({ id: true, createdAt: true });
-export const insertImageSchema = createInsertSchema(images).omit({ id: true, createdAt: true, data: true }).extend({
-  data: z.instanceof(Buffer, { message: "Data must be a Buffer" }),
-});
-export const insertSiteSettingsSchema = createInsertSchema(siteSettings).omit({ id: true }).extend({
-  // Legacy base64 fields (kept for backward compatibility during migration)
-  mainImage: z.string().optional(),
-  networkImage: z.string().optional(),
-  aboutImage: z.string().optional(),
-  // New image ID references for optimized storage
-  mainImageId: z.string().optional(),
-  networkImageId: z.string().optional(),
-  aboutImageId: z.string().optional(),
+export const insertSiteSettingsSchema = createInsertSchema(siteSettings).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  // Binary image data (converted from base64 for better performance) - server-side only
+  mainImage: typeof Buffer !== 'undefined' ? z.instanceof(Buffer).optional() : z.any().optional(),
+  networkImage: typeof Buffer !== 'undefined' ? z.instanceof(Buffer).optional() : z.any().optional(),
+  aboutImage: typeof Buffer !== 'undefined' ? z.instanceof(Buffer).optional() : z.any().optional(),
 });
 export const insertRulesSettingsSchema = createInsertSchema(rulesSettings).omit({ id: true, createdAt: true, updatedAt: true }).extend({
   fixedPercentage: z.number().min(0, "Porcentagem deve ser pelo menos 0").max(100, "Porcentagem deve ser no máximo 100").optional()

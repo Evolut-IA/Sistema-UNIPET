@@ -867,6 +867,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Image serving endpoint for optimized performance
+  app.get("/api/images/site/:imageType", async (req, res) => {
+    const startTime = Date.now();
+    try {
+      const { imageType } = req.params;
+      console.log(`=== API /api/images/site/${imageType} called ===`);
+      
+      if (!['main', 'network', 'about'].includes(imageType)) {
+        return res.status(400).json({ message: "Invalid image type" });
+      }
+      
+      const imageData = await storage.getSiteImage(imageType as 'main' | 'network' | 'about');
+      
+      if (!imageData) {
+        return res.status(404).json({ message: "Image not found" });
+      }
+      
+      // Set proper headers for image serving with cache optimization
+      res.set({
+        'Content-Type': 'image/jpeg', // Assuming JPEG for now, could be dynamic
+        'Content-Length': imageData.length.toString(),
+        'Cache-Control': 'public, max-age=3600', // Cache for 1 hour
+        'ETag': `"site-${imageType}-${imageData.length}"` // Simple ETag based on size
+      });
+      
+      console.log(`=== Image served in ${Date.now() - startTime}ms ===`);
+      res.send(imageData);
+    } catch (error) {
+      console.error(`Error serving image ${req.params.imageType}:`, error);
+      res.status(500).json({ message: "Failed to serve image" });
+    }
+  });
+
   // Settings routes
   app.get("/api/settings/site", async (req, res) => {
     try {
@@ -902,7 +935,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.json(defaultSettings);
       }
       
-      res.json(settings);
+      // Add image URLs - images are served separately for performance
+      const optimizedSettings = {
+        ...settings,
+        // Keep legacy fields as null for compatibility while frontend migrates
+        mainImage: null,
+        networkImage: null,
+        aboutImage: null,
+        // Add new URL fields for optimized image serving
+        mainImageUrl: "/api/images/site/main",
+        networkImageUrl: "/api/images/site/network",
+        aboutImageUrl: "/api/images/site/about",
+      };
+      
+      console.log(`=== Site settings optimized - images served separately ===`);
+      res.json(optimizedSettings);
     } catch (error) {
       console.error("Error fetching site settings:", error);
       
@@ -921,9 +968,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         privacyPolicy: "",
         termsOfUse: "",
         address: "",
-        mainImage: "",
-        networkImage: "",
-        aboutImage: "",
+        mainImageUrl: "",
+        networkImageUrl: "",
+        aboutImageUrl: "",
         cores: {}
       };
       console.log("Error occurred, returning default settings:", defaultSettings);
