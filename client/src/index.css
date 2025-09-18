@@ -174,6 +174,22 @@ span, p, h1, h2, h3, h4, h5, h6, img, svg {
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
 }
 
+/* Remover background dos botões do dropdown de colunas */
+[data-radix-dropdown-menu-content] [role="menuitemcheckbox"] {
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
+[data-radix-dropdown-menu-content] [role="menuitemcheckbox"]:hover {
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
+[data-radix-dropdown-menu-content] [role="menuitemcheckbox"]:focus {
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
 /* CORREÇÃO DEFINITIVA POPUPS MOBILE - Mobile-First com breakpoint expandido */
 @media (max-width: 1023px) {
   /* POPUPS E DIALOGS - Centralização forçada com margens iguais */
