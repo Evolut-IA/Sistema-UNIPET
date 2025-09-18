@@ -1,7 +1,20 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, timestamp, integer, boolean, decimal, json, pgEnum, uniqueIndex, index } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, timestamp, integer, boolean, decimal, json, pgEnum, uniqueIndex, index, customType } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+
+// Custom bytea type for binary data storage
+const bytea = customType<{ data: Buffer; notNull: false; default: false }>({
+  dataType() {
+    return "bytea";
+  },
+  toDriver(value: Buffer) {
+    return value;
+  },
+  fromDriver(value: unknown) {
+    return value as Buffer;
+  },
+});
 
 // Enums
 export const planTypeEnum = pgEnum("plan_type_enum", ["with_waiting_period", "without_waiting_period"]);
@@ -193,6 +206,20 @@ export const siteSettings = pgTable("site_settings", {
   networkImage: text("network_image"),
   aboutImage: text("about_image"),
   cores: json("cores").$type<{[key: string]: string}>().default({}),
+  // Changed from base64 text to image IDs for better performance
+  mainImageId: varchar("main_image_id").references(() => images.id),
+  networkImageId: varchar("network_image_id").references(() => images.id),
+  aboutImageId: varchar("about_image_id").references(() => images.id),
+});
+
+// Images table for optimal storage (replaces base64 in site settings)
+export const images = pgTable("images", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  filename: text("filename").notNull(),
+  contentType: text("content_type").notNull(), // e.g., "image/jpeg", "image/png"
+  data: bytea("data").notNull(), // Binary data instead of base64
+  size: integer("size").notNull(), // Size in bytes
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 // Rules settings table
@@ -291,10 +318,18 @@ export const insertFaqItemSchema = createInsertSchema(faqItems).omit({ id: true,
 export const insertProcedureSchema = createInsertSchema(procedures).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertProcedurePlanSchema = createInsertSchema(procedurePlans).omit({ id: true, createdAt: true, isIncluded: true, displayOrder: true });
 export const insertContactSubmissionSchema = createInsertSchema(contactSubmissions).omit({ id: true, createdAt: true });
+export const insertImageSchema = createInsertSchema(images).omit({ id: true, createdAt: true, data: true }).extend({
+  data: z.instanceof(Buffer, { message: "Data must be a Buffer" }),
+});
 export const insertSiteSettingsSchema = createInsertSchema(siteSettings).omit({ id: true }).extend({
+  // Legacy base64 fields (kept for backward compatibility during migration)
   mainImage: z.string().optional(),
   networkImage: z.string().optional(),
   aboutImage: z.string().optional(),
+  // New image ID references for optimized storage
+  mainImageId: z.string().optional(),
+  networkImageId: z.string().optional(),
+  aboutImageId: z.string().optional(),
 });
 export const insertRulesSettingsSchema = createInsertSchema(rulesSettings).omit({ id: true, createdAt: true, updatedAt: true }).extend({
   fixedPercentage: z.number().min(0, "Porcentagem deve ser pelo menos 0").max(100, "Porcentagem deve ser no máximo 100").optional()
@@ -322,6 +357,7 @@ export type InsertSiteSettings = typeof siteSettings.$inferInsert;
 export type InsertRulesSettings = typeof rulesSettings.$inferInsert;
 export type InsertThemeSettings = typeof themeSettings.$inferInsert;
 export type InsertGuide = typeof guides.$inferInsert;
+export type InsertImage = typeof images.$inferInsert;
 
 export type User = typeof users.$inferSelect;
 export type Client = typeof clients.$inferSelect;
@@ -336,6 +372,7 @@ export type SiteSettings = typeof siteSettings.$inferSelect;
 export type RulesSettings = typeof rulesSettings.$inferSelect;
 export type ThemeSettings = typeof themeSettings.$inferSelect;
 export type Guide = typeof guides.$inferSelect;
+export type Image = typeof images.$inferSelect;
 
 // Safe type for network units with credential status (excludes password hash)
 export type NetworkUnitWithCredentialStatus = Omit<NetworkUnit, 'senhaHash'> & {
