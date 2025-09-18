@@ -19,6 +19,10 @@ import type {
   ProcedurePlan, InsertProcedurePlan
 } from "@shared/schema";
 
+// Simple in-memory cache for dashboard data
+const dashboardCache = new Map<string, { data: any; timestamp: number }>();
+const CACHE_TTL_MS = 30000; // 30 seconds
+
 const databaseUrl = process.env.DATABASE_URL || "postgresql://postgres:password@localhost:5432/unipet";
 console.log("Database URL configured:", databaseUrl ? "Yes" : "No");
 
@@ -267,6 +271,10 @@ export interface IStorage {
     stats: {
       activeClients: number;
       registeredPets: number;
+      openGuides: number;  // Added from getDashboardStats
+      totalPlans: number;  // Added from getDashboardStats
+      activePlans: number;  // Added from getDashboardStats
+      inactivePlans: number;  // Added from getDashboardStats
       totalGuides: number;
       petsWithPlan: number;
       activeNetwork: number;
@@ -275,9 +283,13 @@ export interface IStorage {
       totalRevenue: number;
     };
     guides: Guide[];
+    guidesTotal: number;  // Added total count
     networkUnits: NetworkUnit[];
+    networkUnitsTotal: number;  // Added total count
     clients: Client[];
+    clientsTotal: number;  // Added total count
     contactSubmissions: ContactSubmission[];
+    contactSubmissionsTotal: number;  // Added total count
     plans: Plan[];
     planDistribution: {
       planId: string;
@@ -293,6 +305,18 @@ export interface IStorage {
       totalRevenue: number;
     }[];
   }>;
+
+  // Helper method to get limited guides with total count
+  getLimitedGuides(startDate?: string, endDate?: string, limit?: number): Promise<{ guides: Guide[]; total: number }>;
+
+  // Helper method to get limited clients with total count  
+  getLimitedClients(startDate?: string, endDate?: string, limit?: number): Promise<{ clients: Client[]; total: number }>;
+
+  // Helper method to get limited contact submissions with total count
+  getLimitedContactSubmissions(startDate?: string, endDate?: string, limit?: number): Promise<{ submissions: ContactSubmission[]; total: number }>;
+
+  // Helper method to get limited network units with total count
+  getLimitedNetworkUnits(startDate?: string, endDate?: string, limit?: number): Promise<{ units: NetworkUnit[]; total: number }>;
 
 }
 
@@ -393,6 +417,39 @@ export class DatabaseStorage implements IStorage {
     }
     
     return await query.orderBy(desc(schema.clients.createdAt));
+  }
+
+  // Helper method to get limited clients with total count
+  async getLimitedClients(startDate?: string, endDate?: string, limit: number = 3): Promise<{ clients: Client[]; total: number }> {
+    let query = db.select().from(schema.clients);
+    let countQuery = db.select({ count: count() }).from(schema.clients);
+    
+    // Build date filter conditions
+    const dateConditions = [];
+    if (startDate) {
+      dateConditions.push(gte(schema.clients.createdAt, new Date(startDate)));
+    }
+    if (endDate) {
+      // Add one day to endDate to include the entire end date
+      const endDateTime = new Date(endDate);
+      endDateTime.setDate(endDateTime.getDate() + 1);
+      dateConditions.push(lt(schema.clients.createdAt, endDateTime));
+    }
+    
+    if (dateConditions.length > 0) {
+      query = query.where(and(...dateConditions));
+      countQuery = countQuery.where(and(...dateConditions));
+    }
+    
+    const [clients, totalResult] = await Promise.all([
+      query.orderBy(desc(schema.clients.createdAt)).limit(limit),
+      countQuery
+    ]);
+    
+    return {
+      clients,
+      total: totalResult[0]?.count || 0
+    };
   }
 
   // Pet methods
@@ -507,6 +564,39 @@ export class DatabaseStorage implements IStorage {
     }
     
     return await db.select().from(schema.networkUnits).where(and(...dateConditions));
+  }
+  
+  // Helper method to get limited network units with total count
+  async getLimitedNetworkUnits(startDate?: string, endDate?: string, limit?: number): Promise<{ units: NetworkUnit[]; total: number }> {
+    // Build date filter conditions
+    const dateConditions = [eq(schema.networkUnits.isActive, true)];
+    if (startDate) {
+      dateConditions.push(gte(schema.networkUnits.createdAt, new Date(startDate)));
+    }
+    if (endDate) {
+      // Add one day to endDate to include the entire end date
+      const endDateTime = new Date(endDate);
+      endDateTime.setDate(endDateTime.getDate() + 1);
+      dateConditions.push(lt(schema.networkUnits.createdAt, endDateTime));
+    }
+    
+    const query = db.select().from(schema.networkUnits).where(and(...dateConditions));
+    const countQuery = db.select({ count: count() }).from(schema.networkUnits).where(and(...dateConditions));
+    
+    // Execute queries
+    const unitsPromise = limit 
+      ? query.orderBy(desc(schema.networkUnits.createdAt)).limit(limit)
+      : query.orderBy(desc(schema.networkUnits.createdAt));
+    
+    const [units, totalResult] = await Promise.all([
+      unitsPromise,
+      countQuery
+    ]);
+    
+    return {
+      units,
+      total: totalResult[0]?.count || 0
+    };
   }
 
   async createNetworkUnit(unit: InsertNetworkUnit): Promise<NetworkUnit> {
@@ -740,6 +830,39 @@ export class DatabaseStorage implements IStorage {
     
     return await query.orderBy(desc(schema.contactSubmissions.createdAt));
   }
+  
+  // Helper method to get limited contact submissions with total count
+  async getLimitedContactSubmissions(startDate?: string, endDate?: string, limit: number = 3): Promise<{ submissions: ContactSubmission[]; total: number }> {
+    let query = db.select().from(schema.contactSubmissions);
+    let countQuery = db.select({ count: count() }).from(schema.contactSubmissions);
+    
+    // Build date filter conditions
+    const dateConditions = [];
+    if (startDate) {
+      dateConditions.push(gte(schema.contactSubmissions.createdAt, new Date(startDate)));
+    }
+    if (endDate) {
+      // Add one day to endDate to include the entire end date
+      const endDateTime = new Date(endDate);
+      endDateTime.setDate(endDateTime.getDate() + 1);
+      dateConditions.push(lt(schema.contactSubmissions.createdAt, endDateTime));
+    }
+    
+    if (dateConditions.length > 0) {
+      query = query.where(and(...dateConditions));
+      countQuery = countQuery.where(and(...dateConditions));
+    }
+    
+    const [submissions, totalResult] = await Promise.all([
+      query.orderBy(desc(schema.contactSubmissions.createdAt)).limit(limit),
+      countQuery
+    ]);
+    
+    return {
+      submissions,
+      total: totalResult[0]?.count || 0
+    };
+  }
 
   async deleteContactSubmission(id: string): Promise<boolean> {
     const result = await db.delete(schema.contactSubmissions).where(eq(schema.contactSubmissions.id, id)).returning({ id: schema.contactSubmissions.id });
@@ -940,6 +1063,39 @@ export class DatabaseStorage implements IStorage {
     }
     
     return await query.orderBy(desc(schema.guides.createdAt));
+  }
+  
+  // Helper method to get limited guides with total count
+  async getLimitedGuides(startDate?: string, endDate?: string, limit: number = 20): Promise<{ guides: Guide[]; total: number }> {
+    let query = db.select().from(schema.guides);
+    let countQuery = db.select({ count: count() }).from(schema.guides);
+    
+    // Build date filter conditions
+    const dateConditions = [];
+    if (startDate) {
+      dateConditions.push(gte(schema.guides.createdAt, new Date(startDate)));
+    }
+    if (endDate) {
+      // Add one day to endDate to include the entire end date
+      const endDateTime = new Date(endDate);
+      endDateTime.setDate(endDateTime.getDate() + 1);
+      dateConditions.push(lt(schema.guides.createdAt, endDateTime));
+    }
+    
+    if (dateConditions.length > 0) {
+      query = query.where(and(...dateConditions));
+      countQuery = countQuery.where(and(...dateConditions));
+    }
+    
+    const [guides, totalResult] = await Promise.all([
+      query.orderBy(desc(schema.guides.createdAt)).limit(limit),
+      countQuery
+    ]);
+    
+    return {
+      guides,
+      total: totalResult[0]?.count || 0
+    };
   }
 
   async getAllGuidesWithNetworkUnits(
