@@ -223,9 +223,17 @@ export default function Settings() {
               ))}
             </div>
           ) : (
-            <Form {...siteForm}>
-              <form onSubmit={siteForm.handleSubmit(onSubmitSite)} className="space-y-4 sm:space-y-6">
-                <Accordion type="single" collapsible className="w-full">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-foreground flex items-center space-x-2">
+                  <Globe className="h-5 w-5" />
+                  <span>Configurações Gerais</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Form {...siteForm}>
+                  <form onSubmit={siteForm.handleSubmit(onSubmitSite)} className="space-y-4 sm:space-y-6">
+                    <Accordion type="single" collapsible className="w-full">
                   
                   {/* Contact Information */}
                   <AccordionItem value="contact" data-testid="accordion-contact">
@@ -543,8 +551,10 @@ export default function Settings() {
                     {saveSiteMutation.isPending ? "Salvando..." : "Salvar Alterações"}
                   </Button>
                 </div>
-              </form>
-            </Form>
+                  </form>
+                </Form>
+              </CardContent>
+            </Card>
           )}
         </TabsContent>
 
