@@ -174,18 +174,48 @@ span, p, h1, h2, h3, h4, h5, h6, img, svg {
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
 }
 
-/* Remover background dos botões do dropdown de colunas */
-[data-radix-dropdown-menu-content] [role="menuitemcheckbox"] {
+/* REMOVER BACKGROUND DOS BOTÕES DO DROPDOWN DE COLUNAS - FORÇA TOTAL */
+
+/* Forçar remoção de background em TODOS os elementos dentro do dropdown */
+[data-radix-dropdown-menu-content] * {
   background-color: transparent !important;
   background: transparent !important;
+  background-image: none !important;
 }
 
-[data-radix-dropdown-menu-content] [role="menuitemcheckbox"]:hover {
+/* Especificamente para itens de menu */
+[data-radix-dropdown-menu-content] [role="menuitemcheckbox"],
+[data-radix-dropdown-menu-content] > [role="menuitemcheckbox"],
+[data-radix-dropdown-menu-content] [data-radix-collection-item],
+[data-radix-dropdown-menu-content] .relative.flex.cursor-default,
+[data-radix-dropdown-menu-content] div {
   background-color: transparent !important;
   background: transparent !important;
+  background-image: none !important;
 }
 
-[data-radix-dropdown-menu-content] [role="menuitemcheckbox"]:focus {
+/* Sobrescrever TODOS os estados possíveis */
+[data-radix-dropdown-menu-content] *:hover,
+[data-radix-dropdown-menu-content] *:focus,
+[data-radix-dropdown-menu-content] *:focus-visible,
+[data-radix-dropdown-menu-content] *:active,
+[data-radix-dropdown-menu-content] *:focus-within {
+  background-color: transparent !important;
+  background: transparent !important;
+  background-image: none !important;
+}
+
+/* Sobrescrever variáveis CSS do tema */
+[data-radix-dropdown-menu-content] {
+  --accent: transparent !important;
+  --accent-foreground: inherit !important;
+}
+
+/* Bloquear qualquer classe do Tailwind que possa adicionar background */
+[data-radix-dropdown-menu-content] .bg-accent,
+[data-radix-dropdown-menu-content] .focus\:bg-accent,
+[data-radix-dropdown-menu-content] .hover\:bg-accent,
+[data-radix-dropdown-menu-content] .data-\[state\=open\]\:bg-accent {
   background-color: transparent !important;
   background: transparent !important;
 }
