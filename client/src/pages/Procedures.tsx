@@ -716,21 +716,6 @@ export default function Procedures() {
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground break-words">Procedimentos</h1>
           <p className="text-sm text-muted-foreground">Gerencie os procedimentos médicos disponíveis</p>
         </div>
-        <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-3 xs:gap-4">
-          <Dialog open={dialogOpen} onOpenChange={(open) => {
-            setDialogOpen(open);
-            if (!open) {
-              resetForm();
-            }
-          }}>
-            <DialogTrigger asChild>
-              <Button className="btn-primary w-full xs:w-auto" data-testid="button-new-procedure">
-                <Plus className="h-4 w-4 mr-2" />
-                Novo Procedimento
-              </Button>
-            </DialogTrigger>
-          </Dialog>
-        </div>
       </div>
 
       {/* Create/Edit Dialog */}
@@ -1155,26 +1140,42 @@ export default function Procedures() {
           </h2>
         </div>
         
-        {/* Controle de Colunas */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm">
-              <Columns className="h-4 w-4 mr-2" />
-              Colunas
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {allColumns.map((col) => (
-              <DropdownMenuCheckboxItem
-                key={col}
-                checked={visibleColumns.includes(col)}
-                onCheckedChange={() => toggleColumn(col)}
-              >
-                {col}
-              </DropdownMenuCheckboxItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex gap-2">
+          <Dialog open={dialogOpen} onOpenChange={(open) => {
+            setDialogOpen(open);
+            if (!open) {
+              resetForm();
+            }
+          }}>
+            <DialogTrigger asChild>
+              <Button className="btn-primary" data-testid="button-new-procedure">
+                <Plus className="h-4 w-4 mr-2" />
+                Adicionar
+              </Button>
+            </DialogTrigger>
+          </Dialog>
+          
+          {/* Controle de Colunas */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                <Columns className="h-4 w-4 mr-2" />
+                Colunas
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {allColumns.map((col) => (
+                <DropdownMenuCheckboxItem
+                  key={col}
+                  checked={visibleColumns.includes(col)}
+                  onCheckedChange={() => toggleColumn(col)}
+                >
+                  {col}
+                </DropdownMenuCheckboxItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
       {/* Table Container */}

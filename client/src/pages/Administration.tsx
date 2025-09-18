@@ -340,22 +340,6 @@ export default function Administration() {
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground break-words">Administração</h1>
           <p className="text-sm text-muted-foreground">Gerencie usuários e permissões do sistema</p>
         </div>
-        <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-3 xs:gap-4">
-          <Dialog open={dialogOpen} onOpenChange={(open) => {
-            setDialogOpen(open);
-            if (!open) {
-              setEditingUser(null);
-              form.reset();
-            }
-          }}>
-            <DialogTrigger asChild>
-              <Button className="btn-primary w-full xs:w-auto" data-testid="button-new-user">
-                <Plus className="h-4 w-4 mr-2" />
-                Novo Usuário
-              </Button>
-            </DialogTrigger>
-          </Dialog>
-        </div>
       </div>
 
       {/* Dialog Content */}
@@ -547,26 +531,43 @@ export default function Administration() {
           </div>
         </div>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm">
-              <Columns className="h-4 w-4 mr-2" />
-              Colunas
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-48">
-            {allColumns.map((col) => (
-              <DropdownMenuCheckboxItem
-                key={col}
-                checked={visibleColumns.includes(col)}
-                onCheckedChange={() => toggleColumn(col)}
-                className="data-[state=checked]:bg-transparent focus:bg-muted/50"
-              >
-                {col}
-              </DropdownMenuCheckboxItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex gap-2">
+          <Dialog open={dialogOpen} onOpenChange={(open) => {
+            setDialogOpen(open);
+            if (!open) {
+              setEditingUser(null);
+              form.reset();
+            }
+          }}>
+            <DialogTrigger asChild>
+              <Button className="btn-primary" data-testid="button-new-user">
+                <Plus className="h-4 w-4 mr-2" />
+                Adicionar
+              </Button>
+            </DialogTrigger>
+          </Dialog>
+          
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                <Columns className="h-4 w-4 mr-2" />
+                Colunas
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-48">
+              {allColumns.map((col) => (
+                <DropdownMenuCheckboxItem
+                  key={col}
+                  checked={visibleColumns.includes(col)}
+                  onCheckedChange={() => toggleColumn(col)}
+                  className="data-[state=checked]:bg-transparent focus:bg-muted/50"
+                >
+                  {col}
+                </DropdownMenuCheckboxItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
       {/* Section Title */}

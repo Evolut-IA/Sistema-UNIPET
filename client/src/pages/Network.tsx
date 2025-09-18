@@ -242,14 +242,6 @@ export default function Network() {
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground break-words">Rede Credenciada</h1>
           <p className="text-sm text-muted-foreground">Gerencie as unidades credenciadas</p>
         </div>
-        <Button 
-          className="btn-primary w-full sm:w-auto"
-          onClick={() => setLocation("/rede/novo")}
-          data-testid="button-new-unit"
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          Nova Unidade
-        </Button>
       </div>
 
       {/* Filters and Column Controls */}
@@ -270,26 +262,37 @@ export default function Network() {
           </div>
         </div>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm">
-              <Columns className="h-4 w-4 mr-2" />
-              Colunas
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-48">
-            {allColumns.map((col) => (
-              <DropdownMenuCheckboxItem
-                key={col}
-                checked={visibleColumns.includes(col)}
-                onCheckedChange={() => toggleColumn(col)}
-                className="data-[state=checked]:bg-transparent focus:bg-muted/50"
-              >
-                {col}
-              </DropdownMenuCheckboxItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex gap-2">
+          <Button 
+            className="btn-primary"
+            onClick={() => setLocation("/rede/novo")}
+            data-testid="button-new-unit"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Adicionar
+          </Button>
+          
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                <Columns className="h-4 w-4 mr-2" />
+                Colunas
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-48">
+              {allColumns.map((col) => (
+                <DropdownMenuCheckboxItem
+                  key={col}
+                  checked={visibleColumns.includes(col)}
+                  onCheckedChange={() => toggleColumn(col)}
+                  className="data-[state=checked]:bg-transparent focus:bg-muted/50"
+                >
+                  {col}
+                </DropdownMenuCheckboxItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
       {/* Modern Table Container */}
