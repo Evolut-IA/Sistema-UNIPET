@@ -827,7 +827,7 @@ export default function Procedures() {
                                     value={selectedPlan.planId}
                                     onValueChange={(value) => updatePlanId(index, value)}
                                   >
-                                    <SelectTrigger className={planErrors[index] && !selectedPlan.planId ? 'border-red-500' : ''}>
+                                    <SelectTrigger className={planErrors[index] && !selectedPlan.planId ? 'border-destructive' : ''}>
                                       <SelectValue placeholder="Selecione um plano" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -839,7 +839,7 @@ export default function Procedures() {
                                     </SelectContent>
                                   </Select>
                                   {planErrors[index] && !selectedPlan.planId && (
-                                    <p className="text-xs text-red-500 mt-1">{planErrors[index]}</p>
+                                    <p className="text-xs text-destructive mt-1">{planErrors[index]}</p>
                                   )}
                                 </div>
 
@@ -852,10 +852,10 @@ export default function Procedures() {
                                     onChange={(e) => updatePlanField(index, 'receber', e.target.value)}
                                     placeholder="0,00"
                                     data-testid={`input-plan-receber-${index}`}
-                                    className={planErrors[index] ? 'border-red-500' : ''}
+                                    className={planErrors[index] ? 'border-destructive' : ''}
                                   />
                                   {planErrors[index] && (
-                                    <p className="text-xs text-red-500 mt-1">{planErrors[index]}</p>
+                                    <p className="text-xs text-destructive mt-1">{planErrors[index]}</p>
                                   )}
                                 </div>
 
@@ -904,7 +904,7 @@ export default function Procedures() {
                                       }
                                     }}
                                     placeholder="0,00"
-                                    className={!selectedPlan.enableCoparticipacao ? 'bg-gray-100 text-gray-400 cursor-pointer' : ''}
+                                    className={!selectedPlan.enableCoparticipacao ? 'bg-muted text-muted-foreground cursor-pointer' : ''}
                                     data-testid={`input-plan-coparticipacao-${index}`}
                                   />
                                 </div>
@@ -938,7 +938,7 @@ export default function Procedures() {
                                       }
                                     }}
                                     placeholder="Digite apenas números"
-                                    className={!selectedPlan.enableCarencia ? 'bg-gray-100 text-gray-400 cursor-pointer' : ''}
+                                    className={!selectedPlan.enableCarencia ? 'bg-muted text-muted-foreground cursor-pointer' : ''}
                                     data-testid={`input-plan-carencia-${index}`}
                                   />
                                 </div>
@@ -972,11 +972,11 @@ export default function Procedures() {
                                       }
                                     }}
                                     placeholder="Ex: 2"
-                                    className={!selectedPlan.enableLimitesAnuais ? 'bg-gray-100 text-gray-400 cursor-pointer' : ''}
+                                    className={!selectedPlan.enableLimitesAnuais ? 'bg-muted text-muted-foreground cursor-pointer' : ''}
                                     data-testid={`input-plan-limites-${index}`}
                                   />
                                   {planErrors[index] && selectedPlan.enableLimitesAnuais && planErrors[index].includes('Limites anuais') && (
-                                    <p className="text-xs text-red-500 mt-1">{planErrors[index]}</p>
+                                    <p className="text-xs text-destructive mt-1">{planErrors[index]}</p>
                                   )}
                                 </div>
                               </div>
@@ -989,7 +989,7 @@ export default function Procedures() {
                                 variant="outline"
                                 size="sm"
                                 onClick={() => removePlan(index)}
-                                className="text-red-600 hover:text-red-700"
+                                className="text-destructive hover:text-destructive/80"
                               >
                                 <X className="h-4 w-4 mr-1" />
                                 Remover
@@ -1230,13 +1230,13 @@ export default function Procedures() {
                       <Badge variant="outline" className={cn(
                         "text-xs",
                         {
-                          "bg-blue-50 text-blue-700 border-blue-200": item.procedureType === "consultas",
-                          "bg-green-50 text-green-700 border-green-200": item.procedureType === "exames",
-                          "bg-purple-50 text-purple-700 border-purple-200": item.procedureType === "cirurgias",
-                          "bg-orange-50 text-orange-700 border-orange-200": item.procedureType === "internacao",
-                          "bg-red-50 text-red-700 border-red-200": item.procedureType === "emergencia",
-                          "bg-teal-50 text-teal-700 border-teal-200": item.procedureType === "vacinas",
-                          "bg-pink-50 text-pink-700 border-pink-200": item.procedureType === "outros"
+                          "bg-chart-1/20 text-chart-1 border-chart-1/30": item.procedureType === "consultas",
+                          "bg-chart-2/20 text-chart-2 border-chart-2/30": item.procedureType === "exames",
+                          "bg-chart-5/20 text-chart-5 border-chart-5/30": item.procedureType === "cirurgias",
+                          "bg-chart-3/20 text-chart-3 border-chart-3/30": item.procedureType === "internacao",
+                          "bg-destructive/20 text-destructive border-destructive/30": item.procedureType === "emergencia",
+                          "bg-chart-4/20 text-chart-4 border-chart-4/30": item.procedureType === "vacinas",
+                          "bg-accent text-accent-foreground border-accent": item.procedureType === "outros"
                         }
                       )}>
                         {PROCEDURE_TYPE_LABELS[item.procedureType as keyof typeof PROCEDURE_TYPE_LABELS] || item.procedureType}
@@ -1255,8 +1255,8 @@ export default function Procedures() {
                           className={cn(
                             "text-xs",
                             item.isActive 
-                              ? "bg-green-100 text-green-800 border-green-300" 
-                              : "bg-gray-100 text-gray-600 border-gray-300"
+                              ? "bg-chart-2/20 text-chart-2 border-chart-2/30" 
+                              : "bg-muted text-muted-foreground border-muted"
                           )}
                         >
                           {item.isActive ? "Ativo" : "Inativo"}
