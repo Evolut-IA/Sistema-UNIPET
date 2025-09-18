@@ -254,6 +254,46 @@ export interface IStorage {
     totalRevenue: number;
   }[]>;
 
+  // Plan distribution analytics
+  getPlanDistribution(startDate?: string, endDate?: string): Promise<{
+    planId: string;
+    planName: string;
+    petCount: number;
+    percentage: number;
+  }[]>;
+
+  // Aggregated dashboard data
+  getDashboardData(startDate?: string, endDate?: string): Promise<{
+    stats: {
+      activeClients: number;
+      registeredPets: number;
+      totalGuides: number;
+      petsWithPlan: number;
+      activeNetwork: number;
+      totalProcedures: number;
+      monthlyRevenue: number;
+      totalRevenue: number;
+    };
+    guides: Guide[];
+    networkUnits: NetworkUnit[];
+    clients: Client[];
+    contactSubmissions: ContactSubmission[];
+    plans: Plan[];
+    planDistribution: {
+      planId: string;
+      planName: string;
+      petCount: number;
+      percentage: number;
+    }[];
+    planRevenue: {
+      planId: string;
+      planName: string;
+      petCount: number;
+      monthlyPrice: number;
+      totalRevenue: number;
+    }[];
+  }>;
+
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1445,6 +1485,93 @@ export class DatabaseStorage implements IStorage {
 
     // Sort by total revenue descending
     return planRevenue.sort((a, b) => b.totalRevenue - a.totalRevenue);
+  }
+
+  // Aggregated dashboard data - optimized single query for all dashboard data
+  async getDashboardData(startDate?: string, endDate?: string): Promise<{
+    stats: {
+      activeClients: number;
+      registeredPets: number;
+      totalGuides: number;
+      petsWithPlan: number;
+      activeNetwork: number;
+      totalProcedures: number;
+      monthlyRevenue: number;
+      totalRevenue: number;
+    };
+    guides: Guide[];
+    networkUnits: NetworkUnit[];
+    clients: Client[];
+    contactSubmissions: ContactSubmission[];
+    plans: Plan[];
+    planDistribution: {
+      planId: string;
+      planName: string;
+      petCount: number;
+      percentage: number;
+    }[];
+    planRevenue: {
+      planId: string;
+      planName: string;
+      petCount: number;
+      monthlyPrice: number;
+      totalRevenue: number;
+    }[];
+  }> {
+    // Execute all queries in parallel for maximum efficiency
+    const [
+      stats,
+      guides,
+      networkUnits,
+      clients,
+      contactSubmissions,
+      plans,
+      planDistribution,
+      planRevenue
+    ] = await Promise.all([
+      this.getDashboardStats(startDate, endDate),
+      this.getGuides(startDate, endDate),
+      this.getActiveNetworkUnits(startDate, endDate),
+      this.getClients(startDate, endDate),
+      this.getContactSubmissions(startDate, endDate),
+      this.getPlans(startDate, endDate),
+      this.getPlanDistribution(startDate, endDate),
+      this.getPlanRevenue(startDate, endDate)
+    ]);
+
+    // Combine stats from getDashboardStats with additional required fields
+    const enrichedStats = {
+      activeClients: stats.activeClients,
+      registeredPets: stats.registeredPets,
+      totalGuides: guides.length, // Total guides in the period
+      petsWithPlan: stats.registeredPets, // This is already pets with plans
+      activeNetwork: networkUnits.length, // Active network units count
+      totalProcedures: 0, // Will be calculated if needed
+      monthlyRevenue: stats.monthlyRevenue,
+      totalRevenue: stats.totalRevenue
+    };
+
+    // Get total procedures if needed
+    try {
+      const proceduresResult = await db.select({
+        count: count()
+      }).from(schema.procedures);
+      enrichedStats.totalProcedures = proceduresResult[0]?.count || 0;
+    } catch (error) {
+      console.error('Error fetching procedures count:', error);
+      enrichedStats.totalProcedures = 0;
+    }
+
+    return {
+      stats: enrichedStats,
+      guides,
+      networkUnits,
+      clients,
+      contactSubmissions,
+      plans,
+      planDistribution,
+      planRevenue
+    };
   }
 }
 

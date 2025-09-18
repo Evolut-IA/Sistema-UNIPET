@@ -1048,6 +1048,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Aggregated dashboard endpoint - reduces 8 API calls to 1
+  app.get("/api/dashboard/all", async (req, res) => {
+    try {
+      const { startDate, endDate } = req.query;
+      const dashboardData = await storage.getDashboardData(
+        startDate as string | undefined,
+        endDate as string | undefined
+      );
+      res.json(dashboardData);
+    } catch (error) {
+      console.error("Dashboard all data error:", error);
+      res.status(500).json({ message: "Failed to fetch dashboard data" });
+    }
+  });
+
   // Verificação de senha do administrador
   app.post("/api/admin/verify-password", async (req, res) => {
     try {

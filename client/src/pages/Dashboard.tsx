@@ -53,96 +53,49 @@ export default function Dashboard() {
   const dateParams = getDateRangeParams(debouncedDateFilter.startDate, debouncedDateFilter.endDate);
   const hasDateFilter = Object.keys(dateParams).length > 0;
 
-  const { data: stats = {} as any, isLoading: statsLoading, isError: statsError } = useQuery({
-    queryKey: ["/api/dashboard/stats", dateParams],
+  // Single aggregated query to fetch all dashboard data
+  const { 
+    data: dashboardData, 
+    isLoading: isLoadingDashboard, 
+    isError: isDashboardError 
+  } = useQuery({
+    queryKey: ["/api/dashboard/all", dateParams],
     queryFn: async () => {
       const params = new URLSearchParams(dateParams);
-      const response = await fetch(`/api/dashboard/stats?${params}`);
-      if (!response.ok) throw new Error('Failed to fetch stats');
+      const response = await fetch(`/api/dashboard/all?${params}`);
+      if (!response.ok) throw new Error('Failed to fetch dashboard data');
       return response.json();
     },
   });
 
-  const { data: allGuides = [], isLoading: guidesLoading, isError: guidesError } = useQuery<Guide[]>({
-    queryKey: ["/api/guides", dateParams],
-    queryFn: async () => {
-      const params = new URLSearchParams(dateParams);
-      const response = await fetch(`/api/guides?${params}`);
-      if (!response.ok) throw new Error('Failed to fetch guides');
-      return response.json();
-    },
-  });
+  // Extract data from the aggregated response
+  const stats = dashboardData?.stats || {} as any;
+  const allGuides = dashboardData?.guides || [] as Guide[];
+  const networkUnits = dashboardData?.networkUnits || [] as NetworkUnit[];
+  const clients = dashboardData?.clients || [] as Client[];
+  const contactSubmissions = dashboardData?.contactSubmissions || [] as ContactSubmission[];
+  const plans = dashboardData?.plans || [];
+  const planDistribution = dashboardData?.planDistribution || [];
+  const planRevenue = dashboardData?.planRevenue || [];
 
-  const { data: networkUnits = [], isLoading: networkLoading, isError: networkError } = useQuery<NetworkUnit[]>({
-    queryKey: ["/api/network-units/active", dateParams],
-    queryFn: async () => {
-      const params = new URLSearchParams(dateParams);
-      const response = await fetch(`/api/network-units/active?${params}`);
-      if (!response.ok) throw new Error('Failed to fetch network units');
-      return response.json();
-    },
-  });
+  // Map loading and error states for backward compatibility
+  const statsLoading = isLoadingDashboard;
+  const guidesLoading = isLoadingDashboard;
+  const networkLoading = isLoadingDashboard;
+  const clientsLoading = isLoadingDashboard;
+  const submissionsLoading = isLoadingDashboard;
+  const plansLoading = isLoadingDashboard;
+  const distributionLoading = isLoadingDashboard;
+  const revenueLoading = isLoadingDashboard;
 
-  const { data: clients = [], isLoading: clientsLoading, isError: clientsError } = useQuery<Client[]>({
-    queryKey: ["/api/clients", dateParams],
-    queryFn: async () => {
-      const params = new URLSearchParams(dateParams);
-      const response = await fetch(`/api/clients?${params}`);
-      if (!response.ok) throw new Error('Failed to fetch clients');
-      return response.json();
-    },
-  });
-
-  const { data: contactSubmissions = [], isLoading: submissionsLoading, isError: submissionsError } = useQuery<ContactSubmission[]>({
-    queryKey: ["/api/contact-submissions", dateParams],
-    queryFn: async () => {
-      const params = new URLSearchParams(dateParams);
-      const response = await fetch(`/api/contact-submissions?${params}`);
-      if (!response.ok) throw new Error('Failed to fetch contact submissions');
-      return response.json();
-    },
-  });
-
-  const { data: plans = [], isLoading: plansLoading, isError: plansError } = useQuery<any[]>({
-    queryKey: ["/api/plans", dateParams],
-    queryFn: async () => {
-      const params = new URLSearchParams(dateParams);
-      const response = await fetch(`/api/plans?${params}`);
-      if (!response.ok) throw new Error('Failed to fetch plans');
-      return response.json();
-    },
-  });
-
-  const { data: planDistribution = [], isLoading: distributionLoading, isError: distributionError } = useQuery<{
-    planId: string;
-    planName: string;
-    petCount: number;
-    percentage: number;
-  }[]>({
-    queryKey: ["/api/dashboard/plan-distribution", dateParams],
-    queryFn: async () => {
-      const params = new URLSearchParams(dateParams);
-      const response = await fetch(`/api/dashboard/plan-distribution?${params}`);
-      if (!response.ok) throw new Error('Failed to fetch plan distribution');
-      return response.json();
-    },
-  });
-
-  const { data: planRevenue = [], isLoading: revenueLoading, isError: revenueError } = useQuery<{
-    planId: string;
-    planName: string;
-    petCount: number;
-    monthlyPrice: number;
-    totalRevenue: number;
-  }[]>({
-    queryKey: ["/api/dashboard/plan-revenue", dateParams],
-    queryFn: async () => {
-      const params = new URLSearchParams(dateParams);
-      const response = await fetch(`/api/dashboard/plan-revenue?${params}`);
-      if (!response.ok) throw new Error('Failed to fetch plan revenue');
-      return response.json();
-    },
-  });
+  const statsError = isDashboardError;
+  const guidesError = isDashboardError;
+  const networkError = isDashboardError;
+  const clientsError = isDashboardError;
+  const submissionsError = isDashboardError;
+  const plansError = isDashboardError;
+  const distributionError = isDashboardError;
+  const revenueError = isDashboardError;
 
   // Memoize expensive calculations
   const recentClients = useMemo(() => clients.slice(0, 3), [clients]);
