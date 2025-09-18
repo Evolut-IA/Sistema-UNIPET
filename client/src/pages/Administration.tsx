@@ -302,10 +302,10 @@ export default function Administration() {
 
   const getRoleColor = (role: string) => {
     switch (role) {
-      case "delete": return "bg-chart-5/20 text-chart-5";
-      case "edit": return "bg-chart-1/20 text-chart-1";
-      case "add": return "bg-chart-2/20 text-chart-2";
-      case "view": return "bg-chart-4/20 text-chart-4";
+      case "delete": return "bg-chart-5/20 text-accent-foreground";
+      case "edit": return "bg-chart-1/20 text-accent-foreground";
+      case "add": return "bg-chart-2/20 text-accent-foreground";
+      case "view": return "bg-chart-4/20 text-accent-foreground";
       default: return "bg-muted text-muted-foreground";
     }
   };
