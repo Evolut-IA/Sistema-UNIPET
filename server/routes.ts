@@ -980,11 +980,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/settings/site", async (req, res) => {
     try {
+      console.log("=== PUT /api/settings/site called ===");
+      console.log("Request body keys:", Object.keys(req.body));
+      
       const settingsData = insertSiteSettingsSchema.parse(req.body);
-      const settings = await storage.updateSiteSettings(settingsData);
+      console.log("Parsed settings data successfully");
+      
+      // Convert base64 strings to Buffer for database storage
+      const processedData = { ...settingsData };
+      
+      // Helper function to convert base64 to Buffer
+      const base64ToBuffer = (base64String: string): Buffer => {
+        // Remove data URL prefix if present (e.g., "data:image/jpeg;base64,")
+        const base64Data = base64String.replace(/^data:image\/[a-z]+;base64,/, "");
+        return Buffer.from(base64Data, "base64");
+      };
+      
+      // Convert base64 image strings to Buffer
+      if (typeof processedData.mainImage === 'string' && processedData.mainImage) {
+        processedData.mainImage = base64ToBuffer(processedData.mainImage);
+        console.log("Converted mainImage from base64 to Buffer");
+      }
+      if (typeof processedData.networkImage === 'string' && processedData.networkImage) {
+        processedData.networkImage = base64ToBuffer(processedData.networkImage);
+        console.log("Converted networkImage from base64 to Buffer");
+      }
+      if (typeof processedData.aboutImage === 'string' && processedData.aboutImage) {
+        processedData.aboutImage = base64ToBuffer(processedData.aboutImage);
+        console.log("Converted aboutImage from base64 to Buffer");
+      }
+      
+      const settings = await storage.updateSiteSettings(processedData);
+      console.log("Site settings updated successfully");
       res.json(settings);
     } catch (error) {
-      res.status(400).json({ message: "Invalid site settings data" });
+      console.error("Error in PUT /api/settings/site:", error);
+      res.status(400).json({ message: "Invalid site settings data", error: error instanceof Error ? error.message : String(error) });
     }
   });
 

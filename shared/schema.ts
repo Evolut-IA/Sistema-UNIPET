@@ -308,10 +308,10 @@ export const insertProcedureSchema = createInsertSchema(procedures).omit({ id: t
 export const insertProcedurePlanSchema = createInsertSchema(procedurePlans).omit({ id: true, createdAt: true, isIncluded: true, displayOrder: true });
 export const insertContactSubmissionSchema = createInsertSchema(contactSubmissions).omit({ id: true, createdAt: true });
 export const insertSiteSettingsSchema = createInsertSchema(siteSettings).omit({ id: true, createdAt: true, updatedAt: true }).extend({
-  // Binary image data (converted from base64 for better performance) - server-side only
-  mainImage: typeof Buffer !== 'undefined' ? z.instanceof(Buffer).optional() : z.any().optional(),
-  networkImage: typeof Buffer !== 'undefined' ? z.instanceof(Buffer).optional() : z.any().optional(),
-  aboutImage: typeof Buffer !== 'undefined' ? z.instanceof(Buffer).optional() : z.any().optional(),
+  // Accept base64 strings from frontend (will be converted to Buffer on server)
+  mainImage: z.string().optional().or(z.instanceof(typeof Buffer !== 'undefined' ? Buffer : Uint8Array).optional()),
+  networkImage: z.string().optional().or(z.instanceof(typeof Buffer !== 'undefined' ? Buffer : Uint8Array).optional()),
+  aboutImage: z.string().optional().or(z.instanceof(typeof Buffer !== 'undefined' ? Buffer : Uint8Array).optional()),
 });
 export const insertRulesSettingsSchema = createInsertSchema(rulesSettings).omit({ id: true, createdAt: true, updatedAt: true }).extend({
   fixedPercentage: z.number().min(0, "Porcentagem deve ser pelo menos 0").max(100, "Porcentagem deve ser no máximo 100").optional()
