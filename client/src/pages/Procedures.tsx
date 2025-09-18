@@ -1229,15 +1229,7 @@ export default function Procedures() {
                     <TableCell className="whitespace-nowrap bg-accent">
                       <Badge variant="outline" className={cn(
                         "text-xs",
-                        {
-                          "bg-chart-1/20 text-chart-1 border-chart-1/30": item.procedureType === "consultas",
-                          "bg-chart-2/20 text-chart-2 border-chart-2/30": item.procedureType === "exames",
-                          "bg-chart-5/20 text-chart-5 border-chart-5/30": item.procedureType === "cirurgias",
-                          "bg-chart-3/20 text-chart-3 border-chart-3/30": item.procedureType === "internacao",
-                          "bg-destructive/20 text-destructive border-destructive/30": item.procedureType === "emergencia",
-                          "bg-chart-4/20 text-chart-4 border-chart-4/30": item.procedureType === "vacinas",
-                          "bg-accent text-accent-foreground border-accent": item.procedureType === "outros"
-                        }
+                        "bg-chart-2/20 text-chart-2 border-chart-2/30"
                       )}>
                         {PROCEDURE_TYPE_LABELS[item.procedureType as keyof typeof PROCEDURE_TYPE_LABELS] || item.procedureType}
                       </Badge>
