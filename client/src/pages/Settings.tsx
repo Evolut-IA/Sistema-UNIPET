@@ -594,53 +594,63 @@ export default function Settings() {
               <form onSubmit={rulesForm.handleSubmit(onSubmitRules)} className="space-y-4 sm:space-y-6">
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-foreground">Planos & Procedimentos</CardTitle>
+                    <CardTitle className="text-foreground">Configurações de Regras</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-4">
-                      <FormField
-                        control={rulesForm.control}
-                        name="fixedPercentage"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Porcentagem Fixa para Cálculo Automático</FormLabel>
-                            <FormControl>
-                              <Input 
-                                {...field}
-                                type="number" 
-                                placeholder="Ex: 50" 
-                                min="0" 
-                                max="100"
-                                value={field.value || ""}
-                                onChange={(e) => {
-                                  const value = e.target.value === "" ? "" : Number(e.target.value);
-                                  field.onChange(value);
-                                }}
-                                data-testid="input-percentage-fixed"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                            <p className="text-sm text-muted-foreground">
-                              Porcentagem que será aplicada automaticamente no campo "Pagar (R$)" quando inserir um valor em "Receber (R$)"
-                            </p>
-                          </FormItem>
-                        )}
-                      />
+                    <Accordion type="single" collapsible className="w-full">
+                      <AccordionItem value="plans" data-testid="accordion-plans">
+                        <AccordionTrigger className="flex items-center space-x-2">
+                          <FileText className="h-4 w-4" />
+                          <div>
+                            <span>Planos & Procedimentos</span>
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent className="space-y-4">
+                          <FormField
+                            control={rulesForm.control}
+                            name="fixedPercentage"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Porcentagem Fixa para Cálculo Automático</FormLabel>
+                                <FormControl>
+                                  <Input 
+                                    {...field}
+                                    type="number" 
+                                    placeholder="Ex: 50" 
+                                    min="0" 
+                                    max="100"
+                                    value={field.value || ""}
+                                    onChange={(e) => {
+                                      const value = e.target.value === "" ? "" : Number(e.target.value);
+                                      field.onChange(value);
+                                    }}
+                                    data-testid="input-percentage-fixed"
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                                <p className="text-sm text-muted-foreground">
+                                  Porcentagem que será aplicada automaticamente no campo "Pagar (R$)" quando inserir um valor em "Receber (R$)"
+                                </p>
+                              </FormItem>
+                            )}
+                          />
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+
+                    <div className="flex justify-end pt-6">
+                      <Button
+                        type="submit"
+                        className="btn-primary"
+                        disabled={saveRulesMutation.isPending}
+                        data-testid="button-save-rules"
+                      >
+                        <Save className="h-4 w-4 mr-2" />
+                        {saveRulesMutation.isPending ? "Salvando..." : "Salvar Alterações"}
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
-
-                <div className="flex justify-end">
-                  <Button
-                    type="submit"
-                    className="btn-primary"
-                    disabled={saveRulesMutation.isPending}
-                    data-testid="button-save-rules"
-                  >
-                    <Save className="h-4 w-4 mr-2" />
-                    {saveRulesMutation.isPending ? "Salvando..." : "Salvar Alterações"}
-                  </Button>
-                </div>
               </form>
             </Form>
           )}
