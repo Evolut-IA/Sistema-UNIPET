@@ -1819,6 +1819,54 @@ export class DatabaseStorage implements IStorage {
       // Build stats from consolidated query results
       const statsData = statsAndCounts[0] || { clientCount: 0, petCount: 0, procedureCount: 0, planCount: 0 };
       
+      // Calculate revenue using proper SQL SUM aggregation instead of limited guides array
+      let monthlyRevenue = 0;
+      let totalRevenue = 0;
+      
+      // For monthly revenue: use date range if provided, otherwise current month
+      if (startDate || endDate) {
+        // Use provided date range for monthly revenue
+        const monthlyDateConditions = [];
+        if (startDate) {
+          monthlyDateConditions.push(gte(schema.guides.createdAt, new Date(startDate)));
+        }
+        if (endDate) {
+          const endDateTime = new Date(endDate);
+          endDateTime.setDate(endDateTime.getDate() + 1);
+          monthlyDateConditions.push(lt(schema.guides.createdAt, endDateTime));
+        }
+        
+        if (monthlyDateConditions.length > 0) {
+          const monthlyRevenueResult = await db
+            .select({ total: sum(schema.guides.value) })
+            .from(schema.guides)
+            .where(and(...monthlyDateConditions));
+          monthlyRevenue = Number(monthlyRevenueResult[0]?.total) || 0;
+        }
+      } else {
+        // Default to current month when no date range provided
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear();
+        const currentMonth = currentDate.getMonth();
+        const startOfMonth = new Date(currentYear, currentMonth, 1);
+        const endOfMonth = new Date(currentYear, currentMonth + 1, 1);
+        
+        const monthlyRevenueResult = await db
+          .select({ total: sum(schema.guides.value) })
+          .from(schema.guides)
+          .where(and(
+            gte(schema.guides.createdAt, startOfMonth),
+            lt(schema.guides.createdAt, endOfMonth)
+          ));
+        monthlyRevenue = Number(monthlyRevenueResult[0]?.total) || 0;
+      }
+      
+      // For total revenue: SUM over ALL guides (no date filter)
+      const totalRevenueResult = await db
+        .select({ total: sum(schema.guides.value) })
+        .from(schema.guides);
+      totalRevenue = Number(totalRevenueResult[0]?.total) || 0;
+      
       const enrichedStats = {
         activeClients: statsData.clientCount || clients.length,
         registeredPets: statsData.petCount || 0,
@@ -1826,8 +1874,8 @@ export class DatabaseStorage implements IStorage {
         petsWithPlan: statsData.petCount || 0,
         activeNetwork: networkUnits.length,
         totalProcedures: statsData.procedureCount || 0,
-        monthlyRevenue: 0, // TODO: Calculate from actual revenue data
-        totalRevenue: 0    // TODO: Calculate from actual revenue data
+        monthlyRevenue: monthlyRevenue,
+        totalRevenue: totalRevenue
       };
 
       const totalTime = Date.now() - dbStartTime;
