@@ -1733,8 +1733,7 @@ export class DatabaseStorage implements IStorage {
         networkUnits, 
         clients, 
         contactSubmissions, 
-        plans,
-        statsAndCounts
+        plans
       ] = await Promise.all([
         // Optimized individual queries with date filtering
         startDate || endDate 
@@ -1793,16 +1792,23 @@ export class DatabaseStorage implements IStorage {
           : db.select().from(schema.contactSubmissions).limit(50),
 
         // Plans
-        db.select().from(schema.plans),
-
-        // Fixed stats query using independent counts to avoid JOIN fanout issues
-        db.select({
-          clientCount: sql<number>`(SELECT COUNT(*) FROM ${schema.clients})`,
-          petCount: sql<number>`(SELECT COUNT(*) FROM ${schema.pets})`,
-          procedureCount: sql<number>`(SELECT COUNT(*) FROM ${schema.procedures})`,
-          planCount: sql<number>`(SELECT COUNT(*) FROM ${schema.plans})`
-        })
+        db.select().from(schema.plans)
       ]);
+
+      // Get stats counts separately to avoid Promise nesting issues
+      const [clientCountResult, petCountResult, procedureCountResult, planCountResult] = await Promise.all([
+        db.select({ count: count() }).from(schema.clients),
+        db.select({ count: count() }).from(schema.pets),
+        db.select({ count: count() }).from(schema.procedures),
+        db.select({ count: count() }).from(schema.plans)
+      ]);
+
+      const statsAndCounts = {
+        clientCount: clientCountResult[0]?.count || 0,
+        petCount: petCountResult[0]?.count || 0,
+        procedureCount: procedureCountResult[0]?.count || 0,
+        planCount: planCountResult[0]?.count || 0
+      };
 
       const dbQueryTime = Date.now() - dbStartTime;
       console.log(`[PERFORMANCE] Dashboard consolidated queries completed in ${dbQueryTime}ms`);
@@ -1817,7 +1823,7 @@ export class DatabaseStorage implements IStorage {
       console.log(`[PERFORMANCE] Dashboard distributions calculated in ${distributionTime}ms`);
 
       // Build stats from consolidated query results
-      const statsData = statsAndCounts[0] || { clientCount: 0, petCount: 0, procedureCount: 0, planCount: 0 };
+      const statsData = statsAndCounts || { clientCount: 0, petCount: 0, procedureCount: 0, planCount: 0 };
       
       // Calculate revenue using proper SQL SUM aggregation instead of limited guides array
       let monthlyRevenue = 0;
