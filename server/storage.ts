@@ -715,7 +715,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getProcedures(): Promise<Procedure[]> {
-    return await db.select().from(schema.procedures).orderBy(schema.procedures.displayOrder, desc(schema.procedures.createdAt));
+    return await db.select().from(schema.procedures).orderBy(schema.procedures.displayOrder);
   }
 
   // Plan Procedure methods - relacionamento entre procedimentos e planos

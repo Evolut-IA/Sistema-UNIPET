@@ -541,9 +541,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Procedure routes
   app.get("/api/procedures", async (req, res) => {
     try {
+      console.log("=== API /api/procedures called ===");
       const procedures = await storage.getProcedures();
+      console.log("Procedures fetched successfully:", procedures?.length || 0, "items");
       res.json(procedures);
     } catch (error) {
+      console.error("Error in /api/procedures:", error);
       res.status(500).json({ message: "Failed to fetch procedures" });
     }
   });
