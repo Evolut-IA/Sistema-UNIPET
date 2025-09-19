@@ -339,7 +339,6 @@ export type InsertSiteSettings = typeof siteSettings.$inferInsert;
 export type InsertRulesSettings = typeof rulesSettings.$inferInsert;
 export type InsertThemeSettings = typeof themeSettings.$inferInsert;
 export type InsertGuide = typeof guides.$inferInsert;
-export type InsertImage = typeof images.$inferInsert;
 
 export type User = typeof users.$inferSelect;
 export type Client = typeof clients.$inferSelect;
@@ -354,7 +353,6 @@ export type SiteSettings = typeof siteSettings.$inferSelect;
 export type RulesSettings = typeof rulesSettings.$inferSelect;
 export type ThemeSettings = typeof themeSettings.$inferSelect;
 export type Guide = typeof guides.$inferSelect;
-export type Image = typeof images.$inferSelect;
 
 // Safe type for network units with credential status (excludes password hash)
 export type NetworkUnitWithCredentialStatus = Omit<NetworkUnit, 'senhaHash'> & {
