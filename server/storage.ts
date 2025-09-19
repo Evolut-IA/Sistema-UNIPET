@@ -28,7 +28,7 @@ console.log("Database URL configured:", databaseUrl ? "Yes" : "No");
 
 // Enhanced connection configuration with better error handling
 const sql = postgres(databaseUrl, { 
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  ssl: databaseUrl.includes('sslmode=require') ? { rejectUnauthorized: false } : false,
   max: 10,
   idle_timeout: 20,
   connect_timeout: 10,
