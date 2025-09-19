@@ -1061,7 +1061,7 @@ export default function Procedures() {
                 {viewingItem.description && (
                   <p className="text-sm text-muted-foreground mt-2">{viewingItem.description}</p>
                 )}
-                <Badge variant={viewingItem.isActive ? "default" : "secondary"} className="mt-2">
+                <Badge variant="neutral" className="mt-2">
                   {viewingItem.isActive ? "Ativo" : "Inativo"}
                 </Badge>
               </div>

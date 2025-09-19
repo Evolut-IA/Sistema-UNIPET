@@ -450,9 +450,9 @@ export default function ClientForm() {
                     <div className="flex-1">
                       <div className="flex items-center gap-3">
                         <h3 className="font-semibold text-foreground">{pet.name}</h3>
-                        <Badge variant="secondary">{pet.species}</Badge>
+                        <Badge variant="neutral">{pet.species}</Badge>
                         {pet.breed && (
-                          <Badge variant="outline">{pet.breed}</Badge>
+                          <Badge variant="neutral">{pet.breed}</Badge>
                         )}
                       </div>
                       <div className="text-sm text-muted-foreground mt-1">

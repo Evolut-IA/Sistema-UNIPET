@@ -301,13 +301,7 @@ export default function Administration() {
   };
 
   const getRoleColor = (role: string) => {
-    switch (role) {
-      case "delete": return "bg-chart-5/20 text-accent-foreground";
-      case "edit": return "bg-chart-1/20 text-accent-foreground";
-      case "add": return "bg-chart-2/20 text-accent-foreground";
-      case "view": return "bg-chart-4/20 text-accent-foreground";
-      default: return "bg-muted text-muted-foreground";
-    }
+    return "border border-border rounded-lg bg-background text-foreground";
   };
 
   const getRoleLabel = (role: string) => {

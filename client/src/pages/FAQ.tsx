@@ -168,9 +168,7 @@ export default function FAQ() {
   const activeItems = filteredItems?.filter((item: any) => item.isActive) || [];
 
   const getStatusColor = (isActive: boolean) => {
-    return isActive 
-      ? "bg-chart-4/20 text-accent-foreground"
-      : "bg-chart-5/20 text-accent-foreground";
+    return "border border-border rounded-lg bg-background text-foreground";
   };
 
   const getStatusLabel = (isActive: boolean) => {

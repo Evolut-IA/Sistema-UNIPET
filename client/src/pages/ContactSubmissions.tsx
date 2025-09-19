@@ -255,12 +255,7 @@ export default function ContactSubmissions() {
   };
 
   const getPlanInterestColor = (plan: string) => {
-    switch (plan?.toLowerCase()) {
-      case "básico": return "bg-chart-1/20 text-chart-1";
-      case "confort": return "bg-chart-4/20 text-chart-4";
-      case "premium": return "bg-chart-2/20 text-chart-2";
-      default: return "bg-muted text-muted-foreground";
-    }
+    return "border border-border rounded-lg bg-background text-foreground";
   };
 
   return (
