@@ -1230,10 +1230,7 @@ export default function Procedures() {
                   )}
                   {visibleColumns.includes("Tipo") && (
                     <TableCell className="whitespace-nowrap bg-accent">
-                      <Badge variant="outline" className={cn(
-                        "text-xs",
-                        "bg-chart-2/20 text-chart-2 border-chart-2/30"
-                      )}>
+                      <Badge variant="neutral" className="text-xs">
                         {PROCEDURE_TYPE_LABELS[item.procedureType as keyof typeof PROCEDURE_TYPE_LABELS] || item.procedureType}
                       </Badge>
                     </TableCell>

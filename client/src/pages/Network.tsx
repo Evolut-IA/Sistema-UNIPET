@@ -343,12 +343,12 @@ export default function Network() {
                       {unit.services && unit.services.length > 0 ? (
                         <div className="flex flex-wrap gap-1">
                           {unit.services.slice(0, 2).map((service: string, index: number) => (
-                            <Badge key={index} variant="outline" className="text-xs">
+                            <Badge key={index} variant="neutral" className="text-xs">
                               {service}
                             </Badge>
                           ))}
                           {unit.services.length > 2 && (
-                            <Badge variant="outline" className="text-xs">
+                            <Badge variant="neutral" className="text-xs">
                               +{unit.services.length - 2}
                             </Badge>
                           )}
@@ -551,7 +551,7 @@ export default function Network() {
                     <h4 className="font-semibold text-foreground mb-2">Serviços Oferecidos</h4>
                     <div className="flex flex-wrap gap-2">
                       {selectedUnit.services.map((service: string, index: number) => (
-                        <Badge key={index} variant="outline">
+                        <Badge key={index} variant="neutral">
                           {service}
                         </Badge>
                       ))}

@@ -614,15 +614,15 @@ export default function UnitDashboard() {
 
   const getStatusBadge = (status: string) => {
     const statusConfig = {
-      open: { label: "Aberta", className: "bg-green-100 text-green-800" },
-      closed: { label: "Fechada", className: "bg-yellow-100 text-yellow-800" },
-      cancelled: { label: "Cancelada", className: "bg-red-100 text-red-800" }
+      open: { label: "Aberta" },
+      closed: { label: "Fechada" },
+      cancelled: { label: "Cancelada" }
     };
     
     const config = statusConfig[status as keyof typeof statusConfig] || 
-                  { label: status, className: "bg-gray-100 text-gray-800" };
+                  { label: status };
     
-    return <Badge className={config.className}>{config.label}</Badge>;
+    return <Badge variant="neutral">{config.label}</Badge>;
   };
 
   const formatCurrency = (value?: string) => {
@@ -1564,7 +1564,7 @@ export default function UnitDashboard() {
                                 </div>
                               </td>
                               <td className="px-4 py-4">
-                                <Badge variant="outline" className="text-xs">
+                                <Badge variant="neutral" className="text-xs">
                                   {item.procedure.procedureType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                                 </Badge>
                               </td>

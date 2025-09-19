@@ -182,7 +182,7 @@ export default function DigitalCard({
                 <Shield className="h-5 w-5 text-blue-600" />
                 <span className="font-bold text-blue-600">UNIPET</span>
               </div>
-              <Badge variant="outline" className="text-xs">
+              <Badge variant="neutral" className="text-xs">
                 Plano de Saúde Pet
               </Badge>
             </div>
