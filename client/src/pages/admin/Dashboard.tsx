@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { DateFilterComponent } from "@/components/DateFilterComponent";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/admin/ui/chart";
+import { DateFilterComponent } from "@/components/admin/DateFilterComponent";
 import { useLocation } from "wouter";
 import type { Client, Guide, NetworkUnit, ContactSubmission } from "@shared/schema";
 import {
@@ -22,7 +22,7 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
 import { CalendarDate } from "@internationalized/date";
-import { getDateRangeParams } from "@/lib/date-utils";
+import { getDateRangeParams } from "@/lib/admin/date-utils";
 
 // Type definitions for dashboard data
 type PlanRevenue = {

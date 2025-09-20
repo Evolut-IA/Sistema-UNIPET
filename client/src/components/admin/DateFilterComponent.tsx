@@ -1,13 +1,13 @@
 import * as React from "react"
 import { CalendarDate } from "@internationalized/date"
 import { Calendar as CalendarIcon, X, Filter } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { DateRangePicker } from "@/components/ui/date-range-picker"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { useDateFilter, type DateRange } from "@/hooks/use-date-filter"
-import { formatDateRangeForDisplay, jsDateToCalendarDate } from "@/lib/date-utils"
-import { cn } from "@/lib/utils"
+import { Button } from "@/components/admin/ui/button"
+import { Card, CardContent } from "@/components/admin/ui/card"
+import { DateRangePicker } from "@/components/admin/ui/date-range-picker"
+import { Alert, AlertDescription } from "@/components/admin/ui/alert"
+import { useDateFilter, type DateRange } from "@/hooks/admin/use-date-filter"
+import { formatDateRangeForDisplay, jsDateToCalendarDate } from "@/lib/admin/date-utils"
+import { cn } from "@/lib/admin/utils"
 
 export interface DateFilterComponentProps {
   onDateRangeChange?: (startDate: CalendarDate | null, endDate: CalendarDate | null) => void
