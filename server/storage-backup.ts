@@ -50,7 +50,7 @@ import {
   paymentReceipts
 } from "../shared/schema.js";
 import { db } from "./db.js";
-import { eq, desc, asc, and, sql, like } from "drizzle-orm";
+import { eq, desc, asc, and, sql } from "drizzle-orm";
 import { autoConfig } from "./config.js";
 
 export interface IStorage {
@@ -67,6 +67,7 @@ export interface IStorage {
   getPlan(id: string): Promise<Plan | undefined>;
   createPlan(plan: InsertPlan): Promise<Plan>;
   updatePlan(id: string, plan: Partial<InsertPlan>): Promise<Plan | undefined>;
+
   deletePlan(id: string): Promise<boolean>;
 
   // Network Units
@@ -102,7 +103,8 @@ export interface IStorage {
   updateClient(id: string, client: Partial<InsertClient>): Promise<Client | undefined>;
   deleteClient(id: string): Promise<boolean>;
   getAllClients(): Promise<Client[]>;
-  searchClients(query: string): Promise<Client[]>; // NEW: Missing method
+
+  // === NEW TABLE METHODS ===
 
   // Pets
   createPet(pet: InsertPet): Promise<Pet>;
@@ -157,7 +159,6 @@ export interface IStorage {
   createGuide(guide: InsertGuide): Promise<Guide>;
   updateGuide(id: string, guide: Partial<InsertGuide>): Promise<Guide | undefined>;
   getGuide(id: string): Promise<Guide | undefined>;
-  getGuideById(id: string): Promise<Guide | undefined>; // NEW: Alias for routes compatibility
   getAllGuides(): Promise<Guide[]>;
   getActiveGuides(): Promise<Guide[]>;
   deleteGuide(id: string): Promise<boolean>;
@@ -176,14 +177,10 @@ export interface IStorage {
   updateSpecies(id: string, species: Partial<InsertSpecies>): Promise<Species | undefined>;
   deleteSpecies(id: string): Promise<boolean>;
 
-  // Payment Receipts methods - NEW: Now in interface
-  getPaymentReceiptsByClientEmail(email: string): Promise<any[]>;
-  getPaymentReceiptsByContractId(contractId: string): Promise<any[]>;
-  getPaymentReceiptById(id: string): Promise<any | undefined>;
-  updatePaymentReceiptStatus(id: string, status: string): Promise<any | undefined>;
-  createPaymentReceipt(receipt: any): Promise<any>;
-  getPaymentReceiptByCieloPaymentId(cieloPaymentId: string): Promise<any | undefined>;
-}// Storage em memória para quando não houver banco de dados
+  // Chat Conversations - Removed (table no longer exists)
+}
+
+// Storage em memória para quando não houver banco de dados
 export class InMemoryStorage implements IStorage {
   private contactSubmissions: ContactSubmission[] = [];
   private plans: Plan[] = [];
