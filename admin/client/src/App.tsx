@@ -1,4 +1,4 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, Router as WouterRouter } from "wouter";
 import { queryClient, queryOptions } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -28,6 +28,10 @@ import type { ThemeSettings } from "@shared/schema";
 import { applyThemeToCSSVariables } from "@/lib/theme-defaults";
 
 function Router() {
+  // Get the base path from Vite's configuration
+  // In dev: BASE_URL = '/', in prod: BASE_URL = '/admin/'
+  const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, ''); // Remove trailing slash
+
   // Memoized Admin routes component to avoid re-renders
   const AdminRoutes = memo(() => (
     <Layout>
@@ -57,28 +61,30 @@ function Router() {
   ));
 
   return (
-    <Switch>
-      {/* Root dashboard route */}
-      <Route path="/" component={() => <Layout><Dashboard /></Layout>} />
-      
-      {/* Admin routes - explicit paths for proper precedence */}
-      <Route path="/clientes" nest component={AdminRoutes} />
-      <Route path="/pets" nest component={AdminRoutes} />
-      <Route path="/guias" nest component={AdminRoutes} />
-      <Route path="/planos" nest component={AdminRoutes} />
-      <Route path="/rede" nest component={AdminRoutes} />
-      <Route path="/procedimentos" nest component={AdminRoutes} />
-      <Route path="/perguntas-frequentes" nest component={AdminRoutes} />
-      <Route path="/formularios" nest component={AdminRoutes} />
-      <Route path="/configuracoes" nest component={AdminRoutes} />
-      <Route path="/administracao" nest component={AdminRoutes} />
+    <WouterRouter base={base}>
+      <Switch>
+        {/* Root dashboard route */}
+        <Route path="/" component={() => <Layout><Dashboard /></Layout>} />
+        
+        {/* Admin routes - explicit paths for proper precedence */}
+        <Route path="/clientes" nest component={AdminRoutes} />
+        <Route path="/pets" nest component={AdminRoutes} />
+        <Route path="/guias" nest component={AdminRoutes} />
+        <Route path="/planos" nest component={AdminRoutes} />
+        <Route path="/rede" nest component={AdminRoutes} />
+        <Route path="/procedimentos" nest component={AdminRoutes} />
+        <Route path="/perguntas-frequentes" nest component={AdminRoutes} />
+        <Route path="/formularios" nest component={AdminRoutes} />
+        <Route path="/configuracoes" nest component={AdminRoutes} />
+        <Route path="/administracao" nest component={AdminRoutes} />
 
-      {/* Unit (partner) routes */}
-      <Route path="/:slug" component={UnitRoute} />
+        {/* Unit (partner) routes */}
+        <Route path="/:slug" component={UnitRoute} />
 
-      {/* Fallback */}
-      <Route component={NotFound} />
-    </Switch>
+        {/* Fallback */}
+        <Route component={NotFound} />
+      </Switch>
+    </WouterRouter>
   );
 }
 
