@@ -166,6 +166,7 @@ export default function GuideForm() {
       {/* Back Button */}
       <Button
         variant="default"
+        size="sm"
         onClick={() => setLocation("/guias")}
         data-testid="button-back-to-guides"
         className="w-full sm:w-auto"

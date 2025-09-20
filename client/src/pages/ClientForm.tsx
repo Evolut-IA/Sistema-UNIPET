@@ -494,6 +494,7 @@ export default function ClientForm() {
                 </p>
                 <Button
                   variant="default"
+                  size="sm"
                   onClick={() => setLocation(`/clientes/${params.id}/pets/novo`)}
                   data-testid="button-add-first-pet"
                 >

@@ -427,6 +427,7 @@ export default function FAQ() {
                   {!searchQuery && (
                     <Button
                       variant="outline"
+                      size="sm"
                       onClick={() => setDialogOpen(true)}
                       data-testid="button-add-first-faq"
                       className="mt-4"

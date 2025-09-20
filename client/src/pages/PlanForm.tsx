@@ -166,6 +166,7 @@ export default function PlanForm() {
       {/* Back Button */}
       <Button
         variant="default"
+        size="sm"
         onClick={() => setLocation("/planos")}
         data-testid="button-back-to-plans"
         className="w-full sm:w-auto"

@@ -440,6 +440,7 @@ export default function Network() {
                   {!searchQuery && (
                     <Button 
                       className="btn-primary"
+                      size="sm"
                       onClick={() => setLocation("/rede/novo")}
                       data-testid="button-add-first-unit"
                     >

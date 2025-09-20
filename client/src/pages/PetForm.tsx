@@ -153,6 +153,7 @@ export default function PetForm() {
       {/* Back Button */}
       <Button
         variant="default"
+        size="sm"
         onClick={() => setLocation("/clientes")}
         data-testid="button-back-to-clients"
         className="w-full sm:w-auto"
