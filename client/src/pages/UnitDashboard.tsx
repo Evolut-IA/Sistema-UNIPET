@@ -7,7 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, FileText, User, PawPrint, MapPin, Clock, DollarSign, CheckCircle, XCircle, Eye, Users, CreditCard, Plus, IdCard, TableProperties, Search, Calculator, AlertCircle, Info } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Separator } from "@/components/ui/separator";
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Calendar, FileText, User, PawPrint, MapPin, Clock, DollarSign, CheckCircle, XCircle, Eye, Users, CreditCard, Plus, IdCard, TableProperties, Search, Calculator, AlertCircle, Info, Columns3 as Columns, Filter } from "lucide-react";
 import { Link } from "wouter";
 import DigitalCard from "@/components/DigitalCard";
 
@@ -717,29 +720,34 @@ export default function UnitDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4 py-3 sm:py-4">
-            <div className="flex items-center space-x-4 min-w-0">
-              <PawPrint className="h-8 w-8 text-primary" />
+    <div className="min-h-screen bg-background">
+      {/* Modern Header */}
+      <div className="p-6 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center space-x-4">
+              <div className="bg-primary/10 p-3 rounded-lg">
+                <PawPrint className="h-6 w-6 text-primary" />
+              </div>
               <div>
-                <h1 className="text-lg sm:text-xl font-semibold text-gray-900 break-words">
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground break-words">
                   {authState.unit?.name}
                 </h1>
-                <p className="text-xs sm:text-sm text-gray-500 flex items-center break-words">
-                  <MapPin className="h-4 w-4 mr-1" />
-                  {authState.unit?.address}
-                </p>
+                <p className="text-sm text-muted-foreground">{authState.unit?.address}</p>
               </div>
             </div>
-            <Button variant="outline" onClick={handleLogout} className="w-full sm:w-auto text-xs sm:text-sm">
-              Sair
-            </Button>
           </div>
+          <Button 
+            onClick={handleLogout}
+            variant="outline"
+            className="flex items-center space-x-2"
+            data-testid="button-logout"
+          >
+            <User className="h-4 w-4" />
+            <span>Sair</span>
+          </Button>
         </div>
-      </header>
+      </div>
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -780,195 +788,247 @@ export default function UnitDashboard() {
 
           {/* Guides Tab */}
           <TabsContent value="guides">
-            <div className="space-y-4">
-              <div className="mb-4">
-                <h3 className="text-lg font-semibold mb-4">Guias de Atendimento</h3>
-                <Tabs defaultValue="open" className="space-y-4">
-                  <TabsList className="grid w-full grid-cols-3 gap-1">
-                    <TabsTrigger value="open">Abertas</TabsTrigger>
-                    <TabsTrigger value="closed">Fechadas</TabsTrigger>
-                    <TabsTrigger value="cancelled">Canceladas</TabsTrigger>
-                  </TabsList>
+            <div className="space-y-6">
+              {/* Header */}
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-lg font-semibold text-foreground">Guias de Atendimento</h3>
+                  <p className="text-sm text-muted-foreground">Gerencie as guias da sua unidade</p>
+                </div>
+              </div>
 
-                  {["open", "closed", "cancelled"].map(status => (
-                    <TabsContent key={status} value={status}>
-                      <div className="grid gap-4">
-                        {guides
-                          .filter(guide => guide.unitStatus === status)
-                          .map(guide => (
-                            <Card key={guide.id} className="hover:shadow-md transition-shadow">
-                              <CardContent className="p-3 sm:p-4 lg:p-6">
-                                <div className="flex justify-between items-start mb-4">
-                                  <div className="flex-1">
-                                    <div className="flex items-center space-x-3 mb-2">
-                                      <h3 className="text-lg font-semibold">{guide.procedure}</h3>
-                                      {getStatusBadge(guide.unitStatus || "open")}
-                                    </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
-                                      <div className="flex items-center space-x-2">
-                                        <User className="h-4 w-4" />
-                                        <span>{guide.client?.name || "Cliente não encontrado"}</span>
-                                      </div>
-                                      <div className="flex items-center space-x-2">
-                                        <PawPrint className="h-4 w-4" />
-                                        <span>{guide.pet?.name || "Pet não encontrado"}</span>
-                                      </div>
-                                      <div className="flex items-center space-x-2">
-                                        <Clock className="h-4 w-4" />
-                                        <span>{new Date(guide.createdAt).toLocaleDateString('pt-BR')}</span>
-                                      </div>
-                                    </div>
-                                    {guide.value && (
-                                      <div className="flex items-center space-x-2 mt-2 text-sm">
-                                        <DollarSign className="h-4 w-4 text-green-600" />
-                                        <span className="font-medium text-green-600">
-                                          {formatCurrency(guide.value)}
-                                        </span>
-                                      </div>
-                                    )}
-                                  </div>
-                                  <div className="flex space-x-2">
-                                    <Button
-                                      variant="default"
-                                      size="sm"
-                                      onClick={() => setSelectedGuide(guide)}
-                                    >
-                                      <Eye className="h-4 w-4" />
-                                    </Button>
-                                    {status === "open" && (
-                                      <>
-                                        <Button
-                                          size="sm"
-                                          onClick={() => updateGuideStatus(guide.id, "closed")}
-                                          className="bg-green-600 hover:bg-green-700"
-                                        >
-                                          <CheckCircle className="h-4 w-4" />
-                                        </Button>
-                                        <Button
-                                          size="sm"
-                                          variant="destructive"
-                                          onClick={() => updateGuideStatus(guide.id, "cancelled")}
-                                        >
-                                          <XCircle className="h-4 w-4" />
-                                        </Button>
-                                      </>
-                                    )}
-                                  </div>
+              {/* Filters */}
+              <div className="flex flex-wrap gap-4 items-center justify-between">
+                <div className="flex gap-2 flex-wrap">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Buscar por procedimento..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10 w-64"
+                      data-testid="input-search-guides"
+                    />
+                  </div>
+                  <Select value={activeTab === "guides" ? "all" : activeTab} onValueChange={(value) => setActiveTab(value)}>
+                    <SelectTrigger className="w-48" data-testid="select-status-filter">
+                      <SelectValue placeholder="Filtrar por status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Todos os status</SelectItem>
+                      <SelectItem value="open">Abertas</SelectItem>
+                      <SelectItem value="closed">Fechadas</SelectItem>
+                      <SelectItem value="cancelled">Canceladas</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* Modern Table Container */}
+              <div className="container my-10 space-y-4 border border-border rounded-lg bg-accent shadow-sm">
+                {/* Table */}
+                <div className="rounded-lg overflow-hidden">
+                  <Table className="w-full">
+                    <TableHeader>
+                      <TableRow className="bg-accent">
+                        <TableHead className="bg-accent">Procedimento</TableHead>
+                        <TableHead className="bg-accent">Cliente</TableHead>
+                        <TableHead className="bg-accent">Pet</TableHead>
+                        <TableHead className="bg-accent">Valor</TableHead>
+                        <TableHead className="bg-accent">Status</TableHead>
+                        <TableHead className="bg-accent">Data</TableHead>
+                        <TableHead className="bg-accent">Ações</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {guides.length > 0 ? (
+                        guides
+                          .filter(guide => {
+                            const matchesSearch = !searchTerm || 
+                              guide.procedure.toLowerCase().includes(searchTerm.toLowerCase());
+                            const matchesStatus = activeTab === "guides" || 
+                              guide.unitStatus === activeTab;
+                            return matchesSearch && matchesStatus;
+                          })
+                          .map((guide) => (
+                            <TableRow key={guide.id} className="bg-accent hover:bg-accent/80">
+                              <TableCell className="font-medium bg-accent">
+                                {guide.procedure}
+                              </TableCell>
+                              <TableCell className="bg-accent">
+                                {guide.client?.name || "Não informado"}
+                              </TableCell>
+                              <TableCell className="bg-accent">
+                                {guide.pet?.name || "Não informado"}
+                              </TableCell>
+                              <TableCell className="bg-accent">
+                                {guide.value ? formatCurrency(guide.value) : "N/A"}
+                              </TableCell>
+                              <TableCell className="bg-accent">
+                                {getStatusBadge(guide.unitStatus || "open")}
+                              </TableCell>
+                              <TableCell className="bg-accent">
+                                {new Date(guide.createdAt).toLocaleDateString('pt-BR')}
+                              </TableCell>
+                              <TableCell className="bg-accent">
+                                <div className="flex items-center space-x-1">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setSelectedGuide(guide)}
+                                    data-testid={`button-view-${guide.id}`}
+                                  >
+                                    <Eye className="h-4 w-4" />
+                                  </Button>
+                                  {guide.unitStatus === "open" && (
+                                    <>
+                                      <Button
+                                        size="sm"
+                                        onClick={() => updateGuideStatus(guide.id, "closed")}
+                                        className="bg-green-600 hover:bg-green-700"
+                                        data-testid={`button-close-${guide.id}`}
+                                      >
+                                        <CheckCircle className="h-4 w-4" />
+                                      </Button>
+                                      <Button
+                                        size="sm"
+                                        variant="destructive"
+                                        onClick={() => updateGuideStatus(guide.id, "cancelled")}
+                                        data-testid={`button-cancel-${guide.id}`}
+                                      >
+                                        <XCircle className="h-4 w-4" />
+                                      </Button>
+                                    </>
+                                  )}
                                 </div>
-                              </CardContent>
-                            </Card>
-                          ))}
-                        
-                        {guides.filter(guide => guide.unitStatus === status).length === 0 && (
-                          <Card>
-                            <CardContent className="p-3 sm:p-4 lg:p-6 text-center">
-                              <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                                Nenhuma guia {status === "open" ? "aberta" : 
-                                              status === "closed" ? "fechada" :
-                                              status === "cancelled" ? "cancelada" : "encontrada"}
-                              </h3>
-                              <p className="text-gray-500">
-                                As guias aparecerão aqui quando houver solicitações.
-                              </p>
-                            </CardContent>
-                          </Card>
-                        )}
-                      </div>
-                    </TabsContent>
-                  ))}
-                </Tabs>
+                              </TableCell>
+                            </TableRow>
+                          ))
+                      ) : (
+                        <TableRow className="bg-accent">
+                          <TableCell colSpan={7} className="text-center py-12 bg-accent">
+                            <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                            <p className="text-muted-foreground">
+                              {searchTerm
+                                ? "Nenhuma guia encontrada com os filtros aplicados."
+                                : "Nenhuma guia foi gerada ainda."
+                              }
+                            </p>
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
               </div>
             </div>
           </TabsContent>
 
           {/* Clients Tab */}
           <TabsContent value="clients">
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold">Clientes Vinculados</h3>
+            <div className="space-y-6">
+              {/* Header */}
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-lg font-semibold text-foreground">Clientes Vinculados</h3>
+                  <p className="text-sm text-muted-foreground">Gerencie os clientes da sua unidade</p>
+                </div>
                 <Button 
                   onClick={loadClients} 
                   disabled={loadingClients}
                   variant="outline"
+                  data-testid="button-refresh-clients"
                 >
                   {loadingClients ? "Carregando..." : "Atualizar"}
                 </Button>
               </div>
-              
-              <div className="flex items-center space-x-2">
-                <Search className="h-4 w-4 text-gray-400" />
-                <Input
-                  placeholder="Buscar clientes..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="max-w-sm"
-                />
+
+              {/* Filters */}
+              <div className="flex flex-wrap gap-4 items-center justify-between">
+                <div className="flex gap-2 flex-wrap">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Buscar por nome, CPF ou email..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10 w-64"
+                      data-testid="input-search-clients"
+                    />
+                  </div>
+                </div>
               </div>
 
-              {loadingClients ? (
-                <div className="text-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-                  <p className="mt-2 text-muted-foreground">Carregando clientes...</p>
+              {/* Modern Table Container */}
+              <div className="container my-10 space-y-4 border border-border rounded-lg bg-accent shadow-sm">
+                {/* Table */}
+                <div className="rounded-lg overflow-hidden">
+                  <Table className="w-full">
+                    <TableHeader>
+                      <TableRow className="bg-accent">
+                        <TableHead className="bg-accent">Nome</TableHead>
+                        <TableHead className="bg-accent">CPF</TableHead>
+                        <TableHead className="bg-accent">Telefone</TableHead>
+                        <TableHead className="bg-accent">Email</TableHead>
+                        <TableHead className="bg-accent">Cidade</TableHead>
+                        <TableHead className="bg-accent">Cliente desde</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {loadingClients ? (
+                        [...Array(5)].map((_, i) => (
+                          <TableRow key={i}>
+                            <TableCell colSpan={6} className="text-center py-6">
+                              <div className="h-4 bg-muted rounded w-full animate-pulse"></div>
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      ) : clients.length > 0 ? (
+                        clients
+                          .filter(client => 
+                            client.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            client.cpf.includes(searchTerm) ||
+                            (client.email && client.email.toLowerCase().includes(searchTerm.toLowerCase()))
+                          )
+                          .map((client) => (
+                            <TableRow key={client.id} className="bg-accent hover:bg-accent/80">
+                              <TableCell className="font-medium bg-accent">
+                                {client.fullName}
+                              </TableCell>
+                              <TableCell className="bg-accent">
+                                {client.cpf}
+                              </TableCell>
+                              <TableCell className="bg-accent">
+                                {client.phone}
+                              </TableCell>
+                              <TableCell className="bg-accent">
+                                {client.email || "Não informado"}
+                              </TableCell>
+                              <TableCell className="bg-accent">
+                                {client.city || "Não informado"}
+                              </TableCell>
+                              <TableCell className="bg-accent">
+                                {new Date(client.createdAt).toLocaleDateString('pt-BR')}
+                              </TableCell>
+                            </TableRow>
+                          ))
+                      ) : (
+                        <TableRow className="bg-accent">
+                          <TableCell colSpan={6} className="text-center py-12 bg-accent">
+                            <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                            <p className="text-muted-foreground">
+                              {searchTerm
+                                ? "Nenhum cliente encontrado com os filtros aplicados."
+                                : "Nenhum cliente vinculado à sua unidade ainda."
+                              }
+                            </p>
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
                 </div>
-              ) : (
-                <div className="grid gap-4">
-                  {clients
-                    .filter(client => 
-                      client.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                      client.cpf.includes(searchTerm) ||
-                      (client.email && client.email.toLowerCase().includes(searchTerm.toLowerCase()))
-                    )
-                    .map(client => (
-                      <Card key={client.id} className="hover:shadow-md transition-shadow">
-                        <CardContent className="p-4">
-                          <div className="flex justify-between items-start">
-                            <div className="flex-1">
-                              <h4 className="text-lg font-semibold">{client.fullName}</h4>
-                              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600 mt-2">
-                                <div className="flex items-center space-x-2">
-                                  <User className="h-4 w-4" />
-                                  <span>{client.cpf}</span>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                  <span>📞</span>
-                                  <span>{client.phone}</span>
-                                </div>
-                                {client.email && (
-                                  <div className="flex items-center space-x-2">
-                                    <span>📧</span>
-                                    <span>{client.email}</span>
-                                  </div>
-                                )}
-                              </div>
-                              <div className="mt-2 text-xs text-gray-500">
-                                Cliente desde: {new Date(client.createdAt).toLocaleDateString('pt-BR')}
-                              </div>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  
-                  {clients.filter(client => 
-                    client.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    client.cpf.includes(searchTerm) ||
-                    (client.email && client.email.toLowerCase().includes(searchTerm.toLowerCase()))
-                  ).length === 0 && (
-                    <Card>
-                      <CardContent className="p-6 text-center">
-                        <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">
-                          {searchTerm ? "Nenhum cliente encontrado" : "Nenhum cliente vinculado"}
-                        </h3>
-                        <p className="text-gray-500">
-                          {searchTerm ? "Tente ajustar os termos de busca." : "Os clientes aparecerão aqui quando realizarem atendimentos na unidade."}
-                        </p>
-                      </CardContent>
-                    </Card>
-                  )}
-                </div>
-              )}
+              </div>
             </div>
           </TabsContent>
 
@@ -1428,20 +1488,19 @@ export default function UnitDashboard() {
 
           {/* Coverage Tab */}
           <TabsContent value="coverage">
-            <div className="space-y-4">
-              {/* Header with Actions */}
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div>
-                  <h3 className="text-lg font-semibold">Tabela de Cobertura</h3>
-                  <p className="text-sm text-gray-600">
-                    Visualize a cobertura de procedimentos por plano
-                  </p>
+            <div className="space-y-6">
+              {/* Header */}
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-lg font-semibold text-foreground">Tabela de Cobertura</h3>
+                  <p className="text-sm text-muted-foreground">Visualize a cobertura de procedimentos por plano</p>
                 </div>
                 <Button 
                   onClick={loadCoverage} 
                   disabled={loadingCoverage}
                   variant="outline"
                   className="w-full sm:w-auto"
+                  data-testid="button-refresh-coverage"
                 >
                   {loadingCoverage ? "Carregando..." : "Atualizar"}
                 </Button>
@@ -1449,59 +1508,43 @@ export default function UnitDashboard() {
 
               {/* Filters */}
               {!loadingCoverage && coverage.length > 0 && (
-                <Card>
-                  <CardContent className="p-4">
-                    <div className="flex flex-col lg:flex-row gap-4">
-                      {/* Search */}
-                      <div className="flex-1">
-                        <Label htmlFor="coverage-search" className="text-sm font-medium">Buscar Procedimento</Label>
-                        <div className="relative mt-1">
-                          <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                          <Input
-                            id="coverage-search"
-                            placeholder="Digite o nome do procedimento..."
-                            value={coverageSearch}
-                            onChange={(e) => setCoverageSearch(e.target.value)}
-                            className="pl-10"
-                          />
-                        </div>
-                      </div>
-                      
-                      {/* Type Filter */}
-                      <div className="min-w-[200px]">
-                        <Label htmlFor="type-filter" className="text-sm font-medium">Filtrar por Tipo</Label>
-                        <Select value={coverageTypeFilter} onValueChange={setCoverageTypeFilter}>
-                          <SelectTrigger className="mt-1">
-                            <SelectValue placeholder="Todos os tipos" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="all" className="data-[state=selected]:bg-primary data-[state=selected]:text-primary-foreground">Todos os tipos</SelectItem>
-                            {Array.from(new Set(coverage.map(item => item.procedure.procedureType))).map(type => (
-                              <SelectItem key={type} value={type} className="data-[state=selected]:bg-primary data-[state=selected]:text-primary-foreground">
-                                {type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      
-                      {/* Status Filter */}
-                      <div className="min-w-[200px]">
-                        <Label htmlFor="status-filter" className="text-sm font-medium">Filtrar por Cobertura</Label>
-                        <Select value={coverageStatusFilter} onValueChange={setCoverageStatusFilter}>
-                          <SelectTrigger className="mt-1">
-                            <SelectValue placeholder="Todas as coberturas" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="all" className="data-[state=selected]:bg-primary data-[state=selected]:text-primary-foreground">Todas as coberturas</SelectItem>
-                            <SelectItem value="included" className="data-[state=selected]:bg-primary data-[state=selected]:text-primary-foreground">Apenas incluídos</SelectItem>
-                            <SelectItem value="not_included" className="data-[state=selected]:bg-primary data-[state=selected]:text-primary-foreground">Apenas não incluídos</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
+                <div className="flex flex-wrap gap-4 items-center justify-between">
+                  <div className="flex gap-2 flex-wrap">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        placeholder="Buscar por procedimento..."
+                        value={coverageSearch}
+                        onChange={(e) => setCoverageSearch(e.target.value)}
+                        className="pl-10 w-64"
+                        data-testid="input-search-coverage"
+                      />
                     </div>
-                  </CardContent>
-                </Card>
+                    <Select value={coverageTypeFilter} onValueChange={setCoverageTypeFilter}>
+                      <SelectTrigger className="w-48" data-testid="select-type-filter">
+                        <SelectValue placeholder="Filtrar por tipo" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Todos os tipos</SelectItem>
+                        {Array.from(new Set(coverage.map(item => item.procedure.procedureType))).map(type => (
+                          <SelectItem key={type} value={type}>
+                            {type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Select value={coverageStatusFilter} onValueChange={setCoverageStatusFilter}>
+                      <SelectTrigger className="w-48" data-testid="select-status-filter">
+                        <SelectValue placeholder="Filtrar por cobertura" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Todas as coberturas</SelectItem>
+                        <SelectItem value="included">Apenas incluídos</SelectItem>
+                        <SelectItem value="not_included">Apenas não incluídos</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
               )}
 
               {loadingCoverage ? (
