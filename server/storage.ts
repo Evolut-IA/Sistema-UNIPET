@@ -1530,13 +1530,15 @@ export class DatabaseStorage implements IStorage {
     planName: string;
     petCount: number;
     percentage: number;
+    isActive: boolean;
   }[]> {
     // TODO: Consider adding cache for this query if performance becomes an issue
     // Cache could be invalidated when pets or plans are modified
     // Get all plans (both active and inactive) that exist in the system
     const allPlans = await db.select({ 
       id: schema.plans.id, 
-      name: schema.plans.name 
+      name: schema.plans.name,
+      isActive: schema.plans.isActive
     }).from(schema.plans);
     
     // Build date filter conditions for pets
@@ -1572,7 +1574,8 @@ export class DatabaseStorage implements IStorage {
         planId: plan.id,
         planName: plan.name,
         petCount: 0,
-        percentage: 0
+        percentage: 0,
+        isActive: plan.isActive
       }));
     }
     
@@ -1590,7 +1593,8 @@ export class DatabaseStorage implements IStorage {
         planId: plan.id,
         planName: plan.name,
         petCount,
-        exactPercentage // Usar porcentagem exata primeiro
+        exactPercentage, // Usar porcentagem exata primeiro
+        isActive: plan.isActive
       };
     });
 
@@ -1619,7 +1623,8 @@ export class DatabaseStorage implements IStorage {
         planId: item.planId,
         planName: item.planName,
         petCount: item.petCount,
-        percentage: item.percentage
+        percentage: item.percentage,
+        isActive: item.isActive
       }));
     }
 
@@ -1628,7 +1633,8 @@ export class DatabaseStorage implements IStorage {
       planId: item.planId,
       planName: item.planName,
       petCount: item.petCount,
-      percentage: 0
+      percentage: 0,
+      isActive: item.isActive
     }));
   }
 
