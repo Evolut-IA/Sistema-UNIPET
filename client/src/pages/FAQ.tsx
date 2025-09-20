@@ -301,7 +301,7 @@ export default function FAQ() {
             }
           }}>
             <DialogTrigger asChild>
-              <Button className="btn-primary" data-testid="button-new-faq">
+              <Button className="btn-primary" size="sm" data-testid="button-new-faq">
                 <Plus className="h-4 w-4 mr-2" />
                 Adicionar
               </Button>

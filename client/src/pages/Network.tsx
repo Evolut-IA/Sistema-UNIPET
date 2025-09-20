@@ -265,6 +265,7 @@ export default function Network() {
         <div className="flex gap-2">
           <Button 
             className="btn-primary"
+            size="sm"
             onClick={() => setLocation("/rede/novo")}
             data-testid="button-new-unit"
           >

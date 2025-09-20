@@ -210,6 +210,7 @@ export default function Plans() {
         <div className="flex gap-2">
           <Button 
             className="btn-primary"
+            size="sm"
             onClick={() => setLocation("/planos/novo")}
             data-testid="button-new-plan"
           >
@@ -334,6 +335,7 @@ export default function Plans() {
                   {!searchQuery && (
                     <Button 
                       className="btn-primary"
+                      size="sm"
                       onClick={() => setLocation("/planos/novo")}
                       data-testid="button-add-first-plan"
                     >

@@ -1148,7 +1148,7 @@ export default function Procedures() {
             }
           }}>
             <DialogTrigger asChild>
-              <Button className="btn-primary" data-testid="button-new-procedure">
+              <Button className="btn-primary" size="sm" data-testid="button-new-procedure">
                 <Plus className="h-4 w-4 mr-2" />
                 Adicionar
               </Button>
@@ -1298,6 +1298,7 @@ export default function Procedures() {
                   {!searchQuery && (
                     <Button
                       className="btn-primary"
+                      size="sm"
                       onClick={() => setDialogOpen(true)}
                       data-testid="button-add-first-procedure"
                     >

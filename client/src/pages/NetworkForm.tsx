@@ -180,6 +180,7 @@ export default function NetworkForm() {
       {/* Back Button */}
       <Button
         variant="default"
+        size="sm"
         onClick={() => setLocation("/rede")}
         data-testid="button-back-to-network"
         className="w-full sm:w-auto"

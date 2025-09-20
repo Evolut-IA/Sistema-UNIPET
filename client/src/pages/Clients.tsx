@@ -306,6 +306,7 @@ export default function Clients() {
         <div className="flex gap-2">
           <Button 
             className="btn-primary"
+            size="sm"
             onClick={() => setLocation("/clientes/novo")}
             data-testid="button-new-client"
           >
