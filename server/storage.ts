@@ -31,6 +31,8 @@ import {
   type InsertGuide,
   type SatisfactionSurvey,
   type InsertSatisfactionSurvey,
+  type User,
+  type InsertUser,
   contactSubmissions,
   plans,
   networkUnits,
@@ -47,7 +49,8 @@ import {
   protocols,
   guides,
   satisfactionSurveys,
-  paymentReceipts
+  paymentReceipts,
+  users
 } from "../shared/schema.js";
 import { db } from "./db.js";
 import { eq, desc, asc, and, sql, like } from "drizzle-orm";
@@ -197,6 +200,15 @@ export interface IStorage {
   updatePaymentReceiptStatus(id: string, status: string): Promise<any | undefined>;
   createPaymentReceipt(receipt: any): Promise<any>;
   getPaymentReceiptByCieloPaymentId(cieloPaymentId: string): Promise<any | undefined>;
+
+  // Users
+  getAllUsers(): Promise<User[]>;
+  getUserById(id: string): Promise<User | undefined>;
+  getUserByUsername(username: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
+  createUser(user: InsertUser): Promise<User>;
+  updateUser(id: string, user: Partial<InsertUser>): Promise<User | undefined>;
+  deleteUser(id: string): Promise<boolean>;
 }// Storage em memória para quando não houver banco de dados
 export class InMemoryStorage implements IStorage {
   private contactSubmissions: ContactSubmission[] = [];
@@ -206,6 +218,7 @@ export class InMemoryStorage implements IStorage {
   private siteSettings: SiteSettings | undefined;
   private chatSettings: ChatSettings | undefined;
   private clients: Client[] = [];
+  private users: User[] = [];
   // Chat conversations removed
 
   constructor() {
@@ -759,6 +772,77 @@ export class InMemoryStorage implements IStorage {
 
   async deleteSpecies(id: string): Promise<boolean> {
     throw new Error('InMemoryStorage: Species not implemented');
+  }
+
+  // Payment Receipts methods
+  async getPaymentReceiptsByClientEmail(email: string): Promise<any[]> {
+    throw new Error('InMemoryStorage: Payment receipts not implemented');
+  }
+
+  async getPaymentReceiptsByContractId(contractId: string): Promise<any[]> {
+    throw new Error('InMemoryStorage: Payment receipts not implemented');
+  }
+
+  async getPaymentReceiptById(id: string): Promise<any | undefined> {
+    throw new Error('InMemoryStorage: Payment receipts not implemented');
+  }
+
+  async updatePaymentReceiptStatus(id: string, status: string): Promise<any | undefined> {
+    throw new Error('InMemoryStorage: Payment receipts not implemented');
+  }
+
+  async createPaymentReceipt(receipt: any): Promise<any> {
+    throw new Error('InMemoryStorage: Payment receipts not implemented');
+  }
+
+  async getPaymentReceiptByCieloPaymentId(cieloPaymentId: string): Promise<any | undefined> {
+    throw new Error('InMemoryStorage: Payment receipts not implemented');
+  }
+
+  // Users
+  async getAllUsers(): Promise<User[]> {
+    return this.users;
+  }
+
+  async getUserById(id: string): Promise<User | undefined> {
+    return this.users.find(user => user.id === id);
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    return this.users.find(user => user.username === username);
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    return this.users.find(user => user.email === email);
+  }
+
+  async createUser(user: InsertUser): Promise<User> {
+    const newUser: User = {
+      id: Math.random().toString(36).substr(2, 9),
+      ...user,
+      createdAt: new Date(),
+      isActive: user.isActive ?? true,
+      role: user.role ?? 'admin',
+      permissions: user.permissions ?? []
+    };
+    this.users.push(newUser);
+    return newUser;
+  }
+
+  async updateUser(id: string, user: Partial<InsertUser>): Promise<User | undefined> {
+    const index = this.users.findIndex(u => u.id === id);
+    if (index === -1) return undefined;
+    
+    this.users[index] = { ...this.users[index], ...user };
+    return this.users[index];
+  }
+
+  async deleteUser(id: string): Promise<boolean> {
+    const index = this.users.findIndex(user => user.id === id);
+    if (index === -1) return false;
+    
+    this.users.splice(index, 1);
+    return true;
   }
 
   // Chat Conversations methods - Removed (table no longer exists)
@@ -1594,6 +1678,45 @@ export class DatabaseStorage implements IStorage {
     const [receipt] = await db.select().from(paymentReceipts)
       .where(eq(paymentReceipts.cieloPaymentId, cieloPaymentId));
     return receipt || undefined;
+  }
+
+  // Users
+  async getAllUsers(): Promise<User[]> {
+    return await db.select().from(users).orderBy(desc(users.createdAt));
+  }
+
+  async getUserById(id: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user || undefined;
+  }
+
+  async createUser(user: InsertUser): Promise<User> {
+    const [newUser] = await db.insert(users).values(user as any).returning();
+    return newUser;
+  }
+
+  async updateUser(id: string, user: Partial<InsertUser>): Promise<User | undefined> {
+    const [updatedUser] = await db
+      .update(users)
+      .set(user)
+      .where(eq(users.id, id))
+      .returning();
+    return updatedUser || undefined;
+  }
+
+  async deleteUser(id: string): Promise<boolean> {
+    const result = await db.delete(users).where(eq(users.id, id));
+    return (result.rowCount || 0) > 0;
   }
 
   // Chat Conversations - Removed (table no longer exists)

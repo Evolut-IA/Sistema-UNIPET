@@ -464,6 +464,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Network units with credentials route (must come before :id route)
+  app.get("/admin/api/network-units/credentials", async (req, res) => {
+    try {
+      const units = await storage.getAllNetworkUnits();
+      
+      // Map units to include credential status
+      const unitsWithCredentials = units.map(unit => ({
+        ...unit,
+        hasLogin: !!unit.login,
+        hasPassword: !!unit.senhaHash,
+        credentialStatus: (unit.login && unit.senhaHash) ? 'configured' : 'pending'
+      }));
+      
+      res.json(unitsWithCredentials);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error fetching network units with credentials:", error);
+      res.status(500).json({ error: "Erro ao buscar unidades com credenciais" });
+    }
+  });
+
+  app.put("/admin/api/network-units/:id/credentials", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { login, password } = req.body;
+      
+      if (!login || !password) {
+        return res.status(400).json({ error: "Login e senha são obrigatórios" });
+      }
+      
+      // Hash password before storing
+      const hashedPassword = await bcrypt.hash(password, 10);
+      
+      const updatedUnit = await storage.updateNetworkUnit(id, {
+        login,
+        senhaHash: hashedPassword
+      });
+      
+      if (!updatedUnit) {
+        return res.status(404).json({ error: "Unidade não encontrada" });
+      }
+      
+      // Remove sensitive data from response
+      const { senhaHash, ...unitResponse } = updatedUnit;
+      res.json({
+        ...unitResponse,
+        hasLogin: !!updatedUnit.login,
+        hasPassword: !!updatedUnit.senhaHash,
+        credentialStatus: 'configured'
+      });
+    } catch (error) {
+      console.error("❌ [ADMIN] Error updating network unit credentials:", error);
+      res.status(400).json({ error: "Erro ao atualizar credenciais" });
+    }
+  });
+
   app.get("/admin/api/network-units/:id", async (req, res) => {
     try {
       const unit = await storage.getNetworkUnit(req.params.id);
@@ -487,6 +542,77 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ error: "Erro ao buscar procedimentos" });
     }
   });
+
+  // Admin users routes
+  app.get("/admin/api/users", async (req, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      res.json(users);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error fetching users:", error);
+      res.status(500).json({ error: "Erro ao buscar usuários" });
+    }
+  });
+
+  app.post("/admin/api/users", async (req, res) => {
+    try {
+      const validatedData = insertUserSchema.parse(req.body);
+      
+      // Hash password before storing
+      const hashedPassword = await bcrypt.hash(validatedData.password, 10);
+      
+      const newUser = await storage.createUser({
+        ...validatedData,
+        password: hashedPassword
+      });
+      
+      // Remove password from response
+      const { password, ...userResponse } = newUser;
+      res.status(201).json(userResponse);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error creating user:", error);
+      res.status(400).json({ error: "Erro ao criar usuário" });
+    }
+  });
+
+  app.put("/admin/api/users/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const updateData = req.body;
+      
+      // Hash password if provided
+      if (updateData.password) {
+        updateData.password = await bcrypt.hash(updateData.password, 10);
+      }
+      
+      const updatedUser = await storage.updateUser(id, updateData);
+      if (!updatedUser) {
+        return res.status(404).json({ error: "Usuário não encontrado" });
+      }
+      
+      // Remove password from response
+      const { password, ...userResponse } = updatedUser;
+      res.json(userResponse);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error updating user:", error);
+      res.status(400).json({ error: "Erro ao atualizar usuário" });
+    }
+  });
+
+  app.delete("/admin/api/users/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const deleted = await storage.deleteUser(id);
+      if (!deleted) {
+        return res.status(404).json({ error: "Usuário não encontrado" });
+      }
+      res.json({ success: true, message: "Usuário removido com sucesso" });
+    } catch (error) {
+      console.error("❌ [ADMIN] Error deleting user:", error);
+      res.status(500).json({ error: "Erro ao remover usuário" });
+    }
+  });
+
   app.get("/api/plans", async (req, res) => {
     try {
       const plans = await storage.getPlans();
