@@ -138,23 +138,31 @@ async function initializeUnifiedServer(): Promise<void> {
     }
 
     // 4. Configurar serving de arquivos estáticos
-    if (process.env.NODE_ENV === 'production') {
-      console.log('📁 Configurando arquivos estáticos para produção...');
-      
-      // Serve UNIPET frontend
-      const unipetBuildPath = path.join(process.cwd(), 'dist', 'client');
-      app.use(express.static(unipetBuildPath, {
-        maxAge: '1y',
-        etag: true,
-        lastModified: true,
-        setHeaders: (res, filePath) => {
-          if (filePath.endsWith('.svg')) {
-            res.setHeader('Content-Type', 'image/svg+xml');
-          }
+    console.log('📁 Configurando arquivos estáticos...');
+    
+    // Serve UNIPET frontend (always serve static files if they exist)
+    const unipetBuildPath = path.join(process.cwd(), 'dist', 'client');
+    const cacheMaxAge = process.env.NODE_ENV === 'production' ? '1y' : '0';
+    
+    app.use(express.static(unipetBuildPath, {
+      maxAge: cacheMaxAge,
+      etag: true,
+      lastModified: true,
+      setHeaders: (res, filePath) => {
+        if (filePath.endsWith('.svg')) {
+          res.setHeader('Content-Type', 'image/svg+xml');
         }
-      }));
+        // Disable cache in development for easier debugging
+        if (process.env.NODE_ENV !== 'production') {
+          res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+          res.setHeader('Pragma', 'no-cache');
+          res.setHeader('Expires', '0');
+        }
+      }
+    }));
 
-      // Serve Admin frontend under /admin
+    // Serve Admin frontend under /admin (in production only)
+    if (process.env.NODE_ENV === 'production') {
       const adminBuildPath = path.join(process.cwd(), 'admin', 'dist');
       app.use('/admin', express.static(adminBuildPath, {
         maxAge: '1y',
@@ -166,57 +174,16 @@ async function initializeUnifiedServer(): Promise<void> {
       app.get('/admin/*', (req, res) => {
         res.sendFile(path.join(adminBuildPath, 'index.html'));
       });
-
-      // UNIPET SPA routing (catch-all for non-API, non-admin routes)
-      app.get('*', (req, res) => {
-        if (!req.path.startsWith('/api') && !req.path.startsWith('/admin')) {
-          res.sendFile(path.join(unipetBuildPath, 'index.html'));
-        }
-      });
-
-      console.log('✅ Arquivos estáticos configurados para produção');
-    } else {
-      // Em desenvolvimento
-      console.log('📁 Modo de desenvolvimento detectado');
-      
-      // For UNIPET frontend, redirect to instructions
-      app.get('/', (req, res) => {
-        res.status(200).json({
-          message: 'UNIPET + Admin Unified Server',
-          status: 'running',
-          environment: 'development',
-          services: {
-            unipet: {
-              api: 'http://localhost:5000/api',
-              frontend: 'Start with: cd client && npm run dev (port 5173)',
-              note: 'UNIPET frontend should run separately to avoid conflicts'
-            },
-            admin: {
-              api: 'http://localhost:5000/admin/api',
-              frontend: 'http://localhost:5000/admin',
-              note: 'Admin is served via proxy to avoid dependency conflicts'
-            }
-          },
-          api_health: '/api/health',
-          admin_health: '/admin/health'
-        });
-      });
-
-      // Handle other UNIPET routes in development
-      app.get('*', (req, res) => {
-        if (!req.path.startsWith('/api') && !req.path.startsWith('/admin')) {
-          res.status(200).json({
-            message: 'UNIPET Frontend Not Running',
-            note: 'Please start UNIPET frontend with: cd client && npm run dev',
-            unified_server: 'http://localhost:5000',
-            available_services: {
-              unipet_api: '/api/*',
-              admin_full: '/admin (proxied)'
-            }
-          });
-        }
-      });
     }
+
+    // UNIPET SPA routing (catch-all for non-API, non-admin routes)
+    app.get('*', (req, res) => {
+      if (!req.path.startsWith('/api') && !req.path.startsWith('/admin')) {
+        res.sendFile(path.join(unipetBuildPath, 'index.html'));
+      }
+    });
+
+    console.log('✅ Arquivos estáticos configurados (UNIPET sempre servido)');
 
     // 5. Configurar tratamento de erros
     console.log('🛡️ Configurando tratamento de erros...');
