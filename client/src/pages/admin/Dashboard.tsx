@@ -5,11 +5,11 @@ import { Skeleton } from "@/components/admin/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/admin/ui/alert";
 import { ChartContainer, ChartTooltip } from "@/components/admin/ui/chart";
 import { DateFilterComponent } from "@/components/admin/DateFilterComponent";
-import type { Client, Guide, NetworkUnit, ContactSubmission } from "@shared/schema";
+import type { Client, Guide, NetworkUnit, ContactSubmission } from "../../../../shared/schema";
 import {
   User,
-  TrendingUp,
-  PawPrint
+  DollarSign,
+  Users
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
 import { CalendarDate } from "@internationalized/date";
@@ -193,7 +193,7 @@ export default function Dashboard() {
                   </>
                 )}
               </div>
-              <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
+              <DollarSign className="h-6 w-6 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
             </div>
           </CardContent>
         </Card>
@@ -233,7 +233,7 @@ export default function Dashboard() {
                   </div>
                 )}
               </div>
-              <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
+              <DollarSign className="h-6 w-6 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
             </div>
           </CardContent>
         </Card>
@@ -346,7 +346,7 @@ export default function Dashboard() {
                         };
                       }>;
                     }) => {
-                      if (active && payload && payload.length) {
+                      if (active && payload && payload.length && payload[0]?.payload) {
                         const data = payload[0].payload;
                         return (
                           <div className="bg-background border border-border rounded-lg shadow-lg p-3">
@@ -485,7 +485,7 @@ export default function Dashboard() {
             ) : planDistribution?.length ? (
               <div className="space-y-4">
                 <div className="text-center py-4">
-                  <PawPrint className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+                  <Users className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
                   <p className="text-muted-foreground text-sm">
                     Planos disponíveis, mas nenhum pet associado
                   </p>
@@ -517,7 +517,7 @@ export default function Dashboard() {
               </div>
             ) : (
               <div className="text-center py-8">
-                <PawPrint className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+                <Users className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
                 <p className="text-muted-foreground text-sm">
                   Nenhum plano ativo encontrado
                 </p>
