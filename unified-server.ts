@@ -126,6 +126,7 @@ async function initializeUnifiedServer(): Promise<void> {
       console.log('✅ Admin APIs montadas em produção em /admin/api/*');
     } else {
       console.log('🔧 Admin APIs em desenvolvimento: será usado proxy em /admin/api/*');
+      setupAdminProxy();
     }
 
     // 4. Configurar arquivos estáticos para Admin (temporariamente em desenvolvimento)
@@ -328,8 +329,6 @@ function setupAdminProxy(): void {
       '^/admin': '', // Remove /admin prefix when forwarding to admin server
     },
     // Enhanced logging for debugging
-    logLevel: process.env.NODE_ENV === 'production' ? 'error' : 'info',
-    logProvider: () => console,
     
     // Advanced proxy options
     secure: false,
@@ -340,7 +339,6 @@ function setupAdminProxy(): void {
     proxyTimeout: 30000,
     
     // Handle streaming and multipart data properly
-    buffer: false, // Disable buffering for streaming
     
     // Custom error handling
     onError: (err, req, res) => {
