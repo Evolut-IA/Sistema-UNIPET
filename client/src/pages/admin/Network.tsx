@@ -588,9 +588,9 @@ export default function Network() {
         open={passwordDialog.isOpen}
         onOpenChange={passwordDialog.closeDialog}
         onConfirm={passwordDialog.confirm}
-        title={passwordDialog.title}
-        description={passwordDialog.description}
-        isLoading={passwordDialog.isLoading}
+        title={passwordDialog.title ?? "Verificação de Senha"}
+        description={passwordDialog.description ?? "Digite a senha do administrador para continuar:"}
+        isLoading={passwordDialog.isLoading ?? false}
       />
 
       {/* Confirm Dialog */}
@@ -598,11 +598,11 @@ export default function Network() {
         open={confirmDialog.isOpen}
         onOpenChange={confirmDialog.closeDialog}
         onConfirm={confirmDialog.confirm}
-        title={confirmDialog.title}
-        description={confirmDialog.description}
-        confirmText={confirmDialog.confirmText}
-        cancelText={confirmDialog.cancelText}
-        isLoading={confirmDialog.isLoading}
+        title={confirmDialog.title ?? "Confirmar exclusão"}
+        description={confirmDialog.description ?? "Tem certeza que deseja excluir este item? Esta ação não pode ser desfeita."}
+        confirmText={confirmDialog.confirmText ?? "Excluir"}
+        cancelText={confirmDialog.cancelText ?? "Cancelar"}
+        isLoading={confirmDialog.isLoading ?? false}
       />
     </div>
   );

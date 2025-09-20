@@ -2,11 +2,10 @@ import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/admin/ui/card";
+import { Card, CardContent } from "@/components/admin/ui/card";
 import { Button } from "@/components/admin/ui/button";
 import { Input } from "@/components/admin/ui/input";
 import { InputMasked } from "@/components/admin/ui/input-masked";
-import { Textarea } from "@/components/admin/ui/textarea";
 import { Switch } from "@/components/admin/ui/switch";
 import { Badge } from "@/components/admin/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/admin/ui/dialog";
@@ -29,8 +28,7 @@ import {
 } from "@/components/admin/ui/dropdown-menu";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { cn } from "@/lib/utils";
-import { Plus, Search, Edit, Trash2, Clipboard, Eye, DollarSign, X, Columns, ChevronLeft, ChevronRight, Copy, FileText } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Clipboard, Eye, X, Columns, ChevronLeft, ChevronRight, Copy, FileText } from "lucide-react";
 import { apiRequest } from "@/lib/admin/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useColumnPreferences } from "@/hooks/admin/use-column-preferences";
@@ -119,7 +117,6 @@ export default function Procedures() {
         // Usar o valor "pagar" salvo no banco quando disponível,
         // caso contrário calcular automaticamente baseado na porcentagem
         let pagarValue;
-        let wasPagarManuallyEdited = false;
         
         if (item.payValue !== null && item.payValue !== undefined) {
           // Usar o valor salvo no banco (editado manualmente pelo usuário)
@@ -134,12 +131,13 @@ export default function Procedures() {
           const normalizedPagarValue = pagarValue.replace(/\./g, '').replace(',', '.');
           const normalizedCalculatedValue = calculatedValue.replace(/\./g, '').replace(',', '.');
           
-          if (Math.abs(parseFloat(normalizedPagarValue) - parseFloat(normalizedCalculatedValue)) > 0.01) {
-            wasPagarManuallyEdited = true;
+          const pagarNum = parseFloat(normalizedPagarValue) || 0;
+          const calcNum = parseFloat(normalizedCalculatedValue) || 0;
+          if (Math.abs(pagarNum - calcNum) > 0.01) {
             if (!newManuallyEditedFields[index]) {
               newManuallyEditedFields[index] = {};
             }
-            newManuallyEditedFields[index].pagar = true;
+            newManuallyEditedFields[index]['pagar'] = true;
           }
         } else {
           // Calcular automaticamente se não houver valor salvo
@@ -154,8 +152,8 @@ export default function Procedures() {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
           }) : "0,00"),
-          carencia: item.carencia || "",
-          limitesAnuais: item.limitesAnuais || "",
+          carencia: item.carencia ?? "",
+          limitesAnuais: item.limitesAnuais ?? "",
           enableCarencia: Boolean(item.carencia && item.carencia.trim() !== ""),
           enableLimitesAnuais: Boolean(item.limitesAnuais && item.limitesAnuais.trim() !== "" && item.limitesAnuais !== "ilimitado"),
           enableCoparticipacao: Boolean(item.coparticipacao && item.coparticipacao > 0)
@@ -245,24 +243,24 @@ export default function Procedures() {
     if (field === 'carencia') {
       // Se o valor estiver vazio, mantém vazio
       if (value === '') {
-        updated[index].carencia = '';
+        (updated[index] as any)['carencia'] = '';
       } else {
         // Remove qualquer texto existente e mantém apenas números
         const numericValue = value.replace(/[^\d]/g, '');
         // Armazena apenas o valor numérico, o texto será adicionado na exibição
-        updated[index].carencia = numericValue;
+        (updated[index] as any)['carencia'] = numericValue;
       }
     } 
     // Tratamento especial para o campo limites anuais (apenas números)
     else if (field === 'limitesAnuais') {
       // Se o valor estiver vazio, mantém vazio
       if (value === '') {
-        updated[index].limitesAnuais = '';
+        (updated[index] as any)['limitesAnuais'] = '';
       } else {
         // Remove qualquer texto existente e mantém apenas números
         const numericValue = value.replace(/[^\d]/g, '');
         // Armazena apenas o valor numérico, o texto será adicionado na exibição
-        updated[index].limitesAnuais = numericValue;
+        (updated[index] as any)['limitesAnuais'] = numericValue;
       }
     } else {
       // Handle other fields based on their type
@@ -273,18 +271,20 @@ export default function Procedures() {
         if (!updatedManualFields[index]) {
           updatedManualFields[index] = {};
         }
-        updatedManualFields[index][field] = true;
+        if (updatedManualFields[index]) {
+          updatedManualFields[index][field] = true;
+        }
         
         // Cálculo automático do campo 'pagar' quando 'receber' for alterado
         // SEMPRE recalcula quando 'receber' é alterado, independente de edição manual prévia
         if (field === 'receber' && value && value.trim() !== '') {
           const calculatedPayValue = calculatePayValue(value);
-          updated[index].pagar = calculatedPayValue;
+          (updated[index] as any)['pagar'] = calculatedPayValue;
           
           // Remover marcação de edição manual do campo 'pagar' quando 'receber' é alterado
           // Isso permite que o usuário edite novamente o 'pagar' após o recálculo
-          if (updatedManualFields[index]?.pagar) {
-            delete updatedManualFields[index].pagar;
+          if (updatedManualFields[index]?.['pagar']) {
+            delete updatedManualFields[index]['pagar'];
           }
         }
       }
@@ -315,16 +315,16 @@ export default function Procedures() {
   // Função para atualizar campos booleanos
   const updatePlanBooleanField = (index: number, field: 'enableCarencia' | 'enableLimitesAnuais' | 'enableCoparticipacao', value: boolean) => {
     const updated = [...selectedPlans];
-    updated[index][field] = value;
+    (updated[index] as any)[field] = value;
     
     // Reset to default values when disabling
     if (!value) {
       if (field === 'enableCarencia') {
-        updated[index].carencia = '';
+        (updated[index] as any)['carencia'] = '';
       } else if (field === 'enableLimitesAnuais') {
-        updated[index].limitesAnuais = 'ilimitado';
+        (updated[index] as any)['limitesAnuais'] = 'ilimitado';
       } else if (field === 'enableCoparticipacao') {
-        updated[index].coparticipacao = '0,00';
+        (updated[index] as any)['coparticipacao'] = '0,00';
       }
     }
     
@@ -359,7 +359,7 @@ export default function Procedures() {
     }
     
     const settings = rulesSettings as any;
-    if (!settings.fixedPercentage || settings.fixedPercentage <= 0) {
+    if (!settings?.fixedPercentage || settings.fixedPercentage <= 0) {
       return '0,00';
     }
     
@@ -376,9 +376,8 @@ export default function Procedures() {
     
     return plans.filter((plan: any) => {
       // Permite o plano atual quando estiver editando uma linha específica
-      const isCurrentSelection = currentIndex !== undefined && 
-        selectedPlans[currentIndex] && 
-        selectedPlans[currentIndex].planId === plan.id;
+      const currentPlan = currentIndex !== undefined ? selectedPlans[currentIndex] : undefined;
+      const isCurrentSelection = currentPlan && currentPlan.planId === plan.id;
       
       // Se é a seleção atual, permite; caso contrário, verifica se não está em uso
       return isCurrentSelection || !selectedPlans.some(sp => sp.planId === plan.id);
@@ -387,7 +386,7 @@ export default function Procedures() {
 
   const updatePlanId = (index: number, planId: string) => {
     const updated = [...selectedPlans];
-    updated[index].planId = planId;
+    (updated[index] as any)['planId'] = planId;
     setSelectedPlans(updated);
     
     // Limpar erro de plano se selecionado
@@ -532,9 +531,9 @@ export default function Procedures() {
     },
   });
 
-  const filteredItems = Array.isArray(procedures) ? procedures?.filter((item: any) =>
-    item.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.description?.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredItems = Array.isArray(procedures) ? procedures.filter((item: any) =>
+    (item.name ?? '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (item.description ?? '').toLowerCase().includes(searchQuery.toLowerCase())
   ) : [];
 
   // Pagination logic
@@ -553,9 +552,9 @@ export default function Procedures() {
   const handleEdit = async (item: any) => {
     setEditingItem(item);
     form.reset({
-      name: item.name || "",
-      description: item.description || "",
-      procedureType: item.procedureType || "consultas",
+      name: item.name ?? "",
+      description: item.description ?? "",
+      procedureType: item.procedureType ?? "consultas",
       isActive: item.isActive ?? true,
     });
     setDialogOpen(true);
@@ -579,8 +578,8 @@ export default function Procedures() {
     // Informações Básicas
     text += "INFORMAÇÕES BÁSICAS:\n";
     text += "-".repeat(25) + "\n";
-    text += `Nome: ${viewingItem.name}\n`;
-    text += `Tipo: ${PROCEDURE_TYPE_LABELS[viewingItem.procedureType as keyof typeof PROCEDURE_TYPE_LABELS] || 'Consultas'}\n`;
+    text += `Nome: ${viewingItem.name ?? ''}\n`;
+    text += `Tipo: ${PROCEDURE_TYPE_LABELS[viewingItem.procedureType as keyof typeof PROCEDURE_TYPE_LABELS] ?? 'Consultas'}\n`;
     text += `Status: ${viewingItem.isActive ? 'Ativo' : 'Inativo'}\n`;
     if (viewingItem.description) {
       text += `Descrição: ${viewingItem.description}\n`;
@@ -593,7 +592,7 @@ export default function Procedures() {
       text += "-".repeat(20) + "\n";
       
       viewingProcedurePlans.forEach((planItem: any, index: number) => {
-        text += `${index + 1}. Plano: ${planItem.planName || 'Nome não informado'}\n`;
+        text += `${index + 1}. Plano: ${planItem.planName ?? 'Nome não informado'}\n`;
         text += `   Valor a Receber: R$ ${planItem.price ? (planItem.price / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0,00'}\n`;
         text += `   Valor a Pagar: R$ ${planItem.payValue ? (planItem.payValue / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0,00'}\n`;
         if (planItem.coparticipacao && planItem.coparticipacao > 0) {
@@ -1057,7 +1056,7 @@ export default function Procedures() {
               {/* Nome do Procedimento */}
               <div>
                 <label className="text-sm font-medium text-foreground">Nome do Procedimento</label>
-                <h3 className="text-lg font-medium mt-1">{viewingItem.name}</h3>
+                <h3 className="text-lg font-medium mt-1">{viewingItem.name ?? ''}</h3>
                 {viewingItem.description && (
                   <p className="text-sm text-muted-foreground mt-2">{viewingItem.description}</p>
                 )}
@@ -1070,7 +1069,7 @@ export default function Procedures() {
               <div>
                 <label className="text-sm font-medium text-foreground">Tipo de Procedimento</label>
                 <p className="text-base mt-1">
-                  {PROCEDURE_TYPE_LABELS[viewingItem.procedureType as keyof typeof PROCEDURE_TYPE_LABELS] || 'Consultas'}
+                  {PROCEDURE_TYPE_LABELS[viewingItem.procedureType as keyof typeof PROCEDURE_TYPE_LABELS] ?? 'Consultas'}
                 </p>
               </div>
 
@@ -1219,7 +1218,7 @@ export default function Procedures() {
                   {visibleColumns.includes("Nome") && (
                     <TableCell className="font-medium whitespace-nowrap bg-accent">
                       <div className="font-medium" data-testid={`procedure-name-${item.id}`}>
-                        {item.name}
+                        {item.name ?? ''}
                       </div>
                       {item.description && (
                         <div className="text-sm text-muted-foreground mt-1">
@@ -1231,7 +1230,7 @@ export default function Procedures() {
                   {visibleColumns.includes("Tipo") && (
                     <TableCell className="whitespace-nowrap bg-accent">
                       <Badge variant="neutral" className="text-xs">
-                        {PROCEDURE_TYPE_LABELS[item.procedureType as keyof typeof PROCEDURE_TYPE_LABELS] || item.procedureType}
+                        {PROCEDURE_TYPE_LABELS[item.procedureType as keyof typeof PROCEDURE_TYPE_LABELS] ?? (item.procedureType ?? '')}
                       </Badge>
                     </TableCell>
                   )}
