@@ -11,7 +11,7 @@
   --foreground: #1a1a1a;
   --muted: #f7f9fa;
   --muted-foreground: #6b7280;
-  --placeholder-foreground: #1a1a1a;
+  --placeholder: #1a1a1a;
   
   /* Typography - matching DEFAULT_THEME */
   --font-sans: 'DM Sans', sans-serif;
@@ -83,7 +83,7 @@
   --secondary-foreground: hsl(210 25% 7.8431%);
   --muted: hsl(0 0% 9.4118%);
   --muted-foreground: hsl(210 3.3898% 46.2745%);
-  --placeholder-foreground: hsl(210 3.3898% 46.2745%);
+  --placeholder: hsl(210 3.3898% 46.2745%);
   --accent: hsl(205.7143 70% 7.8431%);
   --accent-foreground: hsl(203.7736 87.6033% 52.5490%);
   --destructive: hsl(356.3033 90.5579% 54.3137%);

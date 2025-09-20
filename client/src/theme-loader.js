@@ -59,7 +59,6 @@
     root.style.setProperty('--foreground', themeSettings.textColor || DEFAULT_THEME.textColor);
     root.style.setProperty('--muted', themeSettings.mutedBackgroundColor || DEFAULT_THEME.mutedBackgroundColor);
     root.style.setProperty('--muted-foreground', themeSettings.mutedTextColor || DEFAULT_THEME.mutedTextColor);
-    root.style.setProperty('--placeholder-foreground', themeSettings.mutedTextColor || DEFAULT_THEME.mutedTextColor);
     
     // Typography
     root.style.setProperty('--font-sans', `'${themeSettings.sansSerifFont || DEFAULT_THEME.sansSerifFont}', sans-serif`);
@@ -67,7 +66,9 @@
     root.style.setProperty('--font-mono', `'${themeSettings.monospaceFont || DEFAULT_THEME.monospaceFont}', monospace`);
     
     // Shape & Spacing
-    root.style.setProperty('--radius', `${themeSettings.borderRadius || DEFAULT_THEME.borderRadius}rem`);
+    const r = String(themeSettings.borderRadius ?? DEFAULT_THEME.borderRadius);
+    const radius = /rem\s*$/i.test(r) ? r : `${r}rem`;
+    root.style.setProperty('--radius', radius);
     
     // Actions
     root.style.setProperty('--primary', themeSettings.primaryBackground || DEFAULT_THEME.primaryBackground);
@@ -82,12 +83,12 @@
     // Forms
     root.style.setProperty('--input', themeSettings.inputBackground || DEFAULT_THEME.inputBackground);
     root.style.setProperty('--input-foreground', themeSettings.inputText || DEFAULT_THEME.inputText);
-    root.style.setProperty('--placeholder-foreground', themeSettings.placeholderText || DEFAULT_THEME.placeholderText);
+    root.style.setProperty('--placeholder', themeSettings.placeholderText || DEFAULT_THEME.placeholderText);
     root.style.setProperty('--border', themeSettings.inputBorder || DEFAULT_THEME.inputBorder);
     root.style.setProperty('--ring', themeSettings.focusBorder || DEFAULT_THEME.focusBorder);
     
     // Containers
-    root.style.setProperty('--card', themeSettings.accentBackground || DEFAULT_THEME.accentBackground);
+    root.style.setProperty('--card', themeSettings.cardBackground || DEFAULT_THEME.cardBackground);
     root.style.setProperty('--card-foreground', themeSettings.cardText || DEFAULT_THEME.cardText);
     root.style.setProperty('--popover', themeSettings.popoverBackground || DEFAULT_THEME.popoverBackground);
     root.style.setProperty('--popover-foreground', themeSettings.popoverText || DEFAULT_THEME.popoverText);
@@ -111,6 +112,17 @@
     
     // Status Colors
     root.style.setProperty('--warning', themeSettings.warningColor || DEFAULT_THEME.warningColor);
+  }
+
+  // Apply cached theme immediately (synchronously) to prevent flash
+  const cachedTheme = localStorage.getItem('cached-theme');
+  if (cachedTheme) {
+    try {
+      const theme = JSON.parse(cachedTheme);
+      applyTheme(theme);
+    } catch (e) {
+      console.log('Error loading cached theme, using defaults');
+    }
   }
 
   // Fetch theme from server immediately - always use saved settings
