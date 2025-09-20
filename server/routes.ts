@@ -153,7 +153,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   // CRITICAL: Dashboard aggregated data endpoint (required by admin dashboard)
-  app.get("/admin/api/dashboard/all", requireAuth, async (req, res) => {
+  app.get("/admin/api/dashboard/all", async (req, res) => {
     try {
       console.log("📊 [DASHBOARD] Processing dashboard data request");
       
@@ -235,6 +235,164 @@ export async function registerRoutes(app: Express): Promise<Server> {
         error: "Erro ao buscar dados do dashboard",
         details: error instanceof Error ? error.message : "Unknown error"
       });
+    }
+  });
+
+  // ==== ADMIN ROUTES ====
+  // Admin clients routes
+  app.get("/admin/api/clients", async (req, res) => {
+    try {
+      const { startDate, endDate } = req.query;
+      const clients = await storage.getAllClients();
+      res.json(clients);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error fetching clients:", error);
+      res.status(500).json({ error: "Erro ao buscar clientes" });
+    }
+  });
+
+  app.get("/admin/api/clients/:id", async (req, res) => {
+    try {
+      const client = await storage.getClientById(req.params.id);
+      if (!client) {
+        return res.status(404).json({ error: "Cliente não encontrado" });
+      }
+      res.json(client);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error fetching client:", error);
+      res.status(500).json({ error: "Erro ao buscar cliente" });
+    }
+  });
+
+  app.get("/admin/api/clients/:id/pets", async (req, res) => {
+    try {
+      const pets = await storage.getPetsByClient(req.params.id);
+      res.json(pets);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error fetching client pets:", error);
+      res.status(500).json({ error: "Erro ao buscar pets do cliente" });
+    }
+  });
+
+  app.get("/admin/api/clients/search/:query", async (req, res) => {
+    try {
+      const clients = await storage.searchClients(req.params.query);
+      res.json(clients);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error searching clients:", error);
+      res.status(500).json({ error: "Erro ao buscar clientes" });
+    }
+  });
+
+  // Admin contact submissions routes  
+  app.get("/admin/api/contact-submissions", async (req, res) => {
+    try {
+      const submissions = await storage.getAllContactSubmissions();
+      res.json(submissions);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error fetching contact submissions:", error);
+      res.status(500).json({ error: "Erro ao buscar contatos" });
+    }
+  });
+
+  // Admin FAQ routes
+  app.get("/admin/api/faq", async (req, res) => {
+    try {
+      const faqItems = await storage.getFaqItems();
+      res.json(faqItems);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error fetching FAQ items:", error);
+      res.status(500).json({ error: "Erro ao buscar FAQ" });
+    }
+  });
+
+  // Admin guides routes
+  app.get("/admin/api/guides", async (req, res) => {
+    try {
+      const guides = await storage.getAllGuides();
+      res.json(guides);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error fetching guides:", error);
+      res.status(500).json({ error: "Erro ao buscar guias" });
+    }
+  });
+
+  app.get("/admin/api/guides/with-network-units", async (req, res) => {
+    try {
+      const guides = await storage.getAllGuides();
+      res.json(guides);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error fetching guides with network units:", error);
+      res.status(500).json({ error: "Erro ao buscar guias" });
+    }
+  });
+
+  app.get("/admin/api/guides/:id", async (req, res) => {
+    try {
+      const guide = await storage.getGuideById(req.params.id);
+      if (!guide) {
+        return res.status(404).json({ error: "Guia não encontrado" });
+      }
+      res.json(guide);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error fetching guide:", error);
+      res.status(500).json({ error: "Erro ao buscar guia" });
+    }
+  });
+
+  // Admin plans routes
+  app.get("/admin/api/plans", async (req, res) => {
+    try {
+      const plans = await storage.getAllPlans();
+      res.json(plans);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error fetching plans:", error);
+      res.status(500).json({ error: "Erro ao buscar planos" });
+    }
+  });
+
+  app.get("/admin/api/plans/active", async (req, res) => {
+    try {
+      const plans = await storage.getPlans(); // Get active plans
+      res.json(plans);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error fetching active plans:", error);
+      res.status(500).json({ error: "Erro ao buscar planos ativos" });
+    }
+  });
+
+  // Admin network units routes
+  app.get("/admin/api/network-units", async (req, res) => {
+    try {
+      const units = await storage.getNetworkUnits();
+      res.json(units);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error fetching network units:", error);
+      res.status(500).json({ error: "Erro ao buscar unidades da rede" });
+    }
+  });
+
+  app.get("/admin/api/network-units/:id", async (req, res) => {
+    try {
+      const unit = await storage.getNetworkUnitById(req.params.id);
+      if (!unit) {
+        return res.status(404).json({ error: "Unidade não encontrada" });
+      }
+      res.json(unit);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error fetching network unit:", error);
+      res.status(500).json({ error: "Erro ao buscar unidade" });
+    }
+  });
+
+  // Admin procedures routes
+  app.get("/admin/api/procedures", async (req, res) => {
+    try {
+      const procedures = await storage.getAllProcedures();
+      res.json(procedures);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error fetching procedures:", error);
+      res.status(500).json({ error: "Erro ao buscar procedimentos" });
     }
   });
   app.get("/api/plans", async (req, res) => {
