@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/admin/ui/card";
+import { Button } from "@/components/admin/ui/button";
+import { Input } from "@/components/admin/ui/input";
+import { Badge } from "@/components/admin/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/admin/ui/select";
+import { Separator } from "@/components/admin/ui/separator";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/admin/ui/dialog";
 import {
   Table,
   TableBody,
@@ -14,25 +14,53 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/admin/ui/table";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/admin/ui/dropdown-menu";
 import { useLocation } from "wouter";
 import { Plus, Search, Edit, Trash2, FileText, Eye, Copy, Columns, ChevronLeft, ChevronRight } from "lucide-react";
+
+// Types for guides data
+interface GuideWithNetworkUnit {
+  id: string;
+  procedure: string;
+  procedureName?: string;
+  type: string;
+  guideType?: string;
+  status: string;
+  value?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  networkUnit?: {
+    id: string;
+    name: string;
+  };
+  clientName?: string;
+  petName?: string;
+  procedureNotes?: string;
+  generalNotes?: string;
+}
+
+interface GuidesResponse {
+  data: GuideWithNetworkUnit[];
+  total: number;
+  totalPages: number;
+  page: number;
+}
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { CalendarDate } from "@internationalized/date";
 import { apiRequest } from "@/lib/admin/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
-import { PasswordDialog } from "@/components/ui/password-dialog";
-import { usePasswordDialog } from "@/hooks/use-password-dialog";
-import { useColumnPreferences } from "@/hooks/use-column-preferences";
+import { ConfirmDialog } from "@/components/admin/ui/confirm-dialog";
+import { useConfirmDialog } from "@/hooks/admin/use-confirm-dialog";
+import { PasswordDialog } from "@/components/admin/ui/password-dialog";
+import { usePasswordDialog } from "@/hooks/admin/use-password-dialog";
+import { useColumnPreferences } from "@/hooks/admin/use-column-preferences";
 import { DateFilterComponent } from "@/components/admin/DateFilterComponent";
 import { getDateRangeParams } from "@/lib/date-utils";
 import { GUIDE_TYPES } from "@/lib/constants";
@@ -53,7 +81,7 @@ export default function Guides() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
-  const [selectedGuide, setSelectedGuide] = useState<any>(null);
+  const [selectedGuide, setSelectedGuide] = useState<GuideWithNetworkUnit | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const { visibleColumns, toggleColumn } = useColumnPreferences('guides.columns', allColumns);
   const [currentPage, setCurrentPage] = useState(1);
@@ -90,7 +118,7 @@ export default function Guides() {
   // Get date range parameters for API calls using debounced values
   const dateParams = getDateRangeParams(debouncedDateFilter.startDate, debouncedDateFilter.endDate);
 
-  const { data: guides, isLoading } = useQuery({
+  const { data: guides, isLoading } = useQuery<GuidesResponse>({
     queryKey: ["/admin/api/guides/with-network-units", currentPage, searchQuery, statusFilter, typeFilter, dateParams],
     queryFn: async () => {
       const params = new URLSearchParams({
@@ -188,7 +216,7 @@ export default function Guides() {
     });
   };
 
-  const handleViewDetails = (guide: any) => {
+  const handleViewDetails = (guide: GuideWithNetworkUnit) => {
     setSelectedGuide(guide);
     setDetailsOpen(true);
   };
@@ -206,8 +234,8 @@ export default function Guides() {
     // Informações Básicas
     text += "INFORMAÇÕES BÁSICAS:\n";
     text += "-".repeat(25) + "\n";
-    text += `Nome do Procedimento: ${selectedGuide.procedureName}\n`;
-    text += `Tipo de Guia: ${selectedGuide.guideType}\n`;
+    text += `Nome do Procedimento: ${selectedGuide.procedure || selectedGuide.procedureName || 'Não informado'}\n`;
+    text += `Tipo de Guia: ${selectedGuide.type || selectedGuide.guideType || 'Não informado'}\n`;
     text += `Status: ${getStatusLabel(selectedGuide.status)}\n`;
     text += `Valor: R$ ${selectedGuide.value || 'Não informado'}\n\n`;
 
@@ -414,17 +442,17 @@ export default function Guides() {
                   </TableCell>
                 </TableRow>
               ))
-            ) : guidesData?.length ? (
-              guidesData.map((guide: any) => (
+            ) : guidesData && guidesData.length > 0 ? (
+              guidesData.map((guide: GuideWithNetworkUnit) => (
                 <TableRow key={guide.id} className="bg-accent hover:bg-accent/80">
                   {visibleColumns.includes("Procedimento") && (
                     <TableCell className="font-medium whitespace-nowrap bg-accent">
-                      {guide.procedure}
+                      {guide.procedure || 'Não informado'}
                     </TableCell>
                   )}
                   {visibleColumns.includes("Unidade") && (
                     <TableCell className="whitespace-nowrap bg-accent">
-                      {guide.networkUnit ? guide.networkUnit.name : "Não informada"}
+                      {guide.networkUnit?.name || "Não informada"}
                     </TableCell>
                   )}
                   {visibleColumns.includes("Tipo") && (
@@ -434,7 +462,7 @@ export default function Guides() {
                   )}
                   {visibleColumns.includes("Valor") && (
                     <TableCell className="whitespace-nowrap bg-accent">
-                      R$ {parseFloat(guide.value || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      R$ {parseFloat(guide.value || '0').toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </TableCell>
                   )}
                   {visibleColumns.includes("Status") && (
@@ -583,7 +611,7 @@ export default function Guides() {
                   <h4 className="font-semibold text-foreground mb-2">Informações Básicas</h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center space-x-2">
-                      <span><strong className="text-primary">Procedimento:</strong> <span className="text-foreground">{selectedGuide.procedure}</span></span>
+                      <span><strong className="text-primary">Procedimento:</strong> <span className="text-foreground">{selectedGuide.procedure || 'Não informado'}</span></span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <span><strong className="text-primary">Tipo:</strong> <span className="text-foreground">{getTypeLabel(selectedGuide.type)}</span></span>

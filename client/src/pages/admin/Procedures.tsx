@@ -2,17 +2,17 @@ import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { InputMasked } from "@/components/ui/input-masked";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { CustomCheckbox } from "@/components/ui/custom-checkbox";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/admin/ui/card";
+import { Button } from "@/components/admin/ui/button";
+import { Input } from "@/components/admin/ui/input";
+import { InputMasked } from "@/components/admin/ui/input-masked";
+import { Textarea } from "@/components/admin/ui/textarea";
+import { Switch } from "@/components/admin/ui/switch";
+import { Badge } from "@/components/admin/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/admin/ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/admin/ui/form";
+import { CustomCheckbox } from "@/components/admin/ui/custom-checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/admin/ui/select";
 import {
   Table,
   TableBody,
@@ -20,21 +20,21 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/admin/ui/table";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/admin/ui/dropdown-menu";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { Plus, Search, Edit, Trash2, ClipboardList, Eye, DollarSign, X, Columns, ChevronLeft, ChevronRight, Copy, FileText } from "lucide-react";
 import { apiRequest } from "@/lib/admin/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { useColumnPreferences } from "@/hooks/use-column-preferences";
-import { insertProcedureSchema } from "@shared/schema";
+import { useColumnPreferences } from "@/hooks/admin/use-column-preferences";
+import { insertProcedureSchema, type Procedure, type Plan, type ProcedurePlan } from "@shared/schema";
 import { PROCEDURE_TYPES, PROCEDURE_TYPE_LABELS } from "@/lib/constants";
 
 const allColumns = [
@@ -48,8 +48,8 @@ export default function Procedures() {
   const [searchQuery, setSearchQuery] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState<any>(null);
-  const [viewingItem, setViewingItem] = useState<any>(null);
+  const [editingItem, setEditingItem] = useState<Procedure | null>(null);
+  const [viewingItem, setViewingItem] = useState<Procedure | null>(null);
   const { visibleColumns, toggleColumn } = useColumnPreferences('procedures.columns', allColumns);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
@@ -69,11 +69,11 @@ export default function Procedures() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  const { data: procedures, isLoading } = useQuery({
+  const { data: procedures, isLoading } = useQuery<Procedure[]>({
     queryKey: ["/admin/api/procedures"],
   });
 
-  const { data: plans } = useQuery({
+  const { data: plans } = useQuery<Plan[]>({
     queryKey: ["/admin/api/plans/active"],
   });
 
@@ -110,7 +110,7 @@ export default function Procedures() {
     if (existingProcedurePlans && Array.isArray(existingProcedurePlans) && editingItem?.id) {
       const newManuallyEditedFields: {[key: number]: {[field: string]: boolean}} = {};
       
-      const planData = existingProcedurePlans.map((item: any, index: number) => {
+      const planData = existingProcedurePlans.map((item: ProcedurePlan, index: number) => {
         const receberValue = (item.price / 100).toLocaleString('pt-BR', {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2

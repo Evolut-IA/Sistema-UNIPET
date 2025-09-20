@@ -3,17 +3,17 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { InputMasked } from "@/components/ui/input-masked";
-import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/admin/ui/card";
+import { Button } from "@/components/admin/ui/button";
+import { Input } from "@/components/admin/ui/input";
+import { InputMasked } from "@/components/admin/ui/input-masked";
+import { Badge } from "@/components/admin/ui/badge";
+import { Switch } from "@/components/admin/ui/switch";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/admin/ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/admin/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/admin/ui/select";
+import { Separator } from "@/components/admin/ui/separator";
+import { Checkbox } from "@/components/admin/ui/checkbox";
 import {
   Table,
   TableBody,
@@ -21,17 +21,17 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/admin/ui/table";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/admin/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
-import { useColumnPreferences } from "@/hooks/use-column-preferences";
+import { useColumnPreferences } from "@/hooks/admin/use-column-preferences";
 import { apiRequest } from "@/lib/admin/queryClient";
-import { insertUserSchema } from "@shared/schema";
+import { insertUserSchema, type User, type NetworkUnitWithCredentialStatus } from "@shared/schema";
 import { UserCog, Plus, Search, Edit, Trash2, Shield, User, Key, Network, Lock, Eye, EyeOff, Columns, ChevronLeft, ChevronRight, Globe } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -67,9 +67,9 @@ const networkColumns = [
 export default function Administration() {
   const [searchQuery, setSearchQuery] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingUser, setEditingUser] = useState<any>(null);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
   const [credentialDialogOpen, setCredentialDialogOpen] = useState(false);
-  const [editingNetworkUnit, setEditingNetworkUnit] = useState<any>(null);
+  const [editingNetworkUnit, setEditingNetworkUnit] = useState<NetworkUnitWithCredentialStatus | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const { visibleColumns, toggleColumn } = useColumnPreferences('administration.users.columns', allColumns);
@@ -81,11 +81,11 @@ export default function Administration() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  const { data: users = [], isLoading } = useQuery<any[]>({
+  const { data: users = [], isLoading } = useQuery<User[]>({
     queryKey: ["/admin/api/users"],
   });
 
-  const { data: networkUnits = [], isLoading: isLoadingNetworkUnits } = useQuery<any[]>({
+  const { data: networkUnits = [], isLoading: isLoadingNetworkUnits } = useQuery<NetworkUnitWithCredentialStatus[]>({
     queryKey: ["/admin/api/network-units/credentials"],
   });
 

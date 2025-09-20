@@ -21,7 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/admin/ui/dropdown-menu";
 import { useLocation } from "wouter";
-import type { Client } from "@shared/schema";
+import type { Client, Pet } from "@shared/schema";
 import { Plus, Search, Edit, Trash2, Eye, Copy, FileText, Columns, ChevronLeft, ChevronRight } from "lucide-react";
 
 // Componente do ícone de adicionar pet
@@ -41,11 +41,11 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { apiRequest } from "@/lib/admin/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
-import { PasswordDialog } from "@/components/ui/password-dialog";
-import { usePasswordDialog } from "@/hooks/use-password-dialog";
-import { useColumnPreferences } from "@/hooks/use-column-preferences";
+import { ConfirmDialog } from "@/components/admin/ui/confirm-dialog";
+import { useConfirmDialog } from "@/hooks/admin/use-confirm-dialog";
+import { PasswordDialog } from "@/components/admin/ui/password-dialog";
+import { usePasswordDialog } from "@/hooks/admin/use-password-dialog";
+import { useColumnPreferences } from "@/hooks/admin/use-column-preferences";
 import { cn } from "@/lib/utils";
 
 const allColumns = [
@@ -58,7 +58,7 @@ const allColumns = [
 export default function Clients() {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedClient, setSelectedClient] = useState<any>(null);
+  const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const { visibleColumns, toggleColumn } = useColumnPreferences('clients.columns', allColumns);
   const [currentPage, setCurrentPage] = useState(1);
@@ -73,7 +73,7 @@ export default function Clients() {
   });
 
   // Query para buscar pets do cliente selecionado
-  const { data: clientPets = [], isLoading: petsLoading } = useQuery<any[]>({
+  const { data: clientPets = [], isLoading: petsLoading } = useQuery<Pet[]>({
     queryKey: ["/admin/api/clients", selectedClient?.id, "pets"],
     enabled: !!selectedClient?.id,
   });
@@ -166,7 +166,7 @@ export default function Clients() {
     });
   };
 
-  const handleViewDetails = (client: any) => {
+  const handleViewDetails = (client: Client) => {
     setSelectedClient(client);
     setDetailsOpen(true);
   };
@@ -211,7 +211,7 @@ export default function Clients() {
       text += "PETS DO CLIENTE:\n";
       text += "-".repeat(20) + "\n";
       
-      clientPets.forEach((pet: any, index: number) => {
+      clientPets.forEach((pet: Pet, index: number) => {
         text += `\nPet ${index + 1}:\n`;
         text += `  Nome: ${pet.name}\n`;
         text += `  Espécie: ${pet.species}\n`;
@@ -237,9 +237,9 @@ export default function Clients() {
         }
         
         // Vacinas
-        if (pet.vaccineData && pet.vaccineData.length > 0) {
+        if (pet.vaccineData && Array.isArray(pet.vaccineData) && pet.vaccineData.length > 0) {
           text += `  \n  Vacinas:\n`;
-          pet.vaccineData.forEach((vaccine: any) => {
+          pet.vaccineData.forEach((vaccine: { vaccine: string; date: string }) => {
             text += `    ${vaccine.vaccine}: ${format(new Date(vaccine.date), "dd/MM/yyyy", { locale: ptBR })}\n`;
           });
         }
@@ -363,12 +363,12 @@ export default function Clients() {
                   </TableCell>
                 </TableRow>
               ))
-            ) : displayClients?.length ? (
-              displayClients.map((client: any) => (
+            ) : displayClients && displayClients.length > 0 ? (
+              displayClients.map((client: Client) => (
                 <TableRow key={client.id} className="bg-accent hover:bg-accent/80">
                   {visibleColumns.includes("Nome") && (
                     <TableCell className="font-medium whitespace-nowrap bg-accent">
-                      {client.fullName}
+                      {client.fullName || client.full_name}
                     </TableCell>
                   )}
                   {visibleColumns.includes("Telefone") && (
@@ -426,7 +426,7 @@ export default function Clients() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => handleDelete(client.id, client.fullName)}
+                          onClick={() => handleDelete(client.id, client.fullName || client.full_name)}
                           disabled={deleteClientMutation.isPending}
                           data-testid={`button-delete-${client.id}`}
                         >

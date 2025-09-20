@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
+import { Card, CardContent } from "@/components/admin/ui/card";
+import { Button } from "@/components/admin/ui/button";
+import { Input } from "@/components/admin/ui/input";
+import { Badge } from "@/components/admin/ui/badge";
+import { Switch } from "@/components/admin/ui/switch";
 import {
   Table,
   TableBody,
@@ -12,22 +12,23 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/admin/ui/table";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/admin/ui/dropdown-menu";
 import { useLocation } from "wouter";
 import { Plus, Search, Edit, Trash2, CreditCard, Columns, ChevronLeft, ChevronRight } from "lucide-react";
 import { apiRequest } from "@/lib/admin/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
-import { PasswordDialog } from "@/components/ui/password-dialog";
-import { usePasswordDialog } from "@/hooks/use-password-dialog";
-import { useColumnPreferences } from "@/hooks/use-column-preferences";
+import { ConfirmDialog } from "@/components/admin/ui/confirm-dialog";
+import { useConfirmDialog } from "@/hooks/admin/use-confirm-dialog";
+import { PasswordDialog } from "@/components/admin/ui/password-dialog";
+import { usePasswordDialog } from "@/hooks/admin/use-password-dialog";
+import { useColumnPreferences } from "@/hooks/admin/use-column-preferences";
+import type { Plan } from "@shared/schema";
 import { cn } from "@/lib/utils";
 
 const allColumns = [
@@ -49,7 +50,7 @@ export default function Plans() {
   const confirmDialog = useConfirmDialog();
   const passwordDialog = usePasswordDialog();
 
-  const { data: plans, isLoading } = useQuery({
+  const { data: plans, isLoading } = useQuery<Plan[]>({
     queryKey: ["/admin/api/plans"],
   });
 
@@ -93,7 +94,7 @@ export default function Plans() {
     },
   });
 
-  const allFilteredPlans = Array.isArray(plans) ? plans.filter((plan: any) =>
+  const allFilteredPlans = Array.isArray(plans) ? plans.filter((plan: Plan) =>
     plan.name?.toLowerCase().includes(searchQuery.toLowerCase())
   ) : [];
 

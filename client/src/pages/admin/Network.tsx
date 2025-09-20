@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/admin/ui/card";
+import { Button } from "@/components/admin/ui/button";
+import { Input } from "@/components/admin/ui/input";
+import { Badge } from "@/components/admin/ui/badge";
+import { Switch } from "@/components/admin/ui/switch";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/admin/ui/dialog";
 import {
   Table,
   TableBody,
@@ -13,22 +13,23 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/admin/ui/table";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/admin/ui/dropdown-menu";
 import { useLocation } from "wouter";
 import { Plus, Search, Edit, Trash2, Building2, ExternalLink, Phone, MapPin, Eye, Copy, Globe, Columns, ChevronLeft, ChevronRight } from "lucide-react";
 import { apiRequest } from "@/lib/admin/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
-import { PasswordDialog } from "@/components/ui/password-dialog";
-import { usePasswordDialog } from "@/hooks/use-password-dialog";
-import { useColumnPreferences } from "@/hooks/use-column-preferences";
+import { ConfirmDialog } from "@/components/admin/ui/confirm-dialog";
+import { useConfirmDialog } from "@/hooks/admin/use-confirm-dialog";
+import { PasswordDialog } from "@/components/admin/ui/password-dialog";
+import { usePasswordDialog } from "@/hooks/admin/use-password-dialog";
+import { useColumnPreferences } from "@/hooks/admin/use-column-preferences";
+import type { NetworkUnit } from "@shared/schema";
 import { cn } from "@/lib/utils";
 
 const allColumns = [
@@ -41,7 +42,7 @@ const allColumns = [
 export default function Network() {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedUnit, setSelectedUnit] = useState<any>(null);
+  const [selectedUnit, setSelectedUnit] = useState<NetworkUnit | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const { visibleColumns, toggleColumn } = useColumnPreferences('network.columns', allColumns);
   const [currentPage, setCurrentPage] = useState(1);
@@ -51,7 +52,7 @@ export default function Network() {
   const confirmDialog = useConfirmDialog();
   const passwordDialog = usePasswordDialog();
 
-  const { data: units, isLoading } = useQuery({
+  const { data: units, isLoading } = useQuery<NetworkUnit[]>({
     queryKey: ["/admin/api/network-units"],
   });
 
@@ -95,7 +96,7 @@ export default function Network() {
     },
   });
 
-  const filteredUnits = Array.isArray(units) ? units?.filter((unit: any) =>
+  const filteredUnits = Array.isArray(units) ? units.filter((unit: NetworkUnit) =>
     unit.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     unit.address?.toLowerCase().includes(searchQuery.toLowerCase())
   ) : [];
@@ -166,7 +167,7 @@ export default function Network() {
     toggleUnitMutation.mutate({ id, isActive: !currentStatus });
   };
 
-  const handleViewDetails = (unit: any) => {
+  const handleViewDetails = (unit: NetworkUnit) => {
     setSelectedUnit(unit);
     setDetailsOpen(true);
   };
@@ -193,7 +194,7 @@ export default function Network() {
     text += `Status: ${selectedUnit.isActive ? 'Ativo' : 'Inativo'}\n\n`;
 
     // Serviços
-    if (selectedUnit.services && selectedUnit.services.length > 0) {
+    if (selectedUnit.services && Array.isArray(selectedUnit.services) && selectedUnit.services.length > 0) {
       text += "SERVIÇOS OFERECIDOS:\n";
       text += "-".repeat(20) + "\n";
       selectedUnit.services.forEach((service: string, index: number) => {
@@ -321,8 +322,8 @@ export default function Network() {
                   </TableCell>
                 </TableRow>
               ))
-            ) : displayUnits?.length ? (
-              displayUnits.map((unit: any) => (
+            ) : displayUnits && displayUnits.length > 0 ? (
+              displayUnits.map((unit: NetworkUnit) => (
                 <TableRow key={unit.id} className="bg-accent hover:bg-accent/80">
                   {visibleColumns.includes("Nome") && (
                     <TableCell className="font-medium whitespace-nowrap bg-accent" data-testid={`unit-name-${unit.id}`}>
@@ -341,7 +342,7 @@ export default function Network() {
                   )}
                   {visibleColumns.includes("Serviços") && (
                     <TableCell className="bg-accent">
-                      {unit.services && unit.services.length > 0 ? (
+                      {unit.services && Array.isArray(unit.services) && unit.services.length > 0 ? (
                         <div className="flex flex-wrap gap-1">
                           {unit.services.slice(0, 2).map((service: string, index: number) => (
                             <Badge key={index} variant="neutral" className="text-xs">
@@ -548,7 +549,7 @@ export default function Network() {
                 </div>
 
 
-                {selectedUnit.services && selectedUnit.services.length > 0 && (
+                {selectedUnit.services && Array.isArray(selectedUnit.services) && selectedUnit.services.length > 0 && (
                   <div>
                     <h4 className="font-semibold text-foreground mb-2">Serviços Oferecidos</h4>
                     <div className="flex flex-wrap gap-2">
