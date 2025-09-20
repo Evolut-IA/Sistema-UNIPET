@@ -420,7 +420,11 @@ export default function Dashboard() {
                   <div className="flex items-center gap-2">
                     <span className="text-sm text-foreground">Total de Pets com Planos</span>
                     {planDistribution.some(plan => plan.petCount > 0) && (
-                      <div className="w-2 h-2 bg-primary rounded-full" title="Dados atualizados"></div>
+                      <div 
+                        className="w-2 h-2 rounded-full" 
+                        style={{ backgroundColor: 'var(--chart-4)' }}
+                        title="Dados atualizados"
+                      ></div>
                     )}
                   </div>
                   <div className="text-right">
