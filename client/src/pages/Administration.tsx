@@ -295,9 +295,9 @@ export default function Administration() {
 
   const getCredentialStatus = (unit: any) => {
     if (unit.hasCredentials) {
-      return { text: "Configurado", color: "bg-chart-2/20 text-chart-2" };
+      return { text: "Configurado", color: "border border-border rounded-lg bg-background text-foreground" };
     }
-    return { text: "Não configurado", color: "bg-chart-5/20 text-chart-5" };
+    return { text: "Não configurado", color: "border border-border rounded-lg bg-background text-foreground" };
   };
 
   const getRoleColor = (role: string) => {
