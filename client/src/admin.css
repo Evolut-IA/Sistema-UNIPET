@@ -6,22 +6,18 @@
 @tailwind utilities;
 
 :root {
-  /* Foundation - matching DEFAULT_THEME */
   --background: #faf9f7;
   --foreground: #1a1a1a;
   --muted: #f7f9fa;
   --muted-foreground: #6b7280;
   --placeholder: #1a1a1a;
   
-  /* Typography - matching DEFAULT_THEME */
   --font-sans: 'DM Sans', sans-serif;
   --font-serif: 'Georgia', serif;
   --font-mono: 'Fira Code', monospace;
   
-  /* Shape & Spacing - matching DEFAULT_THEME */
   --radius: 0.5rem;
   
-  /* Actions - matching DEFAULT_THEME */
   --primary: #277677;
   --primary-foreground: #ffffff;
   --secondary: #0f1419;
@@ -31,18 +27,15 @@
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
   
-  /* Forms - matching DEFAULT_THEME */
   --input: #f7f9fa;
   --border: #e1eaef;
   --ring: #277677;
   
-  /* Containers - matching DEFAULT_THEME */
   --card: #ffffff;
   --card-foreground: #1a1a1a;
   --popover: #ffffff;
   --popover-foreground: #1a1a1a;
   
-  /* Sidebar - matching DEFAULT_THEME */
   --sidebar: #ffffff;
   --sidebar-foreground: #1a1a1a;
   --sidebar-primary: #277677;
@@ -52,7 +45,6 @@
   --sidebar-border: #e1eaef;
   --sidebar-ring: #277677;
   
-  /* Charts - matching DEFAULT_THEME */
   --chart-1: #277677;
   --chart-2: #10b981;
   --chart-3: #f59e0b;
