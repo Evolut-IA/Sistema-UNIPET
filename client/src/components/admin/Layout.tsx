@@ -11,7 +11,7 @@ function Layout({ children }: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
+    <div className="flex h-screen bg-[var(--bg-cream-light)] overflow-hidden">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div 
@@ -32,7 +32,7 @@ function Layout({ children }: LayoutProps) {
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Mobile header */}
-        <div className="lg:hidden bg-card border-b border-border">
+        <div className="lg:hidden bg-[var(--bg-cream-light)] border-b border-[var(--border-teal-light)]">
           <div className="flex items-center justify-between p-3 sm:p-4">
             <Button
               variant="ghost"
@@ -43,7 +43,7 @@ function Layout({ children }: LayoutProps) {
             >
               {sidebarOpen ? <X className="h-5 w-5 sm:h-6 sm:w-6" /> : <Menu className="h-5 w-5 sm:h-6 sm:w-6" />}
             </Button>
-            <div className="text-sm font-medium text-foreground hidden xs:block">
+            <div className="text-sm font-medium text-[var(--text-teal)] hidden xs:block">
               UNIPET
             </div>
           </div>

@@ -14,9 +14,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/admin/queryClient";
 import { insertSiteSettingsSchema, insertRulesSettingsSchema } from "@shared/schema";
-import { Settings as SettingsIcon, Globe, Palette, Save, Loader2, FileText, Contact, Share2, Type, Image } from "lucide-react";
+import { Settings as SettingsIcon, Globe, Save, Loader2, FileText, Contact, Share2, Type, Image } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import ThemeEditor from "@/components/ThemeEditor";
 import { ImageUpload } from "@/components/ui/image-upload";
 
 export default function Settings() {
@@ -173,33 +172,26 @@ export default function Settings() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div className="flex-1">
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground break-words">Configurações</h1>
-          <p className="text-sm text-muted-foreground">Gerencie as configurações do sistema</p>
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[var(--text-teal)] break-words">Configurações</h1>
+          <p className="text-sm text-[var(--text-dark-secondary)]">Gerencie as configurações do sistema</p>
         </div>
       </div>
 
       <Tabs defaultValue="site" className="space-y-4 sm:space-y-6">
         <TabsList 
-          className="grid w-full grid-cols-3 gap-1" 
-          style={{ backgroundColor: 'var(--accent)' }}
+          className="grid w-full grid-cols-2 gap-1" 
+          style={{ backgroundColor: 'var(--bg-teal-light)' }}
         >
           <TabsTrigger 
             value="site" 
-            className="flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            className="flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm data-[state=active]:bg-[var(--bg-teal)] data-[state=active]:text-[var(--text-light)]"
           >
             <Globe className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
             <span className="truncate">Geral</span>
           </TabsTrigger>
           <TabsTrigger 
-            value="theme" 
-            className="flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-          >
-            <Palette className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
-            <span className="truncate">Tema</span>
-          </TabsTrigger>
-          <TabsTrigger 
             value="rules" 
-            className="flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            className="flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm data-[state=active]:bg-[var(--bg-teal)] data-[state=active]:text-[var(--text-light)]"
           >
             <FileText className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
             <span className="truncate">Regras</span>
@@ -225,7 +217,7 @@ export default function Settings() {
           ) : (
             <Card>
               <CardHeader>
-                <CardTitle className="text-foreground flex items-center space-x-2">
+                <CardTitle className="text-[var(--text-teal)] flex items-center space-x-2">
                   <Globe className="h-5 w-5" />
                   <span>Configurações Gerais</span>
                 </CardTitle>
@@ -543,7 +535,7 @@ export default function Settings() {
                 <div className="flex justify-end pt-6">
                   <Button
                     type="submit"
-                    className="btn-primary"
+                    className="bg-[var(--bg-teal)] text-[var(--text-light)] hover:bg-[var(--bg-teal-dark)]"
                     disabled={saveSiteMutation.isPending}
                     data-testid="button-save-site"
                   >
@@ -559,10 +551,6 @@ export default function Settings() {
         </TabsContent>
 
 
-        {/* Theme Settings */}
-        <TabsContent value="theme" className="space-y-6" data-testid="tab-content-theme">
-          <ThemeEditor />
-        </TabsContent>
 
         {/* Rules Settings */}
         <TabsContent value="rules" className="space-y-6" data-testid="tab-content-rules">
