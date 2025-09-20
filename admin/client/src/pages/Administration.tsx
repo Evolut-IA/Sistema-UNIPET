@@ -82,11 +82,11 @@ export default function Administration() {
   const { toast } = useToast();
 
   const { data: users = [], isLoading } = useQuery<any[]>({
-    queryKey: ["/api/users"],
+    queryKey: ["/admin/api/users"],
   });
 
   const { data: networkUnits = [], isLoading: isLoadingNetworkUnits } = useQuery<any[]>({
-    queryKey: ["/api/network-units/credentials"],
+    queryKey: ["/admin/api/network-units/credentials"],
   });
 
   const form = useForm({
@@ -125,13 +125,13 @@ export default function Administration() {
   const createMutation = useMutation({
     mutationFn: async (data: any) => {
       if (editingUser) {
-        await apiRequest("PUT", `/api/users/${editingUser.id}`, data);
+        await apiRequest("PUT", `/admin/api/users/${editingUser.id}`, data);
       } else {
-        await apiRequest("POST", "/api/users", data);
+        await apiRequest("POST", "/admin/api/users", data);
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/users"] });
+      queryClient.invalidateQueries({ queryKey: ["/admin/api/users"] });
       toast({
         title: editingUser ? "Usuário atualizado" : "Usuário criado",
         description: editingUser ? "Usuário foi atualizado com sucesso." : "Usuário foi criado com sucesso.",
@@ -151,10 +151,10 @@ export default function Administration() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      await apiRequest("DELETE", `/api/users/${id}`);
+      await apiRequest("DELETE", `/admin/api/users/${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/users"] });
+      queryClient.invalidateQueries({ queryKey: ["/admin/api/users"] });
       toast({
         title: "Usuário removido",
         description: "Usuário foi removido com sucesso.",
@@ -171,13 +171,13 @@ export default function Administration() {
 
   const updateCredentialsMutation = useMutation({
     mutationFn: async (data: { id: string; login: string; password: string }) => {
-      await apiRequest("PUT", `/api/network-units/${data.id}/credentials`, {
+      await apiRequest("PUT", `/admin/api/network-units/${data.id}/credentials`, {
         login: data.login,
         password: data.password,
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/network-units/credentials"] });
+      queryClient.invalidateQueries({ queryKey: ["/admin/api/network-units/credentials"] });
       toast({
         title: "Credenciais atualizadas",
         description: "Credenciais da unidade foram atualizadas com sucesso.",
@@ -199,10 +199,10 @@ export default function Administration() {
 
   const toggleUserMutation = useMutation({
     mutationFn: async ({ id, isActive }: { id: string; isActive: boolean }) => {
-      await apiRequest("PUT", `/api/users/${id}`, { isActive });
+      await apiRequest("PUT", `/admin/api/users/${id}`, { isActive });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/users"] });
+      queryClient.invalidateQueries({ queryKey: ["/admin/api/users"] });
       toast({
         title: "Status atualizado",
         description: "Status do usuário foi atualizado.",

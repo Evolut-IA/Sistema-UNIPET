@@ -33,7 +33,7 @@ export default function UnitRoute() {
 
     try {
       // Check if this slug corresponds to a valid unit
-      const response = await fetch(`/api/unit/${slug}`, {
+      const response = await fetch(`/admin/api/unit/${slug}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       });

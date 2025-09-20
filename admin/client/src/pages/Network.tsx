@@ -52,15 +52,15 @@ export default function Network() {
   const passwordDialog = usePasswordDialog();
 
   const { data: units, isLoading } = useQuery({
-    queryKey: ["/api/network-units"],
+    queryKey: ["/admin/api/network-units"],
   });
 
   const deleteUnitMutation = useMutation({
     mutationFn: async (id: string) => {
-      await apiRequest("DELETE", `/api/network-units/${id}`);
+      await apiRequest("DELETE", `/admin/api/network-units/${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/network-units"] });
+      queryClient.invalidateQueries({ queryKey: ["/admin/api/network-units"] });
       toast({
         title: "Unidade removida",
         description: "Unidade foi removida com sucesso.",
@@ -77,10 +77,10 @@ export default function Network() {
 
   const toggleUnitMutation = useMutation({
     mutationFn: async ({ id, isActive }: { id: string; isActive: boolean }) => {
-      await apiRequest("PUT", `/api/network-units/${id}`, { isActive });
+      await apiRequest("PUT", `/admin/api/network-units/${id}`, { isActive });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/network-units"] });
+      queryClient.invalidateQueries({ queryKey: ["/admin/api/network-units"] });
       toast({
         title: "Status atualizado",
         description: "Status da unidade foi atualizado.",
@@ -116,7 +116,7 @@ export default function Network() {
           passwordDialog.setLoading(true);
           
           // Verificar senha
-          const response = await fetch("/api/admin/verify-password", {
+          const response = await fetch("/admin/api/admin/verify-password", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

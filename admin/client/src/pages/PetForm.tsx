@@ -26,17 +26,17 @@ export default function PetForm() {
   const clientId = params.clientId;
 
   const { data: pet, isLoading: petLoading } = useQuery<any>({
-    queryKey: ["/api/pets", params.id],
+    queryKey: ["/admin/api/pets", params.id],
     enabled: isEdit,
   });
 
   const { data: client, isLoading: clientLoading } = useQuery<any>({
-    queryKey: ["/api/clients", clientId],
+    queryKey: ["/admin/api/clients", clientId],
     enabled: Boolean(clientId),
   });
 
   const { data: plans } = useQuery<any[]>({
-    queryKey: ["/api/plans/active"],
+    queryKey: ["/admin/api/plans/active"],
   });
 
   const form = useForm({
@@ -97,14 +97,14 @@ export default function PetForm() {
   const mutation = useMutation({
     mutationFn: async (data: any) => {
       if (isEdit) {
-        await apiRequest("PUT", `/api/pets/${params.id}`, data);
+        await apiRequest("PUT", `/admin/api/pets/${params.id}`, data);
       } else {
-        await apiRequest("POST", "/api/pets", data);
+        await apiRequest("POST", "/admin/api/pets", data);
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/pets"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/clients", clientId, "pets"] });
+      queryClient.invalidateQueries({ queryKey: ["/admin/api/pets"] });
+      queryClient.invalidateQueries({ queryKey: ["/admin/api/clients", clientId, "pets"] });
       toast({
         title: isEdit ? "Pet atualizado" : "Pet cadastrado",
         description: isEdit ? "Pet foi atualizado com sucesso." : "Pet foi cadastrado com sucesso.",

@@ -91,7 +91,7 @@ export default function Guides() {
   const dateParams = getDateRangeParams(debouncedDateFilter.startDate, debouncedDateFilter.endDate);
 
   const { data: guides, isLoading } = useQuery({
-    queryKey: ["/api/guides/with-network-units", currentPage, searchQuery, statusFilter, typeFilter, dateParams],
+    queryKey: ["/admin/api/guides/with-network-units", currentPage, searchQuery, statusFilter, typeFilter, dateParams],
     queryFn: async () => {
       const params = new URLSearchParams({
         page: currentPage.toString(),
@@ -101,7 +101,7 @@ export default function Guides() {
         ...(typeFilter !== "all" && { type: typeFilter }),
         ...dateParams
       });
-      const response = await fetch(`/api/guides/with-network-units?${params}`);
+      const response = await fetch(`/admin/api/guides/with-network-units?${params}`);
       if (!response.ok) throw new Error('Failed to fetch guides');
       return response.json();
     },
@@ -109,10 +109,10 @@ export default function Guides() {
 
   const deleteGuideMutation = useMutation({
     mutationFn: async (id: string) => {
-      await apiRequest("DELETE", `/api/guides/${id}`);
+      await apiRequest("DELETE", `/admin/api/guides/${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/guides/with-network-units"] });
+      queryClient.invalidateQueries({ queryKey: ["/admin/api/guides/with-network-units"] });
       toast({
         title: "Guia removida",
         description: "Guia foi removida com sucesso.",
@@ -142,7 +142,7 @@ export default function Guides() {
           passwordDialog.setLoading(true);
           
           // Verificar senha
-          const response = await fetch("/api/admin/verify-password", {
+          const response = await fetch("/admin/api/admin/verify-password", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

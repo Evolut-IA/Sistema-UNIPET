@@ -52,7 +52,7 @@ export default function FAQ() {
   const { toast } = useToast();
 
   const { data: faqItems, isLoading } = useQuery({
-    queryKey: ["/api/faq"],
+    queryKey: ["/admin/api/faq"],
   });
 
   const form = useForm({
@@ -67,13 +67,13 @@ export default function FAQ() {
   const createMutation = useMutation({
     mutationFn: async (data: any) => {
       if (editingItem) {
-        await apiRequest("PUT", `/api/faq/${editingItem.id}`, data);
+        await apiRequest("PUT", `/admin/api/faq/${editingItem.id}`, data);
       } else {
-        await apiRequest("POST", "/api/faq", data);
+        await apiRequest("POST", "/admin/api/faq", data);
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/faq"] });
+      queryClient.invalidateQueries({ queryKey: ["/admin/api/faq"] });
       toast({
         title: editingItem ? "Item atualizado" : "Item criado",
         description: editingItem ? "Item foi atualizado com sucesso." : "Item foi criado com sucesso.",
@@ -93,10 +93,10 @@ export default function FAQ() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      await apiRequest("DELETE", `/api/faq/${id}`);
+      await apiRequest("DELETE", `/admin/api/faq/${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/faq"] });
+      queryClient.invalidateQueries({ queryKey: ["/admin/api/faq"] });
       toast({
         title: "Item removido",
         description: "Item foi removido com sucesso.",
@@ -113,10 +113,10 @@ export default function FAQ() {
 
   const toggleMutation = useMutation({
     mutationFn: async ({ id, isActive }: { id: string; isActive: boolean }) => {
-      await apiRequest("PUT", `/api/faq/${id}`, { isActive });
+      await apiRequest("PUT", `/admin/api/faq/${id}`, { isActive });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/faq"] });
+      queryClient.invalidateQueries({ queryKey: ["/admin/api/faq"] });
       toast({
         title: "Status atualizado",
         description: "Status do item foi atualizado.",

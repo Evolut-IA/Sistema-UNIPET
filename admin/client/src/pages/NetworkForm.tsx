@@ -29,13 +29,13 @@ export default function NetworkForm() {
   const isEdit = Boolean(params.id);
 
   const { data: unit, isLoading } = useQuery({
-    queryKey: ["/api/network-units", params.id],
+    queryKey: ["/admin/api/network-units", params.id],
     enabled: isEdit,
   });
 
   // Buscar procedimentos ativos para substituir os serviços
   const { data: procedures } = useQuery({
-    queryKey: ["/api/procedures"],
+    queryKey: ["/admin/api/procedures"],
   });
 
   const form = useForm({
@@ -99,13 +99,13 @@ export default function NetworkForm() {
   const mutation = useMutation({
     mutationFn: async (data: any) => {
       if (isEdit) {
-        await apiRequest("PUT", `/api/network-units/${params.id}`, data);
+        await apiRequest("PUT", `/admin/api/network-units/${params.id}`, data);
       } else {
-        await apiRequest("POST", "/api/network-units", data);
+        await apiRequest("POST", "/admin/api/network-units", data);
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/network-units"] });
+      queryClient.invalidateQueries({ queryKey: ["/admin/api/network-units"] });
       toast({
         title: isEdit ? "Unidade atualizada" : "Unidade cadastrada",
         description: isEdit ? "Unidade foi atualizada com sucesso." : "Unidade foi cadastrada com sucesso.",

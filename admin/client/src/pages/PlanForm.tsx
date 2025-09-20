@@ -27,13 +27,13 @@ export default function PlanForm() {
   const isEdit = Boolean(params.id);
 
   const { data: plan, isLoading } = useQuery({
-    queryKey: ["/api/plans", params.id],
+    queryKey: ["/admin/api/plans", params.id],
     enabled: isEdit,
   });
 
   // Buscar procedimentos vinculados ao plano quando estiver editando
   const { data: planProcedures } = useQuery({
-    queryKey: ["/api/plans", params.id, "procedures"],
+    queryKey: ["/admin/api/plans", params.id, "procedures"],
     enabled: isEdit && !!params.id,
   });
 
@@ -83,13 +83,13 @@ export default function PlanForm() {
   const mutation = useMutation({
     mutationFn: async (data: any) => {
       if (isEdit) {
-        await apiRequest("PUT", `/api/plans/${params.id}`, data);
+        await apiRequest("PUT", `/admin/api/plans/${params.id}`, data);
       } else {
-        await apiRequest("POST", "/api/plans", data);
+        await apiRequest("POST", "/admin/api/plans", data);
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/plans"] });
+      queryClient.invalidateQueries({ queryKey: ["/admin/api/plans"] });
       toast({
         title: isEdit ? "Plano atualizado" : "Plano criado",
         description: isEdit ? "Plano foi atualizado com sucesso." : "Plano foi criado com sucesso.",
@@ -115,15 +115,15 @@ export default function PlanForm() {
 
       let planId;
       if (isEdit) {
-        await apiRequest("PUT", `/api/plans/${params.id}`, planData);
+        await apiRequest("PUT", `/admin/api/plans/${params.id}`, planData);
         planId = params.id;
       } else {
-        const response = await apiRequest("POST", "/api/plans", planData);
+        const response = await apiRequest("POST", "/admin/api/plans", planData);
         planId = response.id;
       }
 
 
-      queryClient.invalidateQueries({ queryKey: ["/api/plans"] });
+      queryClient.invalidateQueries({ queryKey: ["/admin/api/plans"] });
       toast({
         title: isEdit ? "Plano atualizado" : "Plano criado",
         description: isEdit ? "Plano foi atualizado com sucesso." : "Plano foi criado com sucesso.",

@@ -209,7 +209,7 @@ export default function UnitDashboard() {
 
   const checkAuthentication = async () => {
     try {
-      const response = await fetch("/api/unit/verify-session", {
+      const response = await fetch("/admin/api/unit/verify-session", {
         credentials: 'include'
       });
       
@@ -235,7 +235,7 @@ export default function UnitDashboard() {
     setLoginError("");
 
     try {
-      const response = await fetch("/api/unit/login", {
+      const response = await fetch("/admin/api/unit/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: 'include',
@@ -261,7 +261,7 @@ export default function UnitDashboard() {
 
   const handleLogout = async () => {
     try {
-      await fetch("/api/unit/logout", {
+      await fetch("/admin/api/unit/logout", {
         method: "POST",
         credentials: 'include'
       });
@@ -279,7 +279,7 @@ export default function UnitDashboard() {
 
   const loadGuides = async () => {
     try {
-      const response = await fetch(`/api/unit/${authState.unit?.id}/guides`, {
+      const response = await fetch(`/admin/api/unit/${authState.unit?.id}/guides`, {
         credentials: 'include'
       });
 
@@ -297,7 +297,7 @@ export default function UnitDashboard() {
     
     setLoadingClients(true);
     try {
-      const response = await fetch(`/api/unit/${authState.unit.id}/clients`, {
+      const response = await fetch(`/admin/api/unit/${authState.unit.id}/clients`, {
         credentials: 'include'
       });
 
@@ -317,7 +317,7 @@ export default function UnitDashboard() {
     
     setLoadingCoverage(true);
     try {
-      const response = await fetch(`/api/unit/${authState.unit.id}/coverage`, {
+      const response = await fetch(`/admin/api/unit/${authState.unit.id}/coverage`, {
         credentials: 'include'
       });
 
@@ -338,7 +338,7 @@ export default function UnitDashboard() {
     setLoadingCards(true);
     try {
       // Load clients with their pets and plan information
-      const clientsResponse = await fetch(`/api/unit/${authState.unit.id}/clients`, {
+      const clientsResponse = await fetch(`/admin/api/unit/${authState.unit.id}/clients`, {
         credentials: 'include'
       });
 
@@ -348,7 +348,7 @@ export default function UnitDashboard() {
         // For each client, fetch their pets
         const petsWithClientsPromises = clientsData.map(async (client: Client) => {
           try {
-            const petsResponse = await fetch(`/api/clients/${client.id}/pets`, {
+            const petsResponse = await fetch(`/admin/api/clients/${client.id}/pets`, {
               credentials: 'include'
             });
             if (petsResponse.ok) {
@@ -383,7 +383,7 @@ export default function UnitDashboard() {
     if (!authState.unit?.id) return;
     
     try {
-      const response = await fetch(`/api/unit/${authState.unit.id}/clients`, {
+      const response = await fetch(`/admin/api/unit/${authState.unit.id}/clients`, {
         credentials: 'include'
       });
       if (response.ok) {
@@ -404,7 +404,7 @@ export default function UnitDashboard() {
     }
 
     try {
-      const response = await fetch(`/api/clients/${clientId}/pets`, {
+      const response = await fetch(`/admin/api/clients/${clientId}/pets`, {
         credentials: 'include'
       });
       if (response.ok) {
@@ -438,7 +438,7 @@ export default function UnitDashboard() {
           let petWithPlan = { ...selectedPet };
           
           if (selectedPet.planId) {
-            const planResponse = await fetch(`/api/plans/${selectedPet.planId}`, {
+            const planResponse = await fetch(`/admin/api/plans/${selectedPet.planId}`, {
               credentials: 'include'
             });
             if (planResponse.ok) {
@@ -470,7 +470,7 @@ export default function UnitDashboard() {
   const loadActiveProcedures = async () => {
     setLoadingProcedures(true);
     try {
-      const response = await fetch('/api/procedures/active', {
+      const response = await fetch('/admin/api/procedures/active', {
         credentials: 'include'
       });
       if (response.ok) {
@@ -497,7 +497,7 @@ export default function UnitDashboard() {
     setLoadingCalculation(true);
     try {
       // Get coverage data for this unit
-      const coverageResponse = await fetch(`/api/unit/${authState.unit.id}/coverage`, {
+      const coverageResponse = await fetch(`/admin/api/unit/${authState.unit.id}/coverage`, {
         credentials: 'include'
       });
       
@@ -552,7 +552,7 @@ export default function UnitDashboard() {
 
     setSubmittingGuide(true);
     try {
-      const response = await fetch('/api/unit/guides', {
+      const response = await fetch('/admin/api/unit/guides', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -596,7 +596,7 @@ export default function UnitDashboard() {
 
   const updateGuideStatus = async (guideId: string, unitStatus: string) => {
     try {
-      const response = await fetch(`/api/unit/guides/${guideId}/status`, {
+      const response = await fetch(`/admin/api/unit/guides/${guideId}/status`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: 'include',

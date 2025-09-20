@@ -268,7 +268,7 @@ export default function ThemeEditor() {
   const queryClient = useQueryClient();
 
   const { data: themeSettings, isLoading } = useQuery({
-    queryKey: ["/api/settings/theme"],
+    queryKey: ["/admin/api/settings/theme"],
   });
 
   const form = useForm({
@@ -320,10 +320,10 @@ export default function ThemeEditor() {
 
   const saveThemeMutation = useMutation({
     mutationFn: async (data: any) => {
-      await apiRequest("PUT", "/api/settings/theme", data);
+      await apiRequest("PUT", "/admin/api/settings/theme", data);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/settings/theme"] });
+      queryClient.invalidateQueries({ queryKey: ["/admin/api/settings/theme"] });
       toast({
         title: "Tema salvo",
         description: "Configurações do tema foram salvas com sucesso.",

@@ -50,15 +50,15 @@ export default function Plans() {
   const passwordDialog = usePasswordDialog();
 
   const { data: plans, isLoading } = useQuery({
-    queryKey: ["/api/plans"],
+    queryKey: ["/admin/api/plans"],
   });
 
   const deletePlanMutation = useMutation({
     mutationFn: async (id: string) => {
-      await apiRequest("DELETE", `/api/plans/${id}`);
+      await apiRequest("DELETE", `/admin/api/plans/${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/plans"] });
+      queryClient.invalidateQueries({ queryKey: ["/admin/api/plans"] });
       toast({
         title: "Plano removido",
         description: "Plano foi removido com sucesso.",
@@ -75,10 +75,10 @@ export default function Plans() {
 
   const togglePlanMutation = useMutation({
     mutationFn: async ({ id, isActive }: { id: string; isActive: boolean }) => {
-      await apiRequest("PUT", `/api/plans/${id}`, { isActive });
+      await apiRequest("PUT", `/admin/api/plans/${id}`, { isActive });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/plans"] });
+      queryClient.invalidateQueries({ queryKey: ["/admin/api/plans"] });
       toast({
         title: "Status atualizado",
         description: "Status do plano foi atualizado.",
@@ -113,7 +113,7 @@ export default function Plans() {
           passwordDialog.setLoading(true);
           
           // Verificar senha
-          const response = await fetch("/api/admin/verify-password", {
+          const response = await fetch("/admin/api/admin/verify-password", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

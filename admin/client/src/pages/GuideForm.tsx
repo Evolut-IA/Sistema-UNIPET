@@ -31,23 +31,23 @@ export default function GuideForm() {
   const urlPetId = urlParams.get('petId');
 
   const { data: guide, isLoading: guideLoading } = useQuery<any>({
-    queryKey: ["/api/guides", params.id],
+    queryKey: ["/admin/api/guides", params.id],
     enabled: isEdit,
   });
 
 
   const { data: plans } = useQuery({
-    queryKey: ["/api/plans/active"],
+    queryKey: ["/admin/api/plans/active"],
   });
 
   // Fetch client and pet information if IDs are provided
   const { data: client } = useQuery<any>({
-    queryKey: ["/api/clients", urlClientId || guide?.clientId],
+    queryKey: ["/admin/api/clients", urlClientId || guide?.clientId],
     enabled: Boolean(urlClientId || guide?.clientId),
   });
 
   const { data: pet } = useQuery<any>({
-    queryKey: ["/api/pets", urlPetId || guide?.petId],
+    queryKey: ["/admin/api/pets", urlPetId || guide?.petId],
     enabled: Boolean(urlPetId || guide?.petId),
   });
 
@@ -87,13 +87,13 @@ export default function GuideForm() {
   const mutation = useMutation({
     mutationFn: async (data: any) => {
       if (isEdit) {
-        await apiRequest("PUT", `/api/guides/${params.id}`, data);
+        await apiRequest("PUT", `/admin/api/guides/${params.id}`, data);
       } else {
-        await apiRequest("POST", "/api/guides", data);
+        await apiRequest("POST", "/admin/api/guides", data);
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/guides"] });
+      queryClient.invalidateQueries({ queryKey: ["/admin/api/guides"] });
       toast({
         title: isEdit ? "Guia atualizada" : "Guia criada",
         description: isEdit ? "Guia foi atualizada com sucesso." : "Guia foi criada com sucesso.",

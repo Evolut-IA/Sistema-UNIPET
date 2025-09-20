@@ -24,16 +24,16 @@ export default function Settings() {
   const queryClient = useQueryClient();
 
   const { data: siteSettings, isLoading: siteLoading, error: siteError } = useQuery({
-    queryKey: ["/api/settings/site"],
-    queryFn: () => apiRequest("GET", "/api/settings/site"),
+    queryKey: ["/admin/api/settings/site"],
+    queryFn: () => apiRequest("GET", "/admin/api/settings/site"),
     retry: 3,
     retryDelay: 1000,
     staleTime: 5 * 60 * 1000, // 5 minutos
   });
 
   const { data: rulesSettings, isLoading: rulesLoading, error: rulesError } = useQuery({
-    queryKey: ["/api/settings/rules"],
-    queryFn: () => apiRequest("GET", "/api/settings/rules"),
+    queryKey: ["/admin/api/settings/rules"],
+    queryFn: () => apiRequest("GET", "/admin/api/settings/rules"),
     retry: 3,
     retryDelay: 1000,
     staleTime: 5 * 60 * 1000, // 5 minutos
@@ -74,10 +74,10 @@ export default function Settings() {
 
   const saveSiteMutation = useMutation({
     mutationFn: async (data: any) => {
-      await apiRequest("PUT", "/api/settings/site", data);
+      await apiRequest("PUT", "/admin/api/settings/site", data);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/settings/site"] });
+      queryClient.invalidateQueries({ queryKey: ["/admin/api/settings/site"] });
       toast({
         title: "Configurações salvas",
         description: "Configurações do site foram salvas com sucesso.",
@@ -94,10 +94,10 @@ export default function Settings() {
 
   const saveRulesMutation = useMutation({
     mutationFn: async (data: any) => {
-      await apiRequest("PUT", "/api/settings/rules", data);
+      await apiRequest("PUT", "/admin/api/settings/rules", data);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/settings/rules"] });
+      queryClient.invalidateQueries({ queryKey: ["/admin/api/settings/rules"] });
       toast({
         title: "Regras salvas",
         description: "Configurações de regras foram salvas com sucesso.",

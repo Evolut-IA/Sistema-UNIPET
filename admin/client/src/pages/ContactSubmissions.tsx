@@ -71,15 +71,15 @@ export default function ContactSubmissions() {
   const passwordDialog = usePasswordDialog();
 
   const { data: submissions, isLoading } = useQuery({
-    queryKey: ["/api/contact-submissions"],
+    queryKey: ["/admin/api/contact-submissions"],
   });
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      await apiRequest("DELETE", `/api/contact-submissions/${id}`);
+      await apiRequest("DELETE", `/admin/api/contact-submissions/${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/contact-submissions"] });
+      queryClient.invalidateQueries({ queryKey: ["/admin/api/contact-submissions"] });
       toast({
         title: "Formulário removido",
         description: "Formulário foi removido com sucesso.",
@@ -208,7 +208,7 @@ export default function ContactSubmissions() {
           passwordDialog.setLoading(true);
           
           // Verificar senha
-          const response = await fetch("/api/admin/verify-password", {
+          const response = await fetch("/admin/api/admin/verify-password", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

@@ -29,19 +29,19 @@ export default function ClientForm() {
   const isEdit = Boolean(params.id);
 
   const { data: client, isLoading } = useQuery<any>({
-    queryKey: ["/api/clients", params.id],
+    queryKey: ["/admin/api/clients", params.id],
     enabled: isEdit,
   });
 
   const { data: pets = [], isLoading: petsLoading } = useQuery<any[]>({
-    queryKey: ["/api/clients", params.id, "pets"],
+    queryKey: ["/admin/api/clients", params.id, "pets"],
     enabled: isEdit,
   });
 
   const deletePetMutation = useMutation({
-    mutationFn: (petId: string) => apiRequest("DELETE", `/api/pets/${petId}`),
+    mutationFn: (petId: string) => apiRequest("DELETE", `/admin/api/pets/${petId}`),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/clients", params.id, "pets"] });
+      queryClient.invalidateQueries({ queryKey: ["/admin/api/clients", params.id, "pets"] });
       toast({
         title: "Pet excluído",
         description: "O pet foi excluído com sucesso.",
@@ -66,7 +66,7 @@ export default function ClientForm() {
           passwordDialog.setLoading(true);
           
           // Verificar senha
-          const response = await fetch("/api/admin/verify-password", {
+          const response = await fetch("/admin/api/admin/verify-password", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -150,13 +150,13 @@ export default function ClientForm() {
   const mutation = useMutation({
     mutationFn: async (data: any) => {
       if (isEdit) {
-        await apiRequest("PUT", `/api/clients/${params.id}`, data);
+        await apiRequest("PUT", `/admin/api/clients/${params.id}`, data);
       } else {
-        await apiRequest("POST", "/api/clients", data);
+        await apiRequest("POST", "/admin/api/clients", data);
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/clients"] });
+      queryClient.invalidateQueries({ queryKey: ["/admin/api/clients"] });
       toast({
         title: isEdit ? "Cliente atualizado" : "Cliente cadastrado",
         description: isEdit ? "Cliente foi atualizado com sucesso." : "Cliente foi cadastrado com sucesso.",

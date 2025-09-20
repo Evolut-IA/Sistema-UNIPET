@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     // Removendo plugins Replit para evitar problemas de resolução no build
   ],
-  base: process.env.NODE_ENV === 'production' ? '/admin/' : '/',
+  base: '/admin/',
   optimizeDeps: {
     include: ['date-fns', 'date-fns/locale'],
   },

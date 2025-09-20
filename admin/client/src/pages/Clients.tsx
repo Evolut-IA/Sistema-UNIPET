@@ -69,26 +69,26 @@ export default function Clients() {
   const passwordDialog = usePasswordDialog();
 
   const { data: clients = [], isLoading, isError: clientsError } = useQuery<Client[]>({
-    queryKey: ["/api/clients"],
+    queryKey: ["/admin/api/clients"],
   });
 
   // Query para buscar pets do cliente selecionado
   const { data: clientPets = [], isLoading: petsLoading } = useQuery<any[]>({
-    queryKey: ["/api/clients", selectedClient?.id, "pets"],
+    queryKey: ["/admin/api/clients", selectedClient?.id, "pets"],
     enabled: !!selectedClient?.id,
   });
 
   const { data: searchResults = [], isLoading: searchLoading, isError: searchError } = useQuery<Client[]>({
-    queryKey: ["/api/clients/search", searchQuery],
+    queryKey: ["/admin/api/clients/search", searchQuery],
     enabled: searchQuery.length > 2,
   });
 
   const deleteClientMutation = useMutation({
     mutationFn: async (id: string) => {
-      await apiRequest("DELETE", `/api/clients/${id}`);
+      await apiRequest("DELETE", `/admin/api/clients/${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/clients"] });
+      queryClient.invalidateQueries({ queryKey: ["/admin/api/clients"] });
       toast({
         title: "Cliente removido",
         description: "Cliente foi removido com sucesso.",
@@ -120,7 +120,7 @@ export default function Clients() {
           passwordDialog.setLoading(true);
           
           // Verificar senha
-          const response = await fetch("/api/admin/verify-password", {
+          const response = await fetch("/admin/api/admin/verify-password", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

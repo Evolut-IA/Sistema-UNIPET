@@ -109,13 +109,13 @@ function App() {
       try {
         // Prefetch settings data with longer cache time
         await queryClient.prefetchQuery({
-          queryKey: ['/api/settings/theme'],
+          queryKey: ['/admin/api/settings/theme'],
           ...queryOptions.settings
         });
         
         // Prefetch dashboard data
         await queryClient.prefetchQuery({
-          queryKey: ['/api/dashboard/all'],
+          queryKey: ['/admin/api/dashboard/all'],
           ...queryOptions.dashboard
         });
       } catch (error) {

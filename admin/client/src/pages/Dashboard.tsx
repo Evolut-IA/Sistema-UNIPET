@@ -73,7 +73,7 @@ export default function Dashboard() {
     isLoading: isLoadingDashboard, 
     isError: isDashboardError 
   } = useQuery({
-    queryKey: ["/api/dashboard/all"],
+    queryKey: ["/admin/api/dashboard/all"],
     ...queryOptions.dashboard
   });
 

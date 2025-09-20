@@ -70,27 +70,27 @@ export default function Procedures() {
   const { toast } = useToast();
 
   const { data: procedures, isLoading } = useQuery({
-    queryKey: ["/api/procedures"],
+    queryKey: ["/admin/api/procedures"],
   });
 
   const { data: plans } = useQuery({
-    queryKey: ["/api/plans/active"],
+    queryKey: ["/admin/api/plans/active"],
   });
 
   // Buscar configurações de regras para cálculo automático de porcentagem
   const { data: rulesSettings } = useQuery({
-    queryKey: ["/api/settings/rules"],
+    queryKey: ["/admin/api/settings/rules"],
   });
 
   // Buscar planos do procedimento quando estiver editando
   const { data: existingProcedurePlans } = useQuery({
-    queryKey: ["/api/procedures", editingItem?.id, "plans"],
+    queryKey: ["/admin/api/procedures", editingItem?.id, "plans"],
     enabled: !!editingItem?.id,
   });
 
   // Buscar planos do procedimento quando estiver visualizando
   const { data: viewingProcedurePlans } = useQuery({
-    queryKey: ["/api/procedures", viewingItem?.id, "plans"],
+    queryKey: ["/admin/api/procedures", viewingItem?.id, "plans"],
     enabled: !!viewingItem?.id,
   });
 
@@ -411,9 +411,9 @@ export default function Procedures() {
       let procedureResponse;
       
       if (editingItem) {
-        procedureResponse = await apiRequest("PUT", `/api/procedures/${editingItem.id}`, data);
+        procedureResponse = await apiRequest("PUT", `/admin/api/procedures/${editingItem.id}`, data);
       } else {
-        procedureResponse = await apiRequest("POST", "/api/procedures", data);
+        procedureResponse = await apiRequest("POST", "/admin/api/procedures", data);
       }
 
       // Salvar relacionamentos com planos usando endpoint atômico
@@ -466,16 +466,16 @@ export default function Procedures() {
       
       // Usar endpoint atômico para atualizar relacionamentos
       // Isso substitui DELETE + POST em uma única transação
-      await apiRequest("PUT", `/api/procedures/${procedureId}/plans`, { procedurePlans });
+      await apiRequest("PUT", `/admin/api/procedures/${procedureId}/plans`, { procedurePlans });
 
       return procedureResponse;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/procedures"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/procedures", editingItem?.id, "plans"] });
+      queryClient.invalidateQueries({ queryKey: ["/admin/api/procedures"] });
+      queryClient.invalidateQueries({ queryKey: ["/admin/api/procedures", editingItem?.id, "plans"] });
       // Invalidar cache dos planos também para atualizar a página de edição de planos
-      queryClient.invalidateQueries({ queryKey: ["/api/plans"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/plans", "active"] });
+      queryClient.invalidateQueries({ queryKey: ["/admin/api/plans"] });
+      queryClient.invalidateQueries({ queryKey: ["/admin/api/plans", "active"] });
       toast({
         title: editingItem ? "Procedimento atualizado" : "Procedimento criado",
         description: editingItem ? "Procedimento foi atualizado com sucesso." : "Procedimento foi criado com sucesso.",
@@ -494,10 +494,10 @@ export default function Procedures() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      await apiRequest("DELETE", `/api/procedures/${id}`);
+      await apiRequest("DELETE", `/admin/api/procedures/${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/procedures"] });
+      queryClient.invalidateQueries({ queryKey: ["/admin/api/procedures"] });
       toast({
         title: "Procedimento removido",
         description: "Procedimento foi removido com sucesso.",
@@ -514,10 +514,10 @@ export default function Procedures() {
 
   const toggleMutation = useMutation({
     mutationFn: async ({ id, isActive }: { id: string; isActive: boolean }) => {
-      await apiRequest("PUT", `/api/procedures/${id}`, { isActive });
+      await apiRequest("PUT", `/admin/api/procedures/${id}`, { isActive });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/procedures"] });
+      queryClient.invalidateQueries({ queryKey: ["/admin/api/procedures"] });
       toast({
         title: "Status atualizado",
         description: "Status do procedimento foi atualizado.",
