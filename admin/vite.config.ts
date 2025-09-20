@@ -25,12 +25,12 @@ export default defineConfig({
     alias: {
       "@": path.resolve(path.dirname(fileURLToPath(import.meta.url)), "client", "src"),
       "@shared": path.resolve(path.dirname(fileURLToPath(import.meta.url)), "shared"),
-      "@assets": path.resolve(path.dirname(fileURLToPath(import.meta.url)), "attached_assets"),
+      "@assets": path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "attached_assets"),
     },
   },
   root: path.resolve(path.dirname(fileURLToPath(import.meta.url)), "client"),
   build: {
-    outDir: path.resolve(path.dirname(fileURLToPath(import.meta.url)), "dist/public"),
+    outDir: path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "dist/public"),
     emptyOutDir: true,
   },
   server: {
