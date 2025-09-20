@@ -36,6 +36,7 @@ type PlanDistribution = {
   planName: string;
   petCount: number;
   percentage: number;
+  isActive: boolean;
 };
 
 export default function Dashboard() {
@@ -439,37 +440,33 @@ export default function Dashboard() {
 
                 {/* Distribuição por plano */}
                 {planDistribution.map((plan, index: number) => {
-                  // Cores uniformes usando primary para todos os planos
-                  const planColors = {
-                    'BASIC': { bg: 'bg-primary', text: 'text-primary', light: 'bg-primary/20' },
-                    'COMFORT': { bg: 'bg-primary', text: 'text-primary', light: 'bg-primary/20' },
-                    'PLATINUM': { bg: 'bg-primary', text: 'text-primary', light: 'bg-primary/20' },
-                    'INFINITY': { bg: 'bg-primary', text: 'text-primary', light: 'bg-primary/20' },
-                    'PREMIUM': { bg: 'bg-primary', text: 'text-primary', light: 'bg-primary/20' }
-                  };
-
-                  const colors = planColors[plan.planName as keyof typeof planColors] ||
-                    { bg: 'bg-muted-foreground', text: 'text-muted-foreground', light: 'bg-muted' };
+                  // Cores baseadas no status do plano (ativo/inativo)
+                  const statusColor = plan.isActive ? 'var(--chart-4)' : 'var(--chart-5)';
+                  const textColorClass = plan.isActive ? 'text-green-600' : 'text-red-600';
+                  const bgColorClass = plan.isActive ? 'bg-green-600' : 'bg-red-600';
 
                   return (
                     <div key={plan.planId} className="space-y-2">
                       <div className="flex justify-between items-center">
                         <div className="flex items-center gap-2">
-                          <div className={`w-3 h-3 rounded-full ${colors.bg}`}></div>
+                          <div 
+                            className="w-3 h-3 rounded-full" 
+                            style={{ backgroundColor: statusColor }}
+                          ></div>
                           <span className="text-sm font-medium text-foreground">{plan.planName}</span>
                         </div>
                         <div className="flex items-center gap-3">
                           <span className="text-xs text-muted-foreground">
                             {plan.petCount} pet{plan.petCount !== 1 ? 's' : ''}
                           </span>
-                          <span className={`text-sm font-bold ${colors.text} min-w-[3rem] text-right`}>
+                          <span className={`text-sm font-bold ${textColorClass} min-w-[3rem] text-right`}>
                             {plan.percentage}%
                           </span>
                         </div>
                       </div>
                       <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
                         <div
-                          className={`${colors.bg} h-3 rounded-full transition-all duration-500 ease-in-out`}
+                          className={`${bgColorClass} h-3 rounded-full transition-all duration-500 ease-in-out`}
                           style={{ width: `${plan.percentage}%` }}
                           role="progressbar"
                           aria-valuenow={plan.percentage}
@@ -494,21 +491,16 @@ export default function Dashboard() {
 
                 {/* Mostrar planos mesmo sem pets */}
                 {planDistribution.map((plan) => {
-                  const planColors = {
-                    'BASIC': { bg: 'bg-primary', text: 'text-primary', light: 'bg-primary/20' },
-                    'COMFORT': { bg: 'bg-primary', text: 'text-primary', light: 'bg-primary/20' },
-                    'PLATINUM': { bg: 'bg-primary', text: 'text-primary', light: 'bg-primary/20' },
-                    'INFINITY': { bg: 'bg-primary', text: 'text-primary', light: 'bg-primary/20' },
-                    'PREMIUM': { bg: 'bg-primary', text: 'text-primary', light: 'bg-primary/20' }
-                  };
-
-                  const colors = planColors[plan.planName as keyof typeof planColors] ||
-                    { bg: 'bg-muted-foreground', text: 'text-muted-foreground', light: 'bg-muted' };
+                  // Cores baseadas no status do plano (ativo/inativo)
+                  const statusColor = plan.isActive ? 'var(--chart-4)' : 'var(--chart-5)';
 
                   return (
                     <div key={plan.planId} className="flex items-center justify-between p-2 bg-muted/50 rounded-lg">
                       <div className="flex items-center gap-2">
-                        <div className={`w-3 h-3 rounded-full ${colors.bg} opacity-50`}></div>
+                        <div 
+                          className="w-3 h-3 rounded-full opacity-50" 
+                          style={{ backgroundColor: statusColor }}
+                        ></div>
                         <span className="text-sm text-muted-foreground">{plan.planName}</span>
                       </div>
                       <span className="text-xs text-muted-foreground">0 pets (0%)</span>
