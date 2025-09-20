@@ -73,13 +73,8 @@ export default function Dashboard() {
     isLoading: isLoadingDashboard, 
     isError: isDashboardError 
   } = useQuery({
-    queryKey: ["/admin/api/dashboard/all", dateParams],
-    queryFn: async () => {
-      const params = new URLSearchParams(dateParams);
-      const response = await fetch(`/admin/api/dashboard/all?${params}`);
-      if (!response.ok) throw new Error('Failed to fetch dashboard data');
-      return response.json();
-    },
+    queryKey: ["/api/dashboard/all"],
+    ...queryOptions.dashboard
   });
 
   // Extract data from the aggregated response
