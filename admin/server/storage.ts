@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as schema from "@shared/schema";
-import { eq, like, ilike, or, desc, count, sum, sql as sqlTemplate, gte, lt, and, inArray, sql, lte } from "drizzle-orm";
+import { eq, like, ilike, or, desc, count, sum, sql as drizzleSql, gte, lt, and, inArray, lte } from "drizzle-orm";
 import type {
   User, InsertUser,
   Client, InsertClient,
@@ -27,7 +27,7 @@ const databaseUrl = process.env.DATABASE_URL || "postgresql://postgres:password@
 console.log("Database URL configured:", databaseUrl ? "Yes" : "No");
 
 // Enhanced connection configuration with better error handling
-const sql = postgres(databaseUrl, { 
+const connection = postgres(databaseUrl, { 
   ssl: databaseUrl.includes('sslmode=require') ? { rejectUnauthorized: false } : false,
   max: 10,
   idle_timeout: 20,
@@ -36,18 +36,18 @@ const sql = postgres(databaseUrl, {
   onparameter: (key, value) => console.log(`PostgreSQL parameter: ${key} = ${value}`),
   debug: process.env.NODE_ENV === 'development' ? true : false
 });
-const db = drizzle(sql, { schema });
+const db = drizzle(connection, { schema });
 
 // Test database connection and create tables if needed
 async function testConnection() {
   try {
     console.log("Testing database connection...");
     console.log("Attempting to connect to:", databaseUrl.replace(/\/\/.*@/, '//***:***@')); // Hide credentials in logs
-    await sql`SELECT 1`;
+    await connection`SELECT 1`;
     console.log("Database connection successful!");
     
     // Check if site_settings table exists
-    const tableExists = await sql`
+    const tableExists = await connection`
       SELECT EXISTS (
         SELECT FROM information_schema.tables 
         WHERE table_schema = 'public' 
@@ -59,7 +59,7 @@ async function testConnection() {
     
     if (!tableExists[0].exists) {
       console.log("Creating site_settings table...");
-      await sql`
+      await connection`
         CREATE TABLE site_settings (
           id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
           whatsapp TEXT,
@@ -92,7 +92,7 @@ async function testConnection() {
       ];
       
       for (const column of requiredColumns) {
-        const columnExists = await sql`
+        const columnExists = await connection`
           SELECT EXISTS (
             SELECT FROM information_schema.columns 
             WHERE table_schema = 'public' 
@@ -107,9 +107,9 @@ async function testConnection() {
           console.log(`Adding ${column} column to site_settings table...`);
           
           if (column === 'cores') {
-            await sql`ALTER TABLE site_settings ADD COLUMN cores JSONB DEFAULT '{}'::jsonb;`;
+            await connection`ALTER TABLE site_settings ADD COLUMN cores JSONB DEFAULT '{}'::jsonb;`;
           } else {
-            await sql`ALTER TABLE site_settings ADD COLUMN ${sql(column)} TEXT;`;
+            await connection`ALTER TABLE site_settings ADD COLUMN ${connection(column)} TEXT;`;
           }
           
           console.log(`${column} column added successfully!`);
@@ -1014,7 +1014,7 @@ export class DatabaseStorage implements IStorage {
   async getThemeSettings(): Promise<ThemeSettings | undefined> {
     try {
       // Direct SQL query - more reliable
-      const result = await sql`SELECT * FROM theme_settings ORDER BY id LIMIT 1`;
+      const result = await connection`SELECT * FROM theme_settings ORDER BY id LIMIT 1`;
       if (result.length > 0) {
         const row = result[0];
         return {

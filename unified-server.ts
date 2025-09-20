@@ -11,6 +11,9 @@ import { registerRoutes as registerUnipetRoutes } from "./server/routes.js";
 import { autoConfig } from "./server/config.js";
 import { initializeDatabase, closeDatabase } from "./server/db.js";
 
+// Import ADMIN modules
+import { registerRoutes as registerAdminRoutes } from "./admin/server/routes.js";
+
 const app = express();
 
 // Trust proxy para produção
@@ -103,7 +106,29 @@ async function initializeUnifiedServer(): Promise<void> {
     const unipetServer = await registerUnipetRoutes(app);
     console.log('✅ Rotas do UNIPET registradas');
 
-    // 3. Configurar proxy para admin apenas em desenvolvimento
+    // 3. Registrar rotas do ADMIN em /admin/api/* (produção e desenvolvimento)
+    console.log('🔧 Registrando rotas do ADMIN (/admin/api/*)...');
+    if (process.env.NODE_ENV === 'production') {
+      // Em produção, montar Admin APIs diretamente
+      const adminApp = express();
+      
+      // Configure admin-specific middleware
+      adminApp.use(express.json({ limit: '50mb' }));
+      adminApp.use(express.urlencoded({ extended: false, limit: '50mb' }));
+      adminApp.use(cookieParser());
+      
+      // Register admin routes on sub-app (routes will be /api/* on the sub-app)
+      await registerAdminRoutes(adminApp);
+      
+      // Mount admin sub-app under /admin path (so /admin/api/* routes are accessible)
+      app.use('/admin', adminApp);
+      
+      console.log('✅ Admin APIs montadas em produção em /admin/api/*');
+    } else {
+      console.log('🔧 Admin APIs em desenvolvimento: será usado proxy em /admin/api/*');
+    }
+
+    // 4. Configurar proxy para admin apenas em desenvolvimento
     if (process.env.NODE_ENV !== 'production') {
       console.log('🔧 Configurando proxy para sistema Admin (desenvolvimento)...');
       setupAdminProxy();

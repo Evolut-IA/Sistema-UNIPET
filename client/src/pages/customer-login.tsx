@@ -5,7 +5,7 @@ import confetti from "canvas-confetti";
 import { Lock, User } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { clientLoginSchema } from "../../../shared/schema";
+import { clientLoginSchema } from "@shared/schema";
 import type { z } from "zod";
 // Fixed import path and schema validation
 import Header from "@/components/layout/header";

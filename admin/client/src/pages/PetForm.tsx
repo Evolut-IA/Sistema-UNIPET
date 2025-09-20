@@ -40,9 +40,7 @@ export default function PetForm() {
   });
 
   const form = useForm({
-    resolver: zodResolver(insertPetSchema.extend({
-      birthDate: insertPetSchema.shape.birthDate.optional(),
-    })),
+    resolver: zodResolver(insertPetSchema),
     defaultValues: {
       clientId: clientId || "",
       name: "",

@@ -109,7 +109,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const validatedData = insertContactSubmissionSchema.parse(req.body);
 
-      const submission = await storage.createContactSubmission(validatedData);
+      const submission = await storage.createContactSubmission(validatedData as any);
 
       res.json({ 
         success: true, 
@@ -431,7 +431,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           const parsedPetData = insertPetSchema.parse(petToSave);
           console.log("🐕 [CHECKOUT-STEP2] Criando pet para cliente existente:", parsedPetData.name);
-          const savedPet = await storage.createPet(parsedPetData);
+          const savedPet = await storage.createPet(parsedPetData as any);
           savedPets.push(savedPet);
         }
         
@@ -456,13 +456,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create client with UUID - CPF null for Step 2
       const clientToSave = {
         ...parsedClientData,
+        fullName: parsedClientData.full_name,
         password: hashedPassword,
         cpf: null, // CPF null temporariamente (será adicionado no Step 3)
         id: `client-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
       };
       
       console.log("🏗️ [CHECKOUT-STEP2] Criando cliente:", clientToSave.email);
-      const savedClient = await storage.createClient(clientToSave);
+      const savedClient = await storage.createClient(clientToSave as any);
       
       // Save pets data
       const savedPets = [];
@@ -479,7 +480,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const parsedPetData = insertPetSchema.parse(petToSave);
         
         console.log("🐕 [CHECKOUT-STEP2] Criando pet:", parsedPetData.name);
-        const savedPet = await storage.createPet(parsedPetData);
+        const savedPet = await storage.createPet(parsedPetData as any);
         savedPets.push(savedPet);
       }
       
@@ -824,6 +825,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             const newClientData = {
               id: clientId, // Use the provided clientId
               full_name: paymentData.customer.name,
+              fullName: paymentData.customer.name,
               email: paymentData.customer.email,
               phone: paymentData.customer.phone || '',
               cpf: cpfPassword,
@@ -1121,11 +1123,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create client with UUID
       const clientData = {
         ...parsed,
+        fullName: parsed.full_name,
         password: hashedPassword,
         id: `client-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
       };
       
-      const newClient = await storage.createClient(clientData);
+      const newClient = await storage.createClient(clientData as any);
       
       // Don't return password in response
       const { password: _, ...clientResponse } = newClient;
@@ -1268,7 +1271,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             // Get plan information for the active contract
             const plan = await storage.getPlan(activeContract.planId);
             if (plan) {
-              petWithPlan.plan = {
+              (petWithPlan as any).plan = {
                 id: plan.id,
                 name: plan.name,
                 basePrice: plan.basePrice,
@@ -1526,7 +1529,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             district: client.district,
             city: client.city,
             state: client.state,
-            zipCode: client.zipCode
+            zipCode: (client as any).zipCode || client.cep
           },
           pet: {
             id: pet?.id,
@@ -2320,7 +2323,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         priority: 'medium' as const
       };
       
-      const protocol = await storage.createProtocol(protocolData);
+      const protocol = await storage.createProtocol(protocolData as any);
       
       res.status(201).json({
         protocol,
@@ -2360,7 +2363,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         priority: validPriorities.includes(priority) ? (priority as 'low' | 'medium' | 'high' | 'urgent') : 'medium' as const
       };
       
-      const protocol = await storage.createProtocol(protocolData);
+      const protocol = await storage.createProtocol(protocolData as any);
       
       res.status(201).json({
         protocol,

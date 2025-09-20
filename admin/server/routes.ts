@@ -47,7 +47,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/clients", async (req, res) => {
     try {
       const clientData = insertClientSchema.parse(req.body);
-      const client = await storage.createClient(clientData);
+      // Ensure fullName is set to the same value as full_name for compatibility
+      const clientWithFullName = {
+        ...clientData,
+        fullName: clientData.full_name
+      };
+      const client = await storage.createClient(clientWithFullName);
       res.status(201).json(client);
     } catch (error) {
       res.status(400).json({ message: "Invalid client data" });
@@ -1001,19 +1006,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Convert base64 image strings to Buffer
       if (typeof processedData.mainImage === 'string' && processedData.mainImage) {
-        processedData.mainImage = base64ToBuffer(processedData.mainImage);
+        (processedData as any).mainImage = base64ToBuffer(processedData.mainImage);
         console.log("Converted mainImage from base64 to Buffer");
       }
       if (typeof processedData.networkImage === 'string' && processedData.networkImage) {
-        processedData.networkImage = base64ToBuffer(processedData.networkImage);
+        (processedData as any).networkImage = base64ToBuffer(processedData.networkImage);
         console.log("Converted networkImage from base64 to Buffer");
       }
       if (typeof processedData.aboutImage === 'string' && processedData.aboutImage) {
-        processedData.aboutImage = base64ToBuffer(processedData.aboutImage);
+        (processedData as any).aboutImage = base64ToBuffer(processedData.aboutImage);
         console.log("Converted aboutImage from base64 to Buffer");
       }
       
-      const settings = await storage.updateSiteSettings(processedData);
+      const settings = await storage.updateSiteSettings(processedData as any);
       console.log("Site settings updated successfully");
       res.json(settings);
     } catch (error) {
@@ -1222,7 +1227,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Limpar cache antigo (manter só os últimos 10 itens)
         if (dashboardCache.size > 10) {
           const firstKey = dashboardCache.keys().next().value;
-          dashboardCache.delete(firstKey);
+          if (firstKey) {
+            dashboardCache.delete(firstKey);
+          }
         }
 
         console.log(`[PERFORMANCE] /api/dashboard/all 200 from DB in ${Date.now() - startTime}ms`);

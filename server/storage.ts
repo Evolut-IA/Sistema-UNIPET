@@ -242,6 +242,7 @@ export class InMemoryStorage implements IStorage {
       mainImageUrl: null,
       networkImageUrl: null,
       aboutImageUrl: null,
+      cores: {},
       createdAt: new Date(),
       updatedAt: new Date()
     };
@@ -377,7 +378,10 @@ export class InMemoryStorage implements IStorage {
       createdAt: new Date(),
       whatsapp: insertUnit.whatsapp,
       googleMapsUrl: insertUnit.googleMapsUrl,
-      imageData: insertUnit.imageData
+      imageData: insertUnit.imageData,
+      urlSlug: insertUnit.urlSlug || null,
+      login: insertUnit.login || null,
+      senhaHash: insertUnit.senhaHash || null
     };
     this.networkUnits.push(newUnit);
     return newUnit;
@@ -512,6 +516,7 @@ export class InMemoryStorage implements IStorage {
     const newClient: Client = {
       id: `client-${Date.now()}`,
       full_name: client.full_name,
+      fullName: client.full_name,
       email: client.email,
       phone: client.phone,
       password: client.password,
@@ -1471,7 +1476,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getActiveGuides(): Promise<Guide[]> {
-    return await db.select().from(guides).where(eq(guides.isActive, true));
+    return await db.select().from(guides).where(eq(guides.status, "open"));
   }
 
   async deleteGuide(id: string): Promise<boolean> {

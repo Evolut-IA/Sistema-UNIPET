@@ -60,7 +60,7 @@ export const queryClient = new QueryClient({
       refetchInterval: false,
       refetchOnWindowFocus: false,
       staleTime: 5 * 60 * 1000, // 5 minutos para dados gerais
-      cacheTime: 10 * 60 * 1000, // 10 minutos
+      gcTime: 10 * 60 * 1000, // 10 minutos
       retry: false,
     },
     mutations: {
@@ -74,16 +74,16 @@ export const queryOptions = {
   // Settings change rarely - cache longer
   settings: {
     staleTime: 10 * 60 * 1000, // 10 minutos
-    cacheTime: 30 * 60 * 1000, // 30 minutos
+    gcTime: 30 * 60 * 1000, // 30 minutos
   },
   // Dashboard data changes more frequently but still cacheable
   dashboard: {
     staleTime: 2 * 60 * 1000, // 2 minutos
-    cacheTime: 5 * 60 * 1000, // 5 minutos
+    gcTime: 5 * 60 * 1000, // 5 minutos
   },
   // Real-time data - minimal caching
   realtime: {
     staleTime: 0,
-    cacheTime: 1 * 60 * 1000, // 1 minuto
+    gcTime: 1 * 60 * 1000, // 1 minuto
   }
 };
