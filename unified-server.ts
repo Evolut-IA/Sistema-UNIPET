@@ -128,14 +128,29 @@ async function initializeUnifiedServer(): Promise<void> {
       console.log('🔧 Admin APIs em desenvolvimento: será usado proxy em /admin/api/*');
     }
 
-    // 4. Configurar proxy para admin apenas em desenvolvimento
-    if (process.env.NODE_ENV !== 'production') {
-      console.log('🔧 Configurando proxy para sistema Admin (desenvolvimento)...');
-      setupAdminProxy();
-      console.log('✅ Proxy do Admin configurado para desenvolvimento');
-    } else {
-      console.log('🏭 Modo produção: Admin será servido como arquivos estáticos');
-    }
+    // 4. Configurar arquivos estáticos para Admin (temporariamente em desenvolvimento)
+    console.log('📁 Configurando Admin como arquivos estáticos (buildado)...');
+    const adminBuildPath = path.join(process.cwd(), 'admin', 'dist');
+    app.use('/admin', express.static(adminBuildPath, {
+      maxAge: process.env.NODE_ENV === 'production' ? '1y' : '0',
+      etag: true,
+      lastModified: true,
+      setHeaders: (res, filePath) => {
+        // Disable cache in development for easier debugging
+        if (process.env.NODE_ENV !== 'production') {
+          res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+          res.setHeader('Pragma', 'no-cache');
+          res.setHeader('Expires', '0');
+        }
+      }
+    }));
+
+    // Admin SPA routing
+    app.get('/admin/*', (req, res) => {
+      res.sendFile(path.join(adminBuildPath, 'index.html'));
+    });
+    
+    console.log('✅ Admin configurado para servir arquivos buildados');
 
     // 4. Configurar serving de arquivos estáticos
     console.log('📁 Configurando arquivos estáticos...');
