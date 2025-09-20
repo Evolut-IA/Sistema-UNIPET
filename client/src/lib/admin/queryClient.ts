@@ -3,7 +3,10 @@ import { QueryClient, QueryFunction } from "@tanstack/react-query";
 // Utility function to ensure API URLs are correctly prefixed for admin
 function resolveApiUrl(url: string): string {
   if (url.startsWith('/admin/api/')) {
-    return `/admin${url}`;
+    return url; // URL já tem o prefixo correto
+  }
+  if (url.startsWith('/api/')) {
+    return `/admin${url}`; // Adiciona prefixo admin se necessário
   }
   return url;
 }

@@ -31,26 +31,8 @@ import PageLayout from "@/components/layout/page-layout";
 
 // Admin imports
 import AdminDashboard from "@/pages/admin/Dashboard";
-import AdminClients from "@/pages/admin/Clients";
-import AdminClientForm from "@/pages/admin/ClientForm";
-import AdminPetForm from "@/pages/admin/PetForm";
-import AdminGuides from "@/pages/admin/Guides";
-import AdminGuideForm from "@/pages/admin/GuideForm";
-import AdminPlans from "@/pages/admin/Plans";
-import AdminPlanForm from "@/pages/admin/PlanForm";
-import AdminNetwork from "@/pages/admin/Network";
-import AdminNetworkForm from "@/pages/admin/NetworkForm";
-import AdminFAQ from "@/pages/admin/FAQ";
-import AdminProcedures from "@/pages/admin/Procedures";
-import AdminContactSubmissions from "@/pages/admin/ContactSubmissions";
-import AdminSettings from "@/pages/admin/Settings";
-import AdminAdministration from "@/pages/admin/Administration";
-import AdminUnitDashboard from "@/pages/admin/UnitDashboard";
 import AdminLayout from "@/components/admin/Layout";
-import AdminNotFound from "@/pages/admin/not-found";
-import AdminUnitRoute from "@/components/admin/UnitRoute";
 import { queryClient as adminQueryClient } from "./lib/admin/queryClient";
-import "@/styles/admin.css";
 
 // Componente de loading global com fallback robusto
 function GlobalLoading() {
@@ -69,49 +51,13 @@ function AdminRouter() {
   return (
     <WouterRouter base="/admin">
       <QueryClientProvider client={adminQueryClient}>
-        <TooltipProvider>
-          <Switch>
-            {/* Dashboard route */}
-            <Route path="/" component={() => <AdminLayout><AdminDashboard /></AdminLayout>} />
-            
-            {/* Clients routes */}
-            <Route path="/clientes" component={() => <AdminLayout><AdminClients /></AdminLayout>} />
-            <Route path="/clientes/novo" component={() => <AdminLayout><AdminClientForm /></AdminLayout>} />
-            <Route path="/clientes/:id/editar" component={() => <AdminLayout><AdminClientForm /></AdminLayout>} />
-            
-            {/* Pets routes */}
-            <Route path="/clientes/:clientId/pets/novo" component={() => <AdminLayout><AdminPetForm /></AdminLayout>} />
-            <Route path="/pets/:id/editar" component={() => <AdminLayout><AdminPetForm /></AdminLayout>} />
-            
-            {/* Guides routes */}
-            <Route path="/guias" component={() => <AdminLayout><AdminGuides /></AdminLayout>} />
-            <Route path="/guias/novo" component={() => <AdminLayout><AdminGuideForm /></AdminLayout>} />
-            <Route path="/guias/:id/editar" component={() => <AdminLayout><AdminGuideForm /></AdminLayout>} />
-            
-            {/* Plans routes */}
-            <Route path="/planos" component={() => <AdminLayout><AdminPlans /></AdminLayout>} />
-            <Route path="/planos/novo" component={() => <AdminLayout><AdminPlanForm /></AdminLayout>} />
-            <Route path="/planos/:id/editar" component={() => <AdminLayout><AdminPlanForm /></AdminLayout>} />
-            
-            {/* Network routes */}
-            <Route path="/rede" component={() => <AdminLayout><AdminNetwork /></AdminLayout>} />
-            <Route path="/rede/novo" component={() => <AdminLayout><AdminNetworkForm /></AdminLayout>} />
-            <Route path="/rede/:id/editar" component={() => <AdminLayout><AdminNetworkForm /></AdminLayout>} />
-            
-            {/* Other admin routes */}
-            <Route path="/procedimentos" component={() => <AdminLayout><AdminProcedures /></AdminLayout>} />
-            <Route path="/perguntas-frequentes" component={() => <AdminLayout><AdminFAQ /></AdminLayout>} />
-            <Route path="/formularios" component={() => <AdminLayout><AdminContactSubmissions /></AdminLayout>} />
-            <Route path="/configuracoes" component={() => <AdminLayout><AdminSettings /></AdminLayout>} />
-            <Route path="/administracao" component={() => <AdminLayout><AdminAdministration /></AdminLayout>} />
-            
-            {/* Unit route - moved to /admin/:slug */}
-            <Route path="/:slug" component={() => <AdminLayout><AdminUnitRoute /></AdminLayout>} />
-            
-            {/* Admin fallback */}
-            <Route component={() => <AdminLayout><AdminNotFound /></AdminLayout>} />
-          </Switch>
-        </TooltipProvider>
+        <Switch>
+          {/* Dashboard route */}
+          <Route path="/" component={() => <AdminLayout><AdminDashboard /></AdminLayout>} />
+          
+          {/* Fallback */}
+          <Route component={() => <AdminLayout><div>Admin Page Not Found</div></AdminLayout>} />
+        </Switch>
       </QueryClientProvider>
     </WouterRouter>
   );
