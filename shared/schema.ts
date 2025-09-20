@@ -62,56 +62,6 @@ export const rulesSettings = pgTable("rules_settings", {
   updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
-// Theme settings table (Admin only)
-export const themeSettings = pgTable("theme_settings", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  // Foundation
-  backgroundColor: text("background_color").default("#faf9f7"),
-  textColor: text("text_color").default("#1a1a1a"),
-  mutedBackgroundColor: text("muted_background_color").default("#e0e0e0"),
-  mutedTextColor: text("muted_text_color").default("#1a1a1a"),
-  
-  // Typography
-  sansSerifFont: text("sans_serif_font").default("DM Sans"),
-  serifFont: text("serif_font").default("DM Sans"),
-  monospaceFont: text("monospace_font").default("DM Sans"),
-  
-  // Shape & Spacing
-  borderRadius: text("border_radius").default("0.5"),
-  
-  // Actions
-  primaryBackground: text("primary_background").default("#277677"),
-  primaryText: text("primary_text").default("#ffffff"),
-  secondaryBackground: text("secondary_background").default("#0f1419"),
-  secondaryText: text("secondary_text").default("#ffffff"),
-  accentBackground: text("accent_background").default("#e3ecf6"),
-  accentText: text("accent_text").default("#277677"),
-  destructiveBackground: text("destructive_background").default("#277677"),
-  destructiveText: text("destructive_text").default("#ffffff"),
-  
-  // Forms
-  inputBackground: text("input_background").default("#f7f9fa"),
-  inputText: text("input_text").default("#1a1a1a"),
-  placeholderText: text("placeholder_text").default("#6b7280"),
-  inputBorder: text("input_border").default("#e1eaef"),
-  focusBorder: text("focus_border").default("#277677"),
-  
-  // Containers
-  cardBackground: text("card_background").default("#ffffff"),
-  cardText: text("card_text").default("#1a1a1a"),
-  popoverBackground: text("popover_background").default("#ffffff"),
-  popoverText: text("popover_text").default("#1a1a1a"),
-  
-  // Charts
-  chart1Color: text("chart1_color").default("#277677"),
-  chart2Color: text("chart2_color").default("#277677"),
-  chart3Color: text("chart3_color").default("#277677"),
-  chart4Color: text("chart4_color").default("#277677"),
-  chart5Color: text("chart5_color").default("#277677"),
-  
-  // Status Colors
-  warningColor: text("warning_color").default("#f59e0b"),
-});
 
 // === SHARED CORE TABLES (with unified fields) ===
 
@@ -821,7 +771,6 @@ export const insertProcedurePlanSchema = createInsertSchema(procedurePlans).omit
 export const insertRulesSettingsSchema = createInsertSchema(rulesSettings).omit({ id: true, createdAt: true, updatedAt: true }).extend({
   fixedPercentage: z.number().min(0, "Porcentagem deve ser pelo menos 0").max(100, "Porcentagem deve ser no máximo 100").optional()
 });
-export const insertThemeSettingsSchema = createInsertSchema(themeSettings).omit({ id: true });
 export const insertGuideSchema = createInsertSchema(guides).omit({ id: true, createdAt: true, updatedAt: true });
 
 // Credential update schema for network units
@@ -892,8 +841,6 @@ export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 export type RulesSettings = typeof rulesSettings.$inferSelect;
 export type InsertRulesSettings = typeof rulesSettings.$inferInsert;
-export type ThemeSettings = typeof themeSettings.$inferSelect;
-export type InsertThemeSettings = typeof themeSettings.$inferInsert;
 
 // Extended types for Administration
 export type NetworkUnitWithCredentialStatus = Omit<NetworkUnit, 'senhaHash'> & {

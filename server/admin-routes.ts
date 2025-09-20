@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import path from "path";
 import { storage } from "./storage";
-import { insertClientSchema, insertPetSchema, insertPlanSchema, insertNetworkUnitSchema, insertFaqItemSchema, insertContactSubmissionSchema, insertSiteSettingsSchema, insertRulesSettingsSchema, insertThemeSettingsSchema, insertGuideSchema, insertUserSchema, updateNetworkUnitCredentialsSchema, insertProcedureSchema, insertProcedurePlanSchema, type InsertUser } from "@shared/schema";
+import { insertClientSchema, insertPetSchema, insertPlanSchema, insertNetworkUnitSchema, insertFaqItemSchema, insertContactSubmissionSchema, insertSiteSettingsSchema, insertRulesSettingsSchema, insertGuideSchema, insertUserSchema, updateNetworkUnitCredentialsSchema, insertProcedureSchema, insertProcedurePlanSchema, type InsertUser } from "@shared/schema";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { generateUniqueSlug } from "./utils";
@@ -1076,73 +1076,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
 
-  // Cache para theme settings (settings mudam raramente)
-  let themeCache: any = null;
-  let themeCacheTime = 0;
-  let themeCacheEtag = '';
-  const THEME_CACHE_TTL = 5 * 60 * 1000; // 5 minutos
-
-  // Theme settings routes  
-  app.get("/api/settings/theme", async (req, res) => {
-    const startTime = Date.now();
-    try {
-      const now = Date.now();
-      const isFromCache = themeCache && (now - themeCacheTime) < THEME_CACHE_TTL;
-      
-      // Check if client has cached version
-      const clientEtag = req.headers['if-none-match'];
-      if (clientEtag && clientEtag === themeCacheEtag && isFromCache) {
-        console.log(`[PERFORMANCE] /api/settings/theme 304 from cache in ${Date.now() - startTime}ms`);
-        res.status(304).end();
-        return;
-      }
-
-      let result;
-      if (isFromCache) {
-        result = themeCache;
-        console.log(`[PERFORMANCE] /api/settings/theme 200 from memory cache in ${Date.now() - startTime}ms`);
-      } else {
-        result = await storage.getThemeSettings() || {};
-        
-        // Atualizar cache
-        themeCache = result;
-        themeCacheTime = now;
-        themeCacheEtag = `"${now}-${JSON.stringify(result).length}"`;
-        console.log(`[PERFORMANCE] /api/settings/theme 200 from DB in ${Date.now() - startTime}ms`);
-      }
-      
-      // Set proper cache headers
-      res.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=60');
-      res.set('ETag', themeCacheEtag);
-      res.json(result);
-    } catch (error) {
-      console.error("Theme settings API error:", error);
-      console.log(`[PERFORMANCE] /api/settings/theme ERROR in ${Date.now() - startTime}ms`);
-      res.json({}); // Return empty object instead of 500 to allow fallback
-    }
-  });
-
-
-  app.put("/api/settings/theme", async (req, res) => {
-    const startTime = Date.now();
-    try {
-      console.log("Theme settings request body:", JSON.stringify(req.body, null, 2));
-      const settingsData = insertThemeSettingsSchema.parse(req.body);
-      const settings = await storage.updateThemeSettings(settingsData);
-      
-      // Invalidar cache completamente
-      themeCache = null;
-      themeCacheTime = 0;
-      themeCacheEtag = '';
-      
-      console.log(`[PERFORMANCE] PUT /api/settings/theme completed in ${Date.now() - startTime}ms`);
-      res.json(settings);
-    } catch (error) {
-      console.error("Theme validation error:", error);
-      console.log(`[PERFORMANCE] PUT /api/settings/theme ERROR in ${Date.now() - startTime}ms`);
-      res.status(400).json({ message: "Invalid theme settings data" });
-    }
-  });
 
   // Dashboard routes
   app.get("/api/dashboard/stats", async (req, res) => {

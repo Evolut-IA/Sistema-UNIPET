@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,13 +8,11 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { InputMasked } from "@/components/ui/input-masked";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/admin/queryClient";
 import { insertSiteSettingsSchema, insertRulesSettingsSchema } from "@shared/schema";
-import { Settings as SettingsIcon, Globe, Save, Loader2, FileText, Contact, Share2, Type, Image } from "lucide-react";
+import { Globe, Save, FileText, Share, Type, Image } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ImageUpload } from "@/components/ui/image-upload";
 
@@ -228,7 +226,7 @@ export default function Settings() {
                   {/* Contact Information */}
                   <AccordionItem value="contact" data-testid="accordion-contact">
                     <AccordionTrigger className="flex items-center space-x-2">
-                      <Contact className="h-4 w-4" />
+                      <Globe className="h-4 w-4" />
                       <div>
                         <span>Informações de Contato</span>
                       </div>
@@ -342,7 +340,7 @@ export default function Settings() {
                   {/* Social Media */}
                   <AccordionItem value="social" data-testid="accordion-social">
                     <AccordionTrigger className="flex items-center space-x-2">
-                      <Share2 className="h-4 w-4" />
+                      <Share className="h-4 w-4" />
                       <div>
                         <span>Redes Sociais</span>
                       </div>
