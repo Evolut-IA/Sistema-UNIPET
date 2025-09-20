@@ -1,4 +1,4 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, Router as WouterRouter } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
@@ -48,6 +48,8 @@ import AdminAdministration from "@/pages/admin/Administration";
 import AdminUnitDashboard from "@/pages/admin/UnitDashboard";
 import AdminLayout from "@/components/admin/Layout";
 import AdminNotFound from "@/pages/admin/not-found";
+import AdminUnitRoute from "@/components/admin/UnitRoute";
+import { queryClient as adminQueryClient } from "./lib/admin/queryClient";
 import "@/styles/admin.css";
 
 // Componente de loading global com fallback robusto
@@ -62,12 +64,68 @@ function GlobalLoading() {
   );
 }
 
+// AdminRouter - handles all admin routes with base="/admin"
+function AdminRouter() {
+  return (
+    <WouterRouter base="/admin">
+      <QueryClientProvider client={adminQueryClient}>
+        <TooltipProvider>
+          <Switch>
+            {/* Dashboard route */}
+            <Route path="/" component={() => <AdminLayout><AdminDashboard /></AdminLayout>} />
+            
+            {/* Clients routes */}
+            <Route path="/clientes" component={() => <AdminLayout><AdminClients /></AdminLayout>} />
+            <Route path="/clientes/novo" component={() => <AdminLayout><AdminClientForm /></AdminLayout>} />
+            <Route path="/clientes/:id/editar" component={() => <AdminLayout><AdminClientForm /></AdminLayout>} />
+            
+            {/* Pets routes */}
+            <Route path="/clientes/:clientId/pets/novo" component={() => <AdminLayout><AdminPetForm /></AdminLayout>} />
+            <Route path="/pets/:id/editar" component={() => <AdminLayout><AdminPetForm /></AdminLayout>} />
+            
+            {/* Guides routes */}
+            <Route path="/guias" component={() => <AdminLayout><AdminGuides /></AdminLayout>} />
+            <Route path="/guias/novo" component={() => <AdminLayout><AdminGuideForm /></AdminLayout>} />
+            <Route path="/guias/:id/editar" component={() => <AdminLayout><AdminGuideForm /></AdminLayout>} />
+            
+            {/* Plans routes */}
+            <Route path="/planos" component={() => <AdminLayout><AdminPlans /></AdminLayout>} />
+            <Route path="/planos/novo" component={() => <AdminLayout><AdminPlanForm /></AdminLayout>} />
+            <Route path="/planos/:id/editar" component={() => <AdminLayout><AdminPlanForm /></AdminLayout>} />
+            
+            {/* Network routes */}
+            <Route path="/rede" component={() => <AdminLayout><AdminNetwork /></AdminLayout>} />
+            <Route path="/rede/novo" component={() => <AdminLayout><AdminNetworkForm /></AdminLayout>} />
+            <Route path="/rede/:id/editar" component={() => <AdminLayout><AdminNetworkForm /></AdminLayout>} />
+            
+            {/* Other admin routes */}
+            <Route path="/procedimentos" component={() => <AdminLayout><AdminProcedures /></AdminLayout>} />
+            <Route path="/perguntas-frequentes" component={() => <AdminLayout><AdminFAQ /></AdminLayout>} />
+            <Route path="/formularios" component={() => <AdminLayout><AdminContactSubmissions /></AdminLayout>} />
+            <Route path="/configuracoes" component={() => <AdminLayout><AdminSettings /></AdminLayout>} />
+            <Route path="/administracao" component={() => <AdminLayout><AdminAdministration /></AdminLayout>} />
+            
+            {/* Unit route - moved to /admin/:slug */}
+            <Route path="/:slug" component={() => <AdminLayout><AdminUnitRoute /></AdminLayout>} />
+            
+            {/* Admin fallback */}
+            <Route component={() => <AdminLayout><AdminNotFound /></AdminLayout>} />
+          </Switch>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </WouterRouter>
+  );
+}
+
 // Componente de roteamento principal
 function Router() {
   return (
     <>
       <ScrollToTop />
       <Switch>
+        
+        {/* Admin Routes - all routes starting with /admin */}
+        <Route path="/admin" nest component={AdminRouter} />
         
         {/* Checkout Routes (standalone) */}
         <Route path="/checkout/1" component={CheckoutPage} />

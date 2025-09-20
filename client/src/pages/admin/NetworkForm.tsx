@@ -11,7 +11,7 @@ import { InputMasked } from "@/components/ui/input-masked";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest } from "@/lib/admin/queryClient";
 import { insertNetworkUnitSchema } from "@shared/schema";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { ImageUpload } from "@/components/ui/image-upload";

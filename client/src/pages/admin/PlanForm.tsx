@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest } from "@/lib/admin/queryClient";
 import { insertPlanSchema } from "@shared/schema";
 import { ArrowLeft } from "lucide-react";
 import { PLAN_TYPES, PROCEDURE_TYPE_LABELS } from "@/lib/constants";

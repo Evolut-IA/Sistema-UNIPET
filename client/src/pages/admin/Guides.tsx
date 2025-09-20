@@ -26,7 +26,7 @@ import { Plus, Search, Edit, Trash2, FileText, Eye, Copy, Columns3 as Columns, C
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { CalendarDate } from "@internationalized/date";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest } from "@/lib/admin/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useConfirmDialog } from "@/hooks/use-confirm-dialog";

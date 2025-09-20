@@ -12,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest } from "@/lib/admin/queryClient";
 import { insertGuideSchema } from "@shared/schema";
 import { ArrowLeft } from "lucide-react";
 import { GUIDE_TYPES } from "@/lib/constants";

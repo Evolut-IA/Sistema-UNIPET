@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import UnitDashboard from "@/pages/UnitDashboard";
-import NotFound from "@/pages/not-found";
+import UnitDashboard from "@/pages/admin/UnitDashboard";
+import NotFound from "@/pages/admin/not-found";
 
 // Component to handle dynamic unit routes
 export default function UnitRoute() {

@@ -9,7 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { InputMasked } from "@/components/ui/input-masked";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest } from "@/lib/admin/queryClient";
 import { insertClientSchema } from "@shared/schema";
 import { ArrowLeft, Plus, Edit, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
