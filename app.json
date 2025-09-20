@@ -28,7 +28,7 @@
     "DATABASE_URL": {
       "description": "PostgreSQL database URL"
     },
-    "SENHA_ADMIN": {
+    "SENHA": {
       "description": "Admin password for system access"
     }
   },

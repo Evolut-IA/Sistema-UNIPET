@@ -33,10 +33,10 @@ if (!process.env.SESSION_SECRET) {
   console.log('⚠️  SESSION_SECRET gerado automaticamente para esta sessão');
 }
 
-// Gerar SENHA_ADMIN padrão se não estiver definido
-if (!process.env.SENHA_ADMIN) {
-  process.env.SENHA_ADMIN = 'admin123';
-  console.log('⚠️  SENHA_ADMIN padrão definida como "admin123"');
+// Gerar SENHA padrão se não estiver definido
+if (!process.env.SENHA) {
+  process.env.SENHA = 'admin123';
+  console.log('⚠️  SENHA padrão definida como "admin123"');
 }
 
 console.log('✅ Variáveis de ambiente configuradas');

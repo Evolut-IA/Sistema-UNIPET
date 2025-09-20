@@ -12,7 +12,7 @@ Este projeto foi configurado para deploy no EasyPanel utilizando Heroku Buildpac
 ### Variáveis de Ambiente Necessárias
 - `DATABASE_URL`: URL de conexão com o banco de dados PostgreSQL
 - `SESSION_SECRET`: Chave secreta para sessões (gerada automaticamente se não fornecida)
-- `SENHA_ADMIN`: Senha do administrador (padrão: "admin123" se não fornecida)
+- `SENHA`: Senha do administrador (padrão: "admin123" se não fornecida)
 
 ### Arquivos de Configuração
 - `Procfile`: Define o comando de inicialização (`web: npm start`)

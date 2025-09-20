@@ -1249,7 +1249,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/admin/verify-password", async (req, res) => {
     try {
       const { password } = req.body;
-      const adminPassword = process.env.SENHA_ADMIN;
+      const adminPassword = process.env.SENHA;
       
       if (!adminPassword) {
         return res.status(500).json({ message: "Senha do administrador não configurada" });

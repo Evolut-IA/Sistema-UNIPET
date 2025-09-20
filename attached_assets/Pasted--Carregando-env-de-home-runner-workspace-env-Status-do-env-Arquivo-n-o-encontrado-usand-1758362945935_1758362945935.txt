@@ -1,0 +1,116 @@
+🔍 Carregando .env de: /home/runner/workspace/.env
+📄 Status do .env: Arquivo não encontrado (usando variáveis de ambiente do sistema)
+🔍 Variáveis de ambiente carregadas:
+   LOGIN: ✅ Presente
+   SENHA: ✅ Presente
+   DATABASE_URL: ✅ Presente
+   NODE_ENV: undefined
+⚠️ CIELO_WEBHOOK_SECRET não configurado - webhook validation desabilitada (desenvolvimento apenas)
+✅ Todas as configurações obrigatórias estão presentes
+🔒 Validação de segurança concluída com sucesso
+
+🚀 CONFIGURAÇÃO AUTOMÁTICA APLICADA:
+=====================================
+🌍 Ambiente: development
+🔌 Porta: 3000
+🏠 Host: 0.0.0.0
+💾 Armazenamento: local
+🔑 Sessão: Configurada
+📞 Contato: Configurado via ambiente/banco
+=====================================
+
+🔗 Conectando ao Supabase Storage: https://tkzzxsbwkgcdmcreducm.supabase.co
+Database URL configured: Yes
+Testing database connection...
+Attempting to connect to: postgresql://***:***@aws-1-sa-east-1.pooler.supabase.com:6543/postgres
+🚀 Inicializando servidor unificado UNIPET + Admin...
+🔌 Inicializando banco de dados...
+🔌 Inicializando conexão com banco de dados...
+PostgreSQL parameter: DateStyle = ISO, MDY
+PostgreSQL parameter: IntervalStyle = postgres
+PostgreSQL parameter: TimeZone = UTC
+PostgreSQL parameter: application_name = Supavisor
+PostgreSQL parameter: client_encoding = UTF8
+PostgreSQL parameter: default_transaction_read_only = off
+PostgreSQL parameter: in_hot_standby = off
+PostgreSQL parameter: integer_datetimes = on
+PostgreSQL parameter: is_superuser = off
+PostgreSQL parameter: scram_iterations = 4096
+PostgreSQL parameter: server_encoding = UTF8
+PostgreSQL parameter: server_version = 17.4
+PostgreSQL parameter: session_authorization = postgres
+PostgreSQL parameter: standard_conforming_strings = on
+✅ Conexão com banco de dados estabelecida com sucesso
+📊 Pool configurado com 20 conexões máximas
+✅ Banco de dados inicializado com sucesso
+🛣️ Registrando rotas do UNIPET (/api/*)...
+📁 [STATIC-FILES] Static file serving disabled - using Supabase Storage
+✅ Rotas do UNIPET registradas
+🔧 Registrando rotas do ADMIN (/admin/api/*)...
+🔧 Admin APIs em desenvolvimento: será usado proxy em /admin/api/*
+📁 Configurando Admin como arquivos estáticos (buildado)...
+✅ Admin configurado para servir arquivos buildados
+📁 Configurando arquivos estáticos...
+✅ Arquivos estáticos configurados (UNIPET sempre servido)
+🛡️ Configurando tratamento de erros...
+
+🎉 SERVIDOR UNIFICADO INICIADO COM SUCESSO!
+==========================================
+🌐 URL: http://0.0.0.0:5000
+🏠 Host: 0.0.0.0 (Aceita conexões externas)
+🌍 Ambiente: development
+📁 Diretório: /home/runner/workspace
+🔌 Banco: Conectado e saudável
+
+📋 SERVIÇOS DISPONÍVEIS:
+  🦄 UNIPET:
+    • Frontend: / (raiz)
+    • APIs: /api/*
+    • Health: /api/health
+  🔧 ADMIN:
+    • Frontend: /admin
+    • APIs: /admin/api/*
+    • Health: /admin/health
+
+🔒 FUNCIONALIDADES:
+  • Roteamento unificado
+  • Banco de dados compartilhado
+  • Sessions e cookies configurados
+  • Tratamento de erros global
+  • Admin com Hot Reload (Vite)
+  • UNIPET frontend externo (recomendado)
+==========================================
+
+Database connection successful!
+Site settings table exists: true
+whatsapp column exists: true
+email column exists: true
+phone column exists: true
+instagram_url column exists: true
+facebook_url column exists: true
+linkedin_url column exists: true
+youtube_url column exists: true
+cnpj column exists: true
+business_hours column exists: true
+our_story column exists: true
+Query: select "id", "whatsapp", "email", "phone", "instagram_url", "facebook_url", "linkedin_url", "youtube_url", "cnpj", "business_hours", "our_story", "created_at", "updated_at", "privacy_policy", "terms_of_use", "address", "main_image", "network_image", "about_image", "main_image_url", "network_image_url", "about_image_url", "cores" from "site_settings" limit $1 -- params: [1]
+Query: select "id", "name", "price", "description", "features", "image", "button_text", "plan_type", "is_active", "display_order", "created_at", "billing_frequency", "base_price", "installment_price", "installment_count", "per_pet_billing", "pet_discounts", "payment_description", "available_payment_methods", "available_billing_options", "annual_price", "annual_installment_price", "annual_installment_count" from "plans" where "plans"."is_active" = $1 order by "plans"."display_order" asc -- params: [true]
+privacy_policy column exists: true
+Query: select "id", "question", "answer", "display_order", "is_active", "created_at" from "faq_items" where "faq_items"."is_active" = $1 order by "faq_items"."display_order" asc -- params: [true]
+Query: select "id", "welcome_message", "placeholder_text", "chat_title", "button_icon", "bot_icon", "user_icon", "bot_icon_url", "user_icon_url", "chat_position", "chat_size", "is_enabled", "created_at", "updated_at" from "chat_settings" limit $1 -- params: [1]
+terms_of_use column exists: true
+GET /api/site-settings 200 in 273ms :: {"id":"19c61b78-d8a3-4b26-a289-7b71e8785…
+address column exists: true
+main_image column exists: true
+network_image column exists: true
+GET /api/plans 304 in 665ms :: [{"id":"ec994283-76de-4605-afa3-0670a8a0a475","n…
+about_image column exists: true
+GET /api/faq 304 in 677ms :: [{"id":"5cb21830-8d80-4ad0-9ef3-7117393dfb53","que…
+cores column exists: true
+✅ [CHAT] Chat settings retrieved: {
+  hasBotIcon: true,
+  hasUserIcon: true,
+  botIconUrl: <Buffer 89 50 4e 47 0d 0a 1a 0a 00 00 00 0d 49 48 44 52 00 00 00 40 00 00 00 2c 08 03 00 00 00 e2 81 4e cd 00 00 03 00 50 4c 54 45 fd fd fd f5 f4 f5 50 93 31 ... 3453 more bytes>,
+  userIconUrl: <Buffer 89 50 4e 47 0d 0a 1a 0a 00 00 00 0d 49 48 44 52 00 00 00 40 00 00 00 2c 08 03 00 00 00 e2 81 4e cd 00 00 03 00 50 4c 54 45 fd fd fd f5 f4 f5 50 93 31 ... 3453 more bytes>
+}
+GET /api/chat/settings 304 in 805ms :: {"id":"77d0d663-ecc3-48a8-8100-c6c6a39cd…
