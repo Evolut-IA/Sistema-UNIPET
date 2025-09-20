@@ -3,7 +3,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/admin/ui/card";
 import { Button } from "@/components/admin/ui/button";
 import { Input } from "@/components/admin/ui/input";
 import { InputMasked } from "@/components/admin/ui/input-masked";
@@ -31,8 +30,8 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useColumnPreferences } from "@/hooks/admin/use-column-preferences";
 import { apiRequest } from "@/lib/admin/queryClient";
-import { insertUserSchema, type User as UserType, type NetworkUnitWithCredentialStatus } from "@shared/schema";
-import { UserCheck, Plus, Search, Edit, Trash2, Eye, EyeOff, Columns, ChevronLeft, ChevronRight, Globe, User } from "lucide-react";
+import { type User as UserType, type NetworkUnitWithCredentialStatus } from "@shared/schema";
+import { UserCheck, Plus, Search, Edit, Trash2, Eye, EyeOff, ChevronLeft, ChevronRight, Globe, User } from "lucide-react";
 
 const AVAILABLE_PERMISSIONS = [
   { id: "clients", label: "Clientes", description: "Acesso à seção de clientes" },

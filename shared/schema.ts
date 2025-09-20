@@ -613,6 +613,15 @@ export const clientLoginSchema = z.object({
   password: z.string().min(1, "Senha é obrigatória"),
 });
 
+export const updateUserSchema = z.object({
+  username: z.string().optional(),
+  password: z.string().optional(),
+  email: z.string().email().optional(),
+  role: z.string().optional(),
+  permissions: z.array(z.string()).optional(),
+  isActive: z.boolean().optional()
+});
+
 // === NEW TABLE VALIDATION SCHEMAS ===
 
 export const insertPetSchema = z.object({
@@ -879,7 +888,7 @@ export type InsertRulesSettings = typeof rulesSettings.$inferInsert;
 export type ThemeSettings = typeof themeSettings.$inferSelect;
 export type InsertThemeSettings = typeof themeSettings.$inferInsert;
 
-// Safe type for network units with credential status (excludes password hash)
+// Extended types for Administration
 export type NetworkUnitWithCredentialStatus = Omit<NetworkUnit, 'senhaHash'> & {
   hasCredentials: boolean;
 };
