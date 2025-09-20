@@ -894,9 +894,9 @@ export class DatabaseStorage implements IStorage {
         createdAt: schema.siteSettings.createdAt,
         updatedAt: schema.siteSettings.updatedAt,
         // Exclude image columns for performance - they are served via /api/images/site/:type
-        mainImage: sqlTemplate`NULL`.as('mainImage'),
-        networkImage: sqlTemplate`NULL`.as('networkImage'),
-        aboutImage: sqlTemplate`NULL`.as('aboutImage'),
+        mainImage: drizzleSql`NULL`.as('mainImage'),
+        networkImage: drizzleSql`NULL`.as('networkImage'),
+        aboutImage: drizzleSql`NULL`.as('aboutImage'),
       }).from(schema.siteSettings).limit(1);
       
       console.log(`Site settings fetched without large binary images for performance`);
@@ -1541,7 +1541,7 @@ export class DatabaseStorage implements IStorage {
     
     // Build date filter conditions for pets
     const petDateConditions = [
-      sqlTemplate`${schema.pets.planId} IS NOT NULL`
+      drizzleSql`${schema.pets.planId} IS NOT NULL`
     ];
     
     if (startDate) {
@@ -1648,7 +1648,7 @@ export class DatabaseStorage implements IStorage {
     
     // Build date filter conditions for pets
     const petDateConditions = [
-      sqlTemplate`${schema.pets.planId} IS NOT NULL`
+      drizzleSql`${schema.pets.planId} IS NOT NULL`
     ];
     
     if (startDate) {
