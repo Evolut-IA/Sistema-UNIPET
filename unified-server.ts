@@ -326,7 +326,7 @@ function setupAdminProxy(): void {
     changeOrigin: true,
     ws: true, // Enable WebSocket proxying for HMR
     pathRewrite: {
-      '^/admin': '', // Remove /admin prefix when forwarding to admin server
+      '^/admin/api': '/api', // Rewrite /admin/api/* to /api/*
     },
     // Enhanced logging for debugging
     
@@ -389,8 +389,8 @@ function setupAdminProxy(): void {
     }
   });
 
-  // Apply proxy middleware to /admin routes
-  app.use('/admin', adminProxy);
+  // Apply proxy middleware only to /admin/api/* routes
+  app.use('/admin/api', adminProxy);
 }
 
 // Inicializar servidor unificado
