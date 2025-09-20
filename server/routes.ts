@@ -163,13 +163,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         networkUnits, 
         clients,
         contactSubmissions,
-        plans
+        plans,
+        allPets
       ] = await Promise.all([
         storage.getAllGuides(),
         storage.getNetworkUnits(), 
         storage.getAllClients(),
         storage.getAllContactSubmissions(),
-        storage.getAllPlans()
+        storage.getAllPlans(),
+        storage.getAllPets()
       ]);
 
       console.log("📊 [DASHBOARD] Data fetched successfully:", {
@@ -177,13 +179,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         networkUnits: networkUnits.length,
         clients: clients.length,
         contactSubmissions: contactSubmissions.length,
-        plans: plans.length
+        plans: plans.length,
+        pets: allPets.length
       });
 
       // Calculate basic statistics
       const stats = {
         activeClients: clients.length,
-        registeredPets: 0, // TODO: Add getAllPets if available
+        registeredPets: allPets.length, // Now using real pets data
         openGuides: allGuides.filter(g => g.status === 'open').length,
         totalGuides: allGuides.length,
         totalPlans: plans.length,
@@ -191,26 +194,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
         inactivePlans: plans.filter(p => !p.isActive).length,
         activeNetwork: networkUnits.filter(u => u.isActive).length,
         totalProcedures: 0, // TODO: Add if getAllProcedures method exists
-        monthlyRevenue: 0, // TODO: Calculate from contracts if needed
-        totalRevenue: 0
+        monthlyRevenue: allPets.length * 0, // Will be calculated after planRevenue
+        totalRevenue: allPets.length * 0 // Will be calculated after planRevenue
       };
 
       // Calculate plan distribution
-      const planDistribution = plans.map(plan => ({
-        planId: plan.id,
-        planName: plan.name,
-        petCount: 0, // TODO: Calculate when pets are available
-        percentage: 0
-      }));
+      const totalPets = allPets.length;
+      const planDistribution = plans.map(plan => {
+        const petCount = allPets.filter(pet => pet.planId === plan.id).length;
+        const percentage = totalPets > 0 ? Math.round((petCount / totalPets) * 100) : 0;
+        return {
+          planId: plan.id,
+          planName: plan.name,
+          petCount,
+          percentage
+        };
+      });
 
       // Calculate plan revenue (basic calculation using base price)
-      const planRevenue = plans.map(plan => ({
-        planId: plan.id,
-        planName: plan.name,
-        petCount: 0, // TODO: Calculate when pets are available
-        monthlyPrice: parseFloat(plan.basePrice || '0'),
-        totalRevenue: 0
-      }));
+      const planRevenue = plans.map(plan => {
+        const petCount = allPets.filter(pet => pet.planId === plan.id).length;
+        const monthlyPrice = parseFloat(plan.basePrice || '0');
+        const totalRevenue = petCount * monthlyPrice;
+        return {
+          planId: plan.id,
+          planName: plan.name,
+          petCount,
+          monthlyPrice,
+          totalRevenue
+        };
+      });
+
+      // Calculate total revenue from all plans
+      const totalMonthlyRevenue = planRevenue.reduce((sum, plan) => sum + plan.totalRevenue, 0);
+      
+      // Update stats with calculated revenue
+      stats.monthlyRevenue = totalMonthlyRevenue;
+      stats.totalRevenue = totalMonthlyRevenue; // For now, using monthly as total
 
       const dashboardData = {
         stats,
@@ -266,7 +286,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/admin/api/clients/:id/pets", async (req, res) => {
     try {
-      const pets = await storage.getPetsByClient(req.params.id);
+      const pets = await storage.getPetsByClientId(req.params.id);
       res.json(pets);
     } catch (error) {
       console.error("❌ [ADMIN] Error fetching client pets:", error);
@@ -374,7 +394,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/admin/api/network-units/:id", async (req, res) => {
     try {
-      const unit = await storage.getNetworkUnitById(req.params.id);
+      const unit = await storage.getNetworkUnit(req.params.id);
       if (!unit) {
         return res.status(404).json({ error: "Unidade não encontrada" });
       }
