@@ -11,8 +11,8 @@ import { registerRoutes as registerUnipetRoutes } from "./server/routes.js";
 import { autoConfig } from "./server/config.js";
 import { initializeDatabase, closeDatabase } from "./server/db.js";
 
-// Import ADMIN modules
-import { registerRoutes as registerAdminRoutes } from "./admin/server/routes.js";
+// Import ADMIN modules - using existing server routes with admin prefix
+// Note: Admin now integrated into main client app, APIs mounted at /admin/api/*
 
 const app = express();
 
@@ -106,64 +106,28 @@ async function initializeUnifiedServer(): Promise<void> {
     const unipetServer = await registerUnipetRoutes(app);
     console.log('✅ Rotas do UNIPET registradas');
 
-    // 3. Registrar rotas do ADMIN em /admin/api/* (produção e desenvolvimento)
+    // 3. Registrar rotas do ADMIN em /admin/api/* (agora integrado)
     console.log('🔧 Registrando rotas do ADMIN (/admin/api/*)...');
-    if (process.env.NODE_ENV === 'production') {
-      // Em produção, montar Admin APIs diretamente
-      const adminApp = express();
-      
-      // Configure admin-specific middleware
-      adminApp.use(express.json({ limit: '50mb' }));
-      adminApp.use(express.urlencoded({ extended: false, limit: '50mb' }));
-      adminApp.use(cookieParser());
-      
-      // Register admin routes on sub-app (routes will be /api/* on the sub-app)
-      await registerAdminRoutes(adminApp);
-      
-      // Mount admin sub-app under /admin path (so /admin/api/* routes are accessible)
-      app.use('/admin', adminApp);
-      
-      console.log('✅ Admin APIs montadas em produção em /admin/api/*');
-    } else {
-      console.log('🔧 Admin APIs em desenvolvimento: montando diretamente em /admin/api/*');
-      // Em desenvolvimento, montar Admin APIs diretamente também (igual produção)
-      const adminApp = express();
-      
-      // Configure admin-specific middleware
-      adminApp.use(express.json({ limit: '50mb' }));
-      adminApp.use(express.urlencoded({ extended: false, limit: '50mb' }));
-      adminApp.use(cookieParser());
-      
-      // Register admin routes on sub-app (routes will be /api/* on the sub-app)
-      await registerAdminRoutes(adminApp);
-      
-      // Mount admin sub-app under /admin path (so /admin/api/* routes are accessible)
-      app.use('/admin', adminApp);
-    }
-
-    // 4. Configurar arquivos estáticos para Admin (temporariamente em desenvolvimento)
-    console.log('📁 Configurando Admin como arquivos estáticos (buildado)...');
-    const adminBuildPath = path.join(process.cwd(), 'admin', 'dist');
-    app.use('/admin', express.static(adminBuildPath, {
-      maxAge: process.env.NODE_ENV === 'production' ? '1y' : '0',
-      etag: true,
-      lastModified: true,
-      setHeaders: (res, filePath) => {
-        // Disable cache in development for easier debugging
-        if (process.env.NODE_ENV !== 'production') {
-          res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-          res.setHeader('Pragma', 'no-cache');
-          res.setHeader('Expires', '0');
-        }
-      }
-    }));
-
-    // Admin SPA routing
-    app.get('/admin/*', (req, res) => {
-      res.sendFile(path.join(adminBuildPath, 'index.html'));
-    });
+    console.log('📝 Admin agora integrado no projeto principal - usando server/routes.js existente');
     
-    console.log('✅ Admin configurado para servir arquivos buildados');
+    // Create admin sub-app and mount existing routes at /admin/api/*
+    const adminApp = express();
+    
+    // Configure admin-specific middleware
+    adminApp.use(express.json({ limit: '50mb' }));
+    adminApp.use(express.urlencoded({ extended: false, limit: '50mb' }));
+    adminApp.use(cookieParser());
+    
+    // Re-use the existing UNIPET routes but mount them under /admin/api
+    await registerUnipetRoutes(adminApp);
+    
+    // Mount admin sub-app under /admin path (so /admin/api/* routes are accessible)
+    app.use('/admin', adminApp);
+    
+    console.log('✅ Admin APIs montadas usando rotas existentes em /admin/api/*');
+
+    // 4. Admin agora integrado no frontend principal - não precisa de arquivos separados
+    console.log('📁 Admin integrado no cliente principal - usando dist/client para todas as rotas');
 
     // 4. Configurar serving de arquivos estáticos
     console.log('📁 Configurando arquivos estáticos...');
@@ -189,24 +153,11 @@ async function initializeUnifiedServer(): Promise<void> {
       }
     }));
 
-    // Serve Admin frontend under /admin (in production only)
-    if (process.env.NODE_ENV === 'production') {
-      const adminBuildPath = path.join(process.cwd(), 'admin', 'dist');
-      app.use('/admin', express.static(adminBuildPath, {
-        maxAge: '1y',
-        etag: true,
-        lastModified: true
-      }));
+    // Admin now integrated into main client - no separate static files needed
 
-      // Admin SPA routing
-      app.get('/admin/*', (req, res) => {
-        res.sendFile(path.join(adminBuildPath, 'index.html'));
-      });
-    }
-
-    // UNIPET SPA routing (catch-all for non-API, non-admin routes)
+    // SPA routing (catch-all for non-API routes, including /admin/*)
     app.get('*', (req, res) => {
-      if (!req.path.startsWith('/api') && !req.path.startsWith('/admin')) {
+      if (!req.path.startsWith('/api') && !req.path.startsWith('/admin/api')) {
         res.sendFile(path.join(unipetBuildPath, 'index.html'));
       }
     });

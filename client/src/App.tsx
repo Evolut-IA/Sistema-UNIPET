@@ -125,7 +125,7 @@ function Router() {
       <Switch>
         
         {/* Admin Routes - all routes starting with /admin */}
-        <Route path="/admin" nest component={AdminRouter} />
+        <Route path="/admin/:rest*" component={AdminRouter} />
         
         {/* Checkout Routes (standalone) */}
         <Route path="/checkout/1" component={CheckoutPage} />
