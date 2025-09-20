@@ -3,10 +3,10 @@
 
 export const DEFAULT_THEME = {
   // Foundation
-  backgroundColor: "#e0e0e0",
+  backgroundColor: "#faf9f7",
   textColor: "#1a1a1a",
-  mutedBackgroundColor: "#e0e0e0", 
-  mutedTextColor: "#1a1a1a",
+  mutedBackgroundColor: "#f7f9fa", 
+  mutedTextColor: "#6b7280",
   
   // Typography
   sansSerifFont: "DM Sans",
@@ -18,30 +18,30 @@ export const DEFAULT_THEME = {
   
   // Actions
   primaryBackground: "#277677",
-  primaryText: "#faf9f7",
-  secondaryBackground: "#277677",
-  secondaryText: "#faf9f7",
-  accentBackground: "#ffffff",
+  primaryText: "#ffffff",
+  secondaryBackground: "#0f1419",
+  secondaryText: "#ffffff",
+  accentBackground: "#e3ecf6",
   accentText: "#277677",
   destructiveBackground: "#ef4444",
-  destructiveText: "#faf9f7",
+  destructiveText: "#ffffff",
   
   // Forms
-  inputBackground: "#e0e0e0",
+  inputBackground: "#f7f9fa",
   inputText: "#1a1a1a",
-  placeholderText: "#6b7280",
-  inputBorder: "#277677",
+  placeholderText: "#1a1a1a",
+  inputBorder: "#e1eaef",
   focusBorder: "#277677",
   
   // Containers
-  cardBackground: "#e0e0e0",
+  cardBackground: "#ffffff",
   cardText: "#1a1a1a",
-  popoverBackground: "#e0e0e0",
+  popoverBackground: "#ffffff",
   popoverText: "#1a1a1a",
   
   // Charts
   chart1Color: "#277677",
-  chart2Color: "#277677",
+  chart2Color: "#10b981",
   chart3Color: "#f59e0b",
   chart4Color: "#22c55e",
   chart5Color: "#ef4444",

@@ -163,7 +163,7 @@ const COLOR_GROUPS = {
     fields: ['primaryBackground', 'secondaryBackground', 'accentText', 'inputBorder', 'focusBorder', 'chart1Color', 'chart2Color']
   },
   backgroundColor: {
-    color: '#e0e0e0', 
+    color: '#faf9f7', 
     fields: ['backgroundColor', 'mutedBackgroundColor', 'cardBackground', 'popoverBackground', 'inputBackground']
   },
   textColor: {
@@ -171,11 +171,11 @@ const COLOR_GROUPS = {
     fields: ['textColor', 'mutedTextColor', 'cardText', 'popoverText', 'inputText']
   },
   buttonTextColor: {
-    color: '#faf9f7',
+    color: '#ffffff',
     fields: ['primaryText', 'secondaryText', 'destructiveText']
   },
   accentBackground: {
-    color: '#ffffff',
+    color: '#e3ecf6',
     fields: ['accentBackground']
   }
 };
