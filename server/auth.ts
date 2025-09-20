@@ -7,6 +7,7 @@ import { autoConfig } from "./config.js";
 declare module 'express-session' {
   interface SessionData {
     client?: any; // For client authentication
+    admin?: any; // For admin authentication
   }
 }
 
@@ -38,6 +39,14 @@ export function setupAuth(app: Express) {
 export function requireAuth(req: Request, res: Response, next: NextFunction) {
   if (!req.session || !req.session.client) {
     return res.status(401).json({ error: "Acesso não autorizado" });
+  }
+  next();
+}
+
+// Middleware function for protecting admin routes
+export function requireAdmin(req: Request, res: Response, next: NextFunction) {
+  if (!req.session || !req.session.admin) {
+    return res.status(401).json({ error: "Acesso administrativo não autorizado" });
   }
   next();
 }

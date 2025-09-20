@@ -11,16 +11,18 @@ import {
   insertClientSchema,
   insertClientSchemaStep2,
   clientLoginSchema,
+  adminLoginSchema,
   insertPetSchema,
   updatePetSchema,
   type InsertNetworkUnit,
   type InsertSiteSettings,
   type InsertClient,
   type ClientLogin,
+  type AdminLogin,
   type InsertPet
 } from "../shared/schema.js";
 import { sanitizeText } from "./utils/text-sanitizer.js";
-import { setupAuth, requireAuth } from "./auth.js";
+import { setupAuth, requireAuth, requireAdmin } from "./auth.js";
 import bcrypt from "bcryptjs";
 import { supabaseStorage } from "./supabase-storage.js";
 import { type CreditCardPaymentRequest } from "./services/cielo-service.js";
@@ -102,6 +104,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Setup authentication
   setupAuth(app);
+
+  // Admin login endpoint
+  app.post("/admin/api/login", async (req, res) => {
+    try {
+      const loginData = adminLoginSchema.parse(req.body);
+
+      // Check credentials against environment variables
+      const adminLogin = process.env.LOGIN;
+      const adminPassword = process.env.SENHA;
+
+      if (!adminLogin || !adminPassword) {
+        console.error("❌ [ADMIN-LOGIN] Missing environment variables LOGIN or SENHA");
+        return res.status(500).json({ error: "Configuração do servidor incorreta" });
+      }
+
+      if (loginData.login === adminLogin && loginData.password === adminPassword) {
+        // Set admin session
+        req.session.admin = { login: adminLogin, authenticated: true };
+        
+        console.log("✅ [ADMIN-LOGIN] Admin authenticated successfully");
+        res.json({ success: true, message: "Login realizado com sucesso" });
+      } else {
+        console.log("❌ [ADMIN-LOGIN] Invalid credentials provided");
+        res.status(401).json({ error: "Credenciais inválidas" });
+      }
+    } catch (error) {
+      console.error("❌ [ADMIN-LOGIN] Error during admin login:", error);
+      res.status(400).json({ error: "Dados de login inválidos" });
+    }
+  });
+
+
+
+  // Protect all admin API routes except login
+  app.use("/admin/api/*", (req, res, next) => {
+    // Skip authentication for login endpoint
+    if (req.path === "/admin/api/login") {
+      return next();
+    }
+    // Apply admin authentication for all other admin routes
+    return requireAdmin(req, res, next);
+  });
 
   // Contact form submission (public)
   app.post("/api/contact", async (req, res) => {

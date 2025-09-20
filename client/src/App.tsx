@@ -23,6 +23,7 @@ import CustomerSurveys from "@/pages/customer-surveys";
 import CustomerCoparticipation from "@/pages/customer-coparticipation";
 import CustomerFinancial from "@/pages/customer-financial";
 import TelemedicinePage from "@/pages/telemedicine";
+import AdminLoginPage from "@/pages/admin-login";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import ScrollToTop from "@/components/scroll-to-top";
@@ -207,6 +208,9 @@ function Router() {
     <>
       <ScrollToTop />
       <Switch>
+        
+        {/* Admin Login Route (must come before other admin routes) */}
+        <Route path="/admin/login" component={AdminLoginPage} />
         
         {/* Admin Routes - all routes starting with /admin */}
         <Route path="/admin" component={AdminRouter} />

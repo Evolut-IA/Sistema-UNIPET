@@ -830,6 +830,12 @@ export const updateNetworkUnitCredentialsSchema = z.object({
   password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres")
 });
 
+// Admin login schema
+export const adminLoginSchema = z.object({
+  login: z.string().min(1, "Login é obrigatório"),
+  password: z.string().min(1, "Senha é obrigatória")
+});
+
 // === TYPE EXPORTS ===
 
 // Core shared types
@@ -848,6 +854,7 @@ export type InsertChatSettings = typeof chatSettings.$inferInsert;
 export type Client = typeof clients.$inferSelect;
 export type InsertClient = typeof clients.$inferInsert;
 export type ClientLogin = z.infer<typeof clientLoginSchema>;
+export type AdminLogin = z.infer<typeof adminLoginSchema>;
 export type Species = typeof species.$inferSelect;
 export type InsertSpecies = typeof species.$inferInsert;
 export type Pet = typeof pets.$inferSelect;
