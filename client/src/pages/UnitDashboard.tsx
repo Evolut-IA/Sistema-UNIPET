@@ -709,7 +709,7 @@ export default function UnitDashboard() {
                   {loginError}
                 </div>
               )}
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full" data-testid="button-login">
                 Entrar
               </Button>
             </form>
@@ -752,8 +752,8 @@ export default function UnitDashboard() {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-2 break-words">Painel da Unidade</h2>
-          <p className="text-sm sm:text-base text-gray-600">
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground mb-2 break-words">Painel da Unidade</h2>
+          <p className="text-sm sm:text-base text-muted-foreground">
             Gerencie todas as operações da sua unidade credenciada
           </p>
         </div>
@@ -831,13 +831,13 @@ export default function UnitDashboard() {
                   <Table className="w-full">
                     <TableHeader>
                       <TableRow className="bg-accent">
-                        <TableHead className="bg-accent">Procedimento</TableHead>
-                        <TableHead className="bg-accent">Cliente</TableHead>
-                        <TableHead className="bg-accent">Pet</TableHead>
-                        <TableHead className="bg-accent">Valor</TableHead>
-                        <TableHead className="bg-accent">Status</TableHead>
-                        <TableHead className="bg-accent">Data</TableHead>
-                        <TableHead className="bg-accent">Ações</TableHead>
+                        <TableHead className="bg-accent text-muted-foreground">Procedimento</TableHead>
+                        <TableHead className="bg-accent text-muted-foreground">Cliente</TableHead>
+                        <TableHead className="bg-accent text-muted-foreground">Pet</TableHead>
+                        <TableHead className="bg-accent text-muted-foreground">Valor</TableHead>
+                        <TableHead className="bg-accent text-muted-foreground">Status</TableHead>
+                        <TableHead className="bg-accent text-muted-foreground">Data</TableHead>
+                        <TableHead className="bg-accent text-muted-foreground">Ações</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -961,19 +961,19 @@ export default function UnitDashboard() {
 
               {/* Modern Table Container */}
               <div className="container my-10 space-y-4 border border-border rounded-lg bg-accent shadow-sm">
-                {/* Table */}
-                <div className="rounded-lg overflow-hidden">
-                  <Table className="w-full">
-                    <TableHeader>
-                      <TableRow className="bg-accent">
-                        <TableHead className="bg-accent">Nome</TableHead>
-                        <TableHead className="bg-accent">CPF</TableHead>
-                        <TableHead className="bg-accent">Telefone</TableHead>
-                        <TableHead className="bg-accent">Email</TableHead>
-                        <TableHead className="bg-accent">Cidade</TableHead>
-                        <TableHead className="bg-accent">Cliente desde</TableHead>
-                      </TableRow>
-                    </TableHeader>
+                  {/* Table */}
+                  <div className="rounded-lg overflow-hidden">
+                    <Table className="w-full">
+                      <TableHeader>
+                        <TableRow className="bg-accent">
+                          <TableHead className="bg-accent text-muted-foreground">Nome</TableHead>
+                          <TableHead className="bg-accent text-muted-foreground">CPF</TableHead>
+                          <TableHead className="bg-accent text-muted-foreground">Telefone</TableHead>
+                          <TableHead className="bg-accent text-muted-foreground">Email</TableHead>
+                          <TableHead className="bg-accent text-muted-foreground">Cidade</TableHead>
+                          <TableHead className="bg-accent text-muted-foreground">Cliente desde</TableHead>
+                        </TableRow>
+                      </TableHeader>
                     <TableBody>
                       {loadingClients ? (
                         [...Array(5)].map((_, i) => (
@@ -1036,9 +1036,9 @@ export default function UnitDashboard() {
           <TabsContent value="plans">
             <Card>
               <CardContent className="p-6 text-center">
-                <CreditCard className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Consulta de Planos</h3>
-                <p className="text-gray-500">
+                <CreditCard className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-foreground mb-2">Consulta de Planos</h3>
+                <p className="text-muted-foreground">
                   Funcionalidade em desenvolvimento. Aqui você poderá consultar os planos dos clientes com detalhes de coparticipação.
                 </p>
               </CardContent>
@@ -1050,7 +1050,7 @@ export default function UnitDashboard() {
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold">Lançar Nova Guia</h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-muted-foreground">
                   Crie uma nova guia de atendimento para um cliente
                 </p>
               </div>
@@ -1068,7 +1068,7 @@ export default function UnitDashboard() {
                           value={guideForm.clientId} 
                           onValueChange={handleClientChange}
                         >
-                          <SelectTrigger>
+                          <SelectTrigger data-testid="select-client">
                             <SelectValue placeholder="Selecione um cliente" />
                           </SelectTrigger>
                           <SelectContent>
@@ -1090,7 +1090,7 @@ export default function UnitDashboard() {
                           onValueChange={handlePetChange}
                           disabled={!guideForm.clientId}
                         >
-                          <SelectTrigger>
+                          <SelectTrigger data-testid="select-pet">
                             <SelectValue placeholder="Selecione um pet" />
                           </SelectTrigger>
                           <SelectContent>
@@ -1102,7 +1102,7 @@ export default function UnitDashboard() {
                           </SelectContent>
                         </Select>
                         {!guideForm.clientId && (
-                          <p className="text-xs text-gray-500">Selecione um cliente primeiro</p>
+                          <p className="text-xs text-muted-foreground">Selecione um cliente primeiro</p>
                         )}
                       </div>
                     </div>
@@ -1117,7 +1117,7 @@ export default function UnitDashboard() {
                           value={guideForm.type} 
                           onValueChange={(value) => setGuideForm(prev => ({ ...prev, type: value }))}
                         >
-                          <SelectTrigger>
+                          <SelectTrigger data-testid="select-service-type">
                             <SelectValue placeholder="Selecione o tipo" />
                           </SelectTrigger>
                           <SelectContent>
@@ -1141,7 +1141,7 @@ export default function UnitDashboard() {
                           onValueChange={handleProcedureChange}
                           disabled={!guideForm.petId || loadingProcedures}
                         >
-                          <SelectTrigger>
+                          <SelectTrigger data-testid="select-procedure">
                             <SelectValue placeholder={loadingProcedures ? "Carregando procedimentos..." : "Selecione um procedimento"} />
                           </SelectTrigger>
                           <SelectContent>
@@ -1149,14 +1149,14 @@ export default function UnitDashboard() {
                               <SelectItem key={procedure.id} value={procedure.id} className="data-[state=selected]:bg-primary data-[state=selected]:text-primary-foreground">
                                 {procedure.name}
                                 {procedure.description && (
-                                  <span className="text-xs text-gray-500 block">{procedure.description}</span>
+                                  <span className="text-xs text-muted-foreground block">{procedure.description}</span>
                                 )}
                               </SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
                         {!guideForm.petId && (
-                          <p className="text-xs text-gray-500">Selecione um pet primeiro</p>
+                          <p className="text-xs text-muted-foreground">Selecione um pet primeiro</p>
                         )}
                       </div>
                     </div>
@@ -1231,7 +1231,7 @@ export default function UnitDashboard() {
                               <AlertCircle className="h-4 w-4" />
                               <span className="font-medium">Procedimento não coberto pelo plano</span>
                             </div>
-                            <p className="text-gray-600">
+                            <p className="text-muted-foreground">
                               Este procedimento não está incluído no plano {calculatedValues.planName}. 
                               O cliente pagará o valor integral.
                             </p>
@@ -1241,9 +1241,9 @@ export default function UnitDashboard() {
                     )}
 
                     {loadingCalculation && (
-                      <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
+                      <div className="bg-accent/50 border border-border rounded-lg p-4 text-center">
                         <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto mb-2"></div>
-                        <p className="text-sm text-gray-600">Calculando valores...</p>
+                        <p className="text-sm text-muted-foreground">Calculando valores...</p>
                       </div>
                     )}
 
@@ -1251,7 +1251,7 @@ export default function UnitDashboard() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
                         <Label htmlFor="value" className="text-sm font-medium">
-                          Valor Final (R$) {calculatedValues && <span className="text-xs text-gray-500">(calculado automaticamente)</span>}
+                          Valor Final (R$) {calculatedValues && <span className="text-xs text-muted-foreground">(calculado automaticamente)</span>}
                         </Label>
                         <Input
                           id="value"
@@ -1260,10 +1260,10 @@ export default function UnitDashboard() {
                           placeholder="0,00"
                           value={guideForm.value}
                           onChange={(e) => setGuideForm(prev => ({ ...prev, value: e.target.value }))}
-                          className={calculatedValues ? "bg-gray-50" : ""}
+                          className={calculatedValues ? "bg-accent/50" : ""}
                         />
                         {calculatedValues && (
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-muted-foreground">
                             Valor calculado automaticamente. Você pode ajustar se necessário.
                           </p>
                         )}
@@ -1304,6 +1304,7 @@ export default function UnitDashboard() {
                       <Button 
                         type="button" 
                         variant="outline"
+                        data-testid="button-cancel-guide"
                         onClick={() => {
                           setGuideForm({
                             clientId: "",
@@ -1325,6 +1326,7 @@ export default function UnitDashboard() {
                       <Button 
                         type="submit" 
                         disabled={submittingGuide || !guideForm.clientId || !guideForm.petId || !guideForm.type || !guideForm.procedureId}
+                        data-testid="button-create-guide"
                       >
                         {submittingGuide ? (
                           <>
@@ -1373,7 +1375,7 @@ export default function UnitDashboard() {
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                   <h3 className="text-lg font-semibold">Carteirinhas Digitais</h3>
-                  <p className="text-sm text-gray-600">Carteirinhas dos pets da sua unidade</p>
+                  <p className="text-sm text-muted-foreground">Carteirinhas dos pets da sua unidade</p>
                 </div>
                 <div className="flex items-center space-x-3 w-full">
                   <div className="flex-1 max-w-md">
@@ -1446,9 +1448,9 @@ export default function UnitDashboard() {
               ) : (
                 <Card>
                   <CardContent className="p-8 text-center">
-                    <IdCard className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-600 mb-2">Busque por CPF</h3>
-                    <p className="text-gray-500">
+                    <IdCard className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-muted-foreground mb-2">Busque por CPF</h3>
+                    <p className="text-muted-foreground">
                       Digite o CPF completo do cliente no campo acima e clique em "Buscar" para visualizar as carteirinhas dos pets.
                     </p>
                   </CardContent>
@@ -1458,9 +1460,9 @@ export default function UnitDashboard() {
               {!loadingCards && petsWithClients.length === 0 && (
                 <Card>
                   <CardContent className="p-6 text-center">
-                    <PawPrint className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhuma carteirinha encontrada</h3>
-                    <p className="text-gray-500">
+                    <PawPrint className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-foreground mb-2">Nenhuma carteirinha encontrada</h3>
+                    <p className="text-muted-foreground">
                       Ainda não há pets cadastrados para sua unidade.
                     </p>
                   </CardContent>
@@ -1474,9 +1476,9 @@ export default function UnitDashboard() {
               }).length === 0 && (
                 <Card>
                   <CardContent className="p-6 text-center">
-                    <Search className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">CPF não encontrado</h3>
-                    <p className="text-gray-500">
+                    <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-foreground mb-2">CPF não encontrado</h3>
+                    <p className="text-muted-foreground">
                       Nenhum cliente encontrado com o CPF <strong>{searchedCpf}</strong>.
                       Verifique se o CPF está correto.
                     </p>
@@ -1555,7 +1557,7 @@ export default function UnitDashboard() {
               ) : coverage.length > 0 ? (
                 <div className="space-y-4">
                   {/* Legend */}
-                  <div className="flex flex-wrap gap-4 text-sm text-gray-600 bg-blue-50 p-3 rounded-lg">
+                  <div className="flex flex-wrap gap-4 text-sm text-muted-foreground bg-accent/50 p-3 rounded-lg border border-border">
                     <div className="flex items-center gap-2">
                       <span className="text-lg">✅</span>
                       <span>Incluído no plano</span>
@@ -1574,45 +1576,43 @@ export default function UnitDashboard() {
                     </div>
                   </div>
                   
-                  <div className="border border-gray-200 rounded-lg overflow-hidden">
-                    <div className="overflow-x-auto">
-                      <table className="min-w-full">
-                        <thead className="bg-gray-50">
-                          <tr>
-                            <th className="px-4 py-3 text-left text-sm font-medium text-gray-900 border-b">
-                              Procedimento
-                            </th>
-                            <th className="px-4 py-3 text-left text-sm font-medium text-gray-900 border-b">
-                              Categoria
-                            </th>
+                  {/* Modern Table Container */}
+                  <div className="container my-10 space-y-4 border border-border rounded-lg bg-accent shadow-sm">
+                    {/* Table */}
+                    <div className="rounded-lg overflow-hidden">
+                      <Table className="w-full">
+                        <TableHeader>
+                          <TableRow className="bg-accent">
+                            <TableHead className="bg-accent text-muted-foreground">Procedimento</TableHead>
+                            <TableHead className="bg-accent text-muted-foreground">Categoria</TableHead>
                             {coverage.length > 0 && coverage[0].planCoverage.map(plan => (
-                              <th key={plan.planId} className="px-6 py-3 text-center text-sm font-medium text-gray-900 border-b">
+                              <TableHead key={plan.planId} className="bg-accent text-center">
                                 <div className="flex flex-col">
                                   <span className="font-semibold">{plan.planName}</span>
-                                  <span className="text-xs text-gray-500 font-normal">Cobertura</span>
+                                  <span className="text-xs text-muted-foreground font-normal">Cobertura</span>
                                 </div>
-                              </th>
+                              </TableHead>
                             ))}
-                          </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                          {filteredCoverage.map((item, index) => (
-                            <tr key={item.procedure.id} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                              <td className="px-4 py-4">
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {filteredCoverage.map((item) => (
+                            <TableRow key={item.procedure.id} className="bg-accent hover:bg-accent/80">
+                              <TableCell className="bg-accent">
                                 <div>
-                                  <div className="font-medium text-gray-900">{item.procedure.name}</div>
+                                  <div className="font-medium text-foreground">{item.procedure.name}</div>
                                   {item.procedure.description && (
-                                    <div className="text-xs text-gray-500 mt-1 max-w-xs">{item.procedure.description}</div>
+                                    <div className="text-xs text-muted-foreground mt-1 max-w-xs">{item.procedure.description}</div>
                                   )}
                                 </div>
-                              </td>
-                              <td className="px-4 py-4">
-                                <Badge variant="neutral" className="text-xs">
+                              </TableCell>
+                              <TableCell className="bg-accent">
+                                <Badge variant="secondary" className="text-xs">
                                   {item.procedure.procedureType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                                 </Badge>
-                              </td>
+                              </TableCell>
                               {item.planCoverage.map(plan => (
-                                <td key={plan.planId} className="px-6 py-4">
+                                <TableCell key={plan.planId} className="bg-accent">
                                   <div className="flex flex-col items-center space-y-2">
                                     {/* Status Icon */}
                                     <div className="flex items-center justify-center">
@@ -1625,9 +1625,9 @@ export default function UnitDashboard() {
                                       <div className="text-center space-y-1 min-w-[120px]">
                                         {/* Procedure Price */}
                                         {plan.price > 0 && (
-                                          <div className="text-xs text-gray-600">
+                                          <div className="text-xs text-muted-foreground">
                                             <span className="font-medium">Valor Proc.:</span><br/>
-                                            <span className="text-blue-600 font-semibold">
+                                            <span className="text-primary font-semibold">
                                               {formatCurrency((plan.price / 100).toString())}
                                             </span>
                                           </div>
@@ -1663,38 +1663,40 @@ export default function UnitDashboard() {
                                     )}
                                     
                                     {!plan.isIncluded && (
-                                      <div className="text-xs text-gray-500 text-center">
+                                      <div className="text-xs text-muted-foreground text-center">
                                         Não coberto
                                       </div>
                                     )}
                                   </div>
-                                </td>
+                                </TableCell>
                               ))}
-                            </tr>
+                            </TableRow>
                           ))}
-                        </tbody>
-                      </table>
+                        </TableBody>
+                      </Table>
                     </div>
-                  </div>
-                  
-                  {/* Results Summary */}
-                  <div className="text-sm text-gray-600 text-center bg-gray-50 p-3 rounded-lg">
-                    Mostrando {filteredCoverage.length} de {coverage.length} procedimentos
+                    
+                    {/* Results Summary */}
+                    <div className="text-sm text-muted-foreground text-center bg-accent/50 p-3 rounded-lg border-t border-border">
+                      Mostrando {filteredCoverage.length} de {coverage.length} procedimentos
+                    </div>
                   </div>
                 </div>
               ) : (
-                <Card>
-                  <CardContent className="p-6 text-center">
-                    <TableProperties className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhuma cobertura encontrada</h3>
-                    <p className="text-gray-500 mb-4">
-                      Não foi possível carregar a tabela de cobertura. Verifique se existem procedimentos e planos cadastrados.
-                    </p>
-                    <Button onClick={loadCoverage} variant="outline">
-                      Tentar novamente
-                    </Button>
-                  </CardContent>
-                </Card>
+                <div className="container my-10 space-y-4 border border-border rounded-lg bg-accent shadow-sm">
+                  <div className="rounded-lg overflow-hidden">
+                    <div className="text-center py-12 bg-accent">
+                      <TableProperties className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                      <h3 className="text-lg font-medium text-foreground mb-2">Nenhuma cobertura encontrada</h3>
+                      <p className="text-muted-foreground mb-4">
+                        Não foi possível carregar a tabela de cobertura. Verifique se existem procedimentos e planos cadastrados.
+                      </p>
+                      <Button onClick={loadCoverage} variant="outline">
+                        Tentar novamente
+                      </Button>
+                    </div>
+                  </div>
+                </div>
               )}
             </div>
           </TabsContent>
