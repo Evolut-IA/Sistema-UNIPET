@@ -31,10 +31,8 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useColumnPreferences } from "@/hooks/admin/use-column-preferences";
 import { apiRequest } from "@/lib/admin/queryClient";
-import { insertUserSchema, type User, type NetworkUnitWithCredentialStatus } from "@shared/schema";
-import { UserCheck, Plus, Search, Edit, Trash2, Eye, EyeOff, Columns, ChevronLeft, ChevronRight, Globe } from "lucide-react";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { insertUserSchema, type User as UserType, type NetworkUnitWithCredentialStatus } from "@shared/schema";
+import { UserCheck, Plus, Search, Edit, Trash2, Eye, EyeOff, Columns, ChevronLeft, ChevronRight, Globe, User } from "lucide-react";
 
 const AVAILABLE_PERMISSIONS = [
   { id: "clients", label: "Clientes", description: "Acesso à seção de clientes" },
@@ -67,7 +65,7 @@ const networkColumns = [
 export default function Administration() {
   const [searchQuery, setSearchQuery] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [editingUser, setEditingUser] = useState<UserType | null>(null);
   const [credentialDialogOpen, setCredentialDialogOpen] = useState(false);
   const [editingNetworkUnit, setEditingNetworkUnit] = useState<NetworkUnitWithCredentialStatus | null>(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -81,7 +79,7 @@ export default function Administration() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  const { data: users = [], isLoading } = useQuery<User[]>({
+  const { data: users = [], isLoading } = useQuery<UserType[]>({
     queryKey: ["/admin/api/users"],
   });
 
@@ -465,7 +463,7 @@ export default function Administration() {
                         <Checkbox
                           id={`permission-${permission.id}`}
                           checked={(form.getValues("permissions") || []).includes(permission.id)}
-                          onCheckedChange={(checked) => handlePermissionChange(permission.id, checked as boolean)}
+                          onCheckedChange={(checked: boolean) => handlePermissionChange(permission.id, checked)}
                           data-testid={`checkbox-permission-${permission.id}`}
                         />
                         <div className="grid gap-1.5 leading-none">
