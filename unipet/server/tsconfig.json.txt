@@ -1,0 +1,30 @@
+{
+  "extends": "../tsconfig.server.json",
+  "compilerOptions": {
+    "outDir": "../dist",
+    "rootDir": "..",
+    "noEmit": false,
+    "allowImportingTsExtensions": false,
+    "baseUrl": "..",
+    "exactOptionalPropertyTypes": false
+  },
+  "include": [
+    "index.ts",
+    "routes.ts",
+    "db.ts",
+    "auth.ts",
+    "storage.ts",
+    "config.ts",
+    "image-service-base64.ts",
+    "middleware/**/*",
+    "utils/**/*",
+    "../shared/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "../client/**/*",
+    "tests/**/*",
+    "objectStorage.ts",
+    "vite.ts"
+  ]
+}

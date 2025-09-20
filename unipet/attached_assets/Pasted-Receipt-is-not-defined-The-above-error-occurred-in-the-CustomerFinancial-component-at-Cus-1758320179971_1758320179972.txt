@@ -1,0 +1,89 @@
+Receipt is not defined
+The above error occurred in the <CustomerFinancial> component:
+
+    at CustomerFinancial (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/src/pages/customer-financial.tsx:26:24)
+    at Route (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/wouter.js?v=d5dad14d:257:16)
+    at Switch (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/wouter.js?v=d5dad14d:297:17)
+    at Router
+    at Provider2 (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=d5dad14d:97:15)
+    at TooltipProvider (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=d5dad14d:217:5)
+    at QueryClientProvider (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/chunk-65LAIXSP.js?v=d5dad14d:2934:3)
+    at ErrorBoundary (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/src/components/error-boundary.tsx:10:5)
+    at App
+
+React will try to recreate this component tree from scratch using the error boundary you provided, ErrorBoundary.
+ErrorBoundary caught an error: 
+ReferenceError {}
+ 
+Object {componentStack: "↵    at CustomerFinancial…"}
+
+🚨 Detalhes do erro: 
+Object {message: "Receipt is not defined", stack: "ReferenceError: Receipt is not defined↵    at CustomerFinancial…", componentStack: "↵    at CustomerFinancial…", timestamp: "2025-09-19T22:15:14.750Z", url: "https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/customer/financial"}
+
+Receipt is not defined
+Receipt is not defined
+The above error occurred in the <CustomerFinancial> component:
+
+    at CustomerFinancial (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/src/pages/customer-financial.tsx:26:24)
+    at Route (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/wouter.js?v=d5dad14d:257:16)
+    at Switch (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/wouter.js?v=d5dad14d:297:17)
+    at Router
+    at Provider2 (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=d5dad14d:97:15)
+    at TooltipProvider (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=d5dad14d:217:5)
+    at QueryClientProvider (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/chunk-65LAIXSP.js?v=d5dad14d:2934:3)
+    at ErrorBoundary (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/src/components/error-boundary.tsx:10:5)
+    at App
+
+React will try to recreate this component tree from scratch using the error boundary you provided, ErrorBoundary.
+ErrorBoundary caught an error: 
+ReferenceError {}
+ 
+Object {componentStack: "↵    at CustomerFinancial…"}
+
+🚨 Detalhes do erro: 
+Object {message: "Receipt is not defined", stack: "ReferenceError: Receipt is not defined↵    at CustomerFinancial…", componentStack: "↵    at CustomerFinancial…", timestamp: "2025-09-19T22:15:17.572Z", url: "https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/customer/financial"}
+componentStack: "↵ at CustomerFinancial (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/src/pages/customer-financial.tsx:26:24)↵ at Route (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/wouter.js?v=d5dad14d:257:16)↵ at Switch (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/wouter.js?v=d5dad14d:297:17)↵ at Router↵ at Provider2 (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=d5dad14d:97:15)↵ at TooltipProvider (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=d5dad14d:217:5)↵ at QueryClientProvider (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/chunk-65LAIXSP.js?v=d5dad14d:2934:3)↵ at ErrorBoundary (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/src/components/error-boundary.tsx:10:5)↵ at App"
+message: "Receipt is not defined"
+stack: "ReferenceError: Receipt is not defined↵ at CustomerFinancial (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/src/pages/customer-financial.tsx:536:52)↵ at renderWithHooks (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/chunk-276SZO74.js?v=d5dad14d:11548:26)↵ at updateFunctionComponent (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/chunk-276SZO74.js?v=d5dad14d:14582:28)↵ at beginWork (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/chunk-276SZO74.js?v=d5dad14d:15924:22)↵ at beginWork$1 (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/chunk-276SZO74.js?v=d5dad14d:19753:22)↵ at performUnitOfWork (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/chunk-276SZO74.js?v=d5dad14d:19198:20)↵ at workLoopSync (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/chunk-276SZO74.js?v=d5dad14d:19137:13)↵ at renderRootSync (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/chunk-276SZO74.js?v=d5dad14d:19116:15)↵ at recoverFromConcurrentError (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/chunk-276SZO74.js?v=d5dad14d:18736:28)↵ at performConcurrentWorkOnRoot (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/chunk-276SZO74.js?v=d5dad14d:18684:30)"
+timestamp: "2025-09-19T22:15:17.572Z"
+url: "https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/customer/financial"
+[[Prototype]]: Object
+
+Receipt is not defined
+Receipt is not defined
+The above error occurred in the <CustomerFinancial> component:
+
+    at CustomerFinancial (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/src/pages/customer-financial.tsx:26:24)
+    at Route (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/wouter.js?v=d5dad14d:257:16)
+    at Switch (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/wouter.js?v=d5dad14d:297:17)
+    at Router
+    at Provider2 (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=d5dad14d:97:15)
+    at TooltipProvider (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=d5dad14d:217:5)
+    at QueryClientProvider (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/chunk-65LAIXSP.js?v=d5dad14d:2934:3)
+    at ErrorBoundary (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/src/components/error-boundary.tsx:10:5)
+    at App
+
+React will try to recreate this component tree from scratch using the error boundary you provided, ErrorBoundary.
+ErrorBoundary caught an error: 
+ReferenceError {}
+ 
+Object {componentStack: "↵    at CustomerFinancial…"}
+
+🚨 Detalhes do erro: 
+Object {message: "Receipt is not defined", stack: "ReferenceError: Receipt is not defined↵    at CustomerFinancial…", componentStack: "↵    at CustomerFinancial…", timestamp: "2025-09-19T22:15:20.400Z", url: "https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/customer/financial"}
+
+Receipt is not defined
+Receipt is not defined
+The above error occurred in the <CustomerFinancial> component:
+
+    at CustomerFinancial (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/src/pages/customer-financial.tsx:26:24)
+    at Route (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/wouter.js?v=d5dad14d:257:16)
+    at Switch (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/wouter.js?v=d5dad14d:297:17)
+    at Router
+    at Provider2 (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=d5dad14d:97:15)
+    at TooltipProvider (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=d5dad14d:217:5)
+    at QueryClientProvider (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/node_modules/.vite/deps/chunk-65LAIXSP.js?v=d5dad14d:2934:3)
+    at ErrorBoundary (https://f261bd37-f367-4c8d-a0a1-f5cf7e1bb78c-00-3cs7u91guupjv.riker.replit.dev/src/components/error-boundary.tsx:10:5)
+    at App
+
+React will try to recreate this component tree from scratch using the error boundary you provided, ErrorBoundary.

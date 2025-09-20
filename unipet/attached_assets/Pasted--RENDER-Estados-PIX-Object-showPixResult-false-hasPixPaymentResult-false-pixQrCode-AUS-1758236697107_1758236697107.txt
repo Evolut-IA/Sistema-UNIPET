@@ -1,0 +1,50 @@
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔘 [DEBUG] nextStep chamado! 
+Object {currentStep: 2, paymentMethod: "credit", cardDataFilled: {…}, termsAccepted: false, isLoading: false}
+🔍 [DEBUG] validateStep2 iniciado - dados: 
+Object {name: "teste", email: "teste@gmail.com", phone: "(12) 97404-1539", cpf: "", zipCode: "", …}
+🔍 [DEBUG] Pagamento cartão/PIX - campos de endereço opcionais
+🛒 [DEBUG] Salvando dados do cliente (step 2)
+🛒 [STEP2] Salvando dados do cliente e pets (SEM CPF)...
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+📥 [STEP2] Resposta do servidor: 
+Object {status: 400, result: {…}}
+❌ [STEP2] Erro do servidor: Dados inválidos
+at t.value (https://1d8813c5-f736-4f8f-ae9c-5bb633b3cb93-00-2ra2ih8d1po8u.kirk.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://1d8813c5-f736-4f8f-ae9c-5bb633b3cb93-00-2ra2ih8d1po8u.kirk.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://1d8813c5-f736-4f8f-ae9c-5bb633b3cb93-00-2ra2ih8d1po8u.kirk.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://1d8813c5-f736-4f8f-ae9c-5bb633b3cb93-00-2ra2ih8d1po8u.kirk.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}

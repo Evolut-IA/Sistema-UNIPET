@@ -1,0 +1,74 @@
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔘 [DEBUG] nextStep chamado! 
+Object {currentStep: 3, paymentMethod: "boleto", cardDataFilled: {…}, termsAccepted: false, isLoading: false}
+🔍 [DEBUG] validateStep3 iniciado 
+Object {customerData: {…}, paymentMethod: "boleto", cardData: "N/A", termsAccepted: false}
+❌ [DEBUG] Termos não aceitos
+❌ [DEBUG] Validação step 3 falhou
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔘 [DEBUG] nextStep chamado! 
+Object {currentStep: 3, paymentMethod: "boleto", cardDataFilled: {…}, termsAccepted: true, isLoading: false}
+🔍 [DEBUG] validateStep3 iniciado 
+Object {customerData: {…}, paymentMethod: "boleto", cardData: "N/A", termsAccepted: true}
+✅ [DEBUG] validateStep3 passou em todas as validações
+💳 [DEBUG] Iniciando processPayment...
+📝 [STEP3.1] Completando registro com CPF e endereço...
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+❌ [STEP3.1] Erro ao completar registro: CPF já cadastrado para outro cliente
+at t.value (https://7a3cae01-67d2-4f8f-998d-7a37d0555e4f-00-2e60a2488uke6.janeway.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://7a3cae01-67d2-4f8f-998d-7a37d0555e4f-00-2e60a2488uke6.janeway.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://7a3cae01-67d2-4f8f-998d-7a37d0555e4f-00-2e60a2488uke6.janeway.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://7a3cae01-67d2-4f8f-998d-7a37d0555e4f-00-2e60a2488uke6.janeway.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}

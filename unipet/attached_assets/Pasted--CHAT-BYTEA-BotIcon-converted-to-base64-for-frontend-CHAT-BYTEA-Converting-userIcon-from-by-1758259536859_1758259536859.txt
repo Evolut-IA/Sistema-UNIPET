@@ -1,0 +1,42 @@
+✅ [CHAT-BYTEA] BotIcon converted to base64 for frontend
+🔄 [CHAT-BYTEA] Converting userIcon from bytea to base64 for frontend
+🎨 [IMAGE-BYTEA] Processing PostgreSQL bytea for display
+🔄 [IMAGE-BYTEA] Converting PostgreSQL bytea (Buffer) to usable Buffer
+🔍 [IMAGE-BYTEA] Buffer validation: { size: 3503, format: 'png', dimensions: '64x44', isValid: true }
+🌐 [IMAGE-BYTEA] Preparing HTTP response for buffer size: 3503 bytes
+✅ [IMAGE-BYTEA] HTTP response prepared: {
+  mimeType: 'image/png',
+  contentLength: 3503,
+  headers: [
+    'Content-Type',
+    'Content-Length',
+    'Cache-Control',
+    'Pragma',
+    'Expires'
+  ]
+}
+✅ [CHAT-BYTEA] UserIcon converted to base64 for frontend
+✅ [CHAT-BYTEA] Chat settings retrieved and processed: {
+  hasBotIcon: true,
+  hasUserIcon: true,
+  botIconType: 'string',
+  userIconType: 'string'
+}
+GET /api/chat/settings 304 in 793ms :: {"id":"77d0d663-ecc3-48a8-8100-c6c6a39cd…
+Query: select "id", "full_name", "email", "phone", "cpf", "cep", "address", "number", "complement", "district", "state", "city", "password", "created_at", "updated_at" from "clients" where "clients"."email" = $1 limit $2 -- params: ["contatogabrielmarquez@gmail.com", 1]
+POST /api/clients/login 200 in 611ms :: {"message":"Login realizado com sucesso…
+GET /api/clients/me 304 in 2ms :: {"client":{"id":"client-1758242007677-ii81z5x…
+GET /api/clients/me 304 in 2ms :: {"client":{"id":"client-1758242007677-ii81z5x…
+Query: select "id", "client_id", "name", "species", "breed", "birth_date", "age", "sex", "castrated", "color", "weight", "microchip", "previous_diseases", "surgeries", "allergies", "current_medications", "hereditary_conditions", "vaccine_data", "last_checkup", "parasite_treatments", "plan_id", "image", "image_url", "is_active", "created_at", "updated_at" from "pets" where "pets"."client_id" = $1 -- params: ["client-1758242007677-ii81z5xk2"]
+GET /api/clients/pets 304 in 138ms :: {"pets":[{"id":"3870f789-2e41-455f-b8da-0…
+Query: select "id", "client_id", "name", "species", "breed", "birth_date", "age", "sex", "castrated", "color", "weight", "microchip", "previous_diseases", "surgeries", "allergies", "current_medications", "hereditary_conditions", "vaccine_data", "last_checkup", "parasite_treatments", "plan_id", "image", "image_url", "is_active", "created_at", "updated_at" from "pets" where "pets"."id" = $1 -- params: ["3870f789-2e41-455f-b8da-02b34218a1b0"]
+📤 [PET-UPLOAD] Starting upload for pet 3870f789-2e41-455f-b8da-02b34218a1b0
+❌ Bucket 'pet-images' não existe no Supabase Storage.
+📋 Para criar o bucket:
+1. Acesse: https://supabase.com/dashboard/project/tkzzxsbwkgcdmcreducm/storage/buckets
+2. Clique em "New bucket"
+3. Nome: pet-images
+4. Marque "Public bucket"
+5. Salve
+❌ [PET-UPLOAD] Supabase upload failed: Não foi possível preparar o bucket de storage
+POST /api/clients/pets/3870f789-2e41-455f-b8da-02b34218a1b0/image 500 in 807ms …

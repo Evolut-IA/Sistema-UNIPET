@@ -1,0 +1,126 @@
+
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    './src/**/*.{js,ts,jsx,tsx,mdx}',
+    './index.html'
+  ],
+  theme: {
+    extend: {
+      // Mapeamento dos tokens shadcn/ui para CSS variables em cores.css
+      colors: {
+        // Tokens base
+        border: 'rgb(var(--border))',
+        input: 'rgb(var(--input))', 
+        ring: 'rgb(var(--ring))',
+        background: 'rgb(var(--background))',
+        foreground: 'rgb(var(--foreground))',
+        
+        // Tokens de componentes
+        primary: {
+          DEFAULT: 'rgb(var(--primary))',
+          foreground: 'rgb(var(--primary-foreground))'
+        },
+        secondary: {
+          DEFAULT: 'rgb(var(--secondary))',
+          foreground: 'rgb(var(--secondary-foreground))'
+        },
+        accent: {
+          DEFAULT: 'rgb(var(--accent))',
+          foreground: 'rgb(var(--accent-foreground))'
+        },
+        muted: {
+          DEFAULT: 'rgb(var(--muted))',
+          foreground: 'rgb(var(--muted-foreground))'
+        },
+        destructive: {
+          DEFAULT: 'rgb(var(--destructive))',
+          foreground: 'rgb(var(--destructive-foreground))'
+        },
+        
+        // Mantém cores personalizadas do projeto via variáveis existentes
+        'teal': 'var(--bg-teal)',
+        'teal-light': 'var(--bg-teal-light)', 
+        'teal-dark': 'var(--bg-teal-dark)',
+        'cream-light': 'var(--bg-cream-light)',
+        'cream-lighter': 'var(--bg-cream-lighter)',
+        'beige': 'var(--bg-beige)',
+        'gold': 'var(--bg-gold)',
+        'gold-darker': 'var(--bg-gold-darker)'
+      },
+      fontFamily: {
+        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'sans-serif'],
+        serif: ['Georgia', 'ui-serif', 'serif'],
+        mono: ['Menlo', 'ui-monospace', 'monospace']
+      },
+      spacing: {
+        '18': '4.5rem',
+        '88': '22rem',
+        '128': '32rem',
+        '144': '36rem'
+      },
+      screens: {
+        'xs': '475px',
+        'lg': '1024px',
+        '3xl': '1920px'
+      },
+      animation: {
+        'fade-in': 'fadeIn 0.5s ease-in-out',
+        'fade-out': 'fadeOut 0.5s ease-in-out',
+        'slide-in': 'slideIn 0.3s ease-out',
+        'slide-out': 'slideOut 0.3s ease-out'
+      },
+      borderRadius: {
+        'xl': '1rem',
+        '2xl': '1.5rem',
+        'lg': 'var(--radius)',
+        'md': 'calc(var(--radius) - 2px)',
+        'sm': 'calc(var(--radius) - 4px)'
+      },
+      // Background images use CSS variables from cores.css
+      backgroundImage: {}
+    }
+  },
+  plugins: [],
+  safelist: [
+    // Cores principais do projeto
+    'bg-primary',
+    'bg-secondary', 
+    'bg-accent',
+    'text-primary',
+    'text-secondary',
+    'text-accent',
+    'border-primary',
+    'border-secondary',
+    'border-accent',
+    
+    // Estados hover/focus
+    'hover:bg-primary',
+    'hover:bg-secondary',
+    'hover:bg-accent',
+    'focus:border-primary',
+    
+    
+    // Classes de formulário
+    'contact-form-field',
+    'mobile-form-input',
+    
+    // Classes de animação
+    'animate-fade-in-up',
+    'animate-fade-in-down',
+    'animate-fade-in-left',
+    'animate-fade-in-right',
+    'animate-scale-in',
+    'animate-rotate-in',
+    
+    // Classes de layout responsivo
+    'page-content',
+    'section-container', 
+    'container',
+    'max-w-6xl',
+    'mx-auto',
+    'pt-16',
+    'pt-32',
+    'pb-20'
+  ]
+}

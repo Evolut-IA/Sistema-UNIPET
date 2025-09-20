@@ -1,0 +1,48 @@
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+🔘 [DEBUG] nextStep chamado! 
+Object {currentStep: 3, paymentMethod: "pix", cardDataFilled: {…}, termsAccepted: true, isLoading: false}
+🔍 [DEBUG] validateStep3 iniciado 
+Object {customerData: {…}, paymentMethod: "pix", cardData: "N/A", termsAccepted: true}
+✅ [DEBUG] validateStep3 passou em todas as validações
+💳 [DEBUG] Iniciando processPayment...
+📝 [STEP3.1] Completando registro com CPF e endereço...
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+✅ [STEP3.1] Registro completado com sucesso, clientId: client-1758149561545-hlmyy53f9
+💳 [STEP3.2] Processando pagamento...
+🔄 Processando pagamento... 
+Object {paymentMethod: "pix", planId: "ec994283-76de-4605-afa3-0670a8a0a475", pets: 1}
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}
+📥 Resposta do servidor: 
+Object {status: 500, result: {…}}
+❌ Erro do servidor: Pagamento processado mas erro ao salvar dados
+at t.value (https://3f0e8107-e70d-47f6-903d-f127a380a641-00-mx0erylwroqe.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://3f0e8107-e70d-47f6-903d-f127a380a641-00-mx0erylwroqe.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://3f0e8107-e70d-47f6-903d-f127a380a641-00-mx0erylwroqe.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://3f0e8107-e70d-47f6-903d-f127a380a641-00-mx0erylwroqe.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+🔍 [RENDER] Estados PIX: 
+Object {showPixResult: false, hasPixPaymentResult: false, pixQrCode: "AUSENTE"}

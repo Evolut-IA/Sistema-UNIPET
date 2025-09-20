@@ -1,0 +1,70 @@
+Baseado no relatório que você forneceu e na implementação atual da API de imagens, vou chamar o especialista para criar um prompt adequado para solicitar a correção do método de acesso às imagens:
+
+
+Provided prompt for image API integration
+
+Decided on prompt structure and content
+Com base na implementação atual da API de imagens que acabamos de finalizar, aqui está o prompt que você pode usar para solicitar a correção do método de acesso às imagens no seu site externo:
+
+📋 PROMPT PARA CORREÇÃO DA INTEGRAÇÃO DE IMAGENS
+Tarefa: Corrigir o carregamento das imagens do sistema UNIPET no site externo para a nova API de imagens.
+
+🔧 Contexto Técnico:
+As imagens agora são servidas publicamente em: GET https://sistema-unipet-sledshomer.replit.app/api/uploads/{filename}
+No banco de dados, o campo de imagem armazena um path iniciando com "/api/uploads/…"
+Exemplo: "/api/uploads/1758186941859-8nd1308veyc.jpg"
+✅ O que fazer:
+1) Sempre construir URL ABSOLUTA usando o domínio do UNIPET:
+
+const BASE_API = 'https://sistema-unipet-sledshomer.replit.app';
+const src = value.startsWith('http') ? value : `${BASE_API}${value}`;
+2) Exemplos de implementação:
+
+HTML Puro:
+
+<img src="https://sistema-unipet-sledshomer.replit.app/api/uploads/1758186941859-8nd1308veyc.jpg" 
+     alt="Imagem" 
+     loading="lazy" 
+     crossorigin="anonymous" 
+     referrerpolicy="no-referrer" />
+React:
+
+const BASE = 'https://sistema-unipet-sledshomer.replit.app';
+const toSrc = (v) => v?.startsWith('http') ? v : `${BASE}${v}`;
+<img 
+  src={toSrc(unit.imageUrl)} 
+  alt={unit.name} 
+  loading="lazy" 
+  crossOrigin="anonymous" 
+  referrerPolicy="no-referrer" 
+/>
+Next.js (Image):
+
+// Em next.config.js, adicionar:
+images: {
+  domains: ['sistema-unipet-sledshomer.replit.app']
+}
+// No componente:
+<Image src={`https://sistema-unipet-sledshomer.replit.app${imageUrl}`} />
+❌ NÃO usar:
+Caminhos relativos: /uploads/, /public/uploads/
+URLs blob: blob:...
+Data URLs: data:image/...
+Base64 inline
+🛡️ Robustez e Tratamento de Erros:
+<img 
+  src={imageUrl}
+  onError={(e) => { 
+    e.currentTarget.src = '/placeholder.jpg'; 
+  }}
+  alt="Imagem"
+/>
+🎯 Critérios de Aceitação:
+✅ As imagens carregam no site externo via HTTPS com status 200
+✅ Content-Type retornado: image/jpeg ou image/png
+✅ Sem erros de CORS no console do navegador
+✅ Fallback exibido quando a imagem não existir (404)
+✅ Sem mixed content warnings
+🧪 Teste de Validação:
+Use esta URL real para testar:
+https://sistema-unipet-sledshomer.replit.app/api/uploads/1758186941859-8nd1308veyc.jpg
