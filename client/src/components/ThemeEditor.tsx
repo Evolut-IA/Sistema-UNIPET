@@ -160,18 +160,18 @@ const ColorInput = ({ value, onChange, title, description, testId }: {
 const COLOR_GROUPS = {
   primaryColor: {
     color: '#277677',
-    fields: ['primaryBackground', 'secondaryBackground', 'accentText', 'destructiveBackground', 'inputBorder', 'focusBorder', 'chart1Color', 'chart2Color', 'chart3Color']
+    fields: ['primaryBackground', 'secondaryBackground', 'accentText', 'inputBorder', 'focusBorder', 'chart1Color', 'chart2Color']
   },
   backgroundColor: {
     color: '#e0e0e0', 
-    fields: ['backgroundColor', 'mutedBackgroundColor', 'cardBackground', 'popoverBackground']
+    fields: ['backgroundColor', 'mutedBackgroundColor', 'cardBackground', 'popoverBackground', 'inputBackground']
   },
   textColor: {
     color: '#1a1a1a',
-    fields: ['textColor', 'mutedTextColor', 'cardText', 'popoverText']
+    fields: ['textColor', 'mutedTextColor', 'cardText', 'popoverText', 'inputText']
   },
   buttonTextColor: {
-    color: '#FAF9F7',
+    color: '#faf9f7',
     fields: ['primaryText', 'secondaryText', 'destructiveText']
   },
   accentBackground: {
