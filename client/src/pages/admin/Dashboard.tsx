@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/admin/ui/card";
-import { Button } from "@/components/admin/ui/button";
 import { Skeleton } from "@/components/admin/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/admin/ui/alert";
 import { ChartContainer, ChartTooltip } from "@/components/admin/ui/chart";
@@ -9,7 +8,8 @@ import { DateFilterComponent } from "@/components/admin/DateFilterComponent";
 import type { Client, Guide, NetworkUnit, ContactSubmission } from "@shared/schema";
 import {
   User,
-  Heart
+  TrendingUp,
+  PawPrint
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
 import { CalendarDate } from "@internationalized/date";
@@ -73,7 +73,12 @@ export default function Dashboard() {
   });
 
   // Extract data from the aggregated response
-  const stats = dashboardData?.stats || {} as any;
+  const stats = dashboardData?.stats || {} as {
+    monthlyRevenue?: number;
+    totalRevenue?: number;
+    activeClients?: number;
+    registeredPets?: number;
+  };
   const allGuides = dashboardData?.guides || [] as Guide[];
   const networkUnits = dashboardData?.networkUnits || [] as NetworkUnit[];
   const clients = dashboardData?.clients || [] as Client[];
@@ -332,9 +337,17 @@ export default function Dashboard() {
                     axisLine={false}
                   />
                   <ChartTooltip
-                    content={({ active, payload }) => {
+                    content={({ active, payload }: {
+                      active?: boolean;
+                      payload?: Array<{
+                        payload: {
+                          categoria: string;
+                          total: number;
+                        };
+                      }>;
+                    }) => {
                       if (active && payload && payload.length) {
-                        const data = payload[0].payload as any;
+                        const data = payload[0].payload;
                         return (
                           <div className="bg-background border border-border rounded-lg shadow-lg p-3">
                             <p className="font-medium text-foreground">{data.categoria}</p>
