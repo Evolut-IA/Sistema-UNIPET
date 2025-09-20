@@ -5,8 +5,8 @@
     // Foundation
     backgroundColor: "#faf9f7",
     textColor: "#1a1a1a",
-    mutedBackgroundColor: "#e0e0e0", 
-    mutedTextColor: "#1a1a1a",
+    mutedBackgroundColor: "#f7f9fa", 
+    mutedTextColor: "#6b7280",
     
     // Typography
     sansSerifFont: "DM Sans",
@@ -28,6 +28,8 @@
     
     // Forms
     inputBackground: "#f7f9fa",
+    inputText: "#1a1a1a",
+    placeholderText: "#1a1a1a",
     inputBorder: "#e1eaef",
     focusBorder: "#277677",
     
@@ -79,6 +81,8 @@
     
     // Forms
     root.style.setProperty('--input', themeSettings.inputBackground || DEFAULT_THEME.inputBackground);
+    root.style.setProperty('--input-foreground', themeSettings.inputText || DEFAULT_THEME.inputText);
+    root.style.setProperty('--placeholder-foreground', themeSettings.placeholderText || DEFAULT_THEME.placeholderText);
     root.style.setProperty('--border', themeSettings.inputBorder || DEFAULT_THEME.inputBorder);
     root.style.setProperty('--ring', themeSettings.focusBorder || DEFAULT_THEME.focusBorder);
     
