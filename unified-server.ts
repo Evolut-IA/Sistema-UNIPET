@@ -125,8 +125,20 @@ async function initializeUnifiedServer(): Promise<void> {
       
       console.log('✅ Admin APIs montadas em produção em /admin/api/*');
     } else {
-      console.log('🔧 Admin APIs em desenvolvimento: será usado proxy em /admin/api/*');
-      setupAdminProxy();
+      console.log('🔧 Admin APIs em desenvolvimento: montando diretamente em /admin/api/*');
+      // Em desenvolvimento, montar Admin APIs diretamente também (igual produção)
+      const adminApp = express();
+      
+      // Configure admin-specific middleware
+      adminApp.use(express.json({ limit: '50mb' }));
+      adminApp.use(express.urlencoded({ extended: false, limit: '50mb' }));
+      adminApp.use(cookieParser());
+      
+      // Register admin routes on sub-app (routes will be /api/* on the sub-app)
+      await registerAdminRoutes(adminApp);
+      
+      // Mount admin sub-app under /admin path (so /admin/api/* routes are accessible)
+      app.use('/admin', adminApp);
     }
 
     // 4. Configurar arquivos estáticos para Admin (temporariamente em desenvolvimento)
