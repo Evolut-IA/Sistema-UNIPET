@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, FileText, User, PawPrint, MapPin, Clock, DollarSign, CheckCircle, XCircle, Eye, Users, CreditCard, Plus, IdCard, TableProperties, Search, Calculator, AlertCircle, Info } from "lucide-react";
+import { Calendar, FileText, User, PawPrint, MapPin, Clock, DollarSign, CheckCircle, XCircle, Eye, Users, CreditCard, Plus, TableProperties, Search, Calculator, AlertCircle, Info } from "lucide-react";
 import { Link } from "wouter";
 import DigitalCard from "@/components/DigitalCard";
 
@@ -769,7 +769,7 @@ export default function UnitDashboard() {
               <span className="hidden sm:inline">Lançar</span>
             </TabsTrigger>
             <TabsTrigger value="cards" className="flex items-center gap-2">
-              <IdCard className="h-4 w-4" />
+              <CreditCard className="h-4 w-4" />
               <span className="hidden sm:inline">Carteirinhas</span>
             </TabsTrigger>
             <TabsTrigger value="coverage" className="flex items-center gap-2">
@@ -1386,7 +1386,7 @@ export default function UnitDashboard() {
               ) : (
                 <Card>
                   <CardContent className="p-8 text-center">
-                    <IdCard className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                    <CreditCard className="h-16 w-16 text-gray-300 mx-auto mb-4" />
                     <h3 className="text-lg font-medium text-gray-600 mb-2">Busque por CPF</h3>
                     <p className="text-gray-500">
                       Digite o CPF completo do cliente no campo acima e clique em "Buscar" para visualizar as carteirinhas dos pets.

@@ -3,25 +3,8 @@ import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog"
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
-import { useEnhancedScrollLock } from "@/hooks/use-enhanced-scroll-lock"
 
-// Wrapper para AlertDialog que aplica o scroll lock
-const AlertDialog = React.forwardRef<
-  React.ElementRef<typeof AlertDialogPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Root>
->(({ open, onOpenChange, ...props }, ref) => {
-  // Aplicar o scroll lock quando o alert dialog estiver aberto
-  useEnhancedScrollLock(open || false);
-
-  return (
-    <AlertDialogPrimitive.Root
-      open={open}
-      onOpenChange={onOpenChange}
-      {...props}
-    />
-  );
-});
-AlertDialog.displayName = "AlertDialog";
+const AlertDialog = AlertDialogPrimitive.Root
 
 const AlertDialogTrigger = AlertDialogPrimitive.Trigger
 
@@ -51,7 +34,11 @@ const AlertDialogContent = React.forwardRef<
     <AlertDialogPrimitive.Content
       ref={ref}
       className={cn(
-        "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg",
+        "fixed left-[50%] top-[50%] z-50 grid translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]",
+        // Mobile-first responsive sizing with proper margins
+        "w-[calc(100vw-2rem)] max-w-lg mx-4 p-4 rounded-lg",
+        // Tablet and desktop sizing  
+        "sm:w-full sm:mx-0 sm:p-6 sm:rounded-lg",
         className
       )}
       {...props}

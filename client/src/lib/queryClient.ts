@@ -1,43 +1,9 @@
-import { QueryClient } from "@tanstack/react-query";
-
-// Função para gerar timestamp único para evitar cache
-function generateCacheBuster(): string {
-  return `t=${Date.now()}`;
-}
-
-// Função para adicionar headers anti-cache
-function addAntiCacheHeaders(headers: HeadersInit = {}): HeadersInit {
-  return {
-    ...headers,
-    'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
-    'Pragma': 'no-cache',
-    'Expires': '0',
-    'X-Request-Timestamp': Date.now().toString(),
-  };
-}
+import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
-    try {
-      const text = await res.text();
-      let errorMessage = res.statusText;
-      
-      // Tentar parsear como JSON para extrair a mensagem de erro
-      try {
-        const errorData = JSON.parse(text);
-        errorMessage = errorData.error || errorData.message || text || res.statusText;
-      } catch {
-        // Se não for JSON válido, usar o texto diretamente
-        errorMessage = text || res.statusText;
-      }
-      
-      throw new Error(errorMessage);
-    } catch (error) {
-      if (error instanceof Error) {
-        throw error;
-      }
-      throw new Error(`${res.status}: ${res.statusText}`);
-    }
+    const text = (await res.text()) || res.statusText;
+    throw new Error(`${res.status}: ${text}`);
   }
 }
 
@@ -45,74 +11,79 @@ export async function apiRequest(
   method: string,
   url: string,
   data?: unknown | undefined,
-  options?: {
-    noCache?: boolean;
-    timeout?: number;
+): Promise<any> {
+  const res = await fetch(url, {
+    method,
+    headers: data ? { "Content-Type": "application/json" } : {},
+    body: data ? JSON.stringify(data) : undefined,
+    credentials: "include",
+  });
+
+  await throwIfResNotOk(res);
+  
+  // Para respostas com status 204 (No Content), não tentar fazer JSON.parse
+  if (res.status === 204) {
+    return null;
   }
-): Promise<Response> {
-  const { noCache = true, timeout = 10000 } = options || {};
   
-  // Adicionar timestamp para evitar cache
-  const separator = url.includes('?') ? '&' : '?';
-  const cacheBuster = noCache ? `${separator}${generateCacheBuster()}` : '';
-  
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), timeout);
-  
-  try {
-    const res = await fetch(`${url}${cacheBuster}`, {
-      method,
-      headers: {
-        ...(data ? { "Content-Type": "application/json" } : {}),
-        ...(noCache ? addAntiCacheHeaders() : {}),
-      },
-      body: data ? JSON.stringify(data) : undefined,
+  return await res.json();
+}
+
+type UnauthorizedBehavior = "returnNull" | "throw";
+export const getQueryFn: <T>(options: {
+  on401: UnauthorizedBehavior;
+}) => QueryFunction<T> =
+  ({ on401: unauthorizedBehavior }) =>
+  async ({ queryKey }) => {
+    const res = await fetch(queryKey.join("/") as string, {
       credentials: "include",
-      signal: controller.signal,
     });
 
-    clearTimeout(timeoutId);
-    await throwIfResNotOk(res);
-    return res;
-  } catch (error) {
-    clearTimeout(timeoutId);
-    if (error instanceof Error && error.name === 'AbortError') {
-      throw new Error(`Request timeout after ${timeout}ms`);
+    if (unauthorizedBehavior === "returnNull" && res.status === 401) {
+      return null;
     }
-    throw error;
-  }
-}
+
+    await throwIfResNotOk(res);
+    
+    // Para respostas com status 204 (No Content), não tentar fazer JSON.parse
+    if (res.status === 204) {
+      return null;
+    }
+    
+    return await res.json();
+  };
 
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
+      queryFn: getQueryFn({ on401: "throw" }),
+      refetchInterval: false,
       refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
-      refetchOnMount: false, // Evitar re-fetch desnecessário
-      staleTime: 10 * 60 * 1000, // 10 minutos - aumentar stale time
-      gcTime: 30 * 60 * 1000, // 30 minutos - aumentar garbage collection
-      retry: 1, // Retry apenas 1 vez
-      retryDelay: 1000,
-      networkMode: 'online',
+      staleTime: 5 * 60 * 1000, // 5 minutos para dados gerais
+      cacheTime: 10 * 60 * 1000, // 10 minutos
+      retry: false,
     },
     mutations: {
-      retry: 1,
-      retryDelay: 1000,
+      retry: false,
     },
   },
 });
 
-// Função para limpar cache específico
-export function invalidateCache(queryKey: string[]) {
-  queryClient.invalidateQueries({ queryKey });
-}
-
-// Função para limpar todo o cache
-export function clearAllCache() {
-  queryClient.clear();
-}
-
-// Função para forçar refresh de dados específicos
-export function forceRefresh(queryKey: string[]) {
-  queryClient.refetchQueries({ queryKey, exact: true });
-}
+// Configurações específicas para diferentes tipos de dados
+export const queryOptions = {
+  // Settings change rarely - cache longer
+  settings: {
+    staleTime: 10 * 60 * 1000, // 10 minutos
+    cacheTime: 30 * 60 * 1000, // 30 minutos
+  },
+  // Dashboard data changes more frequently but still cacheable
+  dashboard: {
+    staleTime: 2 * 60 * 1000, // 2 minutos
+    cacheTime: 5 * 60 * 1000, // 5 minutos
+  },
+  // Real-time data - minimal caching
+  realtime: {
+    staleTime: 0,
+    cacheTime: 1 * 60 * 1000, // 1 minuto
+  }
+};

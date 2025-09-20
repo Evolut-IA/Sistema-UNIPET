@@ -209,6 +209,7 @@ function Router() {
       <Switch>
         
         {/* Admin Routes - all routes starting with /admin */}
+        <Route path="/admin" component={AdminRouter} />
         <Route path="/admin/:rest*" component={AdminRouter} />
         
         {/* Checkout Routes (standalone) */}

@@ -1,3 +1,4 @@
+import * as React from "react";
 import {
   Dialog,
   DialogContent,
@@ -7,8 +8,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { AlertCircle } from "lucide-react";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { AlertTriangle } from "lucide-react";
+import { useMobileViewport } from "@/hooks/use-mobile";
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -31,12 +32,13 @@ export function ConfirmDialog({
   cancelText = "Cancelar",
   isLoading = false,
 }: ConfirmDialogProps) {
-  const isMobile = useIsMobile()
+  const { isMobile } = useMobileViewport()
   
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
         className="sm:max-w-md"
+        maxHeightMobile="max-h-[50vh]"
       >
         <DialogHeader>
           <div className={isMobile 
@@ -47,7 +49,7 @@ export function ConfirmDialog({
               ? "flex justify-center" 
               : "flex-shrink-0"
             }>
-              <AlertCircle className={isMobile 
+              <AlertTriangle className={isMobile 
                 ? "h-8 w-8 text-destructive" 
                 : "h-6 w-6 text-destructive"
               } />

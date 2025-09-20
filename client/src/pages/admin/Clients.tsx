@@ -22,7 +22,7 @@ import {
 } from "@/components/admin/ui/dropdown-menu";
 import { useLocation } from "wouter";
 import type { Client } from "@shared/schema";
-import { Plus, Search, Edit, Trash2, Eye, Copy, FileText, Columns3 as Columns, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Eye, Copy, FileText, Columns, ChevronLeft, ChevronRight } from "lucide-react";
 
 // Componente do ícone de adicionar pet
 const AddPetIcon = ({ className }: { className?: string }) => (

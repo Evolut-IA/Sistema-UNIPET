@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card } from "@/components/admin/ui/card";
 import { Badge } from "@/components/admin/ui/badge";
-import { PawPrint, Phone, MapPin, Calendar, IdCard, QrCode, Shield, Heart, Camera, AlertCircle } from "lucide-react";
+import { PawPrint, Phone, MapPin, Calendar, CreditCard, QrCode, Shield, Heart, Camera, AlertCircle } from "lucide-react";
 
 interface Pet {
   id: string;

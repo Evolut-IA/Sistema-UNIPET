@@ -10,8 +10,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Lock } from "lucide-react";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { AlertTriangle, Lock } from "lucide-react";
+import { useMobileViewport } from "@/hooks/use-mobile";
 
 interface PasswordDialogProps {
   open: boolean;
@@ -31,7 +31,7 @@ export function PasswordDialog({
   isLoading = false,
 }: PasswordDialogProps) {
   const [password, setPassword] = React.useState("");
-  const isMobile = useIsMobile()
+  const { isMobile } = useMobileViewport()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,6 +49,7 @@ export function PasswordDialog({
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent 
         className="sm:max-w-md"
+        maxHeightMobile="max-h-[60vh]"
       >
         <DialogHeader>
           <div className={isMobile 

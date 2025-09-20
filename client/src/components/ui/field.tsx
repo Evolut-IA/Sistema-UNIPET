@@ -1,19 +1,82 @@
-// Simple field component placeholder
 import * as React from "react"
+import { FieldError, Group, Label, Text } from "react-aria-components"
+import { cva, type VariantProps } from "class-variance-authority"
+import { cn } from "@/lib/utils"
 
-export interface FieldProps {
-  children?: React.ReactNode
-  className?: string
+const fieldVariants = cva(
+  "flex flex-col gap-1",
+  {
+    variants: {
+      variant: {
+        default: "",
+        inline: "flex-row items-center gap-2",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  }
+)
+
+export interface FieldProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof fieldVariants> {
+  label?: string
+  description?: string
+  errorMessage?: string
+  isRequired?: boolean
+  isDisabled?: boolean
 }
 
-export function Field({ children, className }: FieldProps) {
-  return <div className={className}>{children}</div>
-}
+const Field = React.forwardRef<HTMLDivElement, FieldProps>(
+  ({ 
+    className, 
+    variant, 
+    label, 
+    description, 
+    errorMessage, 
+    isRequired = false,
+    isDisabled = false,
+    children,
+    ...props 
+  }, ref) => {
+    return (
+      <Group
+        ref={ref}
+        className={cn(fieldVariants({ variant, className }))}
+        isDisabled={isDisabled}
+      >
+        {label && (
+          <Label className={cn(
+            "text-sm font-medium text-foreground",
+            isDisabled && "opacity-50"
+          )}>
+            {label}
+            {isRequired && <span className="text-destructive ml-1">*</span>}
+          </Label>
+        )}
+        {children}
+        {description && (
+          <Text 
+            slot="description" 
+            className={cn(
+              "text-xs text-muted-foreground",
+              isDisabled && "opacity-50"
+            )}
+          >
+            {description}
+          </Text>
+        )}
+        {errorMessage && (
+          <FieldError className="text-xs text-destructive">
+            {errorMessage}
+          </FieldError>
+        )}
+      </Group>
+    )
+  }
+)
 
-export function FieldError({ children }: { children: React.ReactNode }) {
-  return <div className="text-red-500 text-sm">{children}</div>
-}
+Field.displayName = "Field"
 
-export function FieldLabel({ children }: { children: React.ReactNode }) {
-  return <label className="block text-sm font-medium">{children}</label>
-}
+export { Field, fieldVariants }

@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useImageUpload } from "@/hooks/use-image-upload";
-import { Image, Upload } from "lucide-react";
+import { ImagePlus, X, Upload } from "lucide-react";
 import { useCallback, useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -9,12 +9,14 @@ interface ImageUploadProps {
   value?: string;
   onChange?: (value: string) => void;
   className?: string;
+  placeholder?: string;
 }
 
 export function ImageUpload({ 
   value, 
   onChange, 
-  className
+  className,
+  placeholder = "Selecione uma imagem"
 }: ImageUploadProps) {
   const {
     previewUrl,
@@ -22,8 +24,9 @@ export function ImageUpload({
     fileInputRef,
     handleThumbnailClick,
     handleFileChange,
+    handleRemove,
   } = useImageUpload({
-    onUpload: (url: string) => {
+    onUpload: (url) => {
       onChange?.(url);
     },
   });
@@ -92,7 +95,7 @@ export function ImageUpload({
           )}
         >
           <div className="rounded-full bg-background p-2 shadow-sm">
-            <Image className="h-5 w-5 text-muted-foreground" />
+            <ImagePlus className="h-5 w-5 text-muted-foreground" />
           </div>
           <div className="text-center">
             <p className="text-xs font-medium text-foreground">Clique para selecionar</p>
