@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/admin/ui/card";
+import { Badge } from "@/components/admin/ui/badge";
 import { PawPrint, Phone, MapPin, Calendar, IdCard, QrCode, Shield, Heart, Camera, AlertCircle } from "lucide-react";
 
 interface Pet {

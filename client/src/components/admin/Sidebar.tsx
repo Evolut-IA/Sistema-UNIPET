@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/admin/utils";
 import {
   LayoutDashboard,
   Users,
@@ -65,7 +65,10 @@ export default function Sidebar() {
             </h3>
             <div className="space-y-1">
               {section.items.map((item) => {
-                const isActive = location === item.href;
+                // Use startsWith for nested routes to highlight parent sections
+                const isActive = item.href === '/' 
+                  ? location === item.href  // Dashboard exact match
+                  : location.startsWith(item.href); // Other routes use startsWith for nested routes
                 return (
                   <Link 
                     key={item.name} 

@@ -152,8 +152,91 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
+  // CRITICAL: Dashboard aggregated data endpoint (required by admin dashboard)
+  app.get("/admin/api/dashboard/all", requireAuth, async (req, res) => {
+    try {
+      console.log("📊 [DASHBOARD] Processing dashboard data request");
+      
+      // Fetch all required data in parallel for optimal performance
+      const [
+        allGuides,
+        networkUnits, 
+        clients,
+        contactSubmissions,
+        plans
+      ] = await Promise.all([
+        storage.getAllGuides(),
+        storage.getNetworkUnits(), 
+        storage.getAllClients(),
+        storage.getAllContactSubmissions(),
+        storage.getAllPlans()
+      ]);
 
+      console.log("📊 [DASHBOARD] Data fetched successfully:", {
+        guides: allGuides.length,
+        networkUnits: networkUnits.length,
+        clients: clients.length,
+        contactSubmissions: contactSubmissions.length,
+        plans: plans.length
+      });
 
+      // Calculate basic statistics
+      const stats = {
+        activeClients: clients.length,
+        registeredPets: 0, // TODO: Add getAllPets if available
+        openGuides: allGuides.filter(g => g.status === 'open').length,
+        totalGuides: allGuides.length,
+        totalPlans: plans.length,
+        activePlans: plans.filter(p => p.isActive).length,
+        inactivePlans: plans.filter(p => !p.isActive).length,
+        activeNetwork: networkUnits.filter(u => u.isActive).length,
+        totalProcedures: 0, // TODO: Add if getAllProcedures method exists
+        monthlyRevenue: 0, // TODO: Calculate from contracts if needed
+        totalRevenue: 0
+      };
+
+      // Calculate plan distribution
+      const planDistribution = plans.map(plan => ({
+        planId: plan.id,
+        planName: plan.name,
+        petCount: 0, // TODO: Calculate when pets are available
+        percentage: 0
+      }));
+
+      // Calculate plan revenue (basic calculation using base price)
+      const planRevenue = plans.map(plan => ({
+        planId: plan.id,
+        planName: plan.name,
+        petCount: 0, // TODO: Calculate when pets are available
+        monthlyPrice: parseFloat(plan.basePrice || '0'),
+        totalRevenue: 0
+      }));
+
+      const dashboardData = {
+        stats,
+        guides: allGuides.slice(0, 5), // Return first 5 for performance
+        networkUnits: networkUnits.slice(0, 10), // Return first 10 for performance
+        clients: clients.slice(0, 10), // Return first 10 for performance
+        contactSubmissions: contactSubmissions.slice(0, 10), // Return first 10 for performance
+        plans,
+        planDistribution,
+        planRevenue
+      };
+
+      // Cache headers for performance
+      res.set('Cache-Control', 'private, max-age=60, stale-while-revalidate=30');
+      res.json(dashboardData);
+      
+      console.log("✅ [DASHBOARD] Dashboard data sent successfully");
+      
+    } catch (error) {
+      console.error("❌ [DASHBOARD] Error fetching aggregated dashboard data:", error);
+      res.status(500).json({ 
+        error: "Erro ao buscar dados do dashboard",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
   app.get("/api/plans", async (req, res) => {
     try {
       const plans = await storage.getPlans();
