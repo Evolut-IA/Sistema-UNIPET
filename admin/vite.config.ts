@@ -30,12 +30,12 @@ export default defineConfig({
   },
   root: path.resolve(path.dirname(fileURLToPath(import.meta.url)), "client"),
   build: {
-    outDir: path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "dist/public"),
+    outDir: path.resolve(path.dirname(fileURLToPath(import.meta.url)), "dist"),
     emptyOutDir: true,
   },
   server: {
     host: "0.0.0.0",
-    port: 5000,
+    port: 3002,
     fs: {
       strict: true,
       deny: ["**/.*"],
