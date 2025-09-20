@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste - Correção de Input</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-field {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: #f7f9fa !important;
+            color: #1a1a1a !important;
+        }
+        input:focus, textarea:focus, select:focus {
+            background-color: #f7f9fa !important;
+            color: #1a1a1a !important;
+            outline: none;
+        }
+        input:hover, textarea:hover, select:hover {
+            background-color: #f7f9fa !important;
+            color: #1a1a1a !important;
+        }
+        input:active, textarea:active, select:active {
+            background-color: #f7f9fa !important;
+            color: #1a1a1a !important;
+        }
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 30px #f7f9fa inset !important;
+            -webkit-text-fill-color: #1a1a1a !important;
+            background-color: #f7f9fa !important;
+            color: #1a1a1a !important;
+        }
+        .instructions {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Teste - Correção de Mudança de Cor nos Inputs</h1>
+        
+        <div class="instructions">
+            <h3>Instruções para teste:</h3>
+            <ol>
+                <li>Clique em qualquer campo de texto</li>
+                <li>Cole texto usando Ctrl+V</li>
+                <li>Verifique se a cor do background não muda</li>
+                <li>Teste em diferentes tipos de campos</li>
+            </ol>
+        </div>
+
+        <div class="test-field">
+            <label for="text-input">Campo de Texto:</label>
+            <input type="text" id="text-input" placeholder="Digite ou cole texto aqui">
+        </div>
+
+        <div class="test-field">
+            <label for="email-input">Campo de Email:</label>
+            <input type="email" id="email-input" placeholder="Digite ou cole email aqui">
+        </div>
+
+        <div class="test-field">
+            <label for="password-input">Campo de Senha:</label>
+            <input type="password" id="password-input" placeholder="Digite ou cole senha aqui">
+        </div>
+
+        <div class="test-field">
+            <label for="number-input">Campo Numérico:</label>
+            <input type="number" id="number-input" placeholder="Digite ou cole número aqui">
+        </div>
+
+        <div class="test-field">
+            <label for="textarea-input">Área de Texto:</label>
+            <textarea id="textarea-input" rows="4" placeholder="Digite ou cole texto longo aqui"></textarea>
+        </div>
+
+        <div class="test-field">
+            <label for="select-input">Campo de Seleção:</label>
+            <select id="select-input">
+                <option value="">Selecione uma opção</option>
+                <option value="opcao1">Opção 1</option>
+                <option value="opcao2">Opção 2</option>
+                <option value="opcao3">Opção 3</option>
+            </select>
+        </div>
+
+        <div style="margin-top: 20px; padding: 15px; background: #f0f8ff; border-radius: 4px;">
+            <h4>Resultado esperado:</h4>
+            <p>✅ A cor do background deve permanecer sempre <strong>#f7f9fa</strong> (cinza claro)</p>
+            <p>✅ A cor do texto deve permanecer sempre <strong>#1a1a1a</strong> (preto)</p>
+            <p>✅ Não deve haver mudanças de cor ao colar texto</p>
+        </div>
+    </div>
+</body>
+</html>

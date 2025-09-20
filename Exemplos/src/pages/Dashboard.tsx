@@ -1,19 +1,28 @@
 import { useState, useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/admin/ui/card";
-import { Button } from "@/components/admin/ui/button";
-import { Skeleton } from "@/components/admin/ui/skeleton";
-import { Alert, AlertDescription } from "@/components/admin/ui/alert";
-import { ChartContainer, ChartTooltip } from "@/components/admin/ui/chart";
-import { DateFilterComponent } from "@/components/admin/DateFilterComponent";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { DateFilterComponent } from "@/components/DateFilterComponent";
+import { useLocation } from "wouter";
 import type { Client, Guide, NetworkUnit, ContactSubmission } from "@shared/schema";
 import {
+  Users,
+  PawPrint,
+  FileText,
+  TrendingUp,
+  Plus,
   User,
-  Heart
+  ExternalLink
 } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
 import { CalendarDate } from "@internationalized/date";
-import { getDateRangeParams } from "@/lib/admin/date-utils";
+import { getDateRangeParams } from "@/lib/date-utils";
 
 // Type definitions for dashboard data
 type PlanRevenue = {
@@ -30,6 +39,7 @@ type PlanDistribution = {
 };
 
 export default function Dashboard() {
+  const [, setLocation] = useLocation();
   const [dateFilter, setDateFilter] = useState<{
     startDate: CalendarDate | null;
     endDate: CalendarDate | null;
@@ -63,10 +73,10 @@ export default function Dashboard() {
     isLoading: isLoadingDashboard, 
     isError: isDashboardError 
   } = useQuery({
-    queryKey: ["/admin/api/dashboard/all", dateParams],
+    queryKey: ["/api/dashboard/all", dateParams],
     queryFn: async () => {
       const params = new URLSearchParams(dateParams);
-      const response = await fetch(`/admin/api/dashboard/all?${params}`);
+      const response = await fetch(`/api/dashboard/all?${params}`);
       if (!response.ok) throw new Error('Failed to fetch dashboard data');
       return response.json();
     },
@@ -78,6 +88,7 @@ export default function Dashboard() {
   const networkUnits = dashboardData?.networkUnits || [] as NetworkUnit[];
   const clients = dashboardData?.clients || [] as Client[];
   const contactSubmissions = dashboardData?.contactSubmissions || [] as ContactSubmission[];
+  const plans = dashboardData?.plans || [];
   const planDistribution = (dashboardData?.planDistribution || []) as PlanDistribution[];
   const planRevenue = (dashboardData?.planRevenue || []) as PlanRevenue[];
 
@@ -100,6 +111,9 @@ export default function Dashboard() {
   const distributionError = isDashboardError;
   const revenueError = isDashboardError;
 
+  // Memoize expensive calculations
+  const recentClients = useMemo(() => clients.slice(0, 3), [clients]);
+  const recentSubmissions = useMemo(() => contactSubmissions.slice(0, 3), [contactSubmissions]);
 
   // Memoize loading states
   const isAnyLoading = useMemo(() =>
@@ -332,9 +346,9 @@ export default function Dashboard() {
                     axisLine={false}
                   />
                   <ChartTooltip
-                    content={({ active, payload }) => {
+                    content={({ active, payload, label }) => {
                       if (active && payload && payload.length) {
-                        const data = payload[0].payload as any;
+                        const data = payload[0].payload;
                         return (
                           <div className="bg-background border border-border rounded-lg shadow-lg p-3">
                             <p className="font-medium text-foreground">{data.categoria}</p>
@@ -424,7 +438,7 @@ export default function Dashboard() {
                 </div>
 
                 {/* Distribuição por plano */}
-                {planDistribution.map((plan) => {
+                {planDistribution.map((plan, index: number) => {
                   // Cores uniformes usando cor principal para todos os planos
                   const planColors = {
                     'BASIC': { bg: 'bg-primary', text: 'text-primary', light: 'bg-primary/20' },
