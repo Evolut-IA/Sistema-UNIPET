@@ -161,6 +161,20 @@ export interface IStorage {
   getAllGuides(): Promise<Guide[]>;
   getActiveGuides(): Promise<Guide[]>;
   deleteGuide(id: string): Promise<boolean>;
+  getGuidesWithNetworkUnits(params: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    status?: string;
+    type?: string;
+    startDate?: string;
+    endDate?: string;
+  }): Promise<{
+    data: Guide[];
+    total: number;
+    totalPages: number;
+    page: number;
+  }>;
 
   // Satisfaction Surveys
   createSatisfactionSurvey(survey: InsertSatisfactionSurvey): Promise<SatisfactionSurvey>;

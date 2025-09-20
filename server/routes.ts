@@ -339,8 +339,80 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/admin/api/guides/with-network-units", async (req, res) => {
     try {
-      const guides = await storage.getAllGuides();
-      res.json(guides);
+      // Parse query parameters
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 10;
+      const search = (req.query.search as string) || '';
+      const status = (req.query.status as string) || 'all';
+      const type = (req.query.type as string) || 'all';
+      const startDate = req.query.startDate as string;
+      const endDate = req.query.endDate as string;
+      
+      // Get all guides first (we'll implement filtering here directly)
+      const allGuides = await storage.getAllGuides();
+      
+      // Apply filters
+      let filteredGuides = allGuides;
+      
+      // Search filter - search in procedure, procedureNotes, or generalNotes
+      if (search && search.trim()) {
+        const searchTerm = search.trim().toLowerCase();
+        filteredGuides = filteredGuides.filter(guide => 
+          (guide.procedure && guide.procedure.toLowerCase().includes(searchTerm)) ||
+          (guide.procedureNotes && guide.procedureNotes.toLowerCase().includes(searchTerm)) ||
+          (guide.generalNotes && guide.generalNotes.toLowerCase().includes(searchTerm))
+        );
+      }
+      
+      // Status filter
+      if (status && status !== 'all') {
+        filteredGuides = filteredGuides.filter(guide => guide.status === status);
+      }
+      
+      // Type filter
+      if (type && type !== 'all') {
+        filteredGuides = filteredGuides.filter(guide => guide.type === type);
+      }
+      
+      // Date filters
+      if (startDate) {
+        const start = new Date(startDate);
+        start.setHours(0, 0, 0, 0);
+        filteredGuides = filteredGuides.filter(guide => 
+          guide.createdAt && new Date(guide.createdAt) >= start
+        );
+      }
+      
+      if (endDate) {
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        filteredGuides = filteredGuides.filter(guide => 
+          guide.createdAt && new Date(guide.createdAt) <= end
+        );
+      }
+      
+      // Sort by createdAt descending (newest first)
+      filteredGuides.sort((a, b) => {
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return dateB - dateA;
+      });
+      
+      // Calculate pagination
+      const total = filteredGuides.length;
+      const totalPages = Math.ceil(total / limit);
+      const offset = (page - 1) * limit;
+      const paginatedGuides = filteredGuides.slice(offset, offset + limit);
+      
+      // Return paginated response in the format expected by frontend
+      const response = {
+        data: paginatedGuides,
+        total,
+        totalPages,
+        page
+      };
+      
+      res.json(response);
     } catch (error) {
       console.error("❌ [ADMIN] Error fetching guides with network units:", error);
       res.status(500).json({ error: "Erro ao buscar guias" });
