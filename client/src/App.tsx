@@ -29,6 +29,27 @@ import ScrollToTop from "@/components/scroll-to-top";
 import ErrorBoundary from "@/components/error-boundary";
 import PageLayout from "@/components/layout/page-layout";
 
+// Admin imports
+import AdminDashboard from "@/pages/admin/Dashboard";
+import AdminClients from "@/pages/admin/Clients";
+import AdminClientForm from "@/pages/admin/ClientForm";
+import AdminPetForm from "@/pages/admin/PetForm";
+import AdminGuides from "@/pages/admin/Guides";
+import AdminGuideForm from "@/pages/admin/GuideForm";
+import AdminPlans from "@/pages/admin/Plans";
+import AdminPlanForm from "@/pages/admin/PlanForm";
+import AdminNetwork from "@/pages/admin/Network";
+import AdminNetworkForm from "@/pages/admin/NetworkForm";
+import AdminFAQ from "@/pages/admin/FAQ";
+import AdminProcedures from "@/pages/admin/Procedures";
+import AdminContactSubmissions from "@/pages/admin/ContactSubmissions";
+import AdminSettings from "@/pages/admin/Settings";
+import AdminAdministration from "@/pages/admin/Administration";
+import AdminUnitDashboard from "@/pages/admin/UnitDashboard";
+import AdminLayout from "@/components/admin/Layout";
+import AdminNotFound from "@/pages/admin/not-found";
+import "@/styles/admin.css";
+
 // Componente de loading global com fallback robusto
 function GlobalLoading() {
   return (
