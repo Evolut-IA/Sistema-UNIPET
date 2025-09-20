@@ -1,14 +1,10 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/admin/ui/chart";
-import { DateFilterComponent } from "@/components/admin/DateFilterComponent";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/admin/ui/card";
+import { Button } from "@/components/admin/ui/button";
+import { Badge } from "@/components/admin/ui/badge";
+import { Alert, AlertDescription } from "@/components/admin/ui/alert";
 import { useLocation } from "wouter";
-import type { Client, Guide, NetworkUnit, ContactSubmission } from "@shared/schema";
 import {
   Users,
   PawPrint,
@@ -16,13 +12,10 @@ import {
   TrendingUp,
   Plus,
   User,
-  ExternalLink
+  ExternalLink,
+  DollarSign,
+  Activity
 } from "lucide-react";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
-import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
-import { CalendarDate } from "@internationalized/date";
-import { getDateRangeParams } from "@/lib/admin/date-utils";
 
 // Type definitions for dashboard data
 type PlanRevenue = {
@@ -40,41 +33,22 @@ type PlanDistribution = {
 
 export default function Dashboard() {
   const [, setLocation] = useLocation();
-  const [dateFilter, setDateFilter] = useState<{
-    startDate: CalendarDate | null;
-    endDate: CalendarDate | null;
-  }>({ startDate: null, endDate: null });
 
-  const [debouncedDateFilter, setDebouncedDateFilter] = useState<{
-    startDate: CalendarDate | null;
-    endDate: CalendarDate | null;
-  }>({ startDate: null, endDate: null });
-
-  // Debounce date filter changes
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedDateFilter(dateFilter);
-    }, 500); // 500ms debounce
-
-    return () => clearTimeout(timer);
-  }, [dateFilter]);
-
-  const handleDateRangeChange = (startDate: CalendarDate | null, endDate: CalendarDate | null) => {
-    setDateFilter({ startDate, endDate });
+  // Sample dashboard data for now
+  const dashboardData = {
+    totalClients: 1250,
+    totalPets: 1890,
+    activeSubscriptions: 1100,
+    monthlyRevenue: 45680,
+    growth: 12.5
   };
 
-  // Get date range parameters for API calls using debounced values
-  const dateParams = getDateRangeParams(debouncedDateFilter.startDate, debouncedDateFilter.endDate);
-  const hasDateFilter = Object.keys(dateParams).length > 0;
-
-  // Single aggregated query to fetch all dashboard data
   const { 
-    data: dashboardData, 
-    isLoading: isLoadingDashboard, 
-    isError: isDashboardError 
+    data: contacts, 
+    isLoading: isLoadingContacts, 
+    isError: isContactsError 
   } = useQuery({
-    queryKey: ["/admin/api/dashboard/all"],
-    ...queryOptions.dashboard
+    queryKey: ["/admin/api/contacts"]
   });
 
   // Extract data from the aggregated response

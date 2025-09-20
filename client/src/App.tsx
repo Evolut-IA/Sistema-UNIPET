@@ -30,7 +30,7 @@ import ErrorBoundary from "@/components/error-boundary";
 import PageLayout from "@/components/layout/page-layout";
 
 // Admin imports
-import AdminDashboard from "@/pages/admin/Dashboard";
+import AdminDashboard from "@/pages/admin/SimpleDashboard";
 import AdminLayout from "@/components/admin/Layout";
 import { queryClient as adminQueryClient } from "./lib/admin/queryClient";
 
@@ -46,35 +46,6 @@ function GlobalLoading() {
   );
 }
 
-// Simple working dashboard component
-function SimpleAdminDashboard() {
-  return (
-    <div className="p-8 max-w-4xl mx-auto">
-      <div className="bg-white rounded-lg shadow-sm border p-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">Dashboard Admin - UNIPET</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-blue-900 mb-2">Clientes</h3>
-            <p className="text-blue-700">Gerenciar clientes e pets</p>
-          </div>
-          <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-green-900 mb-2">Planos</h3>
-            <p className="text-green-700">Configurar planos de saúde</p>
-          </div>
-          <div className="bg-purple-50 border border-purple-200 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-purple-900 mb-2">Rede</h3>
-            <p className="text-purple-700">Unidades credenciadas</p>
-          </div>
-        </div>
-        <div className="mt-8 p-4 bg-green-100 border border-green-300 rounded-lg">
-          <p className="text-green-800 font-semibold">✅ Sistema Admin Funcionando!</p>
-          <p className="text-green-700 mt-2">Projeto unificado com sucesso. Todas as funcionalidades estão acessíveis através das rotas /admin/*</p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // AdminRouter - handles all admin routes with base="/admin"
 function AdminRouter() {
   return (
@@ -82,10 +53,10 @@ function AdminRouter() {
       <QueryClientProvider client={adminQueryClient}>
         <Switch>
           {/* Dashboard route */}
-          <Route path="/" component={SimpleAdminDashboard} />
+          <Route path="/" component={() => <AdminLayout><AdminDashboard /></AdminLayout>} />
           
           {/* Fallback */}
-          <Route component={() => <div className="p-8"><h1>Admin Page Not Found</h1></div>} />
+          <Route component={() => <AdminLayout><div>Admin Page Not Found</div></AdminLayout>} />
         </Switch>
       </QueryClientProvider>
     </WouterRouter>
