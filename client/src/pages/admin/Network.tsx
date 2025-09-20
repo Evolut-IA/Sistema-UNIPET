@@ -21,7 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/admin/ui/dropdown-menu";
 import { useLocation } from "wouter";
-import { Plus, Search, Edit, Trash2, Building2, ExternalLink, Phone, MapPin, Eye, Copy, Globe, Columns, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Building, ExternalLink, Eye, Copy, Globe, Columns, ChevronLeft, ChevronRight } from "lucide-react";
 import { apiRequest } from "@/lib/admin/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { ConfirmDialog } from "@/components/admin/ui/confirm-dialog";
@@ -431,7 +431,7 @@ export default function Network() {
             ) : (
               <TableRow className="bg-accent">
                 <TableCell colSpan={visibleColumns.length} className="text-center py-12 bg-accent">
-                  <Building2 className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <Building className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                   <p className="text-muted-foreground mb-4">
                     {searchQuery 
                       ? "Nenhuma unidade encontrada." 
@@ -499,7 +499,7 @@ export default function Network() {
         <DialogContent hideCloseButton>
           <DialogHeader className="flex flex-row items-center justify-between pr-2">
             <DialogTitle className="flex items-center space-x-2">
-              <Building2 className="h-5 w-5 text-primary" />
+              <Building className="h-5 w-5 text-primary" />
               <span>Detalhes da Unidade</span>
             </DialogTitle>
             <div className="flex items-center gap-2">

@@ -30,7 +30,7 @@ import {
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
-import { Plus, Search, Edit, Trash2, ClipboardList, Eye, DollarSign, X, Columns, ChevronLeft, ChevronRight, Copy, FileText } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Clipboard, Eye, DollarSign, X, Columns, ChevronLeft, ChevronRight, Copy, FileText } from "lucide-react";
 import { apiRequest } from "@/lib/admin/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useColumnPreferences } from "@/hooks/admin/use-column-preferences";
@@ -1288,7 +1288,7 @@ export default function Procedures() {
             <TableBody>
               <TableRow className="bg-accent">
                 <TableCell colSpan={visibleColumns.length} className="text-center py-12 bg-accent">
-                  <ClipboardList className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <Clipboard className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                   <p className="text-muted-foreground mb-4">
                     {searchQuery 
                       ? "Nenhum procedimento encontrado para a busca." 

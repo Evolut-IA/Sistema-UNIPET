@@ -32,7 +32,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useColumnPreferences } from "@/hooks/admin/use-column-preferences";
 import { apiRequest } from "@/lib/admin/queryClient";
 import { insertUserSchema, type User, type NetworkUnitWithCredentialStatus } from "@shared/schema";
-import { UserCog, Plus, Search, Edit, Trash2, Shield, User, Key, Network, Lock, Eye, EyeOff, Columns, ChevronLeft, ChevronRight, Globe } from "lucide-react";
+import { UserCheck, Plus, Search, Edit, Trash2, Eye, EyeOff, Columns, ChevronLeft, ChevronRight, Globe } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -659,7 +659,7 @@ export default function Administration() {
               ) : (
                 <TableRow className="bg-accent">
                   <TableCell colSpan={visibleColumns.length} className="text-center py-12 bg-accent">
-                    <UserCog className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <UserCheck className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                     <p className="text-muted-foreground mb-4">
                       {searchQuery 
                         ? "Nenhum usuário encontrado para a busca." 
@@ -828,7 +828,7 @@ export default function Administration() {
                     {visibleNetworkColumns.includes("Nome") && (
                       <TableCell className="font-medium whitespace-nowrap bg-accent">
                         <div className="flex items-center space-x-2">
-                          <Network className="h-4 w-4 text-primary" />
+                          <Globe className="h-4 w-4 text-primary" />
                           <span>{unit.name}</span>
                         </div>
                       </TableCell>
@@ -871,7 +871,7 @@ export default function Administration() {
                             size="sm"
                             onClick={() => handleEditCredentials(unit)}
                           >
-                            <Key className="h-4 w-4" />
+                            <Edit className="h-4 w-4" />
                           </Button>
                         </div>
                       </TableCell>
@@ -886,7 +886,7 @@ export default function Administration() {
             <TableBody>
               <TableRow className="bg-accent">
                 <TableCell colSpan={visibleNetworkColumns.length} className="text-center py-12 bg-accent">
-                  <Network className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <Globe className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                   <p className="text-muted-foreground">
                     Nenhuma unidade da rede cadastrada ainda.
                   </p>
