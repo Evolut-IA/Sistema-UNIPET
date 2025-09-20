@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/admin/queryClient";
 import { insertSiteSettingsSchema, insertRulesSettingsSchema } from "@shared/schema";
-import { Globe, Save, FileText, Share, Type, Image } from "lucide-react";
+import { Globe, Save, FileText, Share, Image } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ImageUpload } from "@/components/ui/image-upload";
 
@@ -409,7 +409,7 @@ export default function Settings() {
                   {/* Content */}
                   <AccordionItem value="content" data-testid="accordion-content">
                     <AccordionTrigger className="flex items-center space-x-2">
-                      <Type className="h-4 w-4" />
+                      <FileText className="h-4 w-4" />
                       <div>
                         <span>Conteúdo</span>
                       </div>
