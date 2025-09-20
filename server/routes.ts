@@ -157,6 +157,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log("📊 [DASHBOARD] Processing dashboard data request");
       
+      // Extract date filter parameters from query
+      const { startDate, endDate } = req.query;
+      const hasDateFilter = startDate || endDate;
+      
+      console.log("📊 [DASHBOARD] Date filters:", { startDate, endDate, hasDateFilter });
+      
       // Fetch all required data in parallel for optimal performance
       const [
         allGuides,
@@ -174,35 +180,101 @@ export async function registerRoutes(app: Express): Promise<Server> {
         storage.getAllPets()
       ]);
 
+      // Apply date filters if present
+      let filteredGuides = allGuides;
+      let filteredClients = clients;
+      let filteredContactSubmissions = contactSubmissions;
+      let filteredPets = allPets;
+
+      if (hasDateFilter) {
+        const startDateTime = startDate ? new Date(startDate as string) : null;
+        const endDateTime = endDate ? (() => {
+          const end = new Date(endDate as string);
+          end.setHours(23, 59, 59, 999);
+          return end;
+        })() : null;
+
+        // Filter guides by createdAt
+        if (startDateTime || endDateTime) {
+          filteredGuides = allGuides.filter(guide => {
+            if (!guide.createdAt) return false;
+            const createdAt = new Date(guide.createdAt);
+            if (startDateTime && createdAt < startDateTime) return false;
+            if (endDateTime && createdAt > endDateTime) return false;
+            return true;
+          });
+        }
+
+        // Filter clients by createdAt
+        if (startDateTime || endDateTime) {
+          filteredClients = clients.filter(client => {
+            if (!client.createdAt) return false;
+            const createdAt = new Date(client.createdAt);
+            if (startDateTime && createdAt < startDateTime) return false;
+            if (endDateTime && createdAt > endDateTime) return false;
+            return true;
+          });
+        }
+
+        // Filter contactSubmissions by createdAt
+        if (startDateTime || endDateTime) {
+          filteredContactSubmissions = contactSubmissions.filter(submission => {
+            if (!submission.createdAt) return false;
+            const createdAt = new Date(submission.createdAt);
+            if (startDateTime && createdAt < startDateTime) return false;
+            if (endDateTime && createdAt > endDateTime) return false;
+            return true;
+          });
+        }
+
+        // Filter pets by createdAt
+        if (startDateTime || endDateTime) {
+          filteredPets = allPets.filter(pet => {
+            if (!pet.createdAt) return false;
+            const createdAt = new Date(pet.createdAt);
+            if (startDateTime && createdAt < startDateTime) return false;
+            if (endDateTime && createdAt > endDateTime) return false;
+            return true;
+          });
+        }
+
+        console.log("📊 [DASHBOARD] After date filtering:", {
+          guides: `${filteredGuides.length}/${allGuides.length}`,
+          clients: `${filteredClients.length}/${clients.length}`,
+          contactSubmissions: `${filteredContactSubmissions.length}/${contactSubmissions.length}`,
+          pets: `${filteredPets.length}/${allPets.length}`
+        });
+      }
+
       console.log("📊 [DASHBOARD] Data fetched successfully:", {
-        guides: allGuides.length,
+        guides: hasDateFilter ? `${filteredGuides.length}/${allGuides.length}` : allGuides.length,
         networkUnits: networkUnits.length,
-        clients: clients.length,
-        contactSubmissions: contactSubmissions.length,
+        clients: hasDateFilter ? `${filteredClients.length}/${clients.length}` : clients.length,
+        contactSubmissions: hasDateFilter ? `${filteredContactSubmissions.length}/${contactSubmissions.length}` : contactSubmissions.length,
         plans: plans.length,
-        pets: allPets.length
+        pets: hasDateFilter ? `${filteredPets.length}/${allPets.length}` : allPets.length
       });
 
-      // Calculate basic statistics
+      // Calculate basic statistics using filtered data
       const stats = {
-        activeClients: clients.length,
-        registeredPets: allPets.length, // Now using real pets data
-        openGuides: allGuides.filter(g => g.status === 'open').length,
-        totalGuides: allGuides.length,
+        activeClients: filteredClients.length,
+        registeredPets: filteredPets.length,
+        openGuides: filteredGuides.filter(g => g.status === 'open').length,
+        totalGuides: filteredGuides.length,
         totalPlans: plans.length,
         activePlans: plans.filter(p => p.isActive).length,
         inactivePlans: plans.filter(p => !p.isActive).length,
         activeNetwork: networkUnits.filter(u => u.isActive).length,
         totalProcedures: 0, // TODO: Add if getAllProcedures method exists
-        monthlyRevenue: allPets.length * 0, // Will be calculated after planRevenue
-        totalRevenue: allPets.length * 0 // Will be calculated after planRevenue
+        monthlyRevenue: filteredPets.length * 0, // Will be calculated after planRevenue
+        totalRevenue: filteredPets.length * 0 // Will be calculated after planRevenue
       };
 
-      // Calculate plan distribution
-      const totalPets = allPets.length;
+      // Calculate plan distribution using filtered pets
+      const totalFilteredPets = filteredPets.length;
       const planDistribution = plans.map(plan => {
-        const petCount = allPets.filter(pet => pet.planId === plan.id).length;
-        const percentage = totalPets > 0 ? Math.round((petCount / totalPets) * 100) : 0;
+        const petCount = filteredPets.filter(pet => pet.planId === plan.id).length;
+        const percentage = totalFilteredPets > 0 ? Math.round((petCount / totalFilteredPets) * 100) : 0;
         return {
           planId: plan.id,
           planName: plan.name,
@@ -211,9 +283,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         };
       });
 
-      // Calculate plan revenue (basic calculation using base price)
+      // Calculate plan revenue using filtered pets (basic calculation using base price)
       const planRevenue = plans.map(plan => {
-        const petCount = allPets.filter(pet => pet.planId === plan.id).length;
+        const petCount = filteredPets.filter(pet => pet.planId === plan.id).length;
         const monthlyPrice = parseFloat(plan.basePrice || '0');
         const totalRevenue = petCount * monthlyPrice;
         return {
@@ -234,13 +306,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const dashboardData = {
         stats,
-        guides: allGuides.slice(0, 5), // Return first 5 for performance
-        networkUnits: networkUnits.slice(0, 10), // Return first 10 for performance
-        clients: clients.slice(0, 10), // Return first 10 for performance
-        contactSubmissions: contactSubmissions.slice(0, 10), // Return first 10 for performance
+        guides: filteredGuides.slice(0, 5), // Return first 5 for performance using filtered data
+        networkUnits: networkUnits.slice(0, 10), // Return first 10 for performance (not date-filtered)
+        clients: filteredClients.slice(0, 10), // Return first 10 for performance using filtered data
+        contactSubmissions: filteredContactSubmissions.slice(0, 10), // Return first 10 for performance using filtered data
         plans,
         planDistribution,
-        planRevenue
+        planRevenue,
+        // Include filter info for debugging
+        dateFilter: hasDateFilter ? { startDate, endDate } : null
       };
 
       // Cache headers for performance

@@ -53,7 +53,7 @@ import {
   users
 } from "../shared/schema.js";
 import { db } from "./db.js";
-import { eq, desc, asc, and, sql, like } from "drizzle-orm";
+import { eq, desc, asc, and, sql, like, gte, lte } from "drizzle-orm";
 import { autoConfig } from "./config.js";
 
 export interface IStorage {
@@ -61,6 +61,7 @@ export interface IStorage {
   createContactSubmission(submission: InsertContactSubmission): Promise<ContactSubmission>;
   getContactSubmissions(): Promise<ContactSubmission[]>;
   getAllContactSubmissions(): Promise<ContactSubmission[]>;
+  getAllContactSubmissionsWithDateFilter(startDate?: string, endDate?: string): Promise<ContactSubmission[]>;
   deleteContactSubmission(id: string): Promise<boolean>;
 
   // Plans
@@ -105,6 +106,7 @@ export interface IStorage {
   updateClient(id: string, client: Partial<InsertClient>): Promise<Client | undefined>;
   deleteClient(id: string): Promise<boolean>;
   getAllClients(): Promise<Client[]>;
+  getAllClientsWithDateFilter(startDate?: string, endDate?: string): Promise<Client[]>;
   searchClients(query: string): Promise<Client[]>; // NEW: Missing method
 
   // Pets
@@ -114,6 +116,7 @@ export interface IStorage {
   getPetsByClientId(clientId: string): Promise<Pet[]>;
   deletePet(id: string): Promise<boolean>;
   getAllPets(): Promise<Pet[]>;
+  getAllPetsWithDateFilter(startDate?: string, endDate?: string): Promise<Pet[]>;
 
   // Contracts
   createContract(contract: InsertContract): Promise<Contract>;
@@ -162,6 +165,7 @@ export interface IStorage {
   getGuide(id: string): Promise<Guide | undefined>;
   getGuideById(id: string): Promise<Guide | undefined>; // NEW: Alias for routes compatibility
   getAllGuides(): Promise<Guide[]>;
+  getAllGuidesWithDateFilter(startDate?: string, endDate?: string): Promise<Guide[]>;
   getActiveGuides(): Promise<Guide[]>;
   deleteGuide(id: string): Promise<boolean>;
   getGuidesWithNetworkUnits(params: {
