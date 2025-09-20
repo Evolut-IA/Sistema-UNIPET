@@ -103,10 +103,14 @@ async function initializeUnifiedServer(): Promise<void> {
     const unipetServer = await registerUnipetRoutes(app);
     console.log('✅ Rotas do UNIPET registradas');
 
-    // 3. Configurar proxy para admin (evitando conflitos de dependências)
-    console.log('🔧 Configurando proxy para sistema Admin...');
-    setupAdminProxy();
-    console.log('✅ Proxy do Admin configurado');
+    // 3. Configurar proxy para admin apenas em desenvolvimento
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('🔧 Configurando proxy para sistema Admin (desenvolvimento)...');
+      setupAdminProxy();
+      console.log('✅ Proxy do Admin configurado para desenvolvimento');
+    } else {
+      console.log('🏭 Modo produção: Admin será servido como arquivos estáticos');
+    }
 
     // 4. Configurar serving de arquivos estáticos
     if (process.env.NODE_ENV === 'production') {

@@ -6,25 +6,16 @@ import { fileURLToPath, URL } from 'node:url';
 export default defineConfig({
   plugins: [
     react(),
-    ...(process.env.NODE_ENV !== "production" && process.env.REPL_ID !== undefined
-      ? [
-          // Importar plugins do Replit apenas em desenvolvimento
-          await import("@replit/vite-plugin-runtime-error-modal").then((m) =>
-            m.default(),
-          ),
-          await import("@replit/vite-plugin-cartographer").then((m) =>
-            m.cartographer(),
-          ),
-          await import("@replit/vite-plugin-dev-banner").then((m) =>
-            m.devBanner(),
-          ),
-        ]
-      : []),
+    // Removendo plugins Replit para evitar problemas de resolução no build
   ],
+  base: process.env.NODE_ENV === 'production' ? '/admin/' : '/',
+  optimizeDeps: {
+    include: ['date-fns', 'date-fns/locale'],
+  },
   resolve: {
     alias: {
       "@": path.resolve(path.dirname(fileURLToPath(import.meta.url)), "client", "src"),
-      "@shared": path.resolve(path.dirname(fileURLToPath(import.meta.url)), "shared"),
+      "@shared": path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "shared"),
       "@assets": path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "attached_assets"),
     },
   },
@@ -32,6 +23,9 @@ export default defineConfig({
   build: {
     outDir: path.resolve(path.dirname(fileURLToPath(import.meta.url)), "dist"),
     emptyOutDir: true,
+    commonjsOptions: {
+      include: [/date-fns/, /node_modules/]
+    }
   },
   server: {
     host: "0.0.0.0",

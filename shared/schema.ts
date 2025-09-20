@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, timestamp, integer, boolean, pgEnum, decimal, json, customType } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, timestamp, integer, boolean, pgEnum, decimal, json, customType, uniqueIndex, index } from "drizzle-orm/pg-core";
+import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
 // Custom bytea type for storing binary data
@@ -15,8 +16,106 @@ export const bytea = customType<{ data: Buffer }>({
   },
 });
 
-// === ESSENTIAL TABLES ===
+// === UNIFIED ENUMS ===
 
+export const planTypeEnum = pgEnum("plan_type_enum", ["with_waiting_period", "without_waiting_period"]);
+export const planBillingFrequencyEnum = pgEnum("plan_billing_frequency_enum", ["monthly", "annual"]);
+export const paymentMethodEnum = pgEnum("payment_method_enum", ["cartao", "pix"]);
+export const speciesEnum = pgEnum("species_enum", ["dog", "cat", "other"]);
+export const contractStatusEnum = pgEnum("contract_status_enum", ["active", "inactive", "suspended", "cancelled"]);
+export const billingPeriodEnum = pgEnum("billing_period_enum", ["monthly", "annual"]);
+export const serviceStatusEnum = pgEnum("service_status_enum", ["requested", "approved", "in_progress", "completed", "rejected"]);
+export const protocolStatusEnum = pgEnum("protocol_status_enum", ["open", "in_progress", "resolved", "closed"]);
+export const protocolTypeEnum = pgEnum("protocol_type_enum", ["complaint", "information", "plan_change", "cancellation", "emergency", "other"]);
+export const receiptStatusEnum = pgEnum("receipt_status_enum", ["generated", "downloaded", "sent"]);
+export const procedureTypeEnum = pgEnum("procedure_type_enum", [
+  "consultas",
+  "exames_laboratoriais", 
+  "especialistas",
+  "vacinas",
+  "cirurgias",
+  "exames_de_imagem",
+  "exames_laboratoriais_complexos",
+  "procedimentos_ambulatoriais",
+  "beneficios_especiais"
+]);
+
+// === ADMIN-SPECIFIC TABLES ===
+
+// Users table for authentication and administration (Admin only)
+export const users = pgTable("users", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  username: text("username").notNull().unique(),
+  password: text("password").notNull(),
+  email: text("email").notNull().unique(),
+  role: text("role").notNull().default("admin"),
+  permissions: json("permissions").$type<string[]>().default([]),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  isActive: boolean("is_active").default(true),
+});
+
+// Rules settings table (Admin only)
+export const rulesSettings = pgTable("rules_settings", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  fixedPercentage: integer("fixed_percentage").default(0), // Percentage for automatic calculation (0-100)
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`),
+});
+
+// Theme settings table (Admin only)
+export const themeSettings = pgTable("theme_settings", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  // Foundation
+  backgroundColor: text("background_color").default("#faf9f7"),
+  textColor: text("text_color").default("#1a1a1a"),
+  mutedBackgroundColor: text("muted_background_color").default("#e0e0e0"),
+  mutedTextColor: text("muted_text_color").default("#1a1a1a"),
+  
+  // Typography
+  sansSerifFont: text("sans_serif_font").default("DM Sans"),
+  serifFont: text("serif_font").default("DM Sans"),
+  monospaceFont: text("monospace_font").default("DM Sans"),
+  
+  // Shape & Spacing
+  borderRadius: text("border_radius").default("0.5"),
+  
+  // Actions
+  primaryBackground: text("primary_background").default("#277677"),
+  primaryText: text("primary_text").default("#ffffff"),
+  secondaryBackground: text("secondary_background").default("#0f1419"),
+  secondaryText: text("secondary_text").default("#ffffff"),
+  accentBackground: text("accent_background").default("#e3ecf6"),
+  accentText: text("accent_text").default("#277677"),
+  destructiveBackground: text("destructive_background").default("#277677"),
+  destructiveText: text("destructive_text").default("#ffffff"),
+  
+  // Forms
+  inputBackground: text("input_background").default("#f7f9fa"),
+  inputText: text("input_text").default("#1a1a1a"),
+  placeholderText: text("placeholder_text").default("#6b7280"),
+  inputBorder: text("input_border").default("#e1eaef"),
+  focusBorder: text("focus_border").default("#277677"),
+  
+  // Containers
+  cardBackground: text("card_background").default("#ffffff"),
+  cardText: text("card_text").default("#1a1a1a"),
+  popoverBackground: text("popover_background").default("#ffffff"),
+  popoverText: text("popover_text").default("#1a1a1a"),
+  
+  // Charts
+  chart1Color: text("chart1_color").default("#277677"),
+  chart2Color: text("chart2_color").default("#277677"),
+  chart3Color: text("chart3_color").default("#277677"),
+  chart4Color: text("chart4_color").default("#277677"),
+  chart5Color: text("chart5_color").default("#277677"),
+  
+  // Status Colors
+  warningColor: text("warning_color").default("#f59e0b"),
+});
+
+// === SHARED CORE TABLES (with unified fields) ===
+
+// Contact submissions table (identical in both systems)
 export const contactSubmissions = pgTable("contact_submissions", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: text("name").notNull(),
@@ -31,10 +130,7 @@ export const contactSubmissions = pgTable("contact_submissions", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const planTypeEnum = pgEnum("plan_type_enum", ["with_waiting_period", "without_waiting_period"]);
-export const planBillingFrequencyEnum = pgEnum("plan_billing_frequency_enum", ["monthly", "annual"]);
-export const paymentMethodEnum = pgEnum("payment_method_enum", ["cartao", "pix"]);
-
+// Unified plans table (UNIPET version with all payment fields)
 export const plans = pgTable("plans", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: text("name").notNull().unique(),
@@ -61,6 +157,7 @@ export const plans = pgTable("plans", {
   annualInstallmentCount: integer("annual_installment_count").default(12),
 });
 
+// Unified network units table (includes Admin fields)
 export const networkUnits = pgTable("network_units", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: text("name").notNull(),
@@ -72,9 +169,14 @@ export const networkUnits = pgTable("network_units", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
   whatsapp: text("whatsapp"),
   googleMapsUrl: text("google_maps_url"),
-  imageData: text("image_data")
+  imageData: text("image_data"),
+  // Admin-specific fields
+  urlSlug: text("url_slug").unique(),
+  login: text("login").unique(),
+  senhaHash: text("senha_hash"),
 });
 
+// FAQ items table (identical in both systems)
 export const faqItems = pgTable("faq_items", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   question: text("question").notNull(),
@@ -84,6 +186,7 @@ export const faqItems = pgTable("faq_items", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// Unified site settings table (includes both Admin cores field and UNIPET image URL fields)
 export const siteSettings = pgTable("site_settings", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   whatsapp: text("whatsapp"),
@@ -104,10 +207,69 @@ export const siteSettings = pgTable("site_settings", {
   mainImage: bytea("main_image"),
   networkImage: bytea("network_image"),
   aboutImage: bytea("about_image"),
+  // UNIPET image URL fields
   mainImageUrl: text("main_image_url"),
   networkImageUrl: text("network_image_url"),
   aboutImageUrl: text("about_image_url"),
+  // Admin cores field
+  cores: json("cores").$type<{[key: string]: string}>().default({}),
 });
+
+// Unified clients table (UNIPET version with all fields, includes compatibility)
+export const clients = pgTable("clients", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  full_name: text("full_name").notNull(), // UNIPET field name
+  fullName: text("full_name").notNull(), // Compatibility alias for Admin (references same column)
+  email: text("email").notNull(),
+  phone: text("phone").notNull(),
+  cpf: text("cpf"), // Optional in UNIPET, required in Admin - made optional for compatibility
+  cep: text("cep"),
+  address: text("address"),
+  number: text("number"),
+  complement: text("complement"),
+  district: text("district"),
+  state: text("state"),
+  city: text("city"),
+  // UNIPET-specific fields
+  password: text("password"), // Optional for Admin compatibility
+  image: text("image"), // Dados da imagem em base64
+  imageUrl: text("image_url"), // URL da imagem
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Unified pets table (UNIPET version with all fields)
+export const pets = pgTable("pets", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  clientId: varchar("client_id").notNull().references(() => clients.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  species: text("species").notNull(),
+  breed: text("breed"),
+  birthDate: timestamp("birth_date"),
+  age: text("age"),
+  sex: text("sex").notNull(),
+  castrated: boolean("castrated").default(false),
+  color: text("color"),
+  weight: decimal("weight", { precision: 5, scale: 2 }),
+  microchip: text("microchip"),
+  previousDiseases: text("previous_diseases"),
+  surgeries: text("surgeries"),
+  allergies: text("allergies"),
+  currentMedications: text("current_medications"),
+  hereditaryConditions: text("hereditary_conditions"),
+  vaccineData: json("vaccine_data").default(sql`'[]'::json`),
+  lastCheckup: timestamp("last_checkup"),
+  parasiteTreatments: text("parasite_treatments"), // UNIPET naming
+  parasite_treatments: text("parasite_treatments"), // Compatibility alias for Admin
+  planId: varchar("plan_id").references(() => plans.id),
+  image: text("image"), // UNIPET-specific
+  imageUrl: text("image_url"), // UNIPET-specific
+  isActive: boolean("is_active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// === UNIPET-SPECIFIC TABLES ===
 
 export const chatSettings = pgTable("chat_settings", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -126,28 +288,6 @@ export const chatSettings = pgTable("chat_settings", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const clients = pgTable("clients", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  full_name: text("full_name").notNull(),
-  email: text("email").notNull(),
-  phone: text("phone").notNull(),
-  cpf: text("cpf"), // CPF agora é opcional para permitir salvamento parcial
-  cep: text("cep"),
-  address: text("address"),
-  number: text("number"),
-  complement: text("complement"),
-  district: text("district"),
-  state: text("state"),
-  city: text("city"),
-  password: text("password").notNull(),
-  image: text("image"), // Dados da imagem em base64
-  imageUrl: text("image_url"), // URL da imagem
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
-
-// === NEW TABLES FOR EXPANDED SYSTEM ===
-
 export const species = pgTable("species", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: text("name").notNull(),
@@ -156,40 +296,6 @@ export const species = pgTable("species", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
-
-export const speciesEnum = pgEnum("species_enum", ["dog", "cat", "other"]);
-
-export const pets = pgTable("pets", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  clientId: varchar("client_id").notNull().references(() => clients.id, { onDelete: "cascade" }),
-  name: text("name").notNull(),
-  species: text("species").notNull(), // Ajustado para text conforme banco
-  breed: text("breed"), // Opcional conforme banco
-  birthDate: timestamp("birth_date"),
-  age: text("age"), // Ajustado para text conforme banco  
-  sex: text("sex").notNull(), // Campo obrigatório que estava faltando
-  castrated: boolean("castrated").default(false),
-  color: text("color"),
-  weight: decimal("weight", { precision: 5, scale: 2 }), // Opcional conforme banco
-  microchip: text("microchip"),
-  previousDiseases: text("previous_diseases"),
-  surgeries: text("surgeries"),
-  allergies: text("allergies"),
-  currentMedications: text("current_medications"),
-  hereditaryConditions: text("hereditary_conditions"),
-  vaccineData: json("vaccine_data").default(sql`'[]'::json`),
-  lastCheckup: timestamp("last_checkup"),
-  parasiteTreatments: text("parasite_treatments"),
-  planId: varchar("plan_id").references(() => plans.id),
-  image: text("image"), // Dados da imagem em base64
-  imageUrl: text("image_url"), // URL da imagem
-  isActive: boolean("is_active").default(true).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
-
-export const contractStatusEnum = pgEnum("contract_status_enum", ["active", "inactive", "suspended", "cancelled"]);
-export const billingPeriodEnum = pgEnum("billing_period_enum", ["monthly", "annual"]);
 
 export const contracts = pgTable("contracts", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -220,30 +326,6 @@ export const contracts = pgTable("contracts", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const procedures = pgTable("procedures", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  name: text("name").notNull(),
-  description: text("description").notNull(),
-  category: text("category").notNull(), // consultation, exam, surgery, emergency, etc.
-  isActive: boolean("is_active").default(true).notNull(),
-  displayOrder: integer("display_order").default(0).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
-
-export const planProcedures = pgTable("plan_procedures", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  planId: varchar("plan_id").notNull().references(() => plans.id, { onDelete: "cascade" }),
-  procedureId: varchar("procedure_id").notNull().references(() => procedures.id, { onDelete: "cascade" }),
-  isIncluded: boolean("is_included").default(true).notNull(),
-  coparticipationOverride: decimal("coparticipation_override", { precision: 10, scale: 2 }),
-  coverageOverride: integer("coverage_override"), // Override coverage percentage for this plan
-  waitingPeriodDays: integer("waiting_period_days").default(0).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-export const serviceStatusEnum = pgEnum("service_status_enum", ["requested", "approved", "in_progress", "completed", "rejected"]);
-
 export const serviceHistory = pgTable("service_history", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   contractId: varchar("contract_id").notNull().references(() => contracts.id, { onDelete: "cascade" }),
@@ -262,9 +344,6 @@ export const serviceHistory = pgTable("service_history", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const protocolStatusEnum = pgEnum("protocol_status_enum", ["open", "in_progress", "resolved", "closed"]);
-export const protocolTypeEnum = pgEnum("protocol_type_enum", ["complaint", "information", "plan_change", "cancellation", "emergency", "other"]);
-
 export const protocols = pgTable("protocols", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   clientId: varchar("client_id").notNull().references(() => clients.id, { onDelete: "cascade" }),
@@ -282,18 +361,6 @@ export const protocols = pgTable("protocols", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const guides = pgTable("guides", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  title: text("title").notNull(),
-  content: text("content").notNull(),
-  category: text("category").notNull(), // usage, emergency, procedures, etc.
-  tags: text("tags").array().default([]).notNull(),
-  isActive: boolean("is_active").default(true).notNull(),
-  displayOrder: integer("display_order").default(0).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
-
 export const satisfactionSurveys = pgTable("satisfaction_surveys", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   clientId: varchar("client_id").notNull().references(() => clients.id, { onDelete: "cascade" }),
@@ -307,8 +374,6 @@ export const satisfactionSurveys = pgTable("satisfaction_surveys", {
   respondedAt: timestamp("responded_at").defaultNow().notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
-
-export const receiptStatusEnum = pgEnum("receipt_status_enum", ["generated", "downloaded", "sent"]);
 
 export const paymentReceipts = pgTable("payment_receipts", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -332,6 +397,69 @@ export const paymentReceipts = pgTable("payment_receipts", {
   planName: text("plan_name"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// === UNIFIED PROCEDURES SYSTEM ===
+
+// Unified procedures table (includes both UNIPET category and Admin procedureType)
+export const procedures = pgTable("procedures", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  description: text("description"),
+  // UNIPET fields
+  category: text("category"), // consultation, exam, surgery, emergency, etc.
+  // Admin fields
+  procedureType: procedureTypeEnum("procedure_type").default("consultas"),
+  isActive: boolean("is_active").default(true).notNull(),
+  displayOrder: integer("display_order").default(0).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// UNIPET plan procedures table
+export const planProcedures = pgTable("plan_procedures", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  planId: varchar("plan_id").notNull().references(() => plans.id, { onDelete: "cascade" }),
+  procedureId: varchar("procedure_id").notNull().references(() => procedures.id, { onDelete: "cascade" }),
+  isIncluded: boolean("is_included").default(true).notNull(),
+  coparticipationOverride: decimal("coparticipation_override", { precision: 10, scale: 2 }),
+  coverageOverride: integer("coverage_override"), // Override coverage percentage for this plan
+  waitingPeriodDays: integer("waiting_period_days").default(0).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Admin procedure plans table (different structure)
+export const procedurePlans = pgTable("procedure_plans", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  planId: varchar("plan_id").notNull().references(() => plans.id, { onDelete: "cascade" }),
+  procedureId: varchar("procedure_id").notNull().references(() => procedures.id, { onDelete: "cascade" }),
+  price: integer("price").default(0), // preço a receber em centavos
+  payValue: integer("pay_value").default(0), // valor a pagar em centavos (editável pelo usuário)
+  coparticipacao: integer("coparticipacao").default(0), // coparticipação em centavos
+  carencia: text("carencia"), // período de carência (ex: "30 dias")
+  limitesAnuais: text("limites_anuais"), // limites anuais (ex: "2 vezes no ano" ou "ilimitado")
+  isIncluded: boolean("is_included").default(true),
+  displayOrder: integer("display_order").default(0),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+});
+
+// === ADMIN GUIDES SYSTEM (different from UNIPET general guides) ===
+
+// Admin guides table (client-specific guides)
+export const guides = pgTable("guides", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  clientId: varchar("client_id").notNull().references(() => clients.id),
+  petId: varchar("pet_id").notNull().references(() => pets.id),
+  networkUnitId: varchar("network_unit_id").references(() => networkUnits.id),
+  type: text("type").notNull(), // 'consulta', 'exames', 'internacao', 'reembolso'
+  procedure: text("procedure").notNull(),
+  procedureNotes: text("procedure_notes"),
+  generalNotes: text("general_notes"),
+  value: decimal("value"),
+  status: text("status").default("open"), // 'open', 'closed', 'cancelled'
+  unitStatus: text("unit_status").default("open"), // 'open', 'closed', 'cancelled' - status specific for network units
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 // === VALIDATION SCHEMAS ===
@@ -394,6 +522,7 @@ const baseNetworkUnitSchema = z.object({
     message: "URL do Google Maps deve ser válida",
   }),
   imageData: z.string().optional(),
+  urlSlug: z.string().optional(),
 });
 
 export const insertNetworkUnitSchema = baseNetworkUnitSchema;
@@ -431,6 +560,7 @@ export const insertSiteSettingsSchema = z.object({
   mainImageUrl: z.string().optional(),
   networkImageUrl: z.string().optional(),
   aboutImageUrl: z.string().optional(),
+  cores: z.record(z.string()).optional(),
 });
 
 export const insertChatSettingsSchema = z.object({
@@ -450,9 +580,9 @@ export const insertChatSettingsSchema = z.object({
 export const insertClientSchema = z.object({
   full_name: z.string().min(1, "Nome é obrigatório"),
   email: z.string().email("Email inválido").min(1, "Email é obrigatório"),
-  password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres"),
+  password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres").optional(), // Optional for Admin compatibility
   phone: z.string().min(1, "Telefone é obrigatório"),
-  cpf: z.string().min(1, "CPF é obrigatório"),
+  cpf: z.string().optional(), // Made optional for both systems
   cep: z.string().optional(),
   address: z.string().optional(),
   number: z.string().optional(),
@@ -488,44 +618,37 @@ export const clientLoginSchema = z.object({
 export const insertPetSchema = z.object({
   clientId: z.string().min(1, "ID do cliente é obrigatório"),
   name: z.string().min(1, "Nome do pet é obrigatório"),
-  species: z.string().min(1, "Espécie é obrigatória"), // Ajustado para string
-  breed: z.string().optional(), // Opcional conforme banco
-  age: z.string().optional(), // Ajustado para string e opcional
-  sex: z.enum(["Macho", "Fêmea"], { required_error: "Sexo do pet é obrigatório" }), // Campo obrigatório em português
-  castrated: z.boolean().optional(),
-  color: z.string().optional(),
-  weight: z.string().optional(), // Opcional conforme banco
-  microchip: z.string().optional(),
-  previousDiseases: z.string().optional(),
-  surgeries: z.string().optional(),
-  allergies: z.string().optional(),
-  currentMedications: z.string().optional(),
-  hereditaryConditions: z.string().optional(),
-  image: z.string().optional(),
-  imageUrl: z.string().optional(),
-  isActive: z.boolean().default(true),
-});
-
-export const updatePetSchema = z.object({
-  name: z.string().min(1, "Nome do pet é obrigatório").optional(),
-  species: z.string().min(1, "Espécie é obrigatória").optional(), // Não será editável na prática
+  species: z.string().min(1, "Espécie é obrigatória"),
   breed: z.string().optional(),
   age: z.string().optional(),
-  sex: z.enum(["Macho", "Fêmea"]).optional(),
-  castrated: z.boolean().optional(),
+  sex: z.enum(["Macho", "Fêmea"], { required_error: "Sexo do pet é obrigatório" }),
+  castrated: z.boolean().default(false),
   color: z.string().optional(),
-  weight: z.string().optional(),
+  weight: z.string().refine((val) => !val || (!isNaN(parseFloat(val)) && parseFloat(val) > 0), {
+    message: "Peso deve ser um número positivo",
+  }).optional(),
   microchip: z.string().optional(),
   previousDiseases: z.string().optional(),
   surgeries: z.string().optional(),
   allergies: z.string().optional(),
   currentMedications: z.string().optional(),
   hereditaryConditions: z.string().optional(),
-  lastCheckup: z.date().optional(),
+  vaccineData: z.array(z.object({
+    vaccine: z.string(),
+    date: z.string(),
+  })).default([]),
   parasiteTreatments: z.string().optional(),
+  planId: z.string().optional(),
   image: z.string().optional(),
   imageUrl: z.string().optional(),
-}).partial();
+});
+
+// Update pet schema
+export const updatePetSchema = insertPetSchema.partial().extend({
+  id: z.string().optional(),
+});
+
+// === MISSING UNIPET VALIDATION SCHEMAS ===
 
 export const insertContractSchema = z.object({
   clientId: z.string().min(1, "ID do cliente é obrigatório"),
@@ -533,7 +656,7 @@ export const insertContractSchema = z.object({
   petId: z.string().min(1, "ID do pet é obrigatório"),
   contractNumber: z.string().min(1, "Número do contrato é obrigatório"),
   status: z.enum(["active", "inactive", "suspended", "cancelled"]).default("active"),
-  startDate: z.date().optional(),
+  startDate: z.date().default(() => new Date()),
   endDate: z.date().optional(),
   billingPeriod: z.enum(["monthly", "annual"]).default("monthly"),
   monthlyAmount: z.string().refine((val) => !isNaN(parseFloat(val)) && parseFloat(val) > 0, {
@@ -543,17 +666,6 @@ export const insertContractSchema = z.object({
   paymentMethod: z.string().min(1, "Método de pagamento é obrigatório"),
   cieloPaymentId: z.string().optional(),
   hasCoparticipation: z.boolean().default(false),
-});
-
-export const insertProcedureSchema = z.object({
-  name: z.string().min(1, "Nome do procedimento é obrigatório"),
-  description: z.string().min(1, "Descrição é obrigatória"),
-  category: z.string().min(1, "Categoria é obrigatória"),
-  coparticipationValue: z.string().refine((val) => !isNaN(parseFloat(val)) && parseFloat(val) >= 0, {
-    message: "Valor de coparticipação deve ser positivo ou zero",
-  }).default("0.00"),
-  coveragePercentage: z.number().min(0).max(100).default(100),
-  isActive: z.boolean().default(true),
 });
 
 export const insertPlanProcedureSchema = z.object({
@@ -600,15 +712,6 @@ export const insertProtocolSchema = z.object({
   resolvedAt: z.date().optional(),
 });
 
-export const insertGuideSchema = z.object({
-  title: z.string().min(1, "Título é obrigatório"),
-  content: z.string().min(1, "Conteúdo é obrigatório"),
-  category: z.string().min(1, "Categoria é obrigatória"),
-  tags: z.array(z.string()).default([]),
-  isActive: z.boolean().default(true),
-  displayOrder: z.number().default(0),
-});
-
 export const insertSatisfactionSurveySchema = z.object({
   clientId: z.string().min(1, "ID do cliente é obrigatório"),
   contractId: z.string().optional(),
@@ -650,56 +753,38 @@ export const creditCardPaymentSchema = z.object({
     type: z.literal('CreditCard'),
     amount: z.number().int().min(100, "Valor mínimo é R$ 1,00 (100 centavos)"),
     installments: z.number().int().min(1).max(12),
-    capture: z.boolean().default(true),
-    authenticate: z.boolean().default(false),
-    softDescriptor: z.string().max(13).optional(),
-    returnUrl: z.string().url().optional(),
+    capture: z.boolean().default(false),
     creditCard: z.object({
-      cardNumber: z.string().regex(/^\d{13,19}$/, "Número do cartão inválido"),
+      cardNumber: z.string().regex(/^\d{16}$/, "Número do cartão deve ter 16 dígitos"),
       holder: z.string().min(2, "Nome do portador deve ter pelo menos 2 caracteres").max(50),
-      expirationDate: z.string().regex(/^(0[1-9]|1[0-2])\/\d{4}$/, "Data de validade inválida (MM/YYYY)"),
-      securityCode: z.string().regex(/^\d{3,4}$/, "Código de segurança inválido"),
-      brand: z.string().optional(),
-      saveCard: z.boolean().default(false)
+      expirationDate: z.string().regex(/^(0[1-9]|1[0-2])\/\d{4}$/, "Data de expiração deve estar no formato MM/AAAA"),
+      securityCode: z.string().regex(/^\d{3,4}$/, "Código de segurança deve ter 3 ou 4 dígitos"),
+      brand: z.enum(['Visa', 'Master', 'Amex', 'Elo', 'Aura', 'JCB', 'Diners', 'Discover'])
     })
   })
 });
 
 // PIX Payment Schema
 export const pixPaymentSchema = z.object({
-  Customer: z.object({
-    Name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres").max(100),
-    Identity: z.string().optional(),
-    IdentityType: z.enum(['CPF', 'CNPJ']).optional(),
-    Email: z.string().email("Email inválido").max(100).optional()
+  customer: z.object({
+    name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres").max(100),
+    email: z.string().email("Email inválido").max(100),
+    identity: z.string().optional(),
+    identityType: z.enum(['CPF', 'CNPJ']).optional()
   }),
-  Payment: z.object({
-    Type: z.literal('Pix'),
-    Amount: z.number().int().min(100, "Valor mínimo é R$ 1,00 (100 centavos)"),
-    Provider: z.literal('Cielo').default('Cielo')
+  payment: z.object({
+    type: z.literal('Pix'),
+    amount: z.number().int().min(100, "Valor mínimo é R$ 1,00 (100 centavos)")
   })
 });
 
 // Checkout Process Schema
 export const checkoutProcessSchema = z.object({
-  clientId: z.string().uuid("ID do cliente inválido"),
-  addressData: z.object({
-    cep: z.string().regex(/^\d{5}-?\d{3}$/, "CEP inválido"),
-    address: z.string().min(5, "Endereço deve ter pelo menos 5 caracteres"),
-    number: z.string().min(1, "Número é obrigatório"),
-    complement: z.string().optional(),
-    district: z.string().min(2, "Bairro deve ter pelo menos 2 caracteres"),
-    city: z.string().min(2, "Cidade deve ter pelo menos 2 caracteres"),
-    state: z.string().length(2, "Estado deve ter 2 caracteres")
-  }),
-  paymentData: z.union([creditCardPaymentSchema, pixPaymentSchema]),
-  planData: z.object({
-    planId: z.string().uuid("ID do plano inválido"),
-    petIds: z.array(z.string().uuid()).min(1, "Pelo menos um pet deve ser selecionado")
-  }),
-  paymentMethod: z.enum(['credit_card', 'pix'], {
-    errorMap: () => ({ message: "Método de pagamento deve ser 'credit_card' ou 'pix'" })
-  })
+  clientData: insertClientSchemaStep2,
+  petData: insertPetSchema.omit({ clientId: true }),
+  planId: z.string().min(1, "ID do plano é obrigatório"),
+  paymentMethod: z.enum(["cartao", "pix"]),
+  billingPeriod: z.enum(["monthly", "annual"]).default("monthly")
 });
 
 // Payment Capture Schema
@@ -707,7 +792,7 @@ export const paymentCaptureSchema = z.object({
   amount: z.number().int().min(100, "Valor mínimo é R$ 1,00 (100 centavos)").optional()
 });
 
-// Payment Cancel Schema  
+// Payment Cancel Schema
 export const paymentCancelSchema = z.object({
   amount: z.number().int().min(100, "Valor mínimo é R$ 1,00 (100 centavos)").optional()
 });
@@ -720,42 +805,84 @@ export const cieloWebhookSchema = z.object({
   RequestId: z.string().optional()
 });
 
-// === TYPES ===
+// === Admin-specific schemas ===
+export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true });
+export const insertProcedureSchema = createInsertSchema(procedures).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertProcedurePlanSchema = createInsertSchema(procedurePlans).omit({ id: true, createdAt: true, isIncluded: true, displayOrder: true });
+export const insertRulesSettingsSchema = createInsertSchema(rulesSettings).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  fixedPercentage: z.number().min(0, "Porcentagem deve ser pelo menos 0").max(100, "Porcentagem deve ser no máximo 100").optional()
+});
+export const insertThemeSettingsSchema = createInsertSchema(themeSettings).omit({ id: true });
+export const insertGuideSchema = createInsertSchema(guides).omit({ id: true, createdAt: true, updatedAt: true });
 
-export type InsertContactSubmission = z.infer<typeof insertContactSubmissionSchema>;
+// Credential update schema for network units
+export const updateNetworkUnitCredentialsSchema = z.object({
+  login: z.string().min(3, "Login deve ter pelo menos 3 caracteres"),
+  password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres")
+});
+
+// === TYPE EXPORTS ===
+
+// Core shared types
 export type ContactSubmission = typeof contactSubmissions.$inferSelect;
-export type InsertPlan = z.infer<typeof insertPlanSchema>;
+export type InsertContactSubmission = typeof contactSubmissions.$inferInsert;
 export type Plan = typeof plans.$inferSelect;
+export type InsertPlan = typeof plans.$inferInsert;
 export type NetworkUnit = typeof networkUnits.$inferSelect;
 export type InsertNetworkUnit = typeof networkUnits.$inferInsert;
-export type InsertFaqItem = z.infer<typeof insertFaqItemSchema>;
 export type FaqItem = typeof faqItems.$inferSelect;
-export type InsertSiteSettings = z.infer<typeof insertSiteSettingsSchema>;
+export type InsertFaqItem = typeof faqItems.$inferInsert;
 export type SiteSettings = typeof siteSettings.$inferSelect;
+export type InsertSiteSettings = typeof siteSettings.$inferInsert;
 export type ChatSettings = typeof chatSettings.$inferSelect;
-export type InsertChatSettings = z.infer<typeof insertChatSettingsSchema>;
+export type InsertChatSettings = typeof chatSettings.$inferInsert;
 export type Client = typeof clients.$inferSelect;
-export type InsertClient = z.infer<typeof insertClientSchema>;
+export type InsertClient = typeof clients.$inferInsert;
 export type ClientLogin = z.infer<typeof clientLoginSchema>;
-
-// === NEW TABLE TYPES ===
-
 export type Species = typeof species.$inferSelect;
-export type InsertSpecies = z.infer<typeof insertSpeciesSchema>;
+export type InsertSpecies = typeof species.$inferInsert;
 export type Pet = typeof pets.$inferSelect;
-export type InsertPet = z.infer<typeof insertPetSchema>;
+export type InsertPet = typeof pets.$inferInsert;
 export type Contract = typeof contracts.$inferSelect;
-export type InsertContract = z.infer<typeof insertContractSchema>;
+export type InsertContract = typeof contracts.$inferInsert;
 export type Procedure = typeof procedures.$inferSelect;
-export type InsertProcedure = z.infer<typeof insertProcedureSchema>;
+export type InsertProcedure = typeof procedures.$inferInsert;
 export type PlanProcedure = typeof planProcedures.$inferSelect;
-export type InsertPlanProcedure = z.infer<typeof insertPlanProcedureSchema>;
+export type InsertPlanProcedure = typeof planProcedures.$inferInsert;
+export type ProcedurePlan = typeof procedurePlans.$inferSelect;
+export type InsertProcedurePlan = typeof procedurePlans.$inferInsert;
 export type ServiceHistory = typeof serviceHistory.$inferSelect;
-export type InsertServiceHistory = z.infer<typeof insertServiceHistorySchema>;
+export type InsertServiceHistory = typeof serviceHistory.$inferInsert;
 export type Protocol = typeof protocols.$inferSelect;
-export type InsertProtocol = z.infer<typeof insertProtocolSchema>;
+export type InsertProtocol = typeof protocols.$inferInsert;
 export type Guide = typeof guides.$inferSelect;
-export type InsertGuide = z.infer<typeof insertGuideSchema>;
+export type InsertGuide = typeof guides.$inferInsert;
 export type SatisfactionSurvey = typeof satisfactionSurveys.$inferSelect;
-export type InsertSatisfactionSurvey = z.infer<typeof insertSatisfactionSurveySchema>;
+export type InsertSatisfactionSurvey = typeof satisfactionSurveys.$inferInsert;
+export type PaymentReceipt = typeof paymentReceipts.$inferSelect;
+export type InsertPaymentReceipt = typeof paymentReceipts.$inferInsert;
 
+// Payment and workflow schema types
+export type CreditCardPayment = z.infer<typeof creditCardPaymentSchema>;
+export type PixPayment = z.infer<typeof pixPaymentSchema>;
+export type CheckoutProcess = z.infer<typeof checkoutProcessSchema>;
+export type PaymentCapture = z.infer<typeof paymentCaptureSchema>;
+export type PaymentCancel = z.infer<typeof paymentCancelSchema>;
+export type CieloWebhook = z.infer<typeof cieloWebhookSchema>;
+export type UpdatePet = z.infer<typeof updatePetSchema>;
+
+// Admin-specific types
+export type User = typeof users.$inferSelect;
+export type InsertUser = typeof users.$inferInsert;
+export type RulesSettings = typeof rulesSettings.$inferSelect;
+export type InsertRulesSettings = typeof rulesSettings.$inferInsert;
+export type ThemeSettings = typeof themeSettings.$inferSelect;
+export type InsertThemeSettings = typeof themeSettings.$inferInsert;
+
+// Safe type for network units with credential status (excludes password hash)
+export type NetworkUnitWithCredentialStatus = Omit<NetworkUnit, 'senhaHash'> & {
+  hasCredentials: boolean;
+};
+
+// Credential update type
+export type UpdateNetworkUnitCredentials = z.infer<typeof updateNetworkUnitCredentialsSchema>;
