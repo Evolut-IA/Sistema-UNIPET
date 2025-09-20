@@ -68,7 +68,7 @@ export default function Clients() {
   const confirmDialog = useConfirmDialog();
   const passwordDialog = usePasswordDialog();
 
-  const { data: clients = [], isLoading, isError: clientsError } = useQuery<Client[]>({
+  const { data: clients = [], isLoading } = useQuery<Client[]>({
     queryKey: ["/admin/api/clients"],
   });
 
@@ -78,7 +78,7 @@ export default function Clients() {
     enabled: !!selectedClient?.id,
   });
 
-  const { data: searchResults = [], isLoading: searchLoading, isError: searchError } = useQuery<Client[]>({
+  const { data: searchResults = [], isLoading: searchLoading } = useQuery<Client[]>({
     queryKey: ["/admin/api/clients/search", searchQuery],
     enabled: searchQuery.length > 2,
   });

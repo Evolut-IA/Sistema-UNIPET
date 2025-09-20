@@ -20,7 +20,6 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/admin/ui/dropdown-menu";
-import { useLocation } from "wouter";
 import { Plus, Search, Edit, Trash2, Building, ExternalLink, Eye, Copy, Globe, Columns, ChevronLeft, ChevronRight } from "lucide-react";
 import { apiRequest } from "@/lib/admin/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -40,7 +39,6 @@ const allColumns = [
 ] as const;
 
 export default function Network() {
-  const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedUnit, setSelectedUnit] = useState<NetworkUnit | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);

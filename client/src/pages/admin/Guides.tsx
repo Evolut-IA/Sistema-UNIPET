@@ -20,7 +20,6 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/admin/ui/dropdown-menu";
-import { useLocation } from "wouter";
 import { Plus, Search, Edit, Trash2, FileText, Eye, Copy, Columns, ChevronLeft, ChevronRight } from "lucide-react";
 
 // Types for guides data
@@ -76,7 +75,6 @@ const allColumns = [
 ] as const;
 
 export default function Guides() {
-  const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
@@ -157,7 +155,6 @@ export default function Guides() {
   const guidesData = guides?.data || [];
   const totalGuides = guides?.total || 0;
   const totalPages = guides?.totalPages || 1;
-  const currentPageData = guides?.page || 1;
 
 
   const handleDelete = (id: string, procedureName: string) => {
@@ -298,7 +295,7 @@ export default function Guides() {
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = () => {
     return "border border-border rounded-lg bg-background text-foreground";
   };
 
@@ -466,7 +463,7 @@ export default function Guides() {
                   )}
                   {visibleColumns.includes("Status") && (
                     <TableCell className="whitespace-nowrap bg-accent">
-                      <Badge className={cn("whitespace-nowrap", getStatusColor(guide.status))}>
+                      <Badge className={cn("whitespace-nowrap", getStatusColor())}>
                         {getStatusLabel(guide.status)}
                       </Badge>
                     </TableCell>
