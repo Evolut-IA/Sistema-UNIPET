@@ -59,6 +59,7 @@ export default function Plans() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/plans"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/all"] });
       toast({
         title: "Plano removido",
         description: "Plano foi removido com sucesso.",
@@ -79,6 +80,7 @@ export default function Plans() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/plans"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/all"] });
       toast({
         title: "Status atualizado",
         description: "Status do plano foi atualizado.",
