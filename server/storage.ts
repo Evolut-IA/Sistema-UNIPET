@@ -498,25 +498,11 @@ export class DatabaseStorage implements IStorage {
 
   async createPlan(plan: InsertPlan): Promise<Plan> {
     const result = await db.insert(schema.plans).values(plan).returning();
-    
-    // Invalidar cache do dashboard quando planos são criados
-    if (result[0]) {
-      dashboardCache.clear();
-      console.log('Dashboard cache cleared after plan creation');
-    }
-    
     return result[0];
   }
 
   async updatePlan(id: string, updates: Partial<InsertPlan>): Promise<Plan | undefined> {
     const result = await db.update(schema.plans).set(updates).where(eq(schema.plans.id, id)).returning();
-    
-    // Invalidar cache do dashboard quando planos são atualizados
-    if (result[0]) {
-      dashboardCache.clear();
-      console.log('Dashboard cache cleared after plan update');
-    }
-    
     return result[0];
   }
 
@@ -526,13 +512,6 @@ export class DatabaseStorage implements IStorage {
     
     // Depois, excluir o plano
     const result = await db.delete(schema.plans).where(eq(schema.plans.id, id)).returning({ id: schema.plans.id });
-    
-    // Invalidar cache do dashboard quando planos são deletados
-    if (result.length > 0) {
-      dashboardCache.clear();
-      console.log('Dashboard cache cleared after plan deletion');
-    }
-    
     return result.length > 0;
   }
 

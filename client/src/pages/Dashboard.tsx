@@ -441,7 +441,7 @@ export default function Dashboard() {
                 {/* Distribuição por plano */}
                 {planDistribution.map((plan, index: number) => {
                   // Cores baseadas no status do plano (ativo/inativo)
-                  const statusColor = plan.isActive ? '#22c55e' : '#ef4444'; // Verde para ativo, vermelho para inativo
+                  const statusColor = plan.isActive ? 'var(--chart-4)' : 'var(--chart-5)';
                   const textColorClass = plan.isActive ? 'text-green-600' : 'text-red-600';
                   const bgColorClass = plan.isActive ? 'bg-green-600' : 'bg-red-600';
 
@@ -492,7 +492,7 @@ export default function Dashboard() {
                 {/* Mostrar planos mesmo sem pets */}
                 {planDistribution.map((plan) => {
                   // Cores baseadas no status do plano (ativo/inativo)
-                  const statusColor = plan.isActive ? '#22c55e' : '#ef4444'; // Verde para ativo, vermelho para inativo
+                  const statusColor = plan.isActive ? 'var(--chart-4)' : 'var(--chart-5)';
 
                   return (
                     <div key={plan.planId} className="flex items-center justify-between p-2 bg-muted/50 rounded-lg">
