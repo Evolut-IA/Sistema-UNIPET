@@ -59,7 +59,6 @@ export default function Settings() {
       mainImage: "",
       networkImage: "",
       aboutImage: "",
-      cores: {},
     },
   });
 
@@ -132,8 +131,7 @@ export default function Settings() {
         address: (siteSettings as any).address || "",
         mainImage: (siteSettings as any).mainImage || "",
         networkImage: (siteSettings as any).networkImage || "",
-        aboutImage: (siteSettings as any).aboutImage || "",
-        cores: (siteSettings as any).cores || {},
+        aboutImage: (siteSettings as any).aboutImage || ""
       };
       
       siteForm.reset(mergedSettings);
