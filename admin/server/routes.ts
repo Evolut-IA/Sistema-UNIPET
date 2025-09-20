@@ -9,6 +9,15 @@ import { generateUniqueSlug } from "./utils";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
+  // Health check endpoint
+  app.get("/api/health", (req, res) => {
+    res.status(200).json({ 
+      status: 'OK', 
+      timestamp: new Date().toISOString(),
+      service: 'admin'
+    });
+  });
+
   // Client routes
   app.get("/api/clients", async (req, res) => {
     try {
