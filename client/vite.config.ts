@@ -140,7 +140,7 @@ export default defineConfig({
   clearScreen: false,
   
   // Configurações de base
-  base: './',
+  base: '/',
   
   // Configurações de publicDir
   publicDir: 'public',
