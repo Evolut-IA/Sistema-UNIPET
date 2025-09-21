@@ -1,5 +1,4 @@
-/* Importar correções para inputs */
-@import './admin-input-fix.css';
+/* Correções para inputs integradas diretamente no arquivo */
 
 @tailwind base;
 @tailwind components;
