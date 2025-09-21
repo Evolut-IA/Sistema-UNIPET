@@ -26,6 +26,13 @@ export default defineConfig({
         secure: false,
         timeout: 10000,
         proxyTimeout: 10000
+      },
+      '/admin/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        secure: false,
+        timeout: 10000,
+        proxyTimeout: 10000
       }
     },
     
@@ -193,4 +200,3 @@ export default defineConfig({
   // Configurações de mode
   mode: process.env.NODE_ENV || 'development'
 });
-
