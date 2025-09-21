@@ -16,8 +16,8 @@ export function setupAuth(app: Express) {
 
   const sessionSettings: session.SessionOptions = {
     secret: autoConfig.get('SESSION_SECRET'),
-    resave: true,
-    saveUninitialized: true, // Changed to true to ensure session is saved
+    resave: false, // Don't save session if unmodified
+    saveUninitialized: false, // Don't create session until something stored
     cookie: {
       secure: false, // Secure cookies disabled for local development
       httpOnly: true,
