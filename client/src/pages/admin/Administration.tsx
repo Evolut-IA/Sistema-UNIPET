@@ -297,7 +297,7 @@ export default function Administration() {
     return { text: "Não configurado", color: "border border-border rounded-lg bg-background text-foreground" };
   };
 
-  const getRoleColor = (role: string) => {
+  const getRoleColor = () => {
     return "border border-border rounded-lg bg-background text-foreground";
   };
 
