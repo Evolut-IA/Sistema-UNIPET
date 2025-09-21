@@ -210,7 +210,6 @@ export const pets = pgTable("pets", {
   vaccineData: json("vaccine_data").default(sql`'[]'::json`),
   lastCheckup: timestamp("last_checkup"),
   parasiteTreatments: text("parasite_treatments"), // UNIPET naming
-  parasite_treatments: text("parasite_treatments"), // Compatibility alias for Admin
   planId: varchar("plan_id").references(() => plans.id),
   image: text("image"), // UNIPET-specific
   imageUrl: text("image_url"), // UNIPET-specific
