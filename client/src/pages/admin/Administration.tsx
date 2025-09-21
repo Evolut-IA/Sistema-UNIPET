@@ -297,16 +297,20 @@ export default function Administration() {
     return { text: "Não configurado", color: "border border-border rounded-lg bg-background text-foreground" };
   };
 
-  const getRoleColor = () => {
-    return "border border-border rounded-lg bg-background text-foreground";
+  const getRoleColor = (role: string) => {
+    switch (role) {
+      case "admin": return "border border-blue-500 bg-blue-50 text-blue-700";
+      case "manager": return "border border-green-500 bg-green-50 text-green-700";
+      case "user": return "border border-gray-500 bg-gray-50 text-gray-700";
+      default: return "border border-border rounded-lg bg-background text-foreground";
+    }
   };
 
   const getRoleLabel = (role: string) => {
     switch (role) {
-      case "delete": return "Excluir";
-      case "edit": return "Editar";
-      case "add": return "Adicionar";
-      case "view": return "Visualizar";
+      case "admin": return "Administrador";
+      case "manager": return "Gerente";
+      case "user": return "Usuário";
       default: return role;
     }
   };

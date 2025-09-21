@@ -4,12 +4,7 @@ import { useMobileViewport } from "@/hooks/use-mobile"
 import { 
   Drawer,
   DrawerContent,
-  DrawerHeader,
-  DrawerFooter,
-  DrawerTitle,
-  DrawerDescription,
-  DrawerTrigger,
-  DrawerClose
+  DrawerTrigger
 } from "@/components/ui/drawer"
 
 import { cn } from "@/lib/utils"
@@ -31,7 +26,7 @@ const ResponsivePopover = ({ children, open, onOpenChange, modal }: ResponsivePo
   
   if (isMobile) {
     return (
-      <Drawer open={open} onOpenChange={onOpenChange} modal={modal}>
+      <Drawer open={open} onOpenChange={onOpenChange}>
         {children}
       </Drawer>
     )

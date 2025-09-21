@@ -842,8 +842,8 @@ export type InsertUser = typeof users.$inferInsert;
 export type RulesSettings = typeof rulesSettings.$inferSelect;
 export type InsertRulesSettings = typeof rulesSettings.$inferInsert;
 
-// Extended types for Administration
-export type NetworkUnitWithCredentialStatus = Omit<NetworkUnit, 'senhaHash'> & {
+// Network unit with credential status for admin
+export type NetworkUnitWithCredentialStatus = NetworkUnit & {
   hasCredentials: boolean;
 };
 
