@@ -11,7 +11,7 @@ function Layout({ children }: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen bg-[var(--bg-cream-light)] overflow-hidden">
+    <div className="flex h-screen bg-[var(--bg-cream-light)] overflow-hidden" data-admin-layout>
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div 
