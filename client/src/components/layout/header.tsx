@@ -69,8 +69,8 @@ export default function Header() {
                     location === item.href ? "font-medium" : ""
                   }`}
                   style={{color: 'var(--text-light)'}}
-                  onMouseEnter={(e) => (e.target as HTMLElement).style.color = 'var(--text-gold)'}
-                  onMouseLeave={(e) => (e.target as HTMLElement).style.color = 'var(--text-light)'}
+
+
                   onClick={() => {
                     // Navegar para a rota usando wouter
                     setLocation(item.href);

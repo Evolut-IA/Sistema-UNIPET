@@ -44,22 +44,22 @@ export default function Footer() {
             </p>
             <div className="flex space-x-4">
               {shouldShow.facebookUrl && (
-                <a href={settings.facebookUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200" style={{background: 'var(--bg-teal)', color: 'var(--text-light)'}} onMouseEnter={(e) => {(e.target as HTMLElement).style.background = 'var(--bg-gold)'; (e.target as HTMLElement).style.color = 'var(--text-light)';}} onMouseLeave={(e) => {(e.target as HTMLElement).style.background = 'var(--bg-teal)'; (e.target as HTMLElement).style.color = 'var(--text-light)';}}>
+                <a href={settings.facebookUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200" style={{background: 'var(--bg-teal)', color: 'var(--text-light)'}}>
                   <Facebook className="h-4 w-4" />
                 </a>
               )}
               {shouldShow.instagramUrl && (
-                <a href={settings.instagramUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200" style={{background: 'var(--bg-teal)', color: 'var(--text-light)'}} onMouseEnter={(e) => {(e.target as HTMLElement).style.background = 'var(--bg-gold)'; (e.target as HTMLElement).style.color = 'var(--text-light)';}} onMouseLeave={(e) => {(e.target as HTMLElement).style.background = 'var(--bg-teal)'; (e.target as HTMLElement).style.color = 'var(--text-light)';}}>
+                <a href={settings.instagramUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200" style={{background: 'var(--bg-teal)', color: 'var(--text-light)'}}>
                   <Instagram className="h-4 w-4" />
                 </a>
               )}
               {shouldShow.linkedinUrl && (
-                <a href={settings.linkedinUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200" style={{background: 'var(--bg-teal)', color: 'var(--text-light)'}} onMouseEnter={(e) => {(e.target as HTMLElement).style.background = 'var(--bg-gold)'; (e.target as HTMLElement).style.color = 'var(--text-light)';}} onMouseLeave={(e) => {(e.target as HTMLElement).style.background = 'var(--bg-teal)'; (e.target as HTMLElement).style.color = 'var(--text-light)';}}>
+                <a href={settings.linkedinUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200" style={{background: 'var(--bg-teal)', color: 'var(--text-light)'}}>
                   <Linkedin className="h-4 w-4" />
                 </a>
               )}
               {shouldShow.youtubeUrl && (
-                <a href={settings.youtubeUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200" style={{background: 'var(--bg-teal)', color: 'var(--text-light)'}} onMouseEnter={(e) => {(e.target as HTMLElement).style.background = 'var(--bg-gold)'; (e.target as HTMLElement).style.color = 'var(--text-light)';}} onMouseLeave={(e) => {(e.target as HTMLElement).style.background = 'var(--bg-teal)'; (e.target as HTMLElement).style.color = 'var(--text-light)';}}>
+                <a href={settings.youtubeUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200" style={{background: 'var(--bg-teal)', color: 'var(--text-light)'}}>
                   <Youtube className="h-4 w-4" />
                 </a>
               )}
@@ -76,8 +76,8 @@ export default function Footer() {
                     href={link.href}
                     className="transition-colors text-sm sm:text-base"
                     style={{color: 'var(--text-dark-primary)'}}
-                    onMouseEnter={(e) => (e.target as HTMLElement).style.color = 'var(--text-teal)'}
-                    onMouseLeave={(e) => (e.target as HTMLElement).style.color = 'var(--text-dark-primary)'}
+
+
                   >
                     {link.name}
                   </Link>
@@ -133,8 +133,8 @@ export default function Footer() {
                       rel="noopener noreferrer"
                       className="text-sm sm:text-base transition-colors cursor-pointer"
                       style={{color: 'var(--text-dark-primary)'}}
-                      onMouseEnter={(e) => (e.target as HTMLElement).style.color = 'var(--text-teal)'}
-                      onMouseLeave={(e) => (e.target as HTMLElement).style.color = 'var(--text-dark-primary)'}
+  
+  
                     >
                       {settings.whatsapp}
                     </a>
@@ -160,8 +160,8 @@ export default function Footer() {
                 href="/politica-privacidade" 
                 className="transition-colors" 
                 style={{color: 'var(--text-dark-primary)'}} 
-                onMouseEnter={(e) => (e.target as HTMLElement).style.color = 'var(--text-teal)'} 
-                onMouseLeave={(e) => (e.target as HTMLElement).style.color = 'var(--text-dark-primary)'}
+
+
               >
                 Política de Privacidade
               </Link>
@@ -169,8 +169,8 @@ export default function Footer() {
                 href="/termos-uso" 
                 className="transition-colors" 
                 style={{color: 'var(--text-dark-primary)'}} 
-                onMouseEnter={(e) => (e.target as HTMLElement).style.color = 'var(--text-teal)'} 
-                onMouseLeave={(e) => (e.target as HTMLElement).style.color = 'var(--text-dark-primary)'}
+
+
               >
                 Termos de Uso
               </Link>
