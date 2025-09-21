@@ -1,58 +1,116 @@
-/* ADMIN CSS SIMPLIFICADO - USA SISTEMA UNIFICADO DE cores.css */
+/* Importar correções para inputs */
+@import './input-fix.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ========================================
-   APLICAÇÃO DO MODO ADMIN
-   Aplica as cores específicas do admin definidas em cores.css
-======================================== */
-
-/* Aplicar modo admin automaticamente em todas as páginas admin */
-body:has([data-admin-area="true"]),
-body.admin-area,
-.admin-area,
-[data-admin-area="true"] {
-  --background: var(--admin-background);
-  --foreground: var(--admin-foreground);
-  --muted: var(--admin-muted);
-  --muted-foreground: var(--admin-muted-foreground);
-  --placeholder: var(--admin-placeholder);
-  --card: var(--admin-card);
-  --card-foreground: var(--admin-card-foreground);
-  --popover: var(--admin-popover);
-  --popover-foreground: var(--admin-popover-foreground);
-  --input: var(--admin-input);
-  --border: var(--admin-border);
-  --sidebar: var(--admin-sidebar);
-  --sidebar-foreground: var(--admin-sidebar-foreground);
-  --sidebar-primary: var(--admin-sidebar-primary);
-  --sidebar-primary-foreground: var(--admin-sidebar-primary-foreground);
-  --sidebar-accent: var(--admin-sidebar-accent);
-  --sidebar-accent-foreground: var(--admin-sidebar-accent-foreground);
-  --sidebar-border: var(--admin-sidebar-border);
-  --sidebar-ring: var(--admin-sidebar-ring);
-  --chart-1: var(--admin-chart-1);
-  --chart-2: var(--admin-chart-2);
-  --chart-3: var(--admin-chart-3);
-  --chart-4: var(--admin-chart-4);
-  --chart-5: var(--admin-chart-5);
-}
-
-/* ========================================
-   FONTES E TIPOGRAFIA
-======================================== */
-
 :root {
+  --background: #faf9f7;
+  --foreground: #1a1a1a;
+  --muted: #f7f9fa;
+  --muted-foreground: #6b7280;
+  --placeholder: #1a1a1a;
+  
   --font-sans: 'DM Sans', sans-serif;
   --font-serif: 'Georgia', serif;
   --font-mono: 'Fira Code', monospace;
+  
+  --radius: 0.5rem;
+  
+  --primary: #277677;
+  --primary-foreground: #ffffff;
+  --secondary: #0f1419;
+  --secondary-foreground: #ffffff;
+  --accent: #e3ecf6;
+  --accent-foreground: #277677;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  
+  --input: #f7f9fa;
+  --border: #e1eaef;
+  --ring: #277677;
+  
+  --card: #e0e0e0;
+  --card-foreground: #1a1a1a;
+  --popover: #e0e0e0;
+  --popover-foreground: #1a1a1a;
+  
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1a1a1a;
+  --sidebar-primary: #277677;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e3ecf6;
+  --sidebar-accent-foreground: #277677;
+  --sidebar-border: #e1eaef;
+  --sidebar-ring: #277677;
+  
+  --chart-1: #277677;
+  --chart-2: #10b981;
+  --chart-3: #f59e0b;
+  --chart-4: #22c55e;
+  --chart-5: #ef4444;
+  --shadow: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --spacing: 0.25rem;
+  --shadow-lg: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 4px 6px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow-md: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 2px 4px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow-sm: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow-xl: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 8px 10px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow-xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow-2xl: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow-2xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --tracking-normal: 0em;
 }
 
-/* ========================================
-   ESTILOS BASE
-======================================== */
+.dark {
+  --background: hsl(0 0% 0%);
+  --foreground: hsl(200 6.6667% 91.1765%);
+  --card: hsl(228 9.8039% 10%);
+  --card-foreground: hsl(0 0% 85.0980%);
+  --popover: hsl(0 0% 0%);
+  --popover-foreground: hsl(200 6.6667% 91.1765%);
+  --primary: hsl(203.7736 87.6033% 52.5490%);
+  --primary-foreground: hsl(0 0% 100%);
+  --secondary: hsl(195.0000 15.3846% 94.9020%);
+  --secondary-foreground: hsl(210 25% 7.8431%);
+  --muted: hsl(0 0% 9.4118%);
+  --muted-foreground: hsl(210 3.3898% 46.2745%);
+  --placeholder: hsl(210 3.3898% 46.2745%);
+  --accent: hsl(205.7143 70% 7.8431%);
+  --accent-foreground: hsl(203.7736 87.6033% 52.5490%);
+  --destructive: hsl(356.3033 90.5579% 54.3137%);
+  --destructive-foreground: hsl(0 0% 100%);
+  --border: hsl(210 5.2632% 14.9020%);
+  --input: hsl(207.6923 27.6596% 18.4314%);
+  --ring: hsl(202.8169 89.1213% 53.1373%);
+  --chart-1: hsl(203.8863 88.2845% 53.1373%);
+  --chart-2: hsl(159.7826 100% 36.0784%);
+  --chart-3: hsl(42.0290 92.8251% 56.2745%);
+  --chart-4: hsl(147.1429 78.5047% 41.9608%);
+  --chart-5: hsl(341.4894 75.2000% 50.9804%);
+  --sidebar: hsl(228 9.8039% 10%);
+  --sidebar-foreground: hsl(0 0% 85.0980%);
+  --sidebar-primary: hsl(202.8169 89.1213% 53.1373%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(205.7143 70% 7.8431%);
+  --sidebar-accent-foreground: hsl(203.7736 87.6033% 52.5490%);
+  --sidebar-border: hsl(205.7143 15.7895% 26.0784%);
+  --sidebar-ring: hsl(202.8169 89.1213% 53.1373%);
+  --radius: 1.3rem;
+  --shadow: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --spacing: 0.25rem;
+  --font-mono: Menlo, monospace;
+  --font-sans: Open Sans, sans-serif;
+  --shadow-lg: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 4px 6px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow-md: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 2px 4px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow-sm: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow-xl: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 8px 10px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow-xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --font-serif: Georgia, serif;
+  --shadow-2xl: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow-2xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --tracking-normal: 0em;
+}
 
 @layer base {
   * {
@@ -64,80 +122,21 @@ body.admin-area,
   }
 }
 
-/* ========================================
-   COMPONENTES ESPECÍFICOS ADMIN
-======================================== */
-
 @layer components {
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50;
     @apply [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0;
-    background-color: rgb(var(--primary));
-    color: rgb(var(--primary-foreground));
+    background-color: #277677;
+    color: #ffffff;
     border: none;
   }
+  
   
   .btn-primary:disabled {
     opacity: 0.5;
     pointer-events: none;
   }
 }
-
-/* ========================================
-   FIXES PARA INPUTS - PREVENIR MUDANÇA DE COR
-======================================== */
-
-/* PREVENIR MUDANÇA DE COR DO BACKGROUND AO COLAR TEXTO */
-input, textarea, select {
-  background-color: rgb(var(--input)) !important;
-  color: rgb(var(--input-foreground, var(--foreground))) !important;
-}
-
-/* Controlar cor do placeholder */
-input::placeholder, textarea::placeholder, select::placeholder {
-  color: rgb(var(--placeholder, var(--muted-foreground))) !important;
-}
-
-input::-webkit-input-placeholder, textarea::-webkit-input-placeholder, select::-webkit-input-placeholder {
-  color: rgb(var(--placeholder, var(--muted-foreground))) !important;
-}
-
-input::-moz-placeholder, textarea::-moz-placeholder, select::-moz-placeholder {
-  color: rgb(var(--placeholder, var(--muted-foreground))) !important;
-}
-
-input:-ms-input-placeholder, textarea:-ms-input-placeholder, select:-ms-input-placeholder {
-  color: rgb(var(--placeholder, var(--muted-foreground))) !important;
-}
-
-input:-moz-placeholder, textarea:-moz-placeholder, select:-moz-placeholder {
-  color: rgb(var(--placeholder, var(--muted-foreground))) !important;
-}
-
-/* Prevenir mudanças de cor em todos os estados de input */
-input:focus, textarea:focus, select:focus {
-  background-color: rgb(var(--input)) !important;
-  color: rgb(var(--input-foreground, var(--foreground))) !important;
-}
-
-input:active, textarea:active, select:active {
-  background-color: rgb(var(--input)) !important;
-  color: rgb(var(--input-foreground, var(--foreground))) !important;
-}
-
-/* Prevenir autofill do navegador de mudar cores */
-input:-webkit-autofill,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 30px rgb(var(--input)) inset !important;
-  -webkit-text-fill-color: rgb(var(--input-foreground, var(--foreground))) !important;
-  background-color: rgb(var(--input)) !important;
-  color: rgb(var(--input-foreground, var(--foreground))) !important;
-}
-
-/* ========================================
-   REMOÇÃO DE OUTLINE E FOCUS
-======================================== */
 
 /* REMOÇÃO TOTAL DE OUTLINE E FOCUS - PRIORIDADE MÁXIMA */
 /* EXCEÇÃO CRÍTICA: Popups e dialogs PRECISAM de box-shadow para funcionar */
@@ -151,6 +150,8 @@ input:-webkit-autofill:active {
 *:not([role="dialog"]):not([data-radix-dialog-content]):not([data-radix-alert-dialog-content]):not([data-radix-sheet-content])::after {
   box-shadow: none !important;
 }
+
+
 
 *:active:not([role="dialog"]):not([data-radix-dialog-content]):not([data-radix-alert-dialog-content]):not([data-radix-sheet-content]) {
   outline: none !important;
@@ -171,11 +172,9 @@ span, p, h1, h2, h3, h4, h5, h6, img, svg {
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
 }
 
-/* ========================================
-   DROPDOWN MENU FIXES
-======================================== */
-
 /* REMOVER BACKGROUND DOS BOTÕES DO DROPDOWN DE COLUNAS - FORÇA TOTAL */
+
+/* Forçar remoção de background em TODOS os elementos dentro do dropdown */
 [data-radix-dropdown-menu-content] * {
   background-color: transparent !important;
   background: transparent !important;
@@ -197,6 +196,7 @@ span, p, h1, h2, h3, h4, h5, h6, img, svg {
 [data-radix-dropdown-menu-content] *:hover,
 [data-radix-dropdown-menu-content] *:focus,
 [data-radix-dropdown-menu-content] *:focus-visible,
+/* Bloquear qualquer classe do Tailwind que possa adicionar background */
 [data-radix-dropdown-menu-content] .bg-accent,
 [data-radix-dropdown-menu-content] .focus\:bg-accent,
 [data-radix-dropdown-menu-content] .hover\:bg-accent,
@@ -204,10 +204,6 @@ span, p, h1, h2, h3, h4, h5, h6, img, svg {
   background-color: transparent !important;
   background: transparent !important;
 }
-
-/* ========================================
-   RESPONSIVIDADE MOBILE
-======================================== */
 
 /* CORREÇÃO DEFINITIVA POPUPS MOBILE - Mobile-First com breakpoint expandido */
 @media (max-width: 1023px) {
@@ -247,11 +243,9 @@ span, p, h1, h2, h3, h4, h5, h6, img, svg {
   }
 }
 
-/* ========================================
-   UTILITÁRIOS MOBILE RESPONSIVOS
-======================================== */
-
+/* Mobile-First Responsive Utilities */
 @media (max-width: 1023px) {
+  /* Container Mobile Responsive */
   .container-mobile {
     width: 100% !important;
     max-width: 100% !important;
@@ -259,47 +253,57 @@ span, p, h1, h2, h3, h4, h5, h6, img, svg {
     padding-right: 0.75rem !important;
   }
 
+  /* Stack elements vertically on mobile */
   .stack-mobile {
     flex-direction: column !important;
     align-items: stretch !important;
   }
 
+  /* Mobile-specific spacing */
   .space-mobile {
     gap: 0.5rem !important;
   }
 
+  /* Reduce padding on mobile */
   .p-mobile {
     padding: 0.75rem !important;
   }
 
+  /* Full width on mobile */
   .w-mobile-full {
     width: 100% !important;
   }
 
+  /* Text size adjustments for mobile */
   .text-mobile-sm {
     font-size: 0.875rem !important;
     line-height: 1.25rem !important;
   }
 
+  /* Button mobile positioning */
   .btn-mobile-center {
     margin-left: auto !important;
     margin-right: auto !important;
     width: 100% !important;
   }
 
+  /* Grid to single column on mobile */
   .grid-mobile-single {
     grid-template-columns: 1fr !important;
   }
 
+  /* Hide overflow on mobile */
   .overflow-mobile-hidden {
     overflow-x: hidden !important;
   }
 
+  /* Card mobile specific */
   .card-mobile {
     margin-bottom: 1rem !important;
     padding: 0.75rem !important;
   }
 
+  /* Flex mobile adjustments */
   .flex-mobile-col {
     flex-direction: column !important;
   }
@@ -308,11 +312,13 @@ span, p, h1, h2, h3, h4, h5, h6, img, svg {
     flex-wrap: wrap !important;
   }
 
+  /* Mobile header spacing */
   .header-mobile {
     padding: 0.5rem !important;
     gap: 0.5rem !important;
   }
 
+  /* Mobile form spacing */
   .form-mobile {
     gap: 1rem !important;
   }
@@ -322,10 +328,6 @@ span, p, h1, h2, h3, h4, h5, h6, img, svg {
   }
 }
 
-/* ========================================
-   ESTADO DE FOCO UNIVERSAL
-======================================== */
-
 button:focus, input:focus, textarea:focus, select:focus, a:focus, [role="button"]:focus, [tabindex]:focus,
 div:focus, span:focus, p:focus, h1:focus, h2:focus, h3:focus, h4:focus, h5:focus, h6:focus,
 img:focus, svg:focus {
@@ -333,15 +335,16 @@ img:focus, svg:focus {
   box-shadow: none !important;
 }
 
+
+/* Forçar remoção em todos os estados */
 *:focus-visible {
   outline: none !important;
   box-shadow: none !important;
 }
+  box-shadow: none !important;
+}
 
-/* ========================================
-   CHECKBOX CUSTOMIZADO
-======================================== */
-
+/* Preserve checkbox visual styles */
 .custom-checkbox-input {
   box-shadow: none !important;
 }
@@ -350,10 +353,7 @@ img:focus, svg:focus {
   background-color: #22c55e !important;
 }
 
-/* ========================================
-   ANIMAÇÕES 3D E UTILITÁRIOS
-======================================== */
-
+/* 3D Card Flip Animation Utilities */
 .perspective-1000 {
   perspective: 1000px;
 }
@@ -370,6 +370,7 @@ img:focus, svg:focus {
   transform: rotateY(180deg);
 }
 
+/* Text clipping utilities */
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
