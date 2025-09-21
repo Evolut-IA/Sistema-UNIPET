@@ -1,10 +1,11 @@
 /* ========================================
-   SISTEMA DE CORES UNIFICADO
+   SISTEMA DE CORES UNIFICADO - FONTE ÚNICA
+   Consolidando todas as fontes de cores do projeto
 ======================================== */
 
 :root {
   /* ========================================
-     TOKENS SHADCN/UI PARA TAILWIND CSS
+     TOKENS SHADCN/UI BASE - PÚBLICO E CLIENTE
   ======================================== */
   
   /* Tokens base - mapeados para paleta existente */
@@ -30,6 +31,7 @@
   /* Tokens de bordas e inputs */
   --border: 229 231 235; /* #e5e7eb (border-gray) */
   --input: 226 226 226; /* #e2e2e2 (dropdown background) */
+  --input-foreground: 48 48 48; /* #303030 (text-dark-primary) */
   
   /* Tokens de popover */
   --popover: 226 226 226; /* #e2e2e2 (dropdown background) */
@@ -43,11 +45,52 @@
   --destructive: 220 38 38; /* #dc2626 (bg-error) */
   --destructive-foreground: 251 249 247; /* #FBF9F7 (text-light) */
   
+  /* Placeholder global - agora unificado */
+  --placeholder: 48 48 48; /* #303030 (text-dark-primary) */
+  
   /* Tokens de UI */
   --radius: 0.5rem;
   
   /* ========================================
-     SISTEMA DE CORES PERSONALIZADO
+     TOKENS ESPECÍFICOS ADMIN - EXTENSÕES
+  ======================================== */
+  
+  /* Admin: Override de background para área administrativa */
+  --admin-background: 250 249 247; /* #faf9f7 - mais suave para admin */
+  --admin-foreground: 26 26 26; /* #1a1a1a - texto mais escuro para admin */
+  --admin-muted: 247 249 250; /* #f7f9fa */
+  --admin-muted-foreground: 107 114 128; /* #6b7280 */
+  --admin-placeholder: 26 26 26; /* #1a1a1a */
+  
+  /* Admin: Cards e popovers específicos */
+  --admin-card: 224 224 224; /* #e0e0e0 */
+  --admin-card-foreground: 26 26 26; /* #1a1a1a */
+  --admin-popover: 224 224 224; /* #e0e0e0 */
+  --admin-popover-foreground: 26 26 26; /* #1a1a1a */
+  
+  /* Admin: Input override */
+  --admin-input: 247 249 250; /* #f7f9fa */
+  --admin-border: 225 234 239; /* #e1eaef */
+  
+  /* Admin: Sidebar específico */
+  --admin-sidebar: 255 255 255; /* #ffffff */
+  --admin-sidebar-foreground: 26 26 26; /* #1a1a1a */
+  --admin-sidebar-primary: 39 118 119; /* #277677 (mantém primary) */
+  --admin-sidebar-primary-foreground: 255 255 255; /* #ffffff */
+  --admin-sidebar-accent: 227 236 246; /* #e3ecf6 */
+  --admin-sidebar-accent-foreground: 39 118 119; /* #277677 */
+  --admin-sidebar-border: 225 234 239; /* #e1eaef */
+  --admin-sidebar-ring: 39 118 119; /* #277677 */
+  
+  /* Admin: Charts (mantém do admin.css) */
+  --admin-chart-1: 39 118 119; /* #277677 */
+  --admin-chart-2: 16 185 129; /* #10b981 */
+  --admin-chart-3: 245 158 11; /* #f59e0b */
+  --admin-chart-4: 34 197 94; /* #22c55e */
+  --admin-chart-5: 239 68 68; /* #ef4444 */
+
+  /* ========================================
+     SISTEMA DE CORES PERSONALIZADO EXISTENTE
   ======================================== */
   
   /* BOTÕES */
@@ -170,7 +213,7 @@
   /* GRADIENTS */
   --bg-gradient-main: linear-gradient(135deg, #277677 0%, #1a5a5c 100%);
   
-  /* CORES ESPECÍFICAS DO ADMIN */
+  /* CORES ESPECÍFICAS DO ADMIN (MANTIDAS PARA COMPATIBILIDADE) */
   --admin-overlay: rgba(6, 6, 6, 0.5);
   --admin-teal-primary: #145759;
   --admin-teal-secondary: #1f5a5c;
@@ -188,4 +231,75 @@
   --bg-cream-light-2: #FBF9F7;
   --bg-cream-lighter-2: #FCF9F7;
   --bg-cream-dark-2: #F5F2F0;
+}
+
+/* ========================================
+   EXTENSÕES PARA ÁREA ADMINISTRATIVA
+   Aplicadas condicionalmente via classes
+======================================== */
+
+/* Classe para ativar modo admin */
+.admin-mode {
+  --background: var(--admin-background);
+  --foreground: var(--admin-foreground);
+  --muted: var(--admin-muted);
+  --muted-foreground: var(--admin-muted-foreground);
+  --placeholder: var(--admin-placeholder);
+  --card: var(--admin-card);
+  --card-foreground: var(--admin-card-foreground);
+  --popover: var(--admin-popover);
+  --popover-foreground: var(--admin-popover-foreground);
+  --input: var(--admin-input);
+  --border: var(--admin-border);
+  --sidebar: var(--admin-sidebar);
+  --sidebar-foreground: var(--admin-sidebar-foreground);
+  --sidebar-primary: var(--admin-sidebar-primary);
+  --sidebar-primary-foreground: var(--admin-sidebar-primary-foreground);
+  --sidebar-accent: var(--admin-sidebar-accent);
+  --sidebar-accent-foreground: var(--admin-sidebar-accent-foreground);
+  --sidebar-border: var(--admin-sidebar-border);
+  --sidebar-ring: var(--admin-sidebar-ring);
+  --chart-1: var(--admin-chart-1);
+  --chart-2: var(--admin-chart-2);
+  --chart-3: var(--admin-chart-3);
+  --chart-4: var(--admin-chart-4);
+  --chart-5: var(--admin-chart-5);
+}
+
+/* Dark Mode Support - Mantido do admin.css original */
+.dark {
+  --background: 0 0 0;
+  --foreground: 200 6.6667 91.1765;
+  --card: 228 9.8039 10;
+  --card-foreground: 0 0 85.0980;
+  --popover: 0 0 0;
+  --popover-foreground: 200 6.6667 91.1765;
+  --primary: 203.7736 87.6033 52.5490;
+  --primary-foreground: 0 0 100;
+  --secondary: 195.0000 15.3846 94.9020;
+  --secondary-foreground: 210 25 7.8431;
+  --muted: 0 0 9.4118;
+  --muted-foreground: 210 3.3898 46.2745;
+  --placeholder: 210 3.3898 46.2745;
+  --accent: 205.7143 70 7.8431;
+  --accent-foreground: 203.7736 87.6033 52.5490;
+  --destructive: 356.3033 90.5579 54.3137;
+  --destructive-foreground: 0 0 100;
+  --border: 210 5.2632 14.9020;
+  --input: 207.6923 27.6596 18.4314;
+  --ring: 202.8169 89.1213 53.1373;
+  --chart-1: 203.8863 88.2845 53.1373;
+  --chart-2: 159.7826 100 36.0784;
+  --chart-3: 42.0290 92.8251 56.2745;
+  --chart-4: 147.1429 78.5047 41.9608;
+  --chart-5: 341.4894 75.2000 50.9804;
+  --sidebar: 228 9.8039 10;
+  --sidebar-foreground: 0 0 85.0980;
+  --sidebar-primary: 202.8169 89.1213 53.1373;
+  --sidebar-primary-foreground: 0 0 100;
+  --sidebar-accent: 205.7143 70 7.8431;
+  --sidebar-accent-foreground: 203.7736 87.6033 52.5490;
+  --sidebar-border: 205.7143 15.7895 26.0784;
+  --sidebar-ring: 202.8169 89.1213 53.1373;
+  --radius: 1.3rem;
 }
