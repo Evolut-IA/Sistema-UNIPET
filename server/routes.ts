@@ -3090,7 +3090,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Validate request body if amount is provided
-      let validatedData = { amount: undefined };
+      let validatedData: { amount?: number } = {};
       if (req.body && Object.keys(req.body).length > 0) {
         try {
           validatedData = paymentCaptureSchema.parse(req.body);
@@ -3186,7 +3186,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Validate request body if amount is provided
-      let validatedData = { amount: undefined };
+      let validatedData: { amount?: number } = {};
       if (req.body && Object.keys(req.body).length > 0) {
         try {
           validatedData = paymentCancelSchema.parse(req.body);
