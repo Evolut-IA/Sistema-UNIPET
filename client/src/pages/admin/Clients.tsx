@@ -316,7 +316,7 @@ export default function Clients() {
   };
 
   return (
-    <div className="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div className="flex-1 min-w-0">
@@ -326,7 +326,7 @@ export default function Clients() {
       </div>
 
       {/* Filters and Column Controls */}
-      <div className="flex flex-wrap gap-4 items-center justify-between mb-6">
+      <div className="flex flex-wrap gap-4 items-center justify-between">
         <div className="flex gap-2 flex-wrap">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -508,7 +508,7 @@ export default function Clients() {
 
         {/* Pagination */}
         {totalClients > 10 && (
-          <div className="flex items-center justify-between px-2 py-4">
+          <div className="flex items-center justify-between py-4">
             <div className="flex items-center space-x-6 lg:space-x-8">
               <div className="flex items-center space-x-2">
                 <p className="text-sm font-medium">
