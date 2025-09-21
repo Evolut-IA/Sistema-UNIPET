@@ -549,8 +549,7 @@ export class InMemoryStorage implements IStorage {
   async createClient(client: InsertClient): Promise<Client> {
     const newClient: Client = {
       id: `client-${Date.now()}`,
-      full_name: client.full_name,
-      fullName: client.full_name,
+      fullName: client.fullName,
       email: client.email,
       phone: client.phone,
       password: client.password ?? null,
@@ -860,7 +859,7 @@ export class InMemoryStorage implements IStorage {
 
   async searchClients(query: string): Promise<Client[]> {
     return this.clients.filter(client => 
-      client.full_name?.toLowerCase().includes(query.toLowerCase()) ||
+      client.fullName?.toLowerCase().includes(query.toLowerCase()) ||
       client.email.toLowerCase().includes(query.toLowerCase()) ||
       client.phone?.includes(query)
     );

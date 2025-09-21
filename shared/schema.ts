@@ -168,8 +168,7 @@ export const siteSettings = pgTable("site_settings", {
 // Unified clients table (UNIPET version with all fields, includes compatibility)
 export const clients = pgTable("clients", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  full_name: text("full_name").notNull(), // UNIPET field name
-  fullName: text("full_name").notNull(), // Compatibility alias for Admin (references same column)
+  fullName: text("full_name").notNull(), // UNIPET field name - changed to camelCase for consistency
   email: text("email").notNull(),
   phone: text("phone").notNull(),
   cpf: text("cpf"), // Optional in UNIPET, required in Admin - made optional for compatibility

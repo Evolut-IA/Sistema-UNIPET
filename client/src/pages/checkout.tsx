@@ -2306,7 +2306,7 @@ export default function Checkout() {
                       {(() => {
                         const allMethods = [
                           { value: 'credit', dbValue: 'cartao', label: 'Cartão de Crédito', icon: CreditCard, availableFor: ['monthly', 'annual'] },
-                          { value: 'pix', dbValue: 'pix', label: 'PIX', icon: PixIcon, availableFor: ['annual'] }
+                          { value: 'pix', dbValue: 'pix', label: 'PIX', icon: PixIcon, availableFor: ['monthly', 'annual'] }
                         ];
                         
                         // Filtrar por métodos disponíveis no plano selecionado
