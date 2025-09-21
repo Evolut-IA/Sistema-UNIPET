@@ -153,8 +153,8 @@ export default function TelemedicinePage() {
             onClick={() => navigate('/customer/dashboard')}
             className="p-2 rounded-lg transition-all"
             style={{background: 'var(--bg-cream-lighter)'}}
-            onMouseEnter={(e) => e.currentTarget.style.background = 'var(--bg-beige)'}
-            onMouseLeave={(e) => e.currentTarget.style.background = 'var(--bg-cream-lighter)'}
+
+
           >
             <ArrowLeft className="w-6 h-6" style={{color: 'var(--text-dark-primary)'}} />
           </button>
@@ -314,7 +314,7 @@ export default function TelemedicinePage() {
                     background: 'var(--bg-gold)',
                     color: 'var(--text-light)'
                   }}
-                  onMouseEnter={(e) => {
+
                     if (!isRequestingService) {
                       e.currentTarget.style.background = 'var(--text-gold)';
                     }

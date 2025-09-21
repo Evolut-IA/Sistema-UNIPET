@@ -334,8 +334,8 @@ export default function CheckoutSuccessPage() {
               onClick={() => navigate('/')}
               className="flex items-center justify-center space-x-2 px-6 py-3 transition-colors"
               style={{color: 'var(--text-dark-secondary)'}}
-              onMouseEnter={(e) => e.currentTarget.style.color = 'var(--text-dark-primary)'}
-              onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-dark-secondary)'}
+
+
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Voltar ao início</span>
