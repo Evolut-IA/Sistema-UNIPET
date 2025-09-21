@@ -2,7 +2,7 @@ import { Switch, Route, Router as WouterRouter } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { Suspense, lazy } from "react";
+import { Suspense } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
@@ -48,23 +48,23 @@ function GlobalLoading() {
   );
 }
 
-// Import admin pages
-const AdminClients = lazy(() => import('./pages/admin/Clients'));
-const AdminClientForm = lazy(() => import('./pages/admin/ClientForm'));
-const AdminPetForm = lazy(() => import('./pages/admin/PetForm'));
-const AdminGuides = lazy(() => import('./pages/admin/Guides'));
-const AdminGuideForm = lazy(() => import('./pages/admin/GuideForm'));
-const AdminPlans = lazy(() => import('./pages/admin/Plans'));
-const AdminPlanForm = lazy(() => import('./pages/admin/PlanForm'));
-const AdminNetwork = lazy(() => import('./pages/admin/Network'));
-const AdminNetworkForm = lazy(() => import('./pages/admin/NetworkForm'));
-const AdminProcedures = lazy(() => import('./pages/admin/Procedures'));
-const AdminFAQ = lazy(() => import('./pages/admin/FAQ'));
-const AdminContactSubmissions = lazy(() => import('./pages/admin/ContactSubmissions'));
-const AdminSettings = lazy(() => import('./pages/admin/Settings'));
-const AdminAdministration = lazy(() => import('./pages/admin/Administration'));
-const AdminUnitDashboard = lazy(() => import('./pages/admin/UnitDashboard'));
-const AdminNotFound = lazy(() => import('./pages/admin/not-found'));
+// Import admin pages - direct imports for instant navigation
+import AdminClients from './pages/admin/Clients';
+import AdminClientForm from './pages/admin/ClientForm';
+import AdminPetForm from './pages/admin/PetForm';
+import AdminGuides from './pages/admin/Guides';
+import AdminGuideForm from './pages/admin/GuideForm';
+import AdminPlans from './pages/admin/Plans';
+import AdminPlanForm from './pages/admin/PlanForm';
+import AdminNetwork from './pages/admin/Network';
+import AdminNetworkForm from './pages/admin/NetworkForm';
+import AdminProcedures from './pages/admin/Procedures';
+import AdminFAQ from './pages/admin/FAQ';
+import AdminContactSubmissions from './pages/admin/ContactSubmissions';
+import AdminSettings from './pages/admin/Settings';
+import AdminAdministration from './pages/admin/Administration';
+import AdminUnitDashboard from './pages/admin/UnitDashboard';
+import AdminNotFound from './pages/admin/not-found';
 
 // AdminRouter - handles all admin routes with base="/admin"
 function AdminRouter() {
@@ -78,125 +78,41 @@ function AdminRouter() {
             <Route path="/" component={AdminDashboard} />
             
             {/* Client management routes */}
-            <Route path="/clientes" component={() => 
-              <Suspense fallback={<GlobalLoading />}>
-                <AdminClients />
-              </Suspense>
-            } />
-            <Route path="/clientes/novo" component={() => 
-              <Suspense fallback={<GlobalLoading />}>
-                <AdminClientForm />
-              </Suspense>
-            } />
-            <Route path="/clientes/:id/editar" component={() => 
-              <Suspense fallback={<GlobalLoading />}>
-                <AdminClientForm />
-              </Suspense>
-            } />
-            <Route path="/clientes/:clientId/pets/novo" component={() => 
-              <Suspense fallback={<GlobalLoading />}>
-                <AdminPetForm />
-              </Suspense>
-            } />
+            <Route path="/clientes" component={AdminClients} />
+            <Route path="/clientes/novo" component={AdminClientForm} />
+            <Route path="/clientes/:id/editar" component={AdminClientForm} />
+            <Route path="/clientes/:clientId/pets/novo" component={AdminPetForm} />
             
             {/* Pet management routes */}
-            <Route path="/pets/:id/editar" component={() => 
-              <Suspense fallback={<GlobalLoading />}>
-                <AdminPetForm />
-              </Suspense>
-            } />
+            <Route path="/pets/:id/editar" component={AdminPetForm} />
             
             {/* Guide management routes */}
-            <Route path="/guias" component={() => 
-              <Suspense fallback={<GlobalLoading />}>
-                <AdminGuides />
-              </Suspense>
-            } />
-            <Route path="/guias/novo" component={() => 
-              <Suspense fallback={<GlobalLoading />}>
-                <AdminGuideForm />
-              </Suspense>
-            } />
-            <Route path="/guias/:id/editar" component={() => 
-              <Suspense fallback={<GlobalLoading />}>
-                <AdminGuideForm />
-              </Suspense>
-            } />
+            <Route path="/guias" component={AdminGuides} />
+            <Route path="/guias/novo" component={AdminGuideForm} />
+            <Route path="/guias/:id/editar" component={AdminGuideForm} />
             
             {/* Plan management routes */}
-            <Route path="/planos" component={() => 
-              <Suspense fallback={<GlobalLoading />}>
-                <AdminPlans />
-              </Suspense>
-            } />
-            <Route path="/planos/novo" component={() => 
-              <Suspense fallback={<GlobalLoading />}>
-                <AdminPlanForm />
-              </Suspense>
-            } />
-            <Route path="/planos/:id/editar" component={() => 
-              <Suspense fallback={<GlobalLoading />}>
-                <AdminPlanForm />
-              </Suspense>
-            } />
+            <Route path="/planos" component={AdminPlans} />
+            <Route path="/planos/novo" component={AdminPlanForm} />
+            <Route path="/planos/:id/editar" component={AdminPlanForm} />
             
             {/* Network management routes */}
-            <Route path="/rede" component={() => 
-              <Suspense fallback={<GlobalLoading />}>
-                <AdminNetwork />
-              </Suspense>
-            } />
-            <Route path="/rede/novo" component={() => 
-              <Suspense fallback={<GlobalLoading />}>
-                <AdminNetworkForm />
-              </Suspense>
-            } />
-            <Route path="/rede/:id/editar" component={() => 
-              <Suspense fallback={<GlobalLoading />}>
-                <AdminNetworkForm />
-              </Suspense>
-            } />
+            <Route path="/rede" component={AdminNetwork} />
+            <Route path="/rede/novo" component={AdminNetworkForm} />
+            <Route path="/rede/:id/editar" component={AdminNetworkForm} />
             
             {/* Other admin routes */}
-            <Route path="/procedimentos" component={() => 
-              <Suspense fallback={<GlobalLoading />}>
-                <AdminProcedures />
-              </Suspense>
-            } />
-            <Route path="/perguntas-frequentes" component={() => 
-              <Suspense fallback={<GlobalLoading />}>
-                <AdminFAQ />
-              </Suspense>
-            } />
-            <Route path="/formularios" component={() => 
-              <Suspense fallback={<GlobalLoading />}>
-                <AdminContactSubmissions />
-              </Suspense>
-            } />
-            <Route path="/configuracoes" component={() => 
-              <Suspense fallback={<GlobalLoading />}>
-                <AdminSettings />
-              </Suspense>
-            } />
-            <Route path="/administracao" component={() => 
-              <Suspense fallback={<GlobalLoading />}>
-                <AdminAdministration />
-              </Suspense>
-            } />
+            <Route path="/procedimentos" component={AdminProcedures} />
+            <Route path="/perguntas-frequentes" component={AdminFAQ} />
+            <Route path="/formularios" component={AdminContactSubmissions} />
+            <Route path="/configuracoes" component={AdminSettings} />
+            <Route path="/administracao" component={AdminAdministration} />
             
             {/* Unit Dashboard (special case) */}
-            <Route path="/unidade/:slug" component={() => 
-              <Suspense fallback={<GlobalLoading />}>
-                <AdminUnitDashboard />
-              </Suspense>
-            } />
+            <Route path="/unidade/:slug" component={AdminUnitDashboard} />
             
             {/* Fallback */}
-            <Route component={() => 
-              <Suspense fallback={<GlobalLoading />}>
-                <AdminNotFound />
-              </Suspense>
-            } />
+            <Route component={AdminNotFound} />
           </Switch>
           </AdminLayout>
         </AuthGuard>
