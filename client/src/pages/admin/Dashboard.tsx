@@ -30,6 +30,9 @@ type PlanDistribution = {
 };
 
 export default function Dashboard() {
+  // LOG CRÍTICO: Verificar se Dashboard está sendo executado SEM passar pelo AuthGuard
+  console.log("🚨 [DASHBOARD] Component loaded - THIS SHOULD NOT HAPPEN WITHOUT AUTH!");
+  
   const [dateFilter, setDateFilter] = useState<{
     startDate: CalendarDate | null;
     endDate: CalendarDate | null;
