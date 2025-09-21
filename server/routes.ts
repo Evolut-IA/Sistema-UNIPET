@@ -12,6 +12,7 @@ import {
   insertClientSchemaStep2,
   clientLoginSchema,
   adminLoginSchema,
+  insertUserSchema,
   insertPetSchema,
   updatePetSchema,
   type InsertNetworkUnit,
@@ -135,12 +136,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin authentication status endpoint
+  app.get("/admin/api/auth/status", (req, res) => {
+    try {
+      if (req.session && req.session.admin && req.session.admin.authenticated) {
+        res.json({ 
+          authenticated: true, 
+          admin: { 
+            login: req.session.admin.login 
+          } 
+        });
+      } else {
+        res.json({ authenticated: false });
+      }
+    } catch (error) {
+      console.error("❌ [ADMIN-AUTH-STATUS] Error checking auth status:", error);
+      res.status(500).json({ 
+        authenticated: false, 
+        error: "Erro interno do servidor" 
+      });
+    }
+  });
 
 
-  // Protect all admin API routes except login
+
+  // Protect all admin API routes except login and auth status
   app.use("/admin/api/*", (req, res, next) => {
-    // Skip authentication for login endpoint
-    if (req.path === "/admin/api/login") {
+    // Skip authentication for login and auth status endpoints
+    if (req.path === "/admin/api/login" || req.path === "/admin/api/auth/status") {
       return next();
     }
     // Apply admin authentication for all other admin routes
@@ -414,7 +437,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/admin/api/clients/search/:query", async (req, res) => {
     try {
-      const clients = await storage.searchClients(req.params.query);
+      // Temporary fix: use getAllClients and filter manually
+      const allClients = await storage.getAllClients();
+      const query = req.params.query.toLowerCase();
+      const clients = allClients.filter(client => 
+        (client.name || '').toLowerCase().includes(query) || 
+        client.email.toLowerCase().includes(query) || 
+        client.phone.includes(query)
+      );
       res.json(clients);
     } catch (error) {
       console.error("❌ [ADMIN] Error searching clients:", error);
@@ -539,7 +569,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/admin/api/guides/:id", async (req, res) => {
     try {
-      const guide = await storage.getGuideById(req.params.id);
+      const guide = await storage.getGuide(req.params.id);
       if (!guide) {
         return res.status(404).json({ error: "Guia não encontrado" });
       }

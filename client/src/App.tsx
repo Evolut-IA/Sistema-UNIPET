@@ -33,6 +33,7 @@ import PageLayout from "@/components/layout/page-layout";
 // Admin imports
 import AdminDashboard from "@/pages/admin/Dashboard";
 import AdminLayout from "@/components/admin/Layout";
+import AuthGuard from "@/components/admin/AuthGuard";
 import { queryClient as adminQueryClient } from "./lib/admin/queryClient";
 
 // Componente de loading global com fallback robusto
@@ -70,7 +71,8 @@ function AdminRouter() {
   return (
     <WouterRouter base="/admin">
       <QueryClientProvider client={adminQueryClient}>
-        <AdminLayout>
+        <AuthGuard>
+          <AdminLayout>
           <Switch>
             {/* Dashboard route */}
             <Route path="/" component={AdminDashboard} />
@@ -196,7 +198,8 @@ function AdminRouter() {
               </Suspense>
             } />
           </Switch>
-        </AdminLayout>
+          </AdminLayout>
+        </AuthGuard>
       </QueryClientProvider>
     </WouterRouter>
   );
