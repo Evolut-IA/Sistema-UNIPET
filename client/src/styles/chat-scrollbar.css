@@ -15,11 +15,6 @@
   border-radius: 10px !important;
 }
 
-/* SOBRESCREVER QUALQUER HOVER - FORÇAR A MESMA COR */
-.modern-chat-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: var(--bg-teal-dark) !important;
-}
-
 .modern-chat-scrollbar::-webkit-scrollbar-thumb:active {
   background: var(--bg-teal-dark) !important;
 }
@@ -43,10 +38,5 @@
 /* GARANTIR QUE NENHUM OUTRO ESTILO DE SCROLLBAR INTERFIRA */
 .modern-chat-scrollbar.scrollbar-thin::-webkit-scrollbar-thumb,
 .modern-chat-scrollbar.scrollbar-thumb-gray-300::-webkit-scrollbar-thumb {
-  background: var(--bg-teal-dark) !important;
-}
-
-.modern-chat-scrollbar.scrollbar-thin::-webkit-scrollbar-thumb:hover,
-.modern-chat-scrollbar.scrollbar-thumb-gray-300::-webkit-scrollbar-thumb:hover {
   background: var(--bg-teal-dark) !important;
 }

@@ -137,9 +137,6 @@
     border: none;
   }
   
-  .btn-primary:hover {
-    background-color: #1f5e5f;
-  }
   
   .btn-primary:disabled {
     opacity: 0.5;
@@ -167,10 +164,6 @@
   box-shadow: none !important;
 }
 
-*:hover:not([role="dialog"]):not([data-radix-dialog-content]):not([data-radix-alert-dialog-content]):not([data-radix-sheet-content]) {
-  outline: none !important;
-  box-shadow: none !important;
-}
 
 *:active:not([role="dialog"]):not([data-radix-dialog-content]):not([data-radix-alert-dialog-content]):not([data-radix-sheet-content]) {
   outline: none !important;
@@ -367,12 +360,6 @@ img:focus, svg:focus {
   box-shadow: none !important;
 }
 
-button:hover, input:hover, textarea:hover, select:hover, a:hover, [role="button"]:hover, [tabindex]:hover,
-div:hover, span:hover, p:hover, h1:hover, h2:hover, h3:hover, h4:hover, h5:hover, h6:hover,
-img:hover, svg:hover {
-  outline: none !important;
-  box-shadow: none !important;
-}
 
 /* Forçar remoção em todos os estados */
 *:focus-visible {

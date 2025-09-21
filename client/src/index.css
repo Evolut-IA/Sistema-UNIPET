@@ -397,9 +397,6 @@ svg {
   border-color: var(--border-gray) !important;
 }
 
-.network-filter-dropdown:hover {
-  border-color: var(--border-gray) !important;
-}
 
 
 /* ========================================
@@ -579,10 +576,6 @@ svg {
 }
 
 /* Hover effects for chat messages */
-.chat-message:hover {
-  transform: translateY(-1px);
-  transition: transform 0.2s ease;
-}
 
 /* Glass morphism effect */
 .glass-morphism {

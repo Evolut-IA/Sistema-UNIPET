@@ -79,7 +79,7 @@ export function Pricing({
                 delay: index * 0.1,
               }}
               className={cn(
-                "rounded-2xl border-[1px] bg-[var(--bg-cream-light)] text-center flex flex-col relative transform-style-preserve-3d backface-hidden transition-all duration-300 hover:shadow-2xl",
+                "rounded-2xl border-[1px] bg-[var(--bg-cream-light)] text-center flex flex-col relative transform-style-preserve-3d backface-hidden transition-all duration-300",
                 plan.isPopular ? "border-[var(--text-gold)] border-2" : "border-[var(--border-teal-light)]",
                 // Apply 3D effects only on desktop and when there are exactly 3 plans visible
                 isDesktop && plans.length >= 3 && [

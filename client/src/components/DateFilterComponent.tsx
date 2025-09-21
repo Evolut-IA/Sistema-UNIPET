@@ -157,7 +157,7 @@ const DateFilterComponent = React.memo(function DateFilterComponent({
                   size="sm"
                   onClick={handleCurrentMonth}
                   disabled={isLoading}
-                  className="h-10 px-3 text-xs bg-input text-accent-foreground hover:bg-input/80"
+                  className="h-10 px-3 text-xs bg-input text-accent-foreground bg-input/80"
                   aria-label="Filtrar por mês atual"
                 >
                   Mês atual
@@ -167,7 +167,7 @@ const DateFilterComponent = React.memo(function DateFilterComponent({
                   size="sm"
                   onClick={handleCurrentWeek}
                   disabled={isLoading}
-                  className="h-10 px-3 text-xs bg-input text-accent-foreground hover:bg-input/80"
+                  className="h-10 px-3 text-xs bg-input text-accent-foreground bg-input/80"
                   aria-label="Filtrar por semana atual"
                 >
                   Semana atual
@@ -177,7 +177,7 @@ const DateFilterComponent = React.memo(function DateFilterComponent({
                   size="sm"
                   onClick={handleToday}
                   disabled={isLoading}
-                  className="h-10 px-3 text-xs bg-input text-accent-foreground hover:bg-input/80"
+                  className="h-10 px-3 text-xs bg-input text-accent-foreground bg-input/80"
                   aria-label="Filtrar por hoje"
                 >
                   Hoje

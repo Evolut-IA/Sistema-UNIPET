@@ -147,7 +147,7 @@ const SheetContent = React.forwardRef<
       >
         {children}
         <SheetPrimitive.Close className={cn(
-          "absolute rounded-sm opacity-70 transition-opacity hover:opacity-100", 
+          "absolute rounded-sm opacity-70 transition-opacity", 
           "disabled:pointer-events-none data-[state=open]:bg-secondary",
           // Responsive close button positioning
           isMobile ? "right-3 top-3" : "right-4 top-4"

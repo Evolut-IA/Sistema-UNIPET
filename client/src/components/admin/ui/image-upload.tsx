@@ -90,7 +90,7 @@ export function ImageUpload({
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
           className={cn(
-            "flex h-48 w-48 cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border bg-muted/50 transition-colors hover:bg-muted",
+            "flex h-48 w-48 cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border bg-muted/50 transition-colors",
             isDragging && "border-primary/50 bg-primary/5",
           )}
         >
@@ -110,10 +110,10 @@ export function ImageUpload({
             <img
               src={displayUrl}
               alt="Preview"
-              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+              className="h-full w-full object-cover transition-transform duration-300"
             />
-            <div className="absolute inset-0 bg-black/40 opacity-0 transition-opacity group-hover:opacity-100" />
-            <div className="absolute inset-0 flex items-center justify-center gap-2 opacity-0 transition-opacity group-hover:opacity-100">
+            <div className="absolute inset-0 bg-black/40 opacity-0 transition-opacity" />
+            <div className="absolute inset-0 flex items-center justify-center gap-2 opacity-0 transition-opacity">
               <Button
                 size="sm"
                 variant="secondary"

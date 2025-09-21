@@ -552,7 +552,7 @@ export default function CustomerFinancial() {
                           {(isRenewalNeeded || isExpired) && (
                             <button
                               onClick={() => handleRenewalCheckout(contract)}
-                              className="px-4 py-1 bg-red-500 text-white text-sm font-medium rounded-full hover:bg-red-600 transition-colors"
+                              className="px-4 py-1 bg-red-500 text-white text-sm font-medium rounded-full transition-colors"
                             >
                               Regularizar
                             </button>

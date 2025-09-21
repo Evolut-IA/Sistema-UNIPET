@@ -92,7 +92,7 @@ export function ConfirmationModal({
           <button
             onClick={handleCancel}
             disabled={isLoading}
-            className="text-[var(--text-light)] hover:text-[var(--text-teal)] transition-colors disabled:opacity-50"
+            className="text-[var(--text-light)] transition-colors disabled:opacity-50"
             aria-label="Fechar modal"
           >
             <X className="h-5 w-5" />

@@ -239,7 +239,7 @@ export default function CustomerLoginPage() {
                 {/* Action */}
                 <button
                   onClick={() => setShowPaymentSuccessPopup(false)}
-                  className="w-full py-2.5 px-4 rounded-lg font-medium transition-all duration-200 hover:opacity-90"
+                  className="w-full py-2.5 px-4 rounded-lg font-medium transition-all duration-200 opacity-90"
                   style={{
                     background: 'var(--text-light)',
                     color: 'var(--bg-teal)'

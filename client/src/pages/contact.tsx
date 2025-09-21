@@ -303,7 +303,7 @@ export default function Contact() {
 
                       <Button 
                         type="submit" 
-                        className="w-full unipet-button-primary text-base sm:text-lg py-3 sm:py-4 text-[var(--text-light)] hover:text-[var(--text-light)] mobile-touch-target"
+                        className="w-full unipet-button-primary text-base sm:text-lg py-3 sm:py-4 text-[var(--text-light)] mobile-touch-target"
                         style={{
                           background: 'var(--btn-cotacao-gratuita-bg)',
                           border: 'none'
@@ -366,7 +366,7 @@ export default function Contact() {
                             href={getWhatsAppLink()}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-[var(--text-light)] opacity-80 hover:text-[var(--text-gold)] transition-colors cursor-pointer"
+                            className="text-[var(--text-light)] opacity-80 transition-colors cursor-pointer"
                           >
                             {settings.whatsapp}
                           </a>
@@ -402,22 +402,22 @@ export default function Contact() {
                     </div>
                     <div className="flex space-x-4">
                       {shouldShow.facebookUrl && (
-                        <a href={settings.facebookUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-cream-light)] text-[var(--text-teal)] hover:bg-[var(--bg-gold)] hover:text-[var(--text-light)] transition-colors duration-200">
+                        <a href={settings.facebookUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-cream-light)] text-[var(--text-teal)] transition-colors duration-200">
                           <Facebook className="h-4 w-4" />
                         </a>
                       )}
                       {shouldShow.instagramUrl && (
-                        <a href={settings.instagramUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-cream-light)] text-[var(--text-teal)] hover:bg-[var(--bg-gold)] hover:text-[var(--text-light)] transition-colors duration-200">
+                        <a href={settings.instagramUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-cream-light)] text-[var(--text-teal)] transition-colors duration-200">
                           <Instagram className="h-4 w-4" />
                         </a>
                       )}
                       {shouldShow.linkedinUrl && (
-                        <a href={settings.linkedinUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-cream-light)] text-[var(--text-teal)] hover:bg-[var(--bg-gold)] hover:text-[var(--text-light)] transition-colors duration-200">
+                        <a href={settings.linkedinUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-cream-light)] text-[var(--text-teal)] transition-colors duration-200">
                           <Linkedin className="h-4 w-4" />
                         </a>
                       )}
                       {shouldShow.youtubeUrl && (
-                        <a href={settings.youtubeUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-cream-light)] text-[var(--text-teal)] hover:bg-[var(--bg-gold)] hover:text-[var(--text-light)] transition-colors duration-200">
+                        <a href={settings.youtubeUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-cream-light)] text-[var(--text-teal)] transition-colors duration-200">
                           <Youtube className="h-4 w-4" />
                         </a>
                       )}

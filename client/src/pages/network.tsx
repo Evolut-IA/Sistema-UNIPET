@@ -122,8 +122,8 @@ export default function Network() {
           size="sm"
           onClick={() => setCurrentPage(page)}
           className={currentPage === page 
-            ? "bg-[var(--bg-teal)] text-[var(--text-light)] hover:bg-[var(--bg-teal)]/90 rounded-full w-9 h-9 p-0" 
-            : "border-none bg-transparent text-[var(--text-teal)] hover:bg-transparent hover:text-[var(--text-teal)] rounded-full w-9 h-9 p-0"
+            ? "bg-[var(--bg-teal)] text-[var(--text-light)] rounded-full w-9 h-9 p-0" 
+            : "border-none bg-transparent text-[var(--text-teal)] rounded-full w-9 h-9 p-0"
           }
         >
           {page}
@@ -371,7 +371,7 @@ export default function Network() {
                       size="sm"
                       onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                       disabled={currentPage === 1}
-                      className="border-none bg-transparent text-[var(--text-teal)] hover:bg-transparent hover:text-[var(--text-teal)]"
+                      className="border-none bg-transparent text-[var(--text-teal)]"
                     >
                       <ChevronLeft className="h-4 w-4" />
                       Anterior
@@ -386,7 +386,7 @@ export default function Network() {
                       size="sm"
                       onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                       disabled={currentPage === totalPages}
-                      className="border-none bg-transparent text-[var(--text-teal)] hover:bg-transparent hover:text-[var(--text-teal)]"
+                      className="border-none bg-transparent text-[var(--text-teal)]"
                     >
                       Próxima
                       <ChevronRight className="h-4 w-4" />

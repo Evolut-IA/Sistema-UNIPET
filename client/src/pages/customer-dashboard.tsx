@@ -151,7 +151,7 @@ export default function CustomerDashboard() {
             className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"
           >
             {/* My Pets Card */}
-            <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300">
+            <div className="bg-white rounded-xl shadow-lg p-6 shadow-xl transition-shadow duration-300">
               <div className="flex items-center space-x-4 mb-4">
                 <div className="w-12 h-12 rounded-lg flex items-center justify-center"
                   style={{ background: 'var(--bg-cream-light)' }}>
@@ -177,7 +177,7 @@ export default function CustomerDashboard() {
             </div>
 
             {/* Contratos Card */}
-            <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300">
+            <div className="bg-white rounded-xl shadow-lg p-6 shadow-xl transition-shadow duration-300">
               <div className="flex items-center space-x-4 mb-4">
                 <div className="w-12 h-12 rounded-lg flex items-center justify-center"
                   style={{ background: 'var(--bg-cream-light)' }}>
@@ -202,7 +202,7 @@ export default function CustomerDashboard() {
 
 
             {/* Mudança de Plano Card */}
-            <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300">
+            <div className="bg-white rounded-xl shadow-lg p-6 shadow-xl transition-shadow duration-300">
               <div className="flex items-center space-x-4 mb-4">
                 <div className="w-12 h-12 rounded-lg flex items-center justify-center"
                   style={{ background: 'var(--bg-cream-light)' }}>
@@ -227,7 +227,7 @@ export default function CustomerDashboard() {
 
 
             {/* Pesquisas de Satisfação Card */}
-            <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300">
+            <div className="bg-white rounded-xl shadow-lg p-6 shadow-xl transition-shadow duration-300">
               <div className="flex items-center space-x-4 mb-4">
                 <div className="w-12 h-12 rounded-lg flex items-center justify-center"
                   style={{ background: 'var(--bg-cream-light)' }}>
@@ -251,7 +251,7 @@ export default function CustomerDashboard() {
             </div>
 
             {/* Valores de Coparticipação Card */}
-            <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300">
+            <div className="bg-white rounded-xl shadow-lg p-6 shadow-xl transition-shadow duration-300">
               <div className="flex items-center space-x-4 mb-4">
                 <div className="w-12 h-12 rounded-lg flex items-center justify-center"
                   style={{ background: 'var(--bg-cream-light)' }}>
@@ -275,7 +275,7 @@ export default function CustomerDashboard() {
             </div>
 
             {/* Profile Card */}
-            <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300">
+            <div className="bg-white rounded-xl shadow-lg p-6 shadow-xl transition-shadow duration-300">
               <div className="flex items-center space-x-4 mb-4">
                 <div className="w-12 h-12 rounded-lg flex items-center justify-center"
                   style={{ background: 'var(--bg-cream-light)' }}>

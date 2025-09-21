@@ -79,7 +79,7 @@ export function ConfirmDialog({
             variant="destructive"
             onClick={onConfirm}
             disabled={isLoading}
-            className={`bg-destructive hover:bg-destructive/90 text-destructive-foreground ${
+            className={`bg-destructive text-destructive-foreground ${
               isMobile ? "w-full" : ""
             }`}
           >

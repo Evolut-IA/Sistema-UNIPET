@@ -113,7 +113,7 @@ export default function CustomerSurveys() {
               key={i}
               type="button"
               className={`p-1 rounded transition-all duration-200 ${
-                interactive ? 'hover:scale-110 hover:bg-yellow-50' : ''
+                ''
               }`}
               onClick={() => interactive && onClick && onClick(starRating)}
               disabled={!interactive}

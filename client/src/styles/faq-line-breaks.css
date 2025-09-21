@@ -71,10 +71,6 @@
   transition: all 0.2s ease-in-out;
 }
 
-.preview-toggle-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px var(--shadow-light);
-}
 
 /* Estilos para o step de revisão */
 .faq-review-step .formatted-text {
@@ -149,10 +145,6 @@
 }
 
 
-.faq-preview:hover {
-  border-color: var(--border-teal);
-  box-shadow: 0 0 0 1px var(--border-teal-light);
-}
 
 /* Estilos para acessibilidade */
 .faq-content[aria-expanded="true"] .faq-answer {

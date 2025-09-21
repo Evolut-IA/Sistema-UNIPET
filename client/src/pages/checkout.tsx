@@ -1682,7 +1682,7 @@ export default function Checkout() {
                           <div
                             key={plan.id}
                             onClick={() => setSelectedPlan(plan)}
-                            className="p-4 rounded-lg border-2 cursor-pointer transition-all hover:scale-105"
+                            className="p-4 rounded-lg border-2 cursor-pointer transition-all"
                             style={{
                               background: 'white',
                               borderColor: 'var(--border-gray)'
@@ -1907,7 +1907,7 @@ export default function Checkout() {
                       <div className="text-center">
                         <button
                           onClick={addNewPet}
-                          className="px-6 py-3 rounded-lg border-2 border-dashed transition-all hover:scale-105"
+                          className="px-6 py-3 rounded-lg border-2 border-dashed transition-all"
                           style={{
                             color: 'var(--text-teal)',
                             borderColor: 'var(--text-teal)',
@@ -2034,7 +2034,7 @@ export default function Checkout() {
                         <button
                           type="button"
                           onClick={() => window.open('/politica-privacidade', '_blank')}
-                          className="font-medium hover:opacity-80 transition-opacity"
+                          className="font-medium opacity-80 transition-opacity"
                           style={{color: 'var(--text-teal)', textDecoration: 'none'}}
                         >
                           Política de Privacidade
@@ -2578,7 +2578,7 @@ export default function Checkout() {
                             href="/termos"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="font-medium no-underline hover:opacity-80 transition-opacity"
+                            className="font-medium no-underline opacity-80 transition-opacity"
                             style={{color: 'var(--text-teal)'}}
                           >
                             Termos de Uso
@@ -3052,7 +3052,7 @@ export default function Checkout() {
                               href="/termos"
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="font-medium no-underline hover:opacity-80 transition-opacity"
+                              className="font-medium no-underline opacity-80 transition-opacity"
                               style={{color: 'var(--text-teal)'}}
                             >
                               Termos de Uso
@@ -3225,7 +3225,7 @@ export default function Checkout() {
                         }, 1000);
                       }}
                       data-testid="copy-pix-code"
-                      className="w-full px-6 py-3 rounded-lg font-semibold transition-all hover:opacity-80 disabled:opacity-50"
+                      className="w-full px-6 py-3 rounded-lg font-semibold transition-all opacity-80 disabled:opacity-50"
                       style={{
                         background: 'var(--text-teal)',
                         color: 'var(--text-light)'
@@ -3253,7 +3253,7 @@ export default function Checkout() {
                   <div className="text-center">
                     <button
                       onClick={() => navigate('/customer/login')}
-                      className="px-8 py-3 rounded-lg font-semibold transition-all hover:opacity-80"
+                      className="px-8 py-3 rounded-lg font-semibold transition-all opacity-80"
                       style={{
                         background: 'var(--btn-ver-planos-bg)',
                         color: 'var(--text-light)'
@@ -3337,7 +3337,7 @@ export default function Checkout() {
                         setCreditCardPaymentStatus('pending');
                         setCurrentStep(3); // Volta para o step de pagamento
                       }}
-                      className="px-8 py-3 rounded-lg font-semibold transition-all hover:opacity-80"
+                      className="px-8 py-3 rounded-lg font-semibold transition-all opacity-80"
                       style={{
                         background: 'var(--btn-ver-planos-bg)',
                         color: 'var(--text-light)'
@@ -3361,7 +3361,7 @@ export default function Checkout() {
               {currentStep !== 3 && (
                 <button
                   onClick={() => currentStep === 1 ? navigate('/') : prevStep()}
-                  className="flex items-center space-x-2 px-6 py-3 hover:opacity-80 transition-colors"
+                  className="flex items-center space-x-2 px-6 py-3 opacity-80 transition-colors"
                   style={{color: 'var(--text-dark-secondary)'}}
                 >
                   <span>{currentStep === 1 ? 'Voltar ao início' : 'Anterior'}</span>
@@ -3459,7 +3459,7 @@ export default function Checkout() {
                     setShowCreditCardSuccessPopup(false);
                     navigate('/customer/login');
                   }}
-                  className="w-full px-6 py-3 rounded-lg font-semibold transition-all hover:opacity-90"
+                  className="w-full px-6 py-3 rounded-lg font-semibold transition-all opacity-90"
                   style={{
                     background: 'var(--btn-ver-planos-bg)',
                     color: 'var(--text-light)'
@@ -3470,7 +3470,7 @@ export default function Checkout() {
                 
                 <button
                   onClick={() => setShowCreditCardSuccessPopup(false)}
-                  className="w-full px-6 py-3 rounded-lg font-semibold transition-all hover:opacity-80"
+                  className="w-full px-6 py-3 rounded-lg font-semibold transition-all opacity-80"
                   style={{
                     background: 'transparent',
                     color: 'var(--text-dark-secondary)',
