@@ -51,13 +51,13 @@ export default function FaqSection({ showTitle = true, maxItems, showViewMoreBut
                     className="border border-[var(--border-teal)]/20 rounded-lg bg-[var(--bg-cream-lighter)]"
                   >
                     <AccordionTrigger 
-                      className="text-left py-4 hover:no-underline text-[var(--text-teal)] font-semibold"
+                      className="text-left py-4 px-6 hover:no-underline text-[var(--text-teal)] font-semibold"
                       data-testid={`faq-question-${faq.id}`}
                     >
                       {faq.question}
                     </AccordionTrigger>
                     <AccordionContent 
-                      className="text-[var(--text-dark-primary)] pb-4 leading-relaxed"
+                      className="text-[var(--text-dark-primary)] pb-4 px-6 leading-relaxed"
                       data-testid={`faq-answer-${faq.id}`}
                     >
                       <FormattedText 
