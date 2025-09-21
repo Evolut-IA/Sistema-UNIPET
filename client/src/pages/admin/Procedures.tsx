@@ -973,7 +973,7 @@ export default function Procedures() {
                                 variant="outline"
                                 size="sm"
                                 onClick={() => removePlan(index)}
-                                className="text-destructive hover:text-destructive/80"
+                                className="text-destructive"
                               >
                                 <X className="h-4 w-4 mr-1" />
                                 Remover
@@ -1197,7 +1197,7 @@ export default function Procedures() {
         ) : paginatedItems?.length ? (
           <Table>
             <TableHeader>
-              <TableRow className="bg-accent hover:bg-accent">
+              <TableRow className="bg-accent">
                 {visibleColumns.includes("Nome") && (
                   <TableHead className="bg-accent">Nome</TableHead>
                 )}
@@ -1214,7 +1214,7 @@ export default function Procedures() {
             </TableHeader>
             <TableBody>
               {paginatedItems.map((item: any) => (
-                <TableRow key={item.id} className="bg-accent hover:bg-accent/70">
+                <TableRow key={item.id} className="bg-accent">
                   {visibleColumns.includes("Nome") && (
                     <TableCell className="font-medium whitespace-nowrap bg-accent">
                       <div className="font-medium" data-testid={`procedure-name-${item.id}`}>

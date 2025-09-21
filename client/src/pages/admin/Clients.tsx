@@ -362,7 +362,7 @@ export default function Clients() {
               ))
             ) : displayClients && displayClients.length > 0 ? (
               displayClients.map((client: Client) => (
-                <TableRow key={client.id} className="bg-accent hover:bg-accent/80">
+                <TableRow key={client.id} className="bg-accent">
                   {visibleColumns.includes("Nome") && (
                     <TableCell className="font-medium whitespace-nowrap bg-accent">
                       {client.fullName || client.full_name}

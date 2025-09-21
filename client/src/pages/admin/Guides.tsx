@@ -362,7 +362,7 @@ export default function Guides() {
               ))
             ) : guidesData && guidesData.length > 0 ? (
               guidesData.map((guide: GuideWithNetworkUnit) => (
-                <TableRow key={guide.id} className="bg-accent hover:bg-accent/80">
+                <TableRow key={guide.id} className="bg-accent">
                   {visibleColumns.includes("Procedimento") && (
                     <TableCell className="font-medium whitespace-nowrap bg-accent">
                       {guide.procedure || 'Não informado'}

@@ -796,7 +796,7 @@ export default function UnitDashboard() {
                         {guides
                           .filter(guide => guide.unitStatus === status)
                           .map(guide => (
-                            <Card key={guide.id} className="hover:shadow-md transition-shadow">
+                            <Card key={guide.id} className="">
                               <CardContent className="p-3 sm:p-4 lg:p-6">
                                 <div className="flex justify-between items-start mb-4">
                                   <div className="flex-1">
@@ -840,7 +840,7 @@ export default function UnitDashboard() {
                                         <Button
                                           size="sm"
                                           onClick={() => updateGuideStatus(guide.id, "closed")}
-                                          className="bg-green-600 hover:bg-green-700"
+                                          className="bg-green-600"
                                         >
                                           <CheckCircle className="h-4 w-4" />
                                         </Button>
@@ -920,7 +920,7 @@ export default function UnitDashboard() {
                       (client.email && client.email.toLowerCase().includes(searchTerm.toLowerCase()))
                     )
                     .map(client => (
-                      <Card key={client.id} className="hover:shadow-md transition-shadow">
+                      <Card key={client.id} className="">
                         <CardContent className="p-4">
                           <div className="flex justify-between items-start">
                             <div className="flex-1">
@@ -1730,7 +1730,7 @@ export default function UnitDashboard() {
                   <div className="flex space-x-2 pt-4">
                     <Button
                       onClick={() => updateGuideStatus(selectedGuide.id, "closed")}
-                      className="bg-green-600 hover:bg-green-700 flex-1"
+                      className="bg-green-600 flex-1"
                     >
                       <CheckCircle className="h-4 w-4 mr-2" />
                       Aceitar Guia

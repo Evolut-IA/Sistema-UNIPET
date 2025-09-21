@@ -531,7 +531,7 @@ export default function Settings() {
                 <div className="flex justify-end pt-6">
                   <Button
                     type="submit"
-                    className="bg-[var(--bg-teal)] text-[var(--text-light)] hover:bg-[var(--bg-teal-dark)]"
+                    className="bg-[var(--bg-teal)] text-[var(--text-light)]"
                     disabled={saveSiteMutation.isPending}
                     data-testid="button-save-site"
                   >

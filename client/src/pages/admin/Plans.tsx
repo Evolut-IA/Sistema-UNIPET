@@ -268,7 +268,7 @@ export default function Plans() {
               ))
             ) : filteredPlans?.length ? (
               filteredPlans.map((plan: any) => (
-                <TableRow key={plan.id} className="bg-accent hover:bg-accent/80">
+                <TableRow key={plan.id} className="bg-accent">
                   {visibleColumns.includes("Nome") && (
                     <TableCell className="font-medium whitespace-nowrap bg-accent" data-testid={`plan-name-${plan.id}`}>
                       {plan.name}

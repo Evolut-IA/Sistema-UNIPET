@@ -356,7 +356,7 @@ export default function FAQ() {
               ))
             ) : paginatedItems?.length ? (
               paginatedItems.map((item: any) => (
-                <TableRow key={item.id} className="bg-accent hover:bg-accent/80">
+                <TableRow key={item.id} className="bg-accent">
                   {visibleColumns.includes("Pergunta") && (
                     <TableCell className="font-medium bg-accent">
                       <div className="max-w-[280px]">

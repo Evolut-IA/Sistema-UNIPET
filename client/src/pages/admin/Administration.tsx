@@ -600,7 +600,7 @@ export default function Administration() {
                 ))
               ) : paginatedUsers?.length ? (
                 paginatedUsers.map((user: any) => (
-                  <TableRow key={user.id} className="bg-accent hover:bg-accent/80">
+                  <TableRow key={user.id} className="bg-accent">
                     {visibleColumns.includes("Nome") && (
                       <TableCell className="font-medium whitespace-nowrap bg-accent" data-testid={`user-name-${user.id}`}>
                         <div className="flex items-center space-x-2">
@@ -829,7 +829,7 @@ export default function Administration() {
               {paginatedNetworkUnits.map((unit: any) => {
                 const status = getCredentialStatus(unit);
                 return (
-                  <TableRow key={unit.id} className="bg-accent hover:bg-accent/80">
+                  <TableRow key={unit.id} className="bg-accent">
                     {visibleNetworkColumns.includes("Nome") && (
                       <TableCell className="font-medium whitespace-nowrap bg-accent">
                         <div className="flex items-center space-x-2">
@@ -1019,7 +1019,7 @@ export default function Administration() {
                             type="button"
                             variant="ghost"
                             size="sm"
-                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                            className="absolute right-0 top-0 h-full px-3 py-2"
                             onClick={() => setShowPassword(!showPassword)}
                           >
                             {showPassword ? (
@@ -1051,7 +1051,7 @@ export default function Administration() {
                             type="button"
                             variant="ghost"
                             size="sm"
-                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                            className="absolute right-0 top-0 h-full px-3 py-2"
                             onClick={() => setShowPasswordConfirm(!showPasswordConfirm)}
                           >
                             {showPasswordConfirm ? (

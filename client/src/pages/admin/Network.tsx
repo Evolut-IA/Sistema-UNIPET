@@ -323,7 +323,7 @@ export default function Network() {
               ))
             ) : displayUnits && displayUnits.length > 0 ? (
               displayUnits.map((unit: NetworkUnit) => (
-                <TableRow key={unit.id} className="bg-accent hover:bg-accent/80">
+                <TableRow key={unit.id} className="bg-accent">
                   {visibleColumns.includes("Nome") && (
                     <TableCell className="font-medium whitespace-nowrap bg-accent" data-testid={`unit-name-${unit.id}`}>
                       {unit.name}

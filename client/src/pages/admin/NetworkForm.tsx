@@ -222,7 +222,7 @@ export default function NetworkForm() {
                         href={`${window.location.origin}/${generatedSlug || "nome-da-unidade"}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+                        className="text-sm text-blue-600"
                       >
                         {window.location.origin}/{generatedSlug || "nome-da-unidade"}
                       </a>

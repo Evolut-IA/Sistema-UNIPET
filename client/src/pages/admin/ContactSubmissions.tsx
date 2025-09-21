@@ -350,7 +350,7 @@ export default function ContactSubmissions() {
             </TableHeader>
             <TableBody>
               {filteredSubmissions.map((submission: any) => (
-                <TableRow key={submission.id} className="bg-accent hover:bg-accent/80">
+                <TableRow key={submission.id} className="bg-accent">
                   {visibleColumns.includes("Nome") && (
                     <TableCell className="font-medium whitespace-nowrap bg-accent">
                       <div className="font-medium text-foreground" data-testid={`submission-name-${submission.id}`}>
