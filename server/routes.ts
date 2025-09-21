@@ -712,6 +712,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const newUser = await storage.createUser({
         ...validatedData,
         username: validatedData.username || validatedData.email || 'user',
+        email: validatedData.email || '',
+        isActive: Boolean(validatedData.isActive),
         password: hashedPassword
       });
       

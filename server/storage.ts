@@ -1770,14 +1770,14 @@ export class DatabaseStorage implements IStorage {
     
     if (startDate || endDate) {
       if (startDate && endDate) {
-        query = query.where(and(
+        query = (query as any).where(and(
           gte(contactSubmissions.createdAt, new Date(startDate)),
           lte(contactSubmissions.createdAt, new Date(endDate))
         ));
       } else if (startDate) {
-        query = query.where(gte(contactSubmissions.createdAt, new Date(startDate)));
+        query = (query as any).where(gte(contactSubmissions.createdAt, new Date(startDate)));
       } else if (endDate) {
-        query = query.where(lte(contactSubmissions.createdAt, new Date(endDate)));
+        query = (query as any).where(lte(contactSubmissions.createdAt, new Date(endDate)));
       }
     }
     
@@ -1789,14 +1789,14 @@ export class DatabaseStorage implements IStorage {
     
     if (startDate || endDate) {
       if (startDate && endDate) {
-        query = query.where(and(
+        query = (query as any).where(and(
           gte(clients.createdAt, new Date(startDate)),
           lte(clients.createdAt, new Date(endDate))
         ));
       } else if (startDate) {
-        query = query.where(gte(clients.createdAt, new Date(startDate)));
+        query = (query as any).where(gte(clients.createdAt, new Date(startDate)));
       } else if (endDate) {
-        query = query.where(lte(clients.createdAt, new Date(endDate)));
+        query = (query as any).where(lte(clients.createdAt, new Date(endDate)));
       }
     }
     
@@ -1819,14 +1819,14 @@ export class DatabaseStorage implements IStorage {
     
     if (startDate || endDate) {
       if (startDate && endDate) {
-        query = query.where(and(
+        query = (query as any).where(and(
           gte(pets.createdAt, new Date(startDate)),
           lte(pets.createdAt, new Date(endDate))
         ));
       } else if (startDate) {
-        query = query.where(gte(pets.createdAt, new Date(startDate)));
+        query = (query as any).where(gte(pets.createdAt, new Date(startDate)));
       } else if (endDate) {
-        query = query.where(lte(pets.createdAt, new Date(endDate)));
+        query = (query as any).where(lte(pets.createdAt, new Date(endDate)));
       }
     }
     
@@ -1838,14 +1838,14 @@ export class DatabaseStorage implements IStorage {
     
     if (startDate || endDate) {
       if (startDate && endDate) {
-        query = query.where(and(
+        query = (query as any).where(and(
           gte(guides.createdAt, new Date(startDate)),
           lte(guides.createdAt, new Date(endDate))
         ));
       } else if (startDate) {
-        query = query.where(gte(guides.createdAt, new Date(startDate)));
+        query = (query as any).where(gte(guides.createdAt, new Date(startDate)));
       } else if (endDate) {
-        query = query.where(lte(guides.createdAt, new Date(endDate)));
+        query = (query as any).where(lte(guides.createdAt, new Date(endDate)));
       }
     }
     
@@ -1897,7 +1897,7 @@ export class DatabaseStorage implements IStorage {
     }
     
     if (conditions.length > 0) {
-      query = query.where(and(...conditions));
+      query = (query as any).where(and(...conditions));
     }
     
     // Get total count
