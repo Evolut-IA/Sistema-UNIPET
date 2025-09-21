@@ -339,8 +339,8 @@ export default function ContactSection() {
                           rel="noopener noreferrer"
                           className="opacity-80 transition-colors cursor-pointer"
                           style={{color: 'var(--text-light)'}}
-                          onMouseEnter={(e) => e.target.style.color = 'var(--text-gold)'}
-                          onMouseLeave={(e) => e.target.style.color = 'var(--text-light)'}
+
+
                         >
                           {settings.whatsapp}
                         </a>
@@ -376,22 +376,22 @@ export default function ContactSection() {
                   </div>
                   <div className="flex space-x-4">
                     {shouldShow.facebookUrl && (
-                      <a href={settings.facebookUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200" style={{background: 'var(--bg-cream-light)', color: 'var(--text-teal)'}} onMouseEnter={(e) => {e.target.style.background = 'var(--bg-gold)'; e.target.style.color = 'var(--text-light)';}} onMouseLeave={(e) => {e.target.style.background = 'var(--bg-cream-light)'; e.target.style.color = 'var(--text-teal)';}}>
+                      <a href={settings.facebookUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200" style={{background: 'var(--bg-cream-light)', color: 'var(--text-teal)'}}>
                         <Facebook className="h-4 w-4" />
                       </a>
                     )}
                     {shouldShow.instagramUrl && (
-                      <a href={settings.instagramUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200" style={{background: 'var(--bg-cream-light)', color: 'var(--text-teal)'}} onMouseEnter={(e) => {e.target.style.background = 'var(--bg-gold)'; e.target.style.color = 'var(--text-light)';}} onMouseLeave={(e) => {e.target.style.background = 'var(--bg-cream-light)'; e.target.style.color = 'var(--text-teal)';}}>
+                      <a href={settings.instagramUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200" style={{background: 'var(--bg-cream-light)', color: 'var(--text-teal)'}}>
                         <Instagram className="h-4 w-4" />
                       </a>
                     )}
                     {shouldShow.linkedinUrl && (
-                      <a href={settings.linkedinUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200" style={{background: 'var(--bg-cream-light)', color: 'var(--text-teal)'}} onMouseEnter={(e) => {e.target.style.background = 'var(--bg-gold)'; e.target.style.color = 'var(--text-light)';}} onMouseLeave={(e) => {e.target.style.background = 'var(--bg-cream-light)'; e.target.style.color = 'var(--text-teal)';}}>
+                      <a href={settings.linkedinUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200" style={{background: 'var(--bg-cream-light)', color: 'var(--text-teal)'}}>
                         <Linkedin className="h-4 w-4" />
                       </a>
                     )}
                     {shouldShow.youtubeUrl && (
-                      <a href={settings.youtubeUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200" style={{background: 'var(--bg-cream-light)', color: 'var(--text-teal)'}} onMouseEnter={(e) => {e.target.style.background = 'var(--bg-gold)'; e.target.style.color = 'var(--text-light)';}} onMouseLeave={(e) => {e.target.style.background = 'var(--bg-cream-light)'; e.target.style.color = 'var(--text-teal)';}}>
+                      <a href={settings.youtubeUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200" style={{background: 'var(--bg-cream-light)', color: 'var(--text-teal)'}}>
                         <Youtube className="h-4 w-4" />
                       </a>
                     )}
