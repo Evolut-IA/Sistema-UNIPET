@@ -1699,7 +1699,7 @@ export default function Checkout() {
 
                   {/* Selected Plan Display */}
                   {selectedPlan && (
-                    <div className="p-6 rounded-lg mb-6" style={{background: 'var(--bg-beige)'}}>
+                    <div className="p-6 rounded-lg mb-6" style={{background: '#ffffff'}}>
                       <div className="flex flex-col md:flex-row md:justify-between md:items-center">
                         <div className="mb-3 md:mb-0">
                           <h3 className="text-xl font-bold" style={{color: 'var(--text-dark-primary)'}}>{selectedPlan.name}</h3>
@@ -2064,7 +2064,7 @@ export default function Checkout() {
                   {/* Mobile Layout - vertical stacking */}
                   <div className="lg:hidden space-y-6">
                     {/* Section 1: Cadastre seu endereço */}
-                    <div className="space-y-4 p-6 rounded-lg border" style={{background: 'var(--bg-beige)', borderColor: 'var(--border-gray)'}}>
+                    <div className="space-y-4 p-6 rounded-lg border" style={{background: '#ffffff', borderColor: 'var(--border-gray)'}}>
                       <h3 className="text-lg font-semibold mb-4" style={{color: 'var(--text-dark-primary)'}}>Cadastre seu endereço</h3>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -2478,7 +2478,7 @@ export default function Checkout() {
                   )}
 
                   {/* Section 4: Resumo do pedido */}
-                  <div className="space-y-4 p-6 rounded-lg border" style={{background: 'var(--bg-beige)', borderColor: 'var(--border-gray)'}}>
+                  <div className="space-y-4 p-6 rounded-lg border" style={{background: '#ffffff', borderColor: 'var(--border-gray)'}}>
                     <div className="text-center mb-6">
                       <h3 className="text-lg font-semibold" style={{color: 'var(--text-dark-primary)'}}>Resumo do pedido</h3>
                     </div>
@@ -2599,7 +2599,7 @@ export default function Checkout() {
                   <div className="hidden lg:grid lg:grid-cols-3 lg:gap-6 lg:items-start">
                     
                     {/* Column 1: Cadastre seu endereço */}
-                    <div className="space-y-4 p-6 rounded-lg border" style={{background: 'var(--bg-beige)', borderColor: 'var(--border-gray)'}}>
+                    <div className="space-y-4 p-6 rounded-lg border" style={{background: '#ffffff', borderColor: 'var(--border-gray)'}}>
                       <h3 className="text-lg font-semibold mb-4" style={{color: 'var(--text-dark-primary)'}}>Cadastre seu endereço</h3>
                       
                       <div className="space-y-4">
