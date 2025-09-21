@@ -57,34 +57,29 @@ export default function Dashboard() {
   const dateParams = getDateRangeParams(debouncedDateFilter.startDate, debouncedDateFilter.endDate);
   const hasDateFilter = Object.keys(dateParams).length > 0;
 
-  // Single aggregated query to fetch all dashboard data
+  // Single aggregated query to fetch all dashboard data using standard queryClient fetcher
   const { 
     data: dashboardData, 
     isLoading: isLoadingDashboard, 
     isError: isDashboardError 
   } = useQuery({
     queryKey: ["/admin/api/dashboard/all", dateParams],
-    queryFn: async () => {
-      const params = new URLSearchParams(dateParams);
-      const response = await fetch(`/admin/api/dashboard/all?${params}`);
-      if (!response.ok) throw new Error('Failed to fetch dashboard data');
-      return response.json();
-    },
+    // No custom queryFn needed - using the enhanced getQueryFn that supports [path, params] format
   });
 
   // Extract data from the aggregated response
-  const stats = dashboardData?.stats || {} as {
+  const stats = (dashboardData as any)?.stats || {} as {
     monthlyRevenue?: number;
     totalRevenue?: number;
     activeClients?: number;
     registeredPets?: number;
   };
-  const allGuides = dashboardData?.guides || [] as Guide[];
-  const networkUnits = dashboardData?.networkUnits || [] as NetworkUnit[];
-  const clients = dashboardData?.clients || [] as Client[];
-  const contactSubmissions = dashboardData?.contactSubmissions || [] as ContactSubmission[];
-  const planDistribution = (dashboardData?.planDistribution || []) as PlanDistribution[];
-  const planRevenue = (dashboardData?.planRevenue || []) as PlanRevenue[];
+  const allGuides = (dashboardData as any)?.guides || [] as Guide[];
+  const networkUnits = (dashboardData as any)?.networkUnits || [] as NetworkUnit[];
+  const clients = (dashboardData as any)?.clients || [] as Client[];
+  const contactSubmissions = (dashboardData as any)?.contactSubmissions || [] as ContactSubmission[];
+  const planDistribution = ((dashboardData as any)?.planDistribution || []) as PlanDistribution[];
+  const planRevenue = ((dashboardData as any)?.planRevenue || []) as PlanRevenue[];
 
   // Map loading and error states for backward compatibility
   const statsLoading = isLoadingDashboard;

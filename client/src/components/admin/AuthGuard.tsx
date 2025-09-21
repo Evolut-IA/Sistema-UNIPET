@@ -29,40 +29,47 @@ function AuthLoading() {
 export default function AuthGuard({ children }: AuthGuardProps) {
   const [, navigate] = useLocation();
 
-  // Query para verificar status de autenticação admin
+  // Query para verificar status de autenticação admin usando o fetcher padrão
   const { data: authStatus, isLoading, error } = useQuery<AuthStatusResponse>({
     queryKey: ['/admin/api/auth/status'],
-    retry: 1, // Tentar apenas uma vez para evitar loops
-    refetchOnWindowFocus: false, // Não refetch automaticamente ao focar janela
-    refetchOnMount: true, // Sempre verificar ao montar componente
-    staleTime: 0, // Sempre verificar se os dados estão atualizados
-    gcTime: 0, // Não manter cache para forçar verificação atual
+    // Using standard queryClient fetcher that handles 401s globally
+    retry: 0, // Não retry em caso de 401
+    refetchOnWindowFocus: false, 
+    refetchOnMount: true, 
+    staleTime: 0, // Sempre buscar dados frescos
+    gcTime: 0, // Não manter cache
   });
 
-  // Consolidar todos os redirecionamentos em um único useEffect
+  // Simplified redirection logic - 401s are handled globally by handleUnauthorized()
   useEffect(() => {
     // Se ainda está carregando, não fazer nada
     if (isLoading) {
       return;
     }
 
-    // Se houver erro na verificação, tratar como não autenticado
+    // Se houver erro e for UNAUTHORIZED, o handleUnauthorized() global já lidou com o redirecionamento
     if (error) {
-      console.error("❌ [AUTH-GUARD] Authentication check failed:", error);
+      if (error.message === 'UNAUTHORIZED') {
+        console.log("🔒 [AUTH-GUARD] 401 handled globally, waiting for redirect...");
+        return;
+      }
+      
+      // Para outros erros (não-401), redirecionar localmente
+      console.error("❌ [AUTH-GUARD] Non-401 authentication error:", error.message);
       navigate("/admin/login");
       return;
     }
 
-    // Se não há dados de auth status, tratar como não autenticado
-    if (!authStatus) {
-      console.log("🔒 [AUTH-GUARD] No auth status data, redirecting to admin login");
-      navigate("/admin/login");
-      return;
-    }
-
-    // Se obtivemos uma resposta e não está autenticado, redirecionar para login
-    if (!authStatus.authenticated) {
+    // Se não há dados de auth status ou não está autenticado
+    if (!authStatus || !authStatus.authenticated) {
       console.log("🔒 [AUTH-GUARD] Not authenticated, redirecting to admin login");
+      navigate("/admin/login");
+      return;
+    }
+
+    // Verificação final - garantir que temos um admin válido
+    if (!authStatus.admin?.login) {
+      console.error("❌ [AUTH-GUARD] Invalid admin data, missing login");
       navigate("/admin/login");
       return;
     }
@@ -80,6 +87,9 @@ export default function AuthGuard({ children }: AuthGuardProps) {
   if (error || !authStatus || !authStatus.authenticated) {
     return <AuthLoading />;
   }
+
+  // Se chegou até aqui, está autenticado - renderizar children
+  console.log("✅ [AUTH-GUARD] User authenticated successfully");
 
   // Se chegou até aqui, está autenticado - renderizar children
   return <>{children}</>;

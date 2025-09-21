@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/admin/ui/card";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/admin/ui/button";
 import { Input } from "@/components/admin/ui/input";
 import { Badge } from "@/components/admin/ui/badge";
@@ -20,7 +19,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/admin/ui/dropdown-menu";
-import { Plus, Search, Edit, Trash2, FileText, Eye, Copy, MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, FileText, Eye, Copy, MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
 
 // Types for guides data
 interface GuideWithNetworkUnit {
@@ -52,7 +51,6 @@ interface GuidesResponse {
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { CalendarDate } from "@internationalized/date";
-import { apiRequest } from "@/lib/admin/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { ConfirmDialog } from "@/components/admin/ui/confirm-dialog";
 import { useConfirmDialog } from "@/hooks/admin/use-confirm-dialog";
@@ -83,7 +81,6 @@ export default function Guides() {
   const { visibleColumns, toggleColumn } = useColumnPreferences('guides.columns', allColumns);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
-  const queryClient = useQueryClient();
   const { toast } = useToast();
   const confirmDialog = useConfirmDialog();
   const passwordDialog = usePasswordDialog();
@@ -115,102 +112,27 @@ export default function Guides() {
   // Get date range parameters for API calls using debounced values
   const dateParams = getDateRangeParams(debouncedDateFilter.startDate, debouncedDateFilter.endDate);
 
+  // Construct parameters object for the enhanced getQueryFn
+  const queryParams = {
+    page: currentPage.toString(),
+    limit: pageSize.toString(),
+    ...(searchQuery && { search: searchQuery }),
+    ...(statusFilter !== "all" && { status: statusFilter }),
+    ...(typeFilter !== "all" && { type: typeFilter }),
+    ...dateParams
+  };
+
   const { data: guides, isLoading } = useQuery<GuidesResponse>({
-    queryKey: ["/admin/api/guides/with-network-units", currentPage, searchQuery, statusFilter, typeFilter, dateParams],
-    queryFn: async () => {
-      const params = new URLSearchParams({
-        page: currentPage.toString(),
-        limit: pageSize.toString(),
-        ...(searchQuery && { search: searchQuery }),
-        ...(statusFilter !== "all" && { status: statusFilter }),
-        ...(typeFilter !== "all" && { type: typeFilter }),
-        ...dateParams
-      });
-      const response = await fetch(`/admin/api/guides/with-network-units?${params}`);
-      if (!response.ok) throw new Error('Failed to fetch guides');
-      return response.json();
-    },
+    queryKey: ["/admin/api/guides/with-network-units", queryParams],
+    // Using standard queryClient fetcher that supports [path, params] format and handles 401s globally
   });
 
-  const deleteGuideMutation = useMutation({
-    mutationFn: async (id: string) => {
-      await apiRequest("DELETE", `/admin/api/guides/${id}`);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/admin/api/guides/with-network-units"] });
-      toast({
-        title: "Guia removida",
-        description: "Guia foi removida com sucesso.",
-      });
-    },
-    onError: () => {
-      toast({
-        title: "Erro",
-        description: "Falha ao remover guia.",
-        variant: "destructive",
-      });
-    },
-  });
 
   const guidesData = guides?.data || [];
   const totalGuides = guides?.total || 0;
   const totalPages = guides?.totalPages || 1;
 
 
-  const handleDelete = (id: string, procedureName: string) => {
-    passwordDialog.openDialog({
-      title: "Verificação de Senha",
-      description: "Digite a senha do administrador para excluir esta guia:",
-      onConfirm: async (password) => {
-        try {
-          passwordDialog.setLoading(true);
-          
-          // Verificar senha
-          const response = await fetch("/admin/api/admin/verify-password", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ password }),
-          });
-          
-          const result = await response.json();
-          
-          if (result.valid) {
-            // Senha correta, mostrar confirmação de exclusão
-            confirmDialog.openDialog({
-              title: "Excluir Guia",
-              description: `Tem certeza que deseja excluir a guia "${procedureName}"? Esta ação não pode ser desfeita.`,
-              confirmText: "Excluir Guia",
-              cancelText: "Cancelar",
-              onConfirm: () => {
-                confirmDialog.setLoading(true);
-                deleteGuideMutation.mutate(id, {
-                  onSettled: () => {
-                    confirmDialog.setLoading(false);
-                  }
-                });
-              },
-            });
-          } else {
-            toast({
-              title: "Senha incorreta",
-              description: "A senha do administrador está incorreta.",
-              variant: "destructive",
-            });
-          }
-        } catch (error) {
-          toast({
-            title: "Erro",
-            description: "Erro ao verificar senha. Tente novamente.",
-            variant: "destructive",
-          });
-        } finally {
-          passwordDialog.setLoading(false);
-        }
-      },
-    });
-  };
 
   const handleViewDetails = (guide: GuideWithNetworkUnit) => {
     setSelectedGuide(guide);
@@ -613,11 +535,11 @@ export default function Guides() {
                       <span><strong className="text-primary">Tipo:</strong> <span className="text-foreground">{getTypeLabel(selectedGuide.type)}</span></span>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <span><strong className="text-primary">Valor:</strong> <span className="text-foreground">R$ {parseFloat(selectedGuide.value || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></span>
+                      <span><strong className="text-primary">Valor:</strong> <span className="text-foreground">R$ {parseFloat(selectedGuide.value || '0').toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <span><strong className="text-primary">Status:</strong></span>
-                      <Badge className={getStatusColor(selectedGuide.status)}>
+                      <Badge className={getStatusColor()}>
                         {getStatusLabel(selectedGuide.status)}
                       </Badge>
                     </div>

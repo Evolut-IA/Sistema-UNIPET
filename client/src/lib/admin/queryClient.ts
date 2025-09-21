@@ -1,5 +1,32 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
+// Global flag to track auth failures and prevent redirect loops
+let isRedirectingToLogin = false;
+
+// Variável que será definida após a criação do queryClient
+let adminQueryClient: QueryClient;
+
+// Global function to handle 401 errors and redirect to login
+function handleUnauthorized() {
+  if (isRedirectingToLogin) {
+    return; // Evitar múltiplos redirecionamentos
+  }
+  
+  console.log("🔒 [ADMIN-CLIENT] 401 detected - clearing cache and redirecting to login");
+  isRedirectingToLogin = true;
+  
+  // Limpar todo o cache se disponível
+  if (adminQueryClient) {
+    adminQueryClient.clear();
+  }
+  
+  // Redirecionar para login após um pequeno delay para evitar race conditions
+  setTimeout(() => {
+    window.location.href = '/admin/login';
+    isRedirectingToLogin = false;
+  }, 100);
+}
+
 // Utility function to ensure API URLs are correctly prefixed for admin
 function resolveApiUrl(url: string): string {
   if (url.startsWith('/admin/api/')) {
@@ -13,6 +40,12 @@ function resolveApiUrl(url: string): string {
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
+    // Interceptar 401s globalmente
+    if (res.status === 401) {
+      handleUnauthorized();
+      throw new Error('UNAUTHORIZED');
+    }
+    
     const text = (await res.text()) || res.statusText;
     throw new Error(`${res.status}: ${text}`);
   }
@@ -41,20 +74,44 @@ export async function apiRequest(
   return await res.json();
 }
 
-type UnauthorizedBehavior = "returnNull" | "throw";
-export const getQueryFn: <T>(options: {
-  on401: UnauthorizedBehavior;
-}) => QueryFunction<T> =
-  ({ on401: unauthorizedBehavior }) =>
+// Enhanced query function that supports queryKeys with parameters and handles 401s globally
+export const getQueryFn: <T>() => QueryFunction<T> =
+  () =>
   async ({ queryKey }) => {
-    const url = queryKey.join("/") as string;
+    // Handle queryKey format: [path] or [path, params]
+    const basePath = queryKey[0] as string;
+    const params = queryKey[1] as Record<string, any> | undefined;
+    
+    // Construct URL with parameters
+    let url = basePath;
+    if (params && Object.keys(params).length > 0) {
+      const searchParams = new URLSearchParams();
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          searchParams.append(key, String(value));
+        }
+      });
+      url = `${basePath}?${searchParams.toString()}`;
+    }
+    
     const resolvedUrl = resolveApiUrl(url);
+    
+    console.log(`🔍 [ADMIN-CLIENT] Fetching: ${resolvedUrl}`);
+    
     const res = await fetch(resolvedUrl, {
       credentials: "include",
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache'
+      }
     });
 
-    if (unauthorizedBehavior === "returnNull" && res.status === 401) {
-      return null;
+    console.log(`🔍 [ADMIN-CLIENT] Response status for ${resolvedUrl}: ${res.status}`);
+
+    // Interceptar 401s globalmente - sempre redirecionar para login
+    if (res.status === 401) {
+      handleUnauthorized();
+      throw new Error('UNAUTHORIZED');
     }
 
     await throwIfResNotOk(res);
@@ -70,7 +127,7 @@ export const getQueryFn: <T>(options: {
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      queryFn: getQueryFn({ on401: "throw" }),
+      queryFn: getQueryFn(),
       refetchInterval: false,
       refetchOnWindowFocus: false,
       staleTime: 5 * 60 * 1000, // 5 minutos para dados gerais
@@ -82,6 +139,9 @@ export const queryClient = new QueryClient({
     },
   },
 });
+
+// Definir a referência para o handler global
+adminQueryClient = queryClient;
 
 // Configurações específicas para diferentes tipos de dados
 export const queryOptions = {

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import UnitDashboard from "@/pages/admin/UnitDashboard";
 import NotFound from "@/pages/admin/not-found";
+import { apiRequest } from "@/lib/admin/queryClient";
 
 // Component to handle dynamic unit routes
 export default function UnitRoute() {
@@ -15,7 +16,7 @@ export default function UnitRoute() {
 
   const checkUnitRoute = async () => {
     // Extract slug from current path and remove query parameters
-    const pathWithoutQuery = location.split('?')[0]; // Remove query parameters
+    const pathWithoutQuery = location.split('?')[0] || ''; // Remove query parameters
     const slug = pathWithoutQuery.substring(1); // Remove leading slash
     
     // Skip known admin routes
@@ -32,19 +33,10 @@ export default function UnitRoute() {
     }
 
     try {
-      // Check if this slug corresponds to a valid unit
-      const response = await fetch(`/admin/api/unit/${slug}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        const isValid = data.exists && data.isActive;
-        setIsValidUnit(isValid);
-      } else {
-        setIsValidUnit(false);
-      }
+      // Check if this slug corresponds to a valid unit using apiRequest for 401 interception
+      const data = await apiRequest("GET", `/admin/api/unit/${slug}`);
+      const isValid = data.exists && data.isActive;
+      setIsValidUnit(isValid);
     } catch (error) {
       console.error("Error checking unit route:", error);
       setIsValidUnit(false);
