@@ -2325,8 +2325,14 @@ export default function Checkout() {
                             borderColor: paymentMethod === value ? 'var(--bg-teal-dark)' : 'var(--border-gray)',
                             background: paymentMethod === value ? 'var(--bg-cream-lighter)' : 'white'
                           }}
+                          onMouseEnter={(e) => {
                             if (paymentMethod !== value) {
-                              e.currentTarget.style.borderColor = 'var(--border-gray)';
+                              e.currentTarget.style.borderColor = "var(--bg-teal-dark)";
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (paymentMethod !== value) {
+                              e.currentTarget.style.borderColor = "var(--border-gray)";
                             }
                           }}
                           onClick={() => setPaymentMethod(value as 'credit' | 'pix')}
