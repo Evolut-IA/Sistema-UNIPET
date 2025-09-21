@@ -35,7 +35,7 @@ export class CieloWebhookService {
    * Validate webhook signature to ensure it comes from Cielo
    */
   validateWebhookSignature(
-    payload: string,
+    payload: string | Buffer,
     signature: string,
     correlationId: string
   ): boolean {
