@@ -2552,7 +2552,7 @@ export default function Checkout() {
                           {Array.from({ length: 12 }, (_, i) => (
                             <div key={i + 1} className="flex justify-between">
                               <span style={{color: 'var(--text-dark-secondary)'}}>{i + 1})</span>
-                              <span style={{color: 'var(--text-dark-primary)'}}>{formatPrice(calculateFinalPrice())}</span>
+                              <span style={{color: 'var(--text-dark-primary)'}}>{formatPrice(Math.round((selectedPlan?.price || 0) * pets.length))}</span>
                             </div>
                           ))}
                         </div>
@@ -3026,7 +3026,7 @@ export default function Checkout() {
                               {Array.from({ length: 12 }, (_, i) => (
                                 <div key={i + 1} className="flex justify-between">
                                   <span style={{color: 'var(--text-dark-secondary)'}}>{i + 1})</span>
-                                  <span style={{color: 'var(--text-dark-primary)'}}>{formatPrice(calculateFinalPrice())}</span>
+                                  <span style={{color: 'var(--text-dark-primary)'}}>{formatPrice(Math.round((selectedPlan?.price || 0) * pets.length))}</span>
                                 </div>
                               ))}
                             </div>
