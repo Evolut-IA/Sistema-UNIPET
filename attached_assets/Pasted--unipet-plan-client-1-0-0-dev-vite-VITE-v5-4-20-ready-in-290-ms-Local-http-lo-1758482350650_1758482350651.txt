@@ -1,0 +1,239 @@
+
+> unipet-plan-client@1.0.0 dev
+> vite
+  VITE v5.4.20  ready in 290 ms
+
+  ➜  Local:   http://localhost:5000/
+  ➜  Network: http://172.31.98.66:5000/
+  ➜  press h + enter to show help
+Error:   Failed to scan for dependencies from entries:
+  /home/runner/workspace/client/index.html
+
+  ✘ [ERROR] Expected ">" but found "("
+
+    src/components/chat/chat-ai.tsx:478:17:
+      478 │               if (!(!inputValue.trim() || isLoading)) {
+          │                  ^
+          ╵                  >
+
+
+✘ [ERROR] Expected ">" but found "("
+
+    src/pages/checkout.tsx:2328:31:
+      2328 │                             if (paymentMethod !== value) {
+           │                                ^
+           ╵                                >
+
+
+✘ [ERROR] Expected "..." but found "isRequestingService"
+
+    src/pages/telemedicine.tsx:318:19:
+      318 │                   {isRequestingService ? (
+          │                    ~~~~~~~~~~~~~~~~~~~
+          ╵                    ...
+
+
+    at failureErrorWithLog (/home/runner/workspace/client/node_modules/esbuild/lib/main.js:1472:15)
+    at /home/runner/workspace/client/node_modules/esbuild/lib/main.js:945:25
+    at runOnEndCallbacks (/home/runner/workspace/client/node_modules/esbuild/lib/main.js:1315:45)
+    at buildResponseToResult (/home/runner/workspace/client/node_modules/esbuild/lib/main.js:943:7)
+    at /home/runner/workspace/client/node_modules/esbuild/lib/main.js:955:9
+    at new Promise (<anonymous>)
+    at requestCallbacks.on-end (/home/runner/workspace/client/node_modules/esbuild/lib/main.js:954:54)
+    at handleRequest (/home/runner/workspace/client/node_modules/esbuild/lib/main.js:647:17)
+    at handleIncomingPacket (/home/runner/workspace/client/node_modules/esbuild/lib/main.js:672:7)
+    at Socket.readFromStdout (/home/runner/workspace/client/node_modules/esbuild/lib/main.js:600:7)
+    at Socket.emit (node:events:517:28)
+    at addChunk (node:internal/streams/readable:368:12)
+    at readableAddChunk (node:internal/streams/readable:341:9)
+    at Readable.push (node:internal/streams/readable:278:10)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:190:23)
+7:16:27 PM [vite] Pre-transform error: /home/runner/workspace/client/src/pages/checkout.tsx: Unexpected token (2328:31)
+
+  2326 |                             background: paymentMethod === value ? 'var(--bg-cream-lighter)' : 'white'
+  2327 |                           }}
+> 2328 |                             if (paymentMethod !== value) {
+       |                                ^
+  2329 |                               e.currentTarget.style.borderColor = 'var(--border-gray)';
+  2330 |                             }
+  2331 |                           }}
+7:16:27 PM [vite] Pre-transform error: /home/runner/workspace/client/src/pages/telemedicine.tsx: Unexpected token, expected "..." (318:19)
+
+  316 |                   }}
+  317 |
+> 318 |                   {isRequestingService ? (
+      |                    ^
+  319 |                     <>
+  320 |                       <div className="w-5 h-5 border-2 rounded-full animate-spin" 
+  321 |                         style={{borderColor: 'var(--text-light)', borderTopColor: 'transparent'}}></div>
+7:16:27 PM [vite] Pre-transform error: /home/runner/workspace/client/src/components/chat/chat-ai.tsx: Unexpected token (478:17)
+
+  476 |               transform: 'translateY(0)'
+  477 |             }}
+> 478 |               if (!(!inputValue.trim() || isLoading)) {
+      |                  ^
+  479 |                 e.currentTarget.style.backgroundColor = 'var(--bg-teal)';
+  480 |                 e.currentTarget.style.boxShadow = '0 1px 2px 0 var(--shadow-medium)';
+  481 |               }
+✘ [ERROR] Could not resolve "react-is"
+
+    ../node_modules/recharts/es6/util/ReactUtils.js:3:27:
+      3 │ import { isFragment } from 'react-is';
+        ╵                            ~~~~~~~~~~
+
+  You can mark the path "react-is" as external to exclude it from the bundle, which will remove this
+  error and leave the unresolved path in the bundle.
+
+7:16:29 PM [vite] error while updating dependencies:
+Error: Build failed with 1 error:
+../node_modules/recharts/es6/util/ReactUtils.js:3:27: ERROR: Could not resolve "react-is"
+    at failureErrorWithLog (/home/runner/workspace/client/node_modules/esbuild/lib/main.js:1472:15)
+    at /home/runner/workspace/client/node_modules/esbuild/lib/main.js:945:25
+    at /home/runner/workspace/client/node_modules/esbuild/lib/main.js:1353:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+7:16:29 PM [vite] Internal server error: /home/runner/workspace/client/src/pages/checkout.tsx: Unexpected token (2328:31)
+
+  2326 |                             background: paymentMethod === value ? 'var(--bg-cream-lighter)' : 'white'
+  2327 |                           }}
+> 2328 |                             if (paymentMethod !== value) {
+       |                                ^
+  2329 |                               e.currentTarget.style.borderColor = 'var(--border-gray)';
+  2330 |                             }
+  2331 |                           }}
+  Plugin: vite:react-babel
+  File: /home/runner/workspace/client/src/pages/checkout.tsx:2328:31
+  2365|                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  2366|                          <div className="md:col-span-2">
+  2367|                            <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
+     |                                                                                                                         ^
+  2368|                              Número do Cartão *
+  2369|                            </label>
+      at constructor (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:367:19)
+      at TypeScriptParserMixin.raise (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:6630:19)
+      at TypeScriptParserMixin.unexpected (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:6650:16)
+      at TypeScriptParserMixin.jsxParseIdentifier (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:4602:12)
+      at TypeScriptParserMixin.jsxParseNamespacedName (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:4609:23)
+      at TypeScriptParserMixin.jsxParseAttribute (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:4685:22)
+      at TypeScriptParserMixin.jsxParseOpeningElementAfterName (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:4700:28)
+      at TypeScriptParserMixin.jsxParseOpeningElementAfterName (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:10067:18)
+      at TypeScriptParserMixin.jsxParseOpeningElementAt (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:4695:17)
+      at TypeScriptParserMixin.jsxParseElementAt (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:4719:33)
+      at TypeScriptParserMixin.jsxParseElement (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:4782:17)
+      at TypeScriptParserMixin.parseExprAtom (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:4792:19)
+      at TypeScriptParserMixin.parseExprSubscripts (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:11085:23)
+      at TypeScriptParserMixin.parseUpdate (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:11070:21)
+      at TypeScriptParserMixin.parseMaybeUnary (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:11050:23)
+      at TypeScriptParserMixin.parseMaybeUnary (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:9857:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:10903:61)
+      at TypeScriptParserMixin.parseExprOps (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:10908:23)
+      at TypeScriptParserMixin.parseMaybeConditional (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:10885:23)
+      at TypeScriptParserMixin.parseMaybeAssign (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:9795:39
+      at TypeScriptParserMixin.tryParse (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:6938:20)
+      at TypeScriptParserMixin.parseMaybeAssign (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:9795:18)
+      at /home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:10804:39
+      at TypeScriptParserMixin.allowInAnd (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:12436:12)
+      at TypeScriptParserMixin.parseMaybeAssignAllowIn (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:10804:17)
+      at TypeScriptParserMixin.parseMaybeAssignAllowInOrVoidPattern (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:12503:17)
+      at TypeScriptParserMixin.parseParenAndDistinguishExpression (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:11683:28)
+      at TypeScriptParserMixin.parseExprAtom (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:11335:23)
+      at TypeScriptParserMixin.parseExprAtom (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:4797:20)
+      at TypeScriptParserMixin.parseExprSubscripts (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:11085:23)
+      at TypeScriptParserMixin.parseUpdate (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:11070:21)
+      at TypeScriptParserMixin.parseMaybeUnary (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:11050:23)
+      at TypeScriptParserMixin.parseMaybeUnary (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:9857:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:10903:61)
+      at TypeScriptParserMixin.parseExprOps (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:10908:23)
+      at TypeScriptParserMixin.parseMaybeConditional (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:10885:23)
+      at TypeScriptParserMixin.parseMaybeAssign (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:10835:21)
+      at TypeScriptParserMixin.parseMaybeAssign (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:9806:20)
+      at TypeScriptParserMixin.parseFunctionBody (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:12103:24)
+      at TypeScriptParserMixin.parseArrowExpression (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:12085:10)
+      at TypeScriptParserMixin.parseParenAndDistinguishExpression (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:11695:12)
+      at TypeScriptParserMixin.parseExprAtom (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:11335:23)
+      at TypeScriptParserMixin.parseExprAtom (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:4797:20)
+      at TypeScriptParserMixin.parseExprSubscripts (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:11085:23)
+      at TypeScriptParserMixin.parseUpdate (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:11070:21)
+      at TypeScriptParserMixin.parseMaybeUnary (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:11050:23)
+      at TypeScriptParserMixin.parseMaybeUnary (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:9857:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:10903:61)
+      at TypeScriptParserMixin.parseExprOps (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:10908:23)
+7:16:29 PM [vite] Internal server error: /home/runner/workspace/client/src/pages/telemedicine.tsx: Unexpected token, expected "..." (318:19)
+
+  316 |                   }}
+  317 |
+> 318 |                   {isRequestingService ? (
+      |                    ^
+  319 |                     <>
+  320 |                       <div className="w-5 h-5 border-2 rounded-full animate-spin" 
+  321 |                         style={{borderColor: 'var(--text-light)', borderTopColor: 'transparent'}}></div>
+  Plugin: vite:react-babel
+  File: /home/runner/workspace/client/src/pages/telemedicine.tsx:318:19
+  322|                        <span>Conectando...</span>
+  323|                      </>
+  324|                    ) : (
+     |           ^
+  325|                      <>
+  326|                        <MessageCircle className="w-5 h-5" />
+      at constructor (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:367:19)
+      at TypeScriptParserMixin.raise (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:6630:19)
+      at TypeScriptParserMixin.unexpected (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:6650:16)
+      at TypeScriptParserMixin.expect (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:6930:12)
+      at TypeScriptParserMixin.jsxParseAttribute (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:4678:12)
+      at TypeScriptParserMixin.jsxParseOpeningElementAfterName (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:4700:28)
+      at TypeScriptParserMixin.jsxParseOpeningElementAfterName (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:10067:18)
+      at TypeScriptParserMixin.jsxParseOpeningElementAt (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:4695:17)
+      at TypeScriptParserMixin.jsxParseElementAt (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:4719:33)
+      at TypeScriptParserMixin.jsxParseElementAt (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:4731:32)
+      at TypeScriptParserMixin.jsxParseElementAt (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:4731:32)
+      at TypeScriptParserMixin.jsxParseElementAt (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:4731:32)
+      at TypeScriptParserMixin.jsxParseElement (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:4782:17)
+      at TypeScriptParserMixin.parseExprAtom (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:4792:19)
+      at TypeScriptParserMixin.parseExprSubscripts (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:11085:23)
+      at TypeScriptParserMixin.parseUpdate (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:11070:21)
+      at TypeScriptParserMixin.parseMaybeUnary (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:11050:23)
+      at TypeScriptParserMixin.parseMaybeUnary (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:9857:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:10903:61)
+      at TypeScriptParserMixin.parseExprOps (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:10908:23)
+      at TypeScriptParserMixin.parseMaybeConditional (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:10885:23)
+      at TypeScriptParserMixin.parseMaybeAssign (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:9795:39
+      at TypeScriptParserMixin.tryParse (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:6938:20)
+      at TypeScriptParserMixin.parseMaybeAssign (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:9795:18)
+      at /home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:10804:39
+      at TypeScriptParserMixin.allowInAnd (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:12436:12)
+      at TypeScriptParserMixin.parseMaybeAssignAllowIn (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:10804:17)
+      at TypeScriptParserMixin.parseMaybeAssignAllowInOrVoidPattern (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:12503:17)
+      at TypeScriptParserMixin.parseParenAndDistinguishExpression (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:11683:28)
+      at TypeScriptParserMixin.parseExprAtom (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:11335:23)
+      at TypeScriptParserMixin.parseExprAtom (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:4797:20)
+      at TypeScriptParserMixin.parseExprSubscripts (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:11085:23)
+      at TypeScriptParserMixin.parseUpdate (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:11070:21)
+      at TypeScriptParserMixin.parseMaybeUnary (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:11050:23)
+      at TypeScriptParserMixin.parseMaybeUnary (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:9857:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:10903:61)
+      at TypeScriptParserMixin.parseExprOpBaseRightExpr (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:10990:34)
+      at TypeScriptParserMixin.parseExprOpRightExpr (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:10985:21)
+      at TypeScriptParserMixin.parseExprOp (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:10951:27)
+      at TypeScriptParserMixin.parseExprOp (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:9394:18)
+      at TypeScriptParserMixin.parseExprOps (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:10912:17)
+      at TypeScriptParserMixin.parseMaybeConditional (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:10885:23)
+      at TypeScriptParserMixin.parseMaybeAssign (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:10835:21)
+      at TypeScriptParserMixin.parseMaybeAssign (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:9806:20)
+      at TypeScriptParserMixin.parseExpressionBase (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:10788:23)
+      at /home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:10784:39
+      at TypeScriptParserMixin.allowInAnd (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:12436:12)
+      at TypeScriptParserMixin.parseExpression (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:10784:17)
+      at TypeScriptParserMixin.jsxParseExpressionContainer (/home/runner/workspace/client/node_modules/@babel/parser/lib/index.js:4665:31)
+7:17:26 PM [vite] hmr update /src/index.css, /src/App.tsx
+7:17:38 PM [vite] Pre-transform error: /home/runner/workspace/client/src/pages/telemedicine.tsx: Unexpected token, expected "..." (318:19)
+
+  316 |                   }}
+  317 |
+> 318 |                   {isRequestingService ? (
+      |                    ^
+  319 |                     <>
+  320 |                       <div className="w-5 h-5 border-2 rounded-full animate-spin" 
+  321 |                         style={{borderColor: 'var(--text-light)', borderTopColor: 'transparent'}}></div>
+7:17:39 PM [vite] ✨ new dependencies optimized: react/jsx-dev-runtime, react, wouter, framer-motion, lucide-react
+The file does not exist at "/home/runner/workspace/client/node_modules/.vite/deps/react-dom_client.js?v=947d0b8a" which is in the optimize deps directory. The dependency might be incompatible with the dep optimizer. Try adding it to `optimizeDeps.exclude`.

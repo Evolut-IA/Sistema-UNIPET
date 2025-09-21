@@ -475,9 +475,16 @@ export default function ChatAI() {
               animation: 'fadeInUp 0.3s ease-out',
               transform: 'translateY(0)'
             }}
+            onMouseEnter={(e) => {
               if (!(!inputValue.trim() || isLoading)) {
-                e.currentTarget.style.backgroundColor = 'var(--bg-teal)';
-                e.currentTarget.style.boxShadow = '0 1px 2px 0 var(--shadow-medium)';
+                e.currentTarget.style.backgroundColor = "var(--bg-teal-dark)";
+                e.currentTarget.style.boxShadow = "0 2px 4px 0 var(--shadow-dark)";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!(!inputValue.trim() || isLoading)) {
+                e.currentTarget.style.backgroundColor = "var(--bg-teal)";
+                e.currentTarget.style.boxShadow = "0 1px 2px 0 var(--shadow-medium)";
               }
             }}
           >
