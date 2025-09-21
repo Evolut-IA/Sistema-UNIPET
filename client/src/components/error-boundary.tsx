@@ -119,8 +119,6 @@ export default class ErrorBoundary extends Component<Props, State> {
                   variant="outline"
                   className="w-full"
                   style={{ borderColor: 'var(--border-error)', color: 'var(--text-error-700)' }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-error-50)'}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                 >
                   <Home className="w-4 h-4 mr-2" />
                   Ir para Início

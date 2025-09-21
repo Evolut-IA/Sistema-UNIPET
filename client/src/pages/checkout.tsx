@@ -2325,12 +2325,6 @@ export default function Checkout() {
                             borderColor: paymentMethod === value ? 'var(--bg-teal-dark)' : 'var(--border-gray)',
                             background: paymentMethod === value ? 'var(--bg-cream-lighter)' : 'white'
                           }}
-                          onMouseEnter={(e) => {
-                            if (paymentMethod !== value) {
-                              e.currentTarget.style.borderColor = 'var(--border-teal-light)';
-                            }
-                          }}
-                          onMouseLeave={(e) => {
                             if (paymentMethod !== value) {
                               e.currentTarget.style.borderColor = 'var(--border-gray)';
                             }
@@ -2532,8 +2526,6 @@ export default function Checkout() {
                     <button
                       onClick={() => setShowMonthlyBreakdown(!showMonthlyBreakdown)}
                       className="w-full p-4 flex items-center justify-between transition-colors"
-                      onMouseEnter={(e) => e.currentTarget.style.background = 'var(--bg-cream-light)'}
-                      onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                     >
                       <span className="text-sm font-medium" style={{color: 'var(--text-dark-primary)'}}>Ver mensalidades</span>
                       <svg 
@@ -3008,8 +3000,6 @@ export default function Checkout() {
                         <button
                           onClick={() => setShowMonthlyBreakdown(!showMonthlyBreakdown)}
                           className="w-full p-4 flex items-center justify-between transition-colors"
-                          onMouseEnter={(e) => e.currentTarget.style.background = 'var(--bg-cream-light)'}
-                          onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                         >
                           <span className="text-sm font-medium" style={{color: 'var(--text-dark-primary)'}}>Ver mensalidades</span>
                           <svg 
@@ -3373,8 +3363,6 @@ export default function Checkout() {
                   onClick={() => currentStep === 1 ? navigate('/') : prevStep()}
                   className="flex items-center space-x-2 px-6 py-3 hover:opacity-80 transition-colors"
                   style={{color: 'var(--text-dark-secondary)'}}
-                  onMouseEnter={(e) => e.currentTarget.style.color = 'var(--text-dark-primary)'}
-                  onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-dark-secondary)'}
                 >
                   <span>{currentStep === 1 ? 'Voltar ao início' : 'Anterior'}</span>
                 </button>

@@ -475,13 +475,6 @@ export default function ChatAI() {
               animation: 'fadeInUp 0.3s ease-out',
               transform: 'translateY(0)'
             }}
-            onMouseEnter={(e) => {
-              if (!(!inputValue.trim() || isLoading)) {
-                e.currentTarget.style.backgroundColor = 'var(--bg-teal-dark)';
-                e.currentTarget.style.boxShadow = '0 4px 6px -1px var(--shadow-light)';
-              }
-            }}
-            onMouseLeave={(e) => {
               if (!(!inputValue.trim() || isLoading)) {
                 e.currentTarget.style.backgroundColor = 'var(--bg-teal)';
                 e.currentTarget.style.boxShadow = '0 1px 2px 0 var(--shadow-medium)';

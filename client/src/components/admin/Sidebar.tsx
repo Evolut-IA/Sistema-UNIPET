@@ -77,7 +77,7 @@ export default function Sidebar() {
                       "flex items-center px-3 py-2 text-sm rounded-lg transition-colors",
                       isActive
                         ? "bg-[var(--bg-teal-light)] text-[var(--text-light)]"
-                        : "text-[var(--text-light)] opacity-70 hover:bg-[var(--bg-teal-light)] hover:text-[var(--text-light)] hover:opacity-100"
+                        : "text-[var(--text-light)] opacity-70"
                     )}
                     data-testid={`link-${item.name.toLowerCase().replace(/\s+/g, '-')}`}
                   >

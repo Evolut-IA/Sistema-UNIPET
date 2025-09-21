@@ -113,7 +113,7 @@ export function PasswordDialog({
               type="submit"
               variant="destructive"
               disabled={isLoading || !password.trim()}
-              className={`bg-destructive hover:bg-destructive/90 text-destructive-foreground ${
+              className={`bg-destructive text-destructive-foreground ${
                 isMobile ? "w-full h-12" : ""
               }`}
             >

@@ -315,16 +315,6 @@ export default function TelemedicinePage() {
                     color: 'var(--text-light)'
                   }}
 
-                    if (!isRequestingService) {
-                      e.currentTarget.style.background = 'var(--text-gold)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isRequestingService) {
-                      e.currentTarget.style.background = 'var(--bg-gold)';
-                    }
-                  }}
-                >
                   {isRequestingService ? (
                     <>
                       <div className="w-5 h-5 border-2 rounded-full animate-spin" 
@@ -458,13 +448,6 @@ export default function TelemedicinePage() {
           </p>
           <button className="flex items-center space-x-2 mx-auto px-6 py-3 rounded-lg transition-colors"
             style={{color: 'var(--text-teal)'}}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'var(--bg-cream-lighter)';
-              e.currentTarget.style.color = 'var(--text-dark-primary)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'transparent';
-              e.currentTarget.style.color = 'var(--text-teal)';
             }}
           >
             <Phone className="w-5 h-5" />
