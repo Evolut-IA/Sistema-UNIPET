@@ -505,7 +505,7 @@ export default function Checkout() {
           const methodsForCurrentPeriod = allowedUiMethods.filter((method: any) => {
             const methodConfig = [
               { value: 'credit', availableFor: ['monthly', 'annual'] },
-              { value: 'pix', availableFor: ['annual'] }
+              { value: 'pix', availableFor: ['monthly', 'annual'] }
             ].find(m => m.value === method);
             return methodConfig?.availableFor.includes(billingPeriod);
           });
@@ -2281,7 +2281,7 @@ export default function Checkout() {
                             const methodsForMonthly = allowedUiMethods.filter(method => {
                               const methodConfig = [
                                 { value: 'credit', availableFor: ['monthly', 'annual'] },
-                                { value: 'pix', availableFor: ['annual'] }
+                                { value: 'pix', availableFor: ['monthly', 'annual'] }
                               ].find(m => m.value === method);
                               return methodConfig?.availableFor.includes('monthly');
                             });
