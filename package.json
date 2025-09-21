@@ -12,7 +12,7 @@
     "build:server": "tsc --project tsconfig.server.json",
     "build:client": "cd client && npm run build",
     
-    "start": "node dist/server/index.js",
+    "start": "NODE_ENV=production tsx unified-server.ts",
     "heroku-postbuild": "npm run build",
     "heroku-prebuild": "npm run install:all",
     "test": "vitest",
