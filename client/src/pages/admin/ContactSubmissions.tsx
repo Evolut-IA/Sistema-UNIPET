@@ -19,7 +19,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Mail, Search, Eye, Trash2, Calendar, User, Phone, MapPin, PawPrint, Copy, Columns, ChevronLeft, ChevronRight } from "lucide-react";
+import { Mail, Search, Eye, Trash2, Calendar, User, Phone, MapPin, Heart, Copy, MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { apiRequest } from "@/lib/admin/queryClient";
@@ -290,7 +290,7 @@ export default function ContactSubmissions() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="gap-2" data-testid="button-columns">
-                <Columns className="h-4 w-4" />
+                <MoreHorizontal className="h-4 w-4" />
                 Colunas
               </Button>
             </DropdownMenuTrigger>

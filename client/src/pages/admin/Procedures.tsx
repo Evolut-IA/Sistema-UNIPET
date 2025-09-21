@@ -28,7 +28,7 @@ import {
 } from "@/components/admin/ui/dropdown-menu";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Plus, Search, Edit, Trash2, Clipboard, Eye, X, Columns, ChevronLeft, ChevronRight, Copy, FileText } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Clipboard, Eye, X, MoreHorizontal, ChevronLeft, ChevronRight, Copy, FileText } from "lucide-react";
 import { apiRequest } from "@/lib/admin/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useColumnPreferences } from "@/hooks/admin/use-column-preferences";
@@ -1158,7 +1158,7 @@ export default function Procedures() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
-                <Columns className="h-4 w-4 mr-2" />
+                <MoreHorizontal className="h-4 w-4 mr-2" />
                 Colunas
               </Button>
             </DropdownMenuTrigger>

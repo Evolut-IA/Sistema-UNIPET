@@ -25,7 +25,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Plus, Search, Edit, Trash2, HelpCircle, Columns, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, Search, Edit, Trash2, HelpCircle, MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
 import { apiRequest } from "@/lib/admin/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useColumnPreferences } from "@/hooks/use-column-preferences";
@@ -311,7 +311,7 @@ export default function FAQ() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
-                <Columns className="h-4 w-4 mr-2" />
+                <MoreHorizontal className="h-4 w-4 mr-2" />
                 Colunas
               </Button>
             </DropdownMenuTrigger>

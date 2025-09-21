@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/admin/ui/card";
+import { Card, CardContent } from "@/components/admin/ui/card";
 import { Button } from "@/components/admin/ui/button";
 import { Input } from "@/components/admin/ui/input";
-import { Badge } from "@/components/admin/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/admin/ui/dialog";
-import { Alert, AlertDescription } from "@/components/admin/ui/alert";
 import {
   Table,
   TableBody,
@@ -22,7 +20,7 @@ import {
 } from "@/components/admin/ui/dropdown-menu";
 import { useLocation } from "wouter";
 import type { Client, Pet } from "@shared/schema";
-import { Plus, Search, Edit, Trash2, Eye, Copy, FileText, Columns, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Eye, Copy, FileText, MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
 
 // Componente do ícone de adicionar pet
 const AddPetIcon = ({ className }: { className?: string }) => (
@@ -46,7 +44,6 @@ import { useConfirmDialog } from "@/hooks/admin/use-confirm-dialog";
 import { PasswordDialog } from "@/components/admin/ui/password-dialog";
 import { usePasswordDialog } from "@/hooks/admin/use-password-dialog";
 import { useColumnPreferences } from "@/hooks/admin/use-column-preferences";
-import { cn } from "@/lib/utils";
 
 const allColumns = [
   "Nome",
@@ -317,7 +314,7 @@ export default function Clients() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
-                <Columns className="h-4 w-4 mr-2" />
+                <MoreHorizontal className="h-4 w-4 mr-2" />
                 Colunas
               </Button>
             </DropdownMenuTrigger>

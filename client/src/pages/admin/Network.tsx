@@ -20,7 +20,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/admin/ui/dropdown-menu";
-import { Plus, Search, Edit, Trash2, Building, ExternalLink, Eye, Copy, Globe, Columns, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Building, ExternalLink, Eye, Copy, Globe, MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
 import { apiRequest } from "@/lib/admin/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { ConfirmDialog } from "@/components/admin/ui/confirm-dialog";
@@ -275,7 +275,7 @@ export default function Network() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
-                <Columns className="h-4 w-4 mr-2" />
+                <MoreHorizontal className="h-4 w-4 mr-2" />
                 Colunas
               </Button>
             </DropdownMenuTrigger>

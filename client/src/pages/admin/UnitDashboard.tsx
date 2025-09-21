@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, FileText, User, PawPrint, MapPin, Clock, DollarSign, CheckCircle, XCircle, Eye, Users, CreditCard, Plus, TableProperties, Search, Calculator, AlertCircle, Info } from "lucide-react";
+import { FileText, User, Heart, MapPin, Clock, DollarSign, CheckCircle, XCircle, Eye, Users, CreditCard, Plus, Settings, Search, AlertCircle, Info } from "lucide-react";
 import { Link } from "wouter";
 import DigitalCard from "@/components/DigitalCard";
 
@@ -723,7 +723,7 @@ export default function UnitDashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4 py-3 sm:py-4">
             <div className="flex items-center space-x-4 min-w-0">
-              <PawPrint className="h-8 w-8 text-primary" />
+              <Heart className="h-8 w-8 text-primary" />
               <div>
                 <h1 className="text-lg sm:text-xl font-semibold text-gray-900 break-words">
                   {authState.unit?.name}
@@ -773,7 +773,7 @@ export default function UnitDashboard() {
               <span className="hidden sm:inline">Carteirinhas</span>
             </TabsTrigger>
             <TabsTrigger value="coverage" className="flex items-center gap-2">
-              <TableProperties className="h-4 w-4" />
+              <Settings className="h-4 w-4" />
               <span className="hidden sm:inline">Cobertura</span>
             </TabsTrigger>
           </TabsList>
@@ -810,7 +810,7 @@ export default function UnitDashboard() {
                                         <span>{guide.client?.name || "Cliente não encontrado"}</span>
                                       </div>
                                       <div className="flex items-center space-x-2">
-                                        <PawPrint className="h-4 w-4" />
+                                        <Heart className="h-4 w-4" />
                                         <span>{guide.pet?.name || "Pet não encontrado"}</span>
                                       </div>
                                       <div className="flex items-center space-x-2">
@@ -1135,7 +1135,7 @@ export default function UnitDashboard() {
                     {calculatedValues && (
                       <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                         <div className="flex items-center space-x-2 mb-3">
-                          <Calculator className="h-4 w-4 text-green-600" />
+                          <Plus className="h-4 w-4 text-green-600" />
                           <h4 className="text-sm font-medium text-green-900">Cálculo Automático</h4>
                         </div>
                         
@@ -1398,7 +1398,7 @@ export default function UnitDashboard() {
               {!loadingCards && petsWithClients.length === 0 && (
                 <Card>
                   <CardContent className="p-6 text-center">
-                    <PawPrint className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <Heart className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                     <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhuma carteirinha encontrada</h3>
                     <p className="text-gray-500">
                       Ainda não há pets cadastrados para sua unidade.
@@ -1642,7 +1642,7 @@ export default function UnitDashboard() {
               ) : (
                 <Card>
                   <CardContent className="p-6 text-center">
-                    <TableProperties className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <Settings className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                     <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhuma cobertura encontrada</h3>
                     <p className="text-gray-500 mb-4">
                       Não foi possível carregar a tabela de cobertura. Verifique se existem procedimentos e planos cadastrados.

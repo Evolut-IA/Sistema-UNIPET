@@ -20,7 +20,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/admin/ui/dropdown-menu";
-import { Plus, Search, Edit, Trash2, FileText, Eye, Copy, Columns, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, Search, Edit, Trash2, FileText, Eye, Copy, MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
 
 // Types for guides data
 interface GuideWithNetworkUnit {
@@ -393,7 +393,7 @@ export default function Guides() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm">
-              <Columns className="h-4 w-4 mr-2" />
+              <MoreHorizontal className="h-4 w-4 mr-2" />
               Colunas
             </Button>
           </DropdownMenuTrigger>

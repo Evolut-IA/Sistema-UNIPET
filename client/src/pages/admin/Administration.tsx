@@ -541,7 +541,7 @@ export default function Administration() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
-                <Columns className="h-4 w-4 mr-2" />
+                <MoreHorizontal className="h-4 w-4 mr-2" />
                 Colunas
               </Button>
             </DropdownMenuTrigger>
@@ -759,7 +759,7 @@ export default function Administration() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm">
-              <Columns className="h-4 w-4 mr-2" />
+              <MoreHorizontal className="h-4 w-4 mr-2" />
               Colunas
             </Button>
           </DropdownMenuTrigger>
