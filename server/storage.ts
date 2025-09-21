@@ -849,6 +849,47 @@ export class InMemoryStorage implements IStorage {
     return true;
   }
 
+  // Missing interface methods implementation
+  async getAllContactSubmissionsWithDateFilter(startDate?: string, endDate?: string): Promise<ContactSubmission[]> {
+    return this.contactSubmissions;
+  }
+
+  async getAllClientsWithDateFilter(startDate?: string, endDate?: string): Promise<Client[]> {
+    return this.clients;
+  }
+
+  async searchClients(query: string): Promise<Client[]> {
+    return this.clients.filter(client => 
+      client.full_name?.toLowerCase().includes(query.toLowerCase()) ||
+      client.email.toLowerCase().includes(query.toLowerCase()) ||
+      client.phone?.includes(query)
+    );
+  }
+
+  async getAllPetsWithDateFilter(startDate?: string, endDate?: string): Promise<Pet[]> {
+    throw new Error('InMemoryStorage: Pets not implemented');
+  }
+
+  async getAllGuidesWithDateFilter(startDate?: string, endDate?: string): Promise<Guide[]> {
+    throw new Error('InMemoryStorage: Guides not implemented');
+  }
+
+  async getGuideById(id: string): Promise<Guide | undefined> {
+    throw new Error('InMemoryStorage: Guides not implemented');
+  }
+
+  async getGuidesWithNetworkUnits(params: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    status?: string;
+    type?: string;
+    startDate?: string;
+    endDate?: string;
+  }): Promise<{ data: Guide[]; total: number; totalPages: number; page: number; }> {
+    throw new Error('InMemoryStorage: Guides not implemented');
+  }
+
   // Chat Conversations methods - Removed (table no longer exists)
 }
 
@@ -1721,6 +1762,163 @@ export class DatabaseStorage implements IStorage {
   async deleteUser(id: string): Promise<boolean> {
     const result = await db.delete(users).where(eq(users.id, id));
     return (result.rowCount || 0) > 0;
+  }
+
+  // Missing interface methods implementation
+  async getAllContactSubmissionsWithDateFilter(startDate?: string, endDate?: string): Promise<ContactSubmission[]> {
+    let query = db.select().from(contactSubmissions);
+    
+    if (startDate || endDate) {
+      if (startDate && endDate) {
+        query = query.where(and(
+          gte(contactSubmissions.createdAt, new Date(startDate)),
+          lte(contactSubmissions.createdAt, new Date(endDate))
+        ));
+      } else if (startDate) {
+        query = query.where(gte(contactSubmissions.createdAt, new Date(startDate)));
+      } else if (endDate) {
+        query = query.where(lte(contactSubmissions.createdAt, new Date(endDate)));
+      }
+    }
+    
+    return await query.orderBy(desc(contactSubmissions.createdAt));
+  }
+
+  async getAllClientsWithDateFilter(startDate?: string, endDate?: string): Promise<Client[]> {
+    let query = db.select().from(clients);
+    
+    if (startDate || endDate) {
+      if (startDate && endDate) {
+        query = query.where(and(
+          gte(clients.createdAt, new Date(startDate)),
+          lte(clients.createdAt, new Date(endDate))
+        ));
+      } else if (startDate) {
+        query = query.where(gte(clients.createdAt, new Date(startDate)));
+      } else if (endDate) {
+        query = query.where(lte(clients.createdAt, new Date(endDate)));
+      }
+    }
+    
+    return await query.orderBy(desc(clients.createdAt));
+  }
+
+  async searchClients(query: string): Promise<Client[]> {
+    const searchTerm = `%${query.toLowerCase()}%`;
+    return await db.select().from(clients)
+      .where(
+        sql`LOWER(${clients.fullName}) LIKE ${searchTerm} OR 
+            LOWER(${clients.email}) LIKE ${searchTerm} OR 
+            ${clients.phone} LIKE ${searchTerm}`
+      )
+      .orderBy(desc(clients.createdAt));
+  }
+
+  async getAllPetsWithDateFilter(startDate?: string, endDate?: string): Promise<Pet[]> {
+    let query = db.select().from(pets);
+    
+    if (startDate || endDate) {
+      if (startDate && endDate) {
+        query = query.where(and(
+          gte(pets.createdAt, new Date(startDate)),
+          lte(pets.createdAt, new Date(endDate))
+        ));
+      } else if (startDate) {
+        query = query.where(gte(pets.createdAt, new Date(startDate)));
+      } else if (endDate) {
+        query = query.where(lte(pets.createdAt, new Date(endDate)));
+      }
+    }
+    
+    return await query.orderBy(desc(pets.createdAt));
+  }
+
+  async getAllGuidesWithDateFilter(startDate?: string, endDate?: string): Promise<Guide[]> {
+    let query = db.select().from(guides);
+    
+    if (startDate || endDate) {
+      if (startDate && endDate) {
+        query = query.where(and(
+          gte(guides.createdAt, new Date(startDate)),
+          lte(guides.createdAt, new Date(endDate))
+        ));
+      } else if (startDate) {
+        query = query.where(gte(guides.createdAt, new Date(startDate)));
+      } else if (endDate) {
+        query = query.where(lte(guides.createdAt, new Date(endDate)));
+      }
+    }
+    
+    return await query.orderBy(desc(guides.createdAt));
+  }
+
+  async getGuideById(id: string): Promise<Guide | undefined> {
+    const [guide] = await db.select().from(guides).where(eq(guides.id, id));
+    return guide || undefined;
+  }
+
+  async getGuidesWithNetworkUnits(params: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    status?: string;
+    type?: string;
+    startDate?: string;
+    endDate?: string;
+  }): Promise<{ data: Guide[]; total: number; totalPages: number; page: number; }> {
+    const { page = 1, limit = 10, search, status, type, startDate, endDate } = params;
+    
+    let query = db.select().from(guides);
+    let conditions = [];
+    
+    if (search && search.trim()) {
+      const searchTerm = `%${search.toLowerCase()}%`;
+      conditions.push(
+        sql`LOWER(${guides.procedure}) LIKE ${searchTerm} OR 
+            LOWER(${guides.procedureNotes}) LIKE ${searchTerm} OR 
+            LOWER(${guides.generalNotes}) LIKE ${searchTerm}`
+      );
+    }
+    
+    if (status && status !== 'all') {
+      conditions.push(eq(guides.status, status));
+    }
+    
+    if (type && type !== 'all') {
+      conditions.push(eq(guides.type, type));
+    }
+    
+    if (startDate) {
+      conditions.push(gte(guides.createdAt, new Date(startDate)));
+    }
+    
+    if (endDate) {
+      conditions.push(lte(guides.createdAt, new Date(endDate)));
+    }
+    
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions));
+    }
+    
+    // Get total count
+    const totalQuery = await query;
+    const total = totalQuery.length;
+    
+    // Apply pagination
+    const offset = (page - 1) * limit;
+    const data = await query
+      .orderBy(desc(guides.createdAt))
+      .limit(limit)
+      .offset(offset);
+    
+    const totalPages = Math.ceil(total / limit);
+    
+    return {
+      data,
+      total,
+      totalPages,
+      page
+    };
   }
 
   // Chat Conversations - Removed (table no longer exists)

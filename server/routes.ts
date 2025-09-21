@@ -441,7 +441,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const allClients = await storage.getAllClients();
       const query = req.params.query.toLowerCase();
       const clients = allClients.filter(client => 
-        (client.name || '').toLowerCase().includes(query) || 
+        (client.full_name || '').toLowerCase().includes(query) || 
         client.email.toLowerCase().includes(query) || 
         client.phone.includes(query)
       );

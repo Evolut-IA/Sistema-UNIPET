@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/admin/ui/card";
 import { Button } from "@/components/admin/ui/button";
 import { Input } from "@/components/admin/ui/input";
@@ -29,7 +30,6 @@ import { PasswordDialog } from "@/components/admin/ui/password-dialog";
 import { usePasswordDialog } from "@/hooks/admin/use-password-dialog";
 import { useColumnPreferences } from "@/hooks/admin/use-column-preferences";
 import type { NetworkUnit } from "@shared/schema";
-import { cn } from "@/lib/utils";
 
 const allColumns = [
   "Nome",
@@ -42,6 +42,7 @@ export default function Network() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedUnit, setSelectedUnit] = useState<NetworkUnit | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [location, setLocation] = useLocation();
   const { visibleColumns, toggleColumn } = useColumnPreferences('network.columns', allColumns);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;

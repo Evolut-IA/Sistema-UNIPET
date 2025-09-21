@@ -1,6 +1,6 @@
 // Import pdfmake properly for ES modules
-import pkg from 'pdfmake/build/pdfmake.js';
-import vfsFonts from 'pdfmake/build/vfs_fonts.js';
+import pdfMake from 'pdfmake/build/pdfmake.js';
+import * as vfsFonts from 'pdfmake/build/vfs_fonts.js';
 import { CieloService, type CieloPaymentResponse } from './cielo-service.js';
 import { supabaseStorage } from '../supabase-storage.js';
 import { storage } from '../storage.js';
@@ -8,15 +8,8 @@ import { randomUUID } from 'crypto';
 import fs from 'fs';
 import path from 'path';
 
-// Get pdfMake instance from default export
-const pdfMake = pkg.default || pkg;
-
 // Configure pdfMake with fonts (ES module compatible)
-if (vfsFonts.default) {
-  pdfMake.vfs = vfsFonts.default.vfs;
-} else {
-  pdfMake.vfs = vfsFonts.vfs;
-}
+pdfMake.vfs = (vfsFonts as any).vfs;
 
 interface PaymentReceiptData {
   contractId?: string;
@@ -112,7 +105,7 @@ export class PaymentReceiptService {
       
       // Validate that payment is approved/completed
       // Accept both numeric status (2) and mapped status ('approved')
-      const isPaymentApproved = payment.status === 2 || payment.status === 'approved';
+      const isPaymentApproved = payment.status === 2 || payment.status === 'approved' || String(payment.status) === '2';
       if (!isPaymentApproved) {
         console.warn('⚠️ [RECEIPT-SERVICE] Tentativa de gerar comprovante para pagamento não aprovado', {
           correlationId: logId,
