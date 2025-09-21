@@ -648,8 +648,8 @@ export default function CustomerFinancial() {
                       color: 'white',
                       transition: 'background-color 0.2s'
                     }}
-                    onMouseEnter={(e) => (e.target as HTMLElement).style.background = '#B91C1C'}
-                    onMouseLeave={(e) => (e.target as HTMLElement).style.background = '#DC2626'}
+
+
                   >
                     Tentar Novamente
                   </button>
@@ -793,8 +793,8 @@ export default function CustomerFinancial() {
                       color: 'white',
                       transition: 'background-color 0.2s'
                     }}
-                    onMouseEnter={(e) => (e.target as HTMLElement).style.background = '#B91C1C'}
-                    onMouseLeave={(e) => (e.target as HTMLElement).style.background = '#DC2626'}
+
+
                   >
                     Tentar Novamente
                   </button>
@@ -877,8 +877,8 @@ export default function CustomerFinancial() {
                           color: 'white',
                           transition: 'background-color 0.2s'
                         }}
-                        onMouseEnter={(e) => (e.target as HTMLElement).style.background = '#0F766E'}
-                        onMouseLeave={(e) => (e.target as HTMLElement).style.background = 'var(--text-teal)'}
+
+
                       >
                         <Download className="w-4 h-4" />
                         <span>Baixar Comprovante PDF</span>

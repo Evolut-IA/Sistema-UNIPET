@@ -191,8 +191,8 @@ export default function CustomerLoginPage() {
                   onClick={() => navigate('/checkout')}
                   className="ml-1 font-medium transition-colors duration-200"
                   style={{color: 'var(--text-teal)'}}
-                  onMouseEnter={(e) => e.currentTarget.style.color = 'var(--bg-gold)'}
-                  onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-teal)'}
+
+
                 >
                   Contrate um plano
                 </button>
