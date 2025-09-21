@@ -108,7 +108,7 @@ const DateRangePicker = React.forwardRef<
           variant="outline"
           size="sm"
           onClick={handleClear}
-          className="flex-1 bg-input text-accent-foreground hover:bg-input/80"
+          className="flex-1"
         >
           <X className="mr-2 h-4 w-4" />
           Limpar
@@ -129,7 +129,7 @@ const DateRangePicker = React.forwardRef<
     <Button
       variant="outline"
       className={cn(
-        "w-full justify-start text-left font-normal bg-input text-accent-foreground hover:bg-input/80"
+        "w-full justify-start text-left font-normal"
       )}
       disabled={disabled || isLoading}
     >
