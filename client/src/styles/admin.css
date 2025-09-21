@@ -347,8 +347,6 @@ img:focus, svg:focus {
   outline: none !important;
   box-shadow: none !important;
 }
-  box-shadow: none !important;
-}
 
 /* Preserve checkbox visual styles */
 .custom-checkbox-input {
