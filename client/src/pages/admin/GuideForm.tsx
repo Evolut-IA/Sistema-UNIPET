@@ -165,7 +165,7 @@ export default function GuideForm() {
 
       {/* Back Button */}
       <Button
-        variant="default"
+        variant="outline"
         size="sm"
         onClick={() => setLocation("/guias")}
         data-testid="button-back-to-guides"
@@ -314,7 +314,8 @@ export default function GuideForm() {
           <div className="flex justify-center flex-col md:flex-row gap-3 md:gap-4">
             <Button
               type="button"
-              variant="default"
+              variant="outline"
+              size="sm"
               onClick={() => setLocation("/guias")}
               data-testid="button-cancel"
               className="md:w-auto w-full md:h-10 h-12 md:text-sm text-base"
@@ -323,7 +324,9 @@ export default function GuideForm() {
             </Button>
             <Button
               type="submit"
-              className="btn-primary md:w-auto w-full md:h-10 h-12 md:text-sm text-base"
+              variant="outline"
+              size="sm"
+              className="md:w-auto w-full md:h-10 h-12 md:text-sm text-base"
               disabled={mutation.isPending}
               data-testid="button-save"
             >

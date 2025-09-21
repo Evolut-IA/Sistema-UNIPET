@@ -345,7 +345,7 @@ export default function Clients() {
 
         <div className="flex gap-2">
           <Button 
-            className="btn-primary"
+            variant="outline"
             size="sm"
             onClick={() => setLocation("/clientes/novo")}
             data-testid="button-new-client"
@@ -759,7 +759,7 @@ export default function Clients() {
                         <div className="mt-3 pt-2 border-t border-border">
                           <div className="flex items-center space-x-2">
                             <Button
-                              variant="default"
+                              variant="outline"
                               size="sm"
                               onClick={() => {
                                 setDetailsOpen(false);
@@ -770,7 +770,7 @@ export default function Clients() {
                               <FileText className="h-3 w-3" />
                             </Button>
                             <Button
-                              variant="default"
+                              variant="outline"
                               size="sm"
                               onClick={() => {
                                 setDetailsOpen(false);

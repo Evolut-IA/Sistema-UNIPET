@@ -165,7 +165,7 @@ export default function PlanForm() {
 
       {/* Back Button */}
       <Button
-        variant="default"
+        variant="outline"
         size="sm"
         onClick={() => setLocation("/planos")}
         data-testid="button-back-to-plans"
@@ -332,7 +332,8 @@ export default function PlanForm() {
           <div className="flex justify-center flex-col md:flex-row gap-3 md:gap-4">
             <Button
               type="button"
-              variant="default"
+              variant="outline"
+              size="sm"
               onClick={() => setLocation("/planos")}
               data-testid="button-cancel"
               className="md:w-auto w-full md:h-10 h-12 md:text-sm text-base"
@@ -341,9 +342,11 @@ export default function PlanForm() {
             </Button>
             <Button
               type="submit"
-              className="btn-primary md:w-auto w-full md:h-10 h-12 md:text-sm text-base"
+              variant="outline"
+              size="sm"
               disabled={mutation.isPending}
               data-testid="button-save"
+              className="md:w-auto w-full md:h-10 h-12 md:text-sm text-base"
             >
               {mutation.isPending ? "Salvando..." : isEdit ? "Atualizar" : "Criar Plano"}
             </Button>

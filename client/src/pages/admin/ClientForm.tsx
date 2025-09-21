@@ -202,7 +202,7 @@ export default function ClientForm() {
 
       {/* Back Button */}
       <Button
-        variant="default"
+        variant="outline"
         size="sm"
         onClick={() => setLocation("/clientes")}
         data-testid="button-back-to-clients"
@@ -396,7 +396,8 @@ export default function ClientForm() {
               <div className="flex justify-center flex-col md:flex-row gap-3 md:gap-4">
                 <Button
                   type="button"
-                  variant="default"
+                  variant="outline"
+                  size="sm"
                   onClick={() => setLocation("/clientes")}
                   data-testid="button-cancel"
                   className="md:w-auto w-full md:h-10 h-12 md:text-sm text-base"
@@ -405,9 +406,11 @@ export default function ClientForm() {
                 </Button>
                 <Button
                   type="submit"
-                  className="btn-primary md:w-auto w-full md:h-10 h-12 md:text-sm text-base"
+                  variant="outline"
+                  size="sm"
                   disabled={mutation.isPending}
                   data-testid="button-save"
+                  className="md:w-auto w-full md:h-10 h-12 md:text-sm text-base"
                 >
                   {mutation.isPending ? "Salvando..." : isEdit ? "Atualizar" : "Cadastrar"}
                 </Button>
@@ -424,7 +427,7 @@ export default function ClientForm() {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <CardTitle className="text-foreground">Pets do Cliente</CardTitle>
               <Button
-                variant="default"
+                variant="outline"
                 size="sm"
                 onClick={() => setLocation(`/clientes/${params.id}/pets/novo`)}
                 data-testid="button-add-pet"
@@ -467,7 +470,7 @@ export default function ClientForm() {
                     </div>
                     <div className="flex space-x-2">
                       <Button
-                        variant="default"
+                        variant="outline"
                         size="sm"
                         onClick={() => setLocation(`/pets/${pet.id}/editar`)}
                         data-testid={`button-edit-pet-${pet.id}`}
@@ -475,7 +478,7 @@ export default function ClientForm() {
                         <Edit className="h-4 w-4" />
                       </Button>
                       <Button
-                        variant="default"
+                        variant="outline"
                         size="sm"
                         onClick={() => handleDeletePet(pet.id, pet.name)}
                         disabled={deletePetMutation.isPending}
@@ -493,7 +496,7 @@ export default function ClientForm() {
                   Este cliente ainda não possui pets cadastrados.
                 </p>
                 <Button
-                  variant="default"
+                  variant="outline"
                   size="sm"
                   onClick={() => setLocation(`/clientes/${params.id}/pets/novo`)}
                   data-testid="button-add-first-pet"

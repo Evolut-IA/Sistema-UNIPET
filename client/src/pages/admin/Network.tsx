@@ -264,7 +264,7 @@ export default function Network() {
 
         <div className="flex gap-2">
           <Button 
-            className="btn-primary"
+            variant="outline"
             size="sm"
             onClick={() => setLocation("/rede/novo")}
             data-testid="button-new-unit"
@@ -439,7 +439,7 @@ export default function Network() {
                   </p>
                   {!searchQuery && (
                     <Button 
-                      className="btn-primary"
+                      variant="outline"
                       size="sm"
                       onClick={() => setLocation("/rede/novo")}
                       data-testid="button-add-first-unit"
@@ -566,7 +566,8 @@ export default function Network() {
                 <div>
                   <h4 className="font-semibold text-foreground mb-2">Localização</h4>
                   <Button
-                    variant="default"
+                    variant="outline"
+                    size="sm"
                     asChild
                     className="w-full"
                   >
