@@ -30,8 +30,8 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useColumnPreferences } from "@/hooks/admin/use-column-preferences";
 import { apiRequest } from "@/lib/admin/queryClient";
-import { type User as UserType, type NetworkUnitWithCredentialStatus } from "@shared/schema";
-import { UserCheck, Plus, Search, Edit, Trash2, Eye, EyeOff, ChevronLeft, ChevronRight, Globe, User } from "lucide-react";
+import { type User as UserType, type NetworkUnitWithCredentialStatus, insertUserSchema } from "@shared/schema";
+import { UserCheck, Plus, Search, Edit, Trash2, Eye, EyeOff, ChevronLeft, ChevronRight, Globe, User, MoreHorizontal } from "lucide-react";
 
 const AVAILABLE_PERMISSIONS = [
   { id: "clients", label: "Clientes", description: "Acesso à seção de clientes" },

@@ -18,8 +18,8 @@ function AuthLoading() {
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50" style={{background: 'linear-gradient(to bottom right, var(--bg-teal), var(--bg-teal-dark))'}}>
       <div className="text-center">
-        <div className="w-16 h-16 border-4 border-t-transparent rounded-full animate-spin mx-auto mb-6" style={{borderColor: 'var(--bg-gold)'}}></div>
-        <div className="text-lg" style={{color: 'var(--text-gold)'}}>Verificando autenticação...</div>
+        <div className="w-16 h-16 border-4 border-t-transparent border-white rounded-full animate-spin mx-auto mb-6"></div>
+        <div className="text-lg text-white">Verificando autenticação...</div>
       </div>
     </div>
   );
