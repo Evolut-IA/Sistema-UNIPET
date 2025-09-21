@@ -52,20 +52,20 @@ export default function FaqSection({ showTitle = true, maxItems, showViewMoreBut
                   >
                     <AccordionTrigger 
                       className="text-left py-4 hover:no-underline text-[var(--text-teal)] font-semibold"
-                      style={{ paddingLeft: '1.5rem', paddingRight: '1.5rem' }}
                       data-testid={`faq-question-${faq.id}`}
                     >
-                      {faq.question}
+                      <span className="px-6 flex-1">{faq.question}</span>
                     </AccordionTrigger>
                     <AccordionContent 
-                      className="text-[var(--text-dark-primary)] pb-4 leading-relaxed"
-                      style={{ paddingLeft: '1.5rem', paddingRight: '1.5rem' }}
+                      className="text-[var(--text-dark-primary)] leading-relaxed"
                       data-testid={`faq-answer-${faq.id}`}
                     >
-                      <FormattedText 
-                        text={faq.answer} 
-                        className="whitespace-pre-wrap leading-relaxed"
-                      />
+                      <div className="px-6 pb-4">
+                        <FormattedText 
+                          text={faq.answer} 
+                          className="whitespace-pre-wrap leading-relaxed"
+                        />
+                      </div>
                     </AccordionContent>
                   </AccordionItem>
                 ))}
