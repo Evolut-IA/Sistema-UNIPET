@@ -2,7 +2,7 @@ import { useState, memo } from "react";
 import Sidebar from "./Sidebar.tsx";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
-import "@/styles/admin.css";
+import "@/admin.css";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -12,7 +12,7 @@ function Layout({ children }: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen bg-[var(--bg-cream-light)] overflow-hidden" data-admin-layout>
+    <div className="flex h-screen bg-[var(--bg-cream-light)] overflow-hidden" data-admin-area="true">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div 
