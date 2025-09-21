@@ -734,7 +734,7 @@ export default function UnitDashboard() {
                 </p>
               </div>
             </div>
-            <Button variant="outline" onClick={handleLogout} className="w-full sm:w-auto text-xs sm:text-sm">
+            <Button variant="outline" size="sm" onClick={handleLogout} className="w-full sm:w-auto text-xs sm:text-sm">
               Sair
             </Button>
           </div>
@@ -829,7 +829,7 @@ export default function UnitDashboard() {
                                   </div>
                                   <div className="flex space-x-2">
                                     <Button
-                                      variant="default"
+                                      variant="outline"
                                       size="sm"
                                       onClick={() => setSelectedGuide(guide)}
                                     >
@@ -838,15 +838,15 @@ export default function UnitDashboard() {
                                     {status === "open" && (
                                       <>
                                         <Button
+                                          variant="outline"
                                           size="sm"
                                           onClick={() => updateGuideStatus(guide.id, "closed")}
-                                          className="bg-green-600"
                                         >
                                           <CheckCircle className="h-4 w-4" />
                                         </Button>
                                         <Button
+                                          variant="outline"
                                           size="sm"
-                                          variant="destructive"
                                           onClick={() => updateGuideStatus(guide.id, "cancelled")}
                                         >
                                           <XCircle className="h-4 w-4" />
@@ -1244,6 +1244,7 @@ export default function UnitDashboard() {
                       <Button 
                         type="button" 
                         variant="outline"
+                        size="sm"
                         onClick={() => {
                           setGuideForm({
                             clientId: "",
@@ -1264,6 +1265,8 @@ export default function UnitDashboard() {
                       </Button>
                       <Button 
                         type="submit" 
+                        variant="outline"
+                        size="sm"
                         disabled={submittingGuide || !guideForm.clientId || !guideForm.petId || !guideForm.type || !guideForm.procedureId}
                       >
                         {submittingGuide ? (
@@ -1330,6 +1333,8 @@ export default function UnitDashboard() {
                     />
                   </div>
                   <Button 
+                    variant="outline"
+                    size="sm"
                     onClick={handleCpfSearch}
                     disabled={!cpfSearch.trim()}
                     className="whitespace-nowrap"
@@ -1647,7 +1652,7 @@ export default function UnitDashboard() {
                     <p className="text-gray-500 mb-4">
                       Não foi possível carregar a tabela de cobertura. Verifique se existem procedimentos e planos cadastrados.
                     </p>
-                    <Button onClick={loadCoverage} variant="outline">
+                    <Button onClick={loadCoverage} variant="outline" size="sm">
                       Tentar novamente
                     </Button>
                   </CardContent>
@@ -1729,14 +1734,17 @@ export default function UnitDashboard() {
                 {selectedGuide.unitStatus === "open" && (
                   <div className="flex space-x-2 pt-4">
                     <Button
+                      variant="outline"
+                      size="sm"
                       onClick={() => updateGuideStatus(selectedGuide.id, "closed")}
-                      className="bg-green-600 flex-1"
+                      className="flex-1"
                     >
                       <CheckCircle className="h-4 w-4 mr-2" />
                       Aceitar Guia
                     </Button>
                     <Button
-                      variant="destructive"
+                      variant="outline"
+                      size="sm"
                       onClick={() => updateGuideStatus(selectedGuide.id, "cancelled")}
                       className="flex-1"
                     >

@@ -1003,7 +1003,8 @@ export default function Procedures() {
               <div className="flex justify-end space-x-4">
                 <Button
                   type="button"
-                  variant="default"
+                  variant="outline"
+                  size="sm"
                   onClick={() => setDialogOpen(false)}
                   data-testid="button-cancel"
                 >
@@ -1011,7 +1012,8 @@ export default function Procedures() {
                 </Button>
                 <Button
                   type="submit"
-                  className="btn-primary"
+                  variant="outline"
+                  size="sm"
                   disabled={createMutation.isPending}
                   data-testid="button-save"
                 >
@@ -1034,6 +1036,7 @@ export default function Procedures() {
             <div className="flex items-center gap-2">
               <Button
                 variant="outline"
+                size="sm"
                 onClick={handleCopyToClipboard}
                 className="gap-2 h-8"
                 data-testid="button-copy-procedure"
@@ -1042,7 +1045,8 @@ export default function Procedures() {
                 Copiar
               </Button>
               <Button
-                variant="outline" 
+                variant="outline"
+                size="sm"
                 onClick={() => setViewDialogOpen(false)}
                 className="h-8"
               >
@@ -1147,7 +1151,7 @@ export default function Procedures() {
             }
           }}>
             <DialogTrigger asChild>
-              <Button className="btn-primary" size="sm" data-testid="button-new-procedure">
+              <Button variant="outline" size="sm" data-testid="button-new-procedure">
                 <Plus className="h-4 w-4 mr-2" />
                 Adicionar
               </Button>
@@ -1246,7 +1250,7 @@ export default function Procedures() {
                     <TableCell className="whitespace-nowrap bg-accent">
                       <div className="flex items-center space-x-1">
                         <Button
-                          variant="ghost"
+                          variant="outline"
                           size="sm"
                           onClick={() => handleView(item)}
                           data-testid={`button-view-${item.id}`}
@@ -1256,7 +1260,7 @@ export default function Procedures() {
                         </Button>
                         
                         <Button
-                          variant="ghost"
+                          variant="outline"
                           size="sm"
                           onClick={() => handleEdit(item)}
                           data-testid={`button-edit-${item.id}`}
@@ -1266,7 +1270,7 @@ export default function Procedures() {
                         </Button>
                         
                         <Button
-                          variant="ghost"
+                          variant="outline"
                           size="sm"
                           onClick={() => handleDelete(item.id)}
                           disabled={deleteMutation.isPending}
@@ -1296,7 +1300,7 @@ export default function Procedures() {
                   </p>
                   {!searchQuery && (
                     <Button
-                      className="btn-primary"
+                      variant="outline"
                       size="sm"
                       onClick={() => setDialogOpen(true)}
                       data-testid="button-add-first-procedure"

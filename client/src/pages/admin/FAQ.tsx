@@ -254,7 +254,8 @@ export default function FAQ() {
                 <div className="flex justify-end space-x-4">
                   <Button
                     type="button"
-                    variant="default"
+                    variant="outline"
+                    size="sm"
                     onClick={() => setDialogOpen(false)}
                     data-testid="button-cancel"
                   >
@@ -262,7 +263,8 @@ export default function FAQ() {
                   </Button>
                   <Button
                     type="submit"
-                    className="btn-primary"
+                    variant="outline"
+                    size="sm"
                     disabled={createMutation.isPending}
                     data-testid="button-save"
                   >
@@ -301,7 +303,7 @@ export default function FAQ() {
             }
           }}>
             <DialogTrigger asChild>
-              <Button className="btn-primary" size="sm" data-testid="button-new-faq">
+              <Button variant="outline" size="sm" data-testid="button-new-faq">
                 <Plus className="h-4 w-4 mr-2" />
                 Adicionar
               </Button>

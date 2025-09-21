@@ -489,6 +489,8 @@ export default function Clients() {
                   </p>
                   {searchQuery.length <= 2 && (
                     <Button 
+                      variant="outline"
+                      size="sm"
                       className="mt-4"
                       onClick={() => setLocation("/clientes/novo")}
                       data-testid="button-add-first-client"

@@ -492,7 +492,8 @@ export default function Administration() {
                 <div className="flex justify-end space-x-4">
                   <Button
                     type="button"
-                    variant="default"
+                    variant="outline"
+                    size="sm"
                     onClick={() => setDialogOpen(false)}
                     data-testid="button-cancel"
                   >
@@ -500,7 +501,8 @@ export default function Administration() {
                   </Button>
                   <Button
                     type="submit"
-                    className="btn-primary"
+                    variant="outline"
+                    size="sm"
                     disabled={createMutation.isPending}
                     data-testid="button-save"
                   >
@@ -539,7 +541,7 @@ export default function Administration() {
             }
           }}>
             <DialogTrigger asChild>
-              <Button className="btn-primary" size="sm" data-testid="button-new-user">
+              <Button variant="outline" size="sm" data-testid="button-new-user">
                 <Plus className="h-4 w-4 mr-2" />
                 Adicionar
               </Button>
@@ -674,6 +676,7 @@ export default function Administration() {
                     {!searchQuery && (
                       <Button 
                         variant="outline"
+                        size="sm"
                         onClick={() => setDialogOpen(true)}
                         data-testid="button-add-first-user"
                       >
@@ -1071,13 +1074,15 @@ export default function Administration() {
                   <Button
                     type="button"
                     variant="outline"
+                    size="sm"
                     onClick={() => setCredentialDialogOpen(false)}
                   >
                     Cancelar
                   </Button>
                   <Button
                     type="submit"
-                    className="btn-primary"
+                    variant="outline"
+                    size="sm"
                     disabled={updateCredentialsMutation.isPending}
                   >
                     {updateCredentialsMutation.isPending ? "Salvando..." : "Salvar Credenciais"}
