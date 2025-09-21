@@ -5,13 +5,13 @@
   "type": "module",
   "main": "server/index.js",
   "scripts": {
-    "install:all": "npm install --prefix . && npm install --prefix client && npm install --prefix admin",
+    "install:all": "npm install --prefix . && npm install --prefix client",
     "dev": "tsx server/index.ts",
     "dev:frontend": "cd client && npm run dev",
-    "build": "npm run build:server && npm run build:client && npm run build:admin",
+    "build": "npm run build:server && npm run build:client",
     "build:server": "tsc --project tsconfig.server.json",
     "build:client": "cd client && npm run build",
-    "build:admin": "cd admin && npm run build",
+    
     "start": "node dist/server/index.js",
     "heroku-postbuild": "npm run build",
     "heroku-prebuild": "npm run install:all",

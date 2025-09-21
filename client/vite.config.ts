@@ -13,7 +13,7 @@ export default defineConfig({
   
   // Configurações de servidor de desenvolvimento
   server: {
-    port: 5173,
+    port: 5000,
     host: '0.0.0.0',
     open: false,
     allowedHosts: true,
@@ -21,7 +21,7 @@ export default defineConfig({
     // Configurações de proxy para desenvolvimento
     proxy: {
       '/api': {
-        target: 'http://localhost:5000',
+        target: 'http://localhost:3000',
         changeOrigin: true,
         secure: false,
         timeout: 10000,
