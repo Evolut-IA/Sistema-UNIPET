@@ -1,0 +1,20 @@
+=====================================
+
+Query: select "id", "whatsapp", "email", "phone", "instagram_url", "facebook_url", "linkedin_url", "youtube_url", "cnpj", "business_hours", "our_story", "created_at", "updated_at", "privacy_policy", "terms_of_use", "address", "main_image", "network_image", "about_image", "main_image_url", "network_image_url", "about_image_url", "cores" from "site_settings" limit $1 -- params: [1]
+Query: select "id", "name", "price", "description", "features", "image", "button_text", "plan_type", "is_active", "display_order", "created_at", "billing_frequency", "base_price", "installment_price", "installment_count", "per_pet_billing", "pet_discounts", "payment_description", "available_payment_methods", "available_billing_options", "annual_price", "annual_installment_price", "annual_installment_count" from "plans" where "plans"."is_active" = $1 order by "plans"."display_order" asc -- params: [true]
+Query: select "id", "question", "answer", "display_order", "is_active", "created_at" from "faq_items" where "faq_items"."is_active" = $1 order by "faq_items"."display_order" asc -- params: [true]
+Query: select "id", "welcome_message", "placeholder_text", "chat_title", "button_icon", "bot_icon", "user_icon", "bot_icon_url", "user_icon_url", "chat_position", "chat_size", "is_enabled", "created_at", "updated_at" from "chat_settings" limit $1 -- params: [1]
+GET /api/site-settings 304 in 275ms :: {"id":"19c61b78-d8a3-4b26-a289-7b71e8785…
+GET /api/faq 304 in 677ms :: [{"id":"5cb21830-8d80-4ad0-9ef3-7117393dfb53","que…
+GET /api/plans 304 in 700ms :: [{"id":"ec994283-76de-4605-afa3-0670a8a0a475","n…
+✅ [CHAT] Chat settings retrieved: {
+  hasBotIcon: true,
+  hasUserIcon: true,
+  botIconUrl: <Buffer 89 50 4e 47 0d 0a 1a 0a 00 00 00 0d 49 48 44 52 00 00 00 40 00 00 00 2c 08 03 00 00 00 e2 81 4e cd 00 00 03 00 50 4c 54 45 fd fd fd f5 f4 f5 50 93 31 ... 3453 more bytes>,
+  userIconUrl: <Buffer 89 50 4e 47 0d 0a 1a 0a 00 00 00 0d 49 48 44 52 00 00 00 40 00 00 00 2c 08 03 00 00 00 e2 81 4e cd 00 00 03 00 50 4c 54 45 fd fd fd f5 f4 f5 50 93 31 ... 3453 more bytes>
+}
+GET /api/chat/settings 304 in 810ms :: {"id":"77d0d663-ecc3-48a8-8100-c6c6a39cd…
+Query: select "id", "whatsapp", "email", "phone", "instagram_url", "facebook_url", "linkedin_url", "youtube_url", "cnpj", "business_hours", "our_story", "created_at", "updated_at", "privacy_policy", "terms_of_use", "address", "main_image", "network_image", "about_image", "main_image_url", "network_image_url", "about_image_url", "cores" from "site_settings" limit $1 -- params: [1]
+GET /api/site-settings 304 in 262ms :: {"id":"19c61b78-d8a3-4b26-a289-7b71e8785…
+✅ [ADMIN-LOGIN] Admin authenticated successfully
+✅ [ADMIN-LOGIN] Admin authenticated successfully

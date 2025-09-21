@@ -85,8 +85,10 @@ const clearAuthCache = () => {
 
 export default function AuthGuard({ children }: AuthGuardProps) {
   const [, navigate] = useLocation();
-  const [showLoading, setShowLoading] = useState(false);
+  const [showLoading, setShowLoading] = useState(true);
+  const [retryCount, setRetryCount] = useState(0);
   const hasRedirected = useRef(false);
+  const authTimeoutRef = useRef<NodeJS.Timeout>();
 
   // Check memory cache first for instant response on subsequent navigations
   const getMemoryCachedAuth = (): AuthStatusResponse | null => {
@@ -107,17 +109,22 @@ export default function AuthGuard({ children }: AuthGuardProps) {
   // Get initial data from cache
   const initialData = getCachedAuthStatus() || getMemoryCachedAuth();
   
-  // Query para verificar autenticação com caching otimizado
-  const { data: authStatus, isLoading, error, isFetching } = useQuery<AuthStatusResponse>({
+  // Query para verificar autenticação com retry robusto
+  const { data: authStatus, isLoading, error, isFetching, refetch } = useQuery<AuthStatusResponse>({
     queryKey: ['/admin/api/auth/status'],
     queryFn: async () => {
+      console.log("🔍 [AUTH-GUARD] Verificando autenticação - tentativa", retryCount + 1);
+      
       const response = await fetch('/admin/api/auth/status', {
         credentials: 'include'
       });
+      
       if (!response.ok) {
-        throw new Error('Auth check failed');
+        throw new Error(`Auth check failed: ${response.status}`);
       }
+      
       const result = await response.json();
+      console.log("📋 [AUTH-GUARD] Resultado da autenticação:", result);
       
       // Cache the successful result
       if (result.authenticated) {
@@ -128,7 +135,11 @@ export default function AuthGuard({ children }: AuthGuardProps) {
       
       return result;
     },
-    retry: false,
+    retry: (failureCount, error) => {
+      console.log("⚠️ [AUTH-GUARD] Falha na verificação, tentativa", failureCount, "erro:", error);
+      return failureCount < 3; // Retry up to 3 times
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 3000), // Exponential backoff, max 3s
     staleTime: 2 * 60 * 1000, // 2 minutes - data is considered fresh for 2 minutes
     gcTime: 5 * 60 * 1000, // 5 minutes - keep in cache for 5 minutes
     refetchOnWindowFocus: false, // Don't refetch when window regains focus
@@ -137,32 +148,84 @@ export default function AuthGuard({ children }: AuthGuardProps) {
     placeholderData: initialData, // Use cached data as placeholder while fetching
   });
 
-  // Handle loading state - only show loading on initial check or when no cached data
+  // Handle loading state with intelligent timing
   useEffect(() => {
-    const shouldShowLoading = isLoading && !authStatus && isInitialAuthCheck;
-    setShowLoading(shouldShowLoading);
-    
-    if (!isLoading) {
-      isInitialAuthCheck = false;
+    // If we have cached data showing authentication, hide loading immediately
+    if (initialData?.authenticated) {
+      setShowLoading(false);
+      return;
     }
-  }, [isLoading, authStatus]);
+    
+    // Show loading during initial checks
+    if (isLoading || isFetching) {
+      setShowLoading(true);
+      return;
+    }
+    
+    // Hide loading when we have data
+    if (authStatus !== undefined) {
+      setShowLoading(false);
+    }
+  }, [isLoading, isFetching, authStatus, initialData]);
 
-  // Handle authentication status
+  // Handle authentication status with delayed redirect
   useEffect(() => {
+    // Clear any existing timeout
+    if (authTimeoutRef.current) {
+      clearTimeout(authTimeoutRef.current);
+    }
+    
     // Skip if still loading and we don't have any data
-    if (isLoading && !authStatus) return;
+    if ((isLoading || isFetching) && !authStatus) {
+      console.log("⏳ [AUTH-GUARD] Aguardando verificação de autenticação...");
+      return;
+    }
     
     // Prevent multiple redirects
     if (hasRedirected.current) return;
 
-    if (error || !authStatus?.authenticated) {
-      console.log("🚀 [AUTH-GUARD] Redirecionando para login - usuário não autenticado");
-      clearAuthCache(); // Clear any stale cache
-      hasRedirected.current = true;
-      window.location.href = "/admin/login";
+    // If we have authentication data and user is authenticated, we're good
+    if (authStatus?.authenticated) {
+      console.log("✅ [AUTH-GUARD] Usuário autenticado com sucesso");
+      setShowLoading(false);
       return;
     }
-  }, [authStatus, isLoading, error, navigate]);
+
+    // If we have definitive unauthenticated status or error after retries
+    if (error || (authStatus && !authStatus.authenticated)) {
+      console.log("❌ [AUTH-GUARD] Usuário não autenticado. Aguardando antes de redirecionar...");
+      
+      // Wait 2 seconds before redirecting to give session time to establish
+      authTimeoutRef.current = setTimeout(() => {
+        if (!hasRedirected.current) {
+          console.log("🚀 [AUTH-GUARD] Redirecionando para login após timeout");
+          clearAuthCache();
+          hasRedirected.current = true;
+          window.location.href = "/admin/login";
+        }
+      }, 2000);
+      
+      return;
+    }
+    
+    // If we still don't have definitive status, retry
+    if (!authStatus && retryCount < 2) {
+      console.log("🔄 [AUTH-GUARD] Status indefinido, tentando novamente...");
+      setTimeout(() => {
+        setRetryCount(prev => prev + 1);
+        refetch();
+      }, 1000);
+    }
+  }, [authStatus, isLoading, error, isFetching, retryCount, refetch]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (authTimeoutRef.current) {
+        clearTimeout(authTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Background indicator for when auth is being refetched (optional)
   const showBackgroundRefresh = isFetching && authStatus?.authenticated && !isLoading;

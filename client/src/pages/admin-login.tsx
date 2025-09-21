@@ -1,17 +1,15 @@
 import { useState } from "react";
-import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { Lock, User } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { adminLoginSchema } from "@shared/schema";
+import { adminLoginSchema } from "../../../shared/schema";
 import type { z } from "zod";
 import { useQueryClient } from "@tanstack/react-query";
 
 type AdminLoginFormData = z.infer<typeof adminLoginSchema>;
 
 export default function AdminLoginPage() {
-  const [, navigate] = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const queryClient = useQueryClient();
@@ -30,6 +28,8 @@ export default function AdminLoginPage() {
     setIsLoading(true);
 
     try {
+      console.log("🔐 [LOGIN] Iniciando login...");
+      
       const response = await fetch('/admin/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -40,36 +40,24 @@ export default function AdminLoginPage() {
       const result = await response.json();
 
       if (response.ok) {
-        // Invalidar cache de autenticação para forçar verificação atualizada
-        queryClient.invalidateQueries({ queryKey: ['/admin/api/auth/status'] });
+        console.log("✅ [LOGIN] Login successful, invalidating cache and redirecting...");
         
-        // Aguardar um momento para garantir que a sessão foi estabelecida e verificar autenticação
-        setTimeout(async () => {
-          try {
-            // Verificar se a autenticação está funcionando antes de redirecionar
-            const authResponse = await fetch('/admin/api/auth/status', {
-              credentials: 'include'
-            });
-            const authResult = await authResponse.json();
-            
-            if (authResult.authenticated) {
-              // Redirecionar para dashboard admin
-              navigate('/admin');
-            } else {
-              // Se ainda não autenticado, tentar novamente em mais alguns milissegundos
-              setTimeout(() => navigate('/admin'), 200);
-            }
-          } catch (error) {
-            console.error('Erro ao verificar autenticação:', error);
-            // Mesmo com erro, tentar redirecionar
-            navigate('/admin');
-          }
-        }, 100);
+        // Limpar qualquer cache de autenticação antigo
+        queryClient.invalidateQueries({ queryKey: ['/admin/api/auth/status'] });
+        queryClient.removeQueries({ queryKey: ['/admin/api/auth/status'] });
+        
+        // Aguardar 1 segundo para garantir que a sessão foi estabelecida completamente
+        setTimeout(() => {
+          console.log("🚀 [LOGIN] Redirecionando para /admin");
+          // Use window.location for a hard redirect to ensure clean state
+          window.location.href = '/admin';
+        }, 1000);
       } else {
+        console.error("❌ [LOGIN] Login failed:", result);
         setSubmitError(result.error || 'Erro no login');
       }
     } catch (error) {
-      console.error('Admin login error:', error);
+      console.error('❌ [LOGIN] Network/parsing error:', error);
       setSubmitError('Erro de conexão. Tente novamente.');
     } finally {
       setIsLoading(false);
