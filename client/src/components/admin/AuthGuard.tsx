@@ -48,7 +48,8 @@ export default function AuthGuard({ children }: AuthGuardProps) {
     if (isLoading) return;
 
     if (error || !authStatus?.authenticated) {
-      navigate("/admin/login");
+      console.log("🚀 [AUTH-GUARD] Redirecionando para login - usuário não autenticado");
+      window.location.href = "/admin/login";
       return;
     }
   }, [authStatus, isLoading, error, navigate]);
