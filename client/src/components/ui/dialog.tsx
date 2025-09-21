@@ -119,7 +119,7 @@ const DialogContent = React.forwardRef<
         {children}
         {!hideCloseButton && (
           <DialogPrimitive.Close className={cn(
-            "absolute rounded-sm opacity-70 transition-opacity hover:opacity-100",
+            "absolute rounded-sm opacity-70",
             "disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground",
             // Responsive close button positioning
             isMobile ? "right-3 top-3" : "right-4 top-4"
