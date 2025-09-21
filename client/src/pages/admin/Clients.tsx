@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/admin/ui/card";
 import { Button } from "@/components/admin/ui/button";
@@ -38,7 +38,7 @@ const AddPetIcon = ({ className }: { className?: string }) => (
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { apiRequest, getQueryOptions } from "@/lib/admin/queryClient";
-import { createSmartInvalidation } from "@/lib/admin/cacheUtils";
+import { createSmartInvalidation, createCacheManager } from "@/lib/admin/cacheUtils";
 import { useToast } from "@/hooks/use-toast";
 import { ConfirmDialog } from "@/components/admin/ui/confirm-dialog";
 import { useConfirmDialog } from "@/hooks/admin/use-confirm-dialog";
@@ -63,6 +63,7 @@ export default function Clients() {
   const pageSize = 10;
   const queryClient = useQueryClient();
   const smartCache = createSmartInvalidation(queryClient);
+  const cacheManager = createCacheManager(queryClient);
   const { toast } = useToast();
   const confirmDialog = useConfirmDialog();
   const passwordDialog = usePasswordDialog();
@@ -71,6 +72,34 @@ export default function Clients() {
     queryKey: ["/admin/api/clients"],
     ...getQueryOptions('clients'),
   });
+
+  // Calculate filtered and paginated clients first
+  const filteredClients = searchQuery.length > 2 ? searchResults : clients;
+  const totalClients = filteredClients.length;
+  const totalPages = Math.ceil(totalClients / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const displayClients = filteredClients.slice(startIndex, endIndex);
+
+  // Prefetch pets data for currently displayed clients
+  useEffect(() => {
+    if (clients.length > 0 && !isLoading && displayClients.length > 0) {
+      // Small delay to let the clients UI render first
+      const prefetchTimer = setTimeout(() => {
+        // Get the client IDs for the current page
+        const clientIds = displayClients.map(client => client.id);
+        
+        console.log(`📋 [PREFETCH] Prefetching pets for ${clientIds.length} visible clients`);
+        
+        // Prefetch pets data for visible clients (limit concurrent requests)
+        cacheManager.prefetchClientsPetsData(clientIds, 2).catch(error => {
+          console.warn("⚠️ [PREFETCH] Client pets prefetch failed:", error);
+        });
+      }, 800); // 800ms delay to prioritize current page loading
+
+      return () => clearTimeout(prefetchTimer);
+    }
+  }, [clients, currentPage, searchQuery, isLoading, cacheManager]);
 
   // Query para buscar pets do cliente selecionado
   const { data: clientPets = [], isLoading: petsLoading } = useQuery<Pet[]>({
@@ -120,13 +149,6 @@ export default function Clients() {
       });
     },
   });
-
-  const filteredClients = searchQuery.length > 2 ? searchResults : clients;
-  const totalClients = filteredClients.length;
-  const totalPages = Math.ceil(totalClients / pageSize);
-  const startIndex = (currentPage - 1) * pageSize;
-  const endIndex = startIndex + pageSize;
-  const displayClients = filteredClients.slice(startIndex, endIndex);
 
 
   const handleDelete = (id: string, clientName: string) => {

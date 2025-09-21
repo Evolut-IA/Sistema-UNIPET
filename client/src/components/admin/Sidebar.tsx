@@ -1,4 +1,5 @@
 import { Link, useLocation } from "wouter";
+import { useQueryClient } from "@tanstack/react-query";
 import { cn } from "@/lib/admin/utils";
 import {
   LayoutDashboard,
@@ -13,6 +14,7 @@ import {
   Stethoscope,
   ClipboardList
 } from "lucide-react";
+import { createCacheManager } from "@/lib/admin/cacheUtils";
 
 const navigation = [
   {
@@ -44,6 +46,28 @@ const navigation = [
 
 export default function Sidebar() {
   const [location] = useLocation();
+  const queryClient = useQueryClient();
+  const cacheManager = createCacheManager(queryClient);
+
+  // Map navigation paths to prefetch page types
+  const getPageTypeFromPath = (href: string): 'clients' | 'guides' | 'plans' | 'dashboard' | null => {
+    if (href === '/') return 'dashboard';
+    if (href.startsWith('/clientes')) return 'clients';
+    if (href.startsWith('/guias')) return 'guides';
+    if (href.startsWith('/planos')) return 'plans';
+    return null;
+  };
+
+  // Hover handler for navigation items to trigger prefetching
+  const handleNavigationHover = (href: string) => {
+    const pageType = getPageTypeFromPath(href);
+    if (pageType && pageType !== getPageTypeFromPath(location)) {
+      // Only prefetch if not already on that page
+      cacheManager.prefetchPageData(pageType).catch(error => {
+        console.warn(`⚠️ [PREFETCH] Hover prefetch failed for ${pageType}:`, error);
+      });
+    }
+  };
 
   return (
     <div className="flex flex-col h-full bg-[var(--bg-teal)] border-r border-[var(--border-teal-light)]">
@@ -80,6 +104,7 @@ export default function Sidebar() {
                         : "text-[var(--text-light)] opacity-70"
                     )}
                     data-testid={`link-${item.name.toLowerCase().replace(/\s+/g, '-')}`}
+                    onMouseEnter={() => handleNavigationHover(item.href)}
                   >
                     <item.icon className="h-5 w-5 mr-3" />
                     {item.name}

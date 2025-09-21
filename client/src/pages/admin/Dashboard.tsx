@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/admin/ui/card";
 import { Skeleton } from "@/components/admin/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/admin/ui/alert";
@@ -14,6 +14,7 @@ import {
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
 import { CalendarDate } from "@internationalized/date";
 import { getDateRangeParams } from "@/lib/admin/date-utils";
+import { createCacheManager } from "@/lib/admin/cacheUtils";
 
 // Type definitions for dashboard data
 type PlanRevenue = {
@@ -33,6 +34,9 @@ export default function Dashboard() {
   // LOG CRÍTICO: Verificar se Dashboard está sendo executado SEM passar pelo AuthGuard
   console.log("🚨 [DASHBOARD] Component loaded - THIS SHOULD NOT HAPPEN WITHOUT AUTH!");
   
+  const queryClient = useQueryClient();
+  const cacheManager = createCacheManager(queryClient);
+  
   const [dateFilter, setDateFilter] = useState<{
     startDate: CalendarDate | null;
     endDate: CalendarDate | null;
@@ -51,6 +55,26 @@ export default function Dashboard() {
 
     return () => clearTimeout(timer);
   }, [dateFilter]);
+
+  // Background prefetching when Dashboard loads
+  useEffect(() => {
+    // Small delay to ensure dashboard data loads first
+    const prefetchTimer = setTimeout(() => {
+      console.log("📋 [PREFETCH] Starting background prefetch from Dashboard");
+      
+      // Prefetch main pages data in background
+      cacheManager.prefetchDashboardData().catch(error => {
+        console.warn("⚠️ [PREFETCH] Dashboard prefetch failed:", error);
+      });
+
+      // Smart prefetch based on being on dashboard
+      cacheManager.smartPrefetch('dashboard').catch(error => {
+        console.warn("⚠️ [PREFETCH] Smart prefetch failed:", error);
+      });
+    }, 1500); // 1.5 second delay to let dashboard load first
+
+    return () => clearTimeout(prefetchTimer);
+  }, []); // Only run once when component mounts
 
   const handleDateRangeChange = (startDate: CalendarDate | null, endDate: CalendarDate | null) => {
     setDateFilter({ startDate, endDate });

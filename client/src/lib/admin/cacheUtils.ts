@@ -265,6 +265,228 @@ export class CacheManager {
         break;
     }
   }
+
+  // Comprehensive prefetching for admin dashboard navigation
+  async prefetchDashboardData() {
+    const prefetchPromises = [];
+    
+    // Prefetch main entity lists with appropriate stale times
+    prefetchPromises.push(
+      this.queryClient.prefetchQuery({
+        queryKey: ["/admin/api/clients"],
+        staleTime: 5 * 60 * 1000, // 5 minutes - frequently updated
+      })
+    );
+    
+    prefetchPromises.push(
+      this.queryClient.prefetchQuery({
+        queryKey: ["/admin/api/guides"],
+        staleTime: 10 * 60 * 1000, // 10 minutes
+      })
+    );
+    
+    prefetchPromises.push(
+      this.queryClient.prefetchQuery({
+        queryKey: ["/admin/api/guides/with-network-units"],
+        staleTime: 10 * 60 * 1000, // 10 minutes
+      })
+    );
+    
+    prefetchPromises.push(
+      this.queryClient.prefetchQuery({
+        queryKey: ["/admin/api/plans"],
+        staleTime: 15 * 60 * 1000, // 15 minutes - less frequently updated
+      })
+    );
+    
+    prefetchPromises.push(
+      this.queryClient.prefetchQuery({
+        queryKey: ["/admin/api/plans", "active"],
+        staleTime: 15 * 60 * 1000, // 15 minutes
+      })
+    );
+
+    try {
+      await Promise.all(prefetchPromises);
+      console.log("📋 [PREFETCH] Dashboard data prefetched successfully");
+    } catch (error) {
+      console.warn("⚠️ [PREFETCH] Some dashboard data failed to prefetch:", error);
+    }
+  }
+
+  // Prefetch specific page data when hovering over navigation
+  async prefetchPageData(pageType: 'clients' | 'guides' | 'plans' | 'dashboard') {
+    const prefetchPromises = [];
+    
+    switch (pageType) {
+      case 'clients':
+        // Prefetch clients and some sample pets data
+        prefetchPromises.push(
+          this.queryClient.prefetchQuery({
+            queryKey: ["/admin/api/clients"],
+            staleTime: 5 * 60 * 1000,
+          })
+        );
+        break;
+        
+      case 'guides':
+        // Prefetch guides with network units
+        prefetchPromises.push(
+          this.queryClient.prefetchQuery({
+            queryKey: ["/admin/api/guides"],
+            staleTime: 10 * 60 * 1000,
+          })
+        );
+        prefetchPromises.push(
+          this.queryClient.prefetchQuery({
+            queryKey: ["/admin/api/guides/with-network-units"],
+            staleTime: 10 * 60 * 1000,
+          })
+        );
+        break;
+        
+      case 'plans':
+        // Prefetch plans data
+        prefetchPromises.push(
+          this.queryClient.prefetchQuery({
+            queryKey: ["/admin/api/plans"],
+            staleTime: 15 * 60 * 1000,
+          })
+        );
+        prefetchPromises.push(
+          this.queryClient.prefetchQuery({
+            queryKey: ["/admin/api/plans", "active"],
+            staleTime: 15 * 60 * 1000,
+          })
+        );
+        break;
+        
+      case 'dashboard':
+        // Prefetch dashboard aggregated data
+        prefetchPromises.push(
+          this.queryClient.prefetchQuery({
+            queryKey: ["/admin/api/dashboard/all"],
+            staleTime: 2 * 60 * 1000, // 2 minutes - dashboard data changes frequently
+          })
+        );
+        break;
+    }
+
+    try {
+      await Promise.all(prefetchPromises);
+      console.log(`📋 [PREFETCH] ${pageType} data prefetched successfully`);
+    } catch (error) {
+      console.warn(`⚠️ [PREFETCH] ${pageType} data failed to prefetch:`, error);
+    }
+  }
+
+  // Prefetch related data for clients (their pets) in bulk
+  async prefetchClientsPetsData(clientIds: string[], maxConcurrent: number = 3) {
+    if (!clientIds.length) return;
+
+    // Limit concurrent requests to avoid overwhelming the server
+    const batches = [];
+    for (let i = 0; i < clientIds.length; i += maxConcurrent) {
+      batches.push(clientIds.slice(i, i + maxConcurrent));
+    }
+
+    for (const batch of batches) {
+      const batchPromises = batch.map(clientId =>
+        this.queryClient.prefetchQuery({
+          queryKey: ["/admin/api/clients", clientId, "pets"],
+          staleTime: 10 * 60 * 1000, // 10 minutes
+        }).catch(error => {
+          console.warn(`⚠️ [PREFETCH] Failed to prefetch pets for client ${clientId}:`, error);
+        })
+      );
+
+      try {
+        await Promise.all(batchPromises);
+      } catch (error) {
+        console.warn("⚠️ [PREFETCH] Some client pets data failed to prefetch:", error);
+      }
+    }
+
+    console.log(`📋 [PREFETCH] Pets data prefetched for ${clientIds.length} clients`);
+  }
+
+  // Smart prefetching based on user behavior and data relationships
+  async smartPrefetch(currentPage: string, userBehavior?: {
+    recentlyVisited?: string[];
+    commonPaths?: string[];
+  }) {
+    const prefetchPromises = [];
+
+    // Always prefetch dashboard data as it's commonly accessed
+    if (currentPage !== 'dashboard') {
+      prefetchPromises.push(
+        this.queryClient.prefetchQuery({
+          queryKey: ["/admin/api/dashboard/all"],
+          staleTime: 2 * 60 * 1000,
+        })
+      );
+    }
+
+    // Prefetch based on current page context
+    switch (currentPage) {
+      case 'dashboard':
+        // From dashboard, users commonly go to clients, guides, or plans
+        prefetchPromises.push(this.prefetchDashboardData());
+        break;
+        
+      case 'clients':
+        // From clients page, users might check specific client pets or go to guides/plans
+        prefetchPromises.push(
+          this.queryClient.prefetchQuery({
+            queryKey: ["/admin/api/guides"],
+            staleTime: 10 * 60 * 1000,
+          })
+        );
+        prefetchPromises.push(
+          this.queryClient.prefetchQuery({
+            queryKey: ["/admin/api/plans", "active"],
+            staleTime: 15 * 60 * 1000,
+          })
+        );
+        break;
+        
+      case 'guides':
+        // From guides page, users might need client data or plan information
+        prefetchPromises.push(
+          this.queryClient.prefetchQuery({
+            queryKey: ["/admin/api/clients"],
+            staleTime: 5 * 60 * 1000,
+          })
+        );
+        break;
+        
+      case 'plans':
+        // From plans page, users might check procedures or client assignments
+        prefetchPromises.push(
+          this.queryClient.prefetchQuery({
+            queryKey: ["/admin/api/procedures"],
+            staleTime: 15 * 60 * 1000,
+          })
+        );
+        break;
+    }
+
+    // Prefetch recently visited pages if provided
+    if (userBehavior?.recentlyVisited) {
+      for (const page of userBehavior.recentlyVisited.slice(0, 2)) { // Limit to 2 most recent
+        if (page !== currentPage) {
+          prefetchPromises.push(this.prefetchPageData(page as any));
+        }
+      }
+    }
+
+    try {
+      await Promise.all(prefetchPromises.filter(Boolean));
+      console.log(`📋 [PREFETCH] Smart prefetch completed for ${currentPage}`);
+    } catch (error) {
+      console.warn("⚠️ [PREFETCH] Smart prefetch encountered errors:", error);
+    }
+  }
 }
 
 // Export a factory function to create cache manager instances
@@ -283,5 +505,9 @@ export const createSmartInvalidation = (queryClient: QueryClient) => {
     updateClientOptimistically: cacheManager.updateClientOptimistically.bind(cacheManager),
     updatePlanOptimistically: cacheManager.updatePlanOptimistically.bind(cacheManager),
     prefetchRelatedData: cacheManager.prefetchRelatedData.bind(cacheManager),
+    prefetchDashboardData: cacheManager.prefetchDashboardData.bind(cacheManager),
+    prefetchPageData: cacheManager.prefetchPageData.bind(cacheManager),
+    prefetchClientsPetsData: cacheManager.prefetchClientsPetsData.bind(cacheManager),
+    smartPrefetch: cacheManager.smartPrefetch.bind(cacheManager),
   };
 };
