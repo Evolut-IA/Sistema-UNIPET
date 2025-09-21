@@ -56,14 +56,19 @@ export function useSiteSettings() {
     queryFn: async () => {
       try {
         console.log('🔍 [useSiteSettings] Fetching site settings...');
-        const res = await apiRequest("GET", "/api/site-settings");
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-        const data = await res.json();
+        // apiRequest já retorna os dados processados (já fez .json() internamente)
+        const data = await apiRequest("GET", "/api/site-settings");
+        console.log('✅ [useSiteSettings] Successfully fetched site settings:', data);
         return data;
       } catch (error) {
-        console.warn('❌ [useSiteSettings] Failed to fetch site settings:', error);
+        // Capturar mais detalhes do erro
+        const errorInfo = {
+          message: error instanceof Error ? error.message : 'Unknown error',
+          name: error instanceof Error ? error.name : 'Unknown',
+          stack: error instanceof Error ? error.stack : undefined,
+          originalError: error
+        };
+        console.warn('❌ [useSiteSettings] Failed to fetch site settings:', errorInfo);
         throw error; // Permitir que o React Query gerencie o erro adequadamente
       }
     },
@@ -74,12 +79,6 @@ export function useSiteSettings() {
     refetchOnMount: false, // Evitar buscar sempre no mount
     refetchOnWindowFocus: false, // Evitar buscar no foco da janela
     networkMode: 'always', // Sempre tentar buscar mesmo offline
-    // Limpar cache inicial para forçar busca fresca
-    initialData: () => {
-      // Limpar cache antigo que pode estar corrompido
-      localStorage.removeItem('site-settings-cache');
-      return undefined;
-    },
   });
 }
 
@@ -117,39 +116,6 @@ export const defaultSettings: Partial<SiteSettings> = {
 export function useSiteSettingsWithDefaults() {
   const { data: settings, isLoading, error } = useSiteSettings();
 
-  // Função para tentar cachear de forma segura
-  const safeCacheSettings = (settings: SiteSettings) => {
-    try {
-      // Cachear apenas dados essenciais, não as imagens bytea para evitar QuotaExceededError
-      const settingsToCache = {
-        ...settings,
-        mainImage: null,    // Não cachear imagens bytea no localStorage
-        networkImage: null,
-        aboutImage: null
-      };
-      localStorage.setItem('site-settings-cache', JSON.stringify(settingsToCache));
-    } catch (error) {
-      // Se falhar (QuotaExceededError), limpar cache antigo e tentar novamente
-      console.warn('Failed to cache site settings:', error);
-      try {
-        localStorage.removeItem('site-settings-cache');
-        localStorage.removeItem('plans-cache'); // Limpar outros caches grandes
-        localStorage.removeItem('network-units-cache');
-        // Tentar cachear novamente apenas dados básicos
-        const basicSettings = {
-          whatsapp: settings.whatsapp,
-          email: settings.email,
-          phone: settings.phone,
-          address: settings.address
-        };
-        localStorage.setItem('site-settings-cache', JSON.stringify(basicSettings));
-      } catch (retryError) {
-        console.warn('Failed to cache site settings after cleanup:', retryError);
-        // Se ainda falhar, apenas ignora o cache
-      }
-    }
-  };
-
   // Type assertion para garantir que as propriedades sejam reconhecidas
   const typedSettings = settings as SiteSettings | undefined;
 
@@ -157,13 +123,6 @@ export function useSiteSettingsWithDefaults() {
   if (!typedSettings && !isLoading && error) {
     console.log('❌ Site settings error:', error);
   }
-
-  // Cache dados quando carregados (excluindo imagens bytea para evitar QuotaExceededError)
-  React.useEffect(() => {
-    if (typedSettings && !isLoading) {
-      safeCacheSettings(typedSettings);
-    }
-  }, [typedSettings, isLoading]);
 
   // Otimizar loading - usar defaults mais rapidamente quando dados não estão disponíveis
   const settingsWithDefaults = !typedSettings ? {
