@@ -50,7 +50,7 @@ const DateFieldComponent = React.forwardRef<
             segment={segment}
             className={cn(
               "inline-block px-1 py-1 text-sm tabular-nums text-foreground",
-              "focus:bg-primary focus:text-primary-foreground focus:outline-none",
+              "",
               "placeholder-shown:text-muted-foreground",
               segment.isPlaceholder && "text-muted-foreground",
               isDisabled && "opacity-50 cursor-not-allowed"

@@ -156,7 +156,7 @@ export default function Network() {
                       placeholder="Buscar..."
                       value={searchText}
                       onChange={(e) => setSearchText(e.target.value)}
-                      className="w-full pl-10 rounded-lg border text-sm focus:outline-none"
+                      className="w-full pl-10 rounded-lg border text-sm"
                       style={{
                         borderColor: 'var(--border-gray)',
                         background: 'var(--bg-cream-lighter)',
@@ -171,7 +171,7 @@ export default function Network() {
                   <div className="contact-form-field">
                     <Select value={selectedCity} onValueChange={setSelectedCity}>
                       <SelectTrigger 
-                        className="w-full p-3 rounded-lg border text-sm focus:outline-none"
+                        className="w-full p-3 rounded-lg border text-sm"
                         style={{
                           borderColor: 'var(--border-gray)',
                           background: 'white'
@@ -195,7 +195,7 @@ export default function Network() {
                   <div className="contact-form-field">
                     <Select value={selectedService} onValueChange={setSelectedService}>
                       <SelectTrigger 
-                        className="w-full p-3 rounded-lg border text-sm focus:outline-none"
+                        className="w-full p-3 rounded-lg border text-sm"
                         style={{
                           borderColor: 'var(--border-gray)',
                           background: 'white'
@@ -218,7 +218,7 @@ export default function Network() {
 
                 {/* Clear Filters and Results Count */}
                 <div className="flex justify-between items-center">
-                  <p className="text-sm text-[var(--text-dark-secondary)]">
+                  <p className="text-smtext-[var(--text-dark-secondary)]">
                     {isLoading ? "Carregando..." : `${filteredUnits.length} unidade${filteredUnits.length !== 1 ? 's' : ''} encontrada${filteredUnits.length !== 1 ? 's' : ''}`}
                   </p>
                   {(searchText || selectedCity !== "all" || selectedService !== "all") && (
@@ -280,7 +280,7 @@ export default function Network() {
                           </div>
                           <div className="flex items-center space-x-3">
                             <Phone className="h-4 w-4 text-[var(--icon-teal)] flex-shrink-0" />
-                            <span className="text-[var(--text-dark-primary)] text-sm font-medium">{unit.phone}</span>
+                            <span className="text-[var(--text-dark-primary)] text-smfont-medium">{unit.phone}</span>
                           </div>
                         </div>
 

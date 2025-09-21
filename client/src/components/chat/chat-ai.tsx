@@ -450,7 +450,7 @@ export default function ChatAI() {
               onKeyPress={handleKeyPress}
               placeholder={settings.placeholderText}
               disabled={isLoading}
-              className="rounded-lg border-[var(--border-teal-light)] transition-all duration-200 bg-[var(--bg-cream-light)] focus:outline-none focus:ring-0 focus:border-[var(--border-teal-light)] focus:border-transparent"
+              className="rounded-lg border-[var(--border-teal-light)] transition-all duration-200 bg-[var(--bg-cream-light)]"
             />
           </div>
           {inputValue.trim() && (

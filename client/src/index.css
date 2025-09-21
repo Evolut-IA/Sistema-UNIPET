@@ -51,27 +51,6 @@
   }
   
   /* Foco acessível usando sistema de rings do Tailwind */
-  *:focus {
-    outline: 2px solid transparent;
-    outline-offset: 2px;
-  }
-  
-  *:focus-visible {
-    outline: 2px solid rgb(var(--ring));
-    outline-offset: 2px;
-  }
-  
-  
-  input[type="month"]:focus,
-  input[type="week"]:focus,
-  input[type="color"]:focus,
-  input[type="file"]:focus {
-    outline: none !important;
-    outline-width: 0 !important;
-    outline-style: none !important;
-    box-shadow: none !important;
-    border-color: var(--border-gray) !important;
-  }
   
   /* Remove webkit default focus styles */
   input::-webkit-outer-spin-button,
@@ -94,14 +73,6 @@
   
   
   /* Remove contorno de elementos com classe accordion */
-  .accordion-trigger:focus,
-  .accordion-content:focus,
-  .accordion-item:focus,
-  [class*="accordion"]:focus,
-  [class*="Accordion"]:focus,
-  [class*="collapsible"]:focus,
-  [class*="Collapsible"]:focus {
-    outline: none !important;
     outline-width: 0 !important;
     outline-color: transparent !important;
     outline-style: none !important;

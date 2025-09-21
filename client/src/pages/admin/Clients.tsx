@@ -324,7 +324,7 @@ export default function Clients() {
                   key={col}
                   checked={visibleColumns.includes(col)}
                   onCheckedChange={() => toggleColumn(col)}
-                  className="data-[state=checked]:bg-transparent focus:bg-muted/50"
+                  className="data-[state=checked]:bg-transparent"
                 >
                   {col}
                 </DropdownMenuCheckboxItem>

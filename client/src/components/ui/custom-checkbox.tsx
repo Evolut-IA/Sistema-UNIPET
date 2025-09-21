@@ -54,7 +54,7 @@ const CustomCheckbox = React.forwardRef<HTMLInputElement, CustomCheckboxProps>(
           <div 
             className={cn(
               "custom-checkbox-input h-4 w-4 rounded-sm border flex items-center justify-center transition-all duration-200 cursor-pointer",
-              "peer-focus:ring-2 peer-focus:ring-[#22c55e]/20",
+              "",
               "peer-disabled:cursor-not-allowed peer-disabled:opacity-50",
               className
             )}

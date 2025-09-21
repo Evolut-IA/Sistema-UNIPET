@@ -157,12 +157,6 @@
   box-shadow: none !important;
 }
 
-*:focus:not([role="dialog"]):not([data-radix-dialog-content]):not([data-radix-alert-dialog-content]):not([data-radix-sheet-content]),
-*:focus-visible:not([role="dialog"]):not([data-radix-dialog-content]):not([data-radix-alert-dialog-content]):not([data-radix-sheet-content]),
-*:focus-within:not([role="dialog"]):not([data-radix-dialog-content]):not([data-radix-alert-dialog-content]):not([data-radix-sheet-content]) {
-  outline: none !important;
-  box-shadow: none !important;
-}
 
 
 *:active:not([role="dialog"]):not([data-radix-dialog-content]):not([data-radix-alert-dialog-content]):not([data-radix-sheet-content]) {
@@ -208,19 +202,6 @@ span, p, h1, h2, h3, h4, h5, h6, img, svg {
 [data-radix-dropdown-menu-content] *:hover,
 [data-radix-dropdown-menu-content] *:focus,
 [data-radix-dropdown-menu-content] *:focus-visible,
-[data-radix-dropdown-menu-content] *:active,
-[data-radix-dropdown-menu-content] *:focus-within {
-  background-color: transparent !important;
-  background: transparent !important;
-  background-image: none !important;
-}
-
-/* Sobrescrever variáveis CSS do tema */
-[data-radix-dropdown-menu-content] {
-  --accent: transparent !important;
-  --accent-foreground: inherit !important;
-}
-
 /* Bloquear qualquer classe do Tailwind que possa adicionar background */
 [data-radix-dropdown-menu-content] .bg-accent,
 [data-radix-dropdown-menu-content] .focus\:bg-accent,
@@ -366,30 +347,6 @@ img:focus, svg:focus {
   outline: none !important;
   box-shadow: none !important;
 }
-
-*:focus-within {
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-/* Utility class to hide scrollbars */
-.scrollbar-hide {
-  -ms-overflow-style: none;  /* Internet Explorer 10+ */
-  scrollbar-width: none;  /* Firefox */
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;  /* Safari and Chrome */
-}
-
-/* Force transparent background for checkbox components */
-.custom-checkbox-wrapper,
-.custom-checkbox-wrapper *,
-.mb-2:has(.custom-checkbox-wrapper),
-.mb-2:has(.custom-checkbox-wrapper) * {
-  background: transparent !important;
-  background-color: transparent !important;
-  background-image: none !important;
   box-shadow: none !important;
 }
 

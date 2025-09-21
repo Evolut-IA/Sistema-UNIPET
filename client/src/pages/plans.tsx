@@ -129,7 +129,7 @@ export default function Plans() {
           <p className="text-lg mb-6">Estamos preparando os melhores planos para seu pet. Volte em breve!</p>
           <button 
             onClick={() => window.location.reload()} 
-            className="bg-[var(--bg-gold)] text-[var(--text-teal)] px-6 py-3 rounded-lg font-semibold hover:!bg-[var(--btn-cotacao-gratuita-hover)] active:!bg-[var(--btn-cotacao-gratuita-hover)] focus:!bg-[var(--btn-cotacao-gratuita-hover)] transition-colors"
+            className="bg-[var(--bg-gold)] text-[var(--text-teal)] px-6 py-3 rounded-lg font-semibold hover:!bg-[var(--btn-cotacao-gratuita-hover)] active:!bg-[var(--btn-cotacao-gratuita-hover)] transition-colors"
           >
             Atualizar Página
           </button>

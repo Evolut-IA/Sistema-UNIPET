@@ -65,7 +65,7 @@ export default function Header() {
               <div key={item.name} className="relative flex flex-col items-center">
                 <Button
                   variant="ghost"
-                  className={`text-lg px-4 py-2 rounded-lg transition-all duration-200 hover:bg-transparent focus:bg-transparent active:bg-transparent ${
+                  className={`text-lg px-4 py-2 rounded-lg transition-all duration-200 hover:bg-transparent active:bg-transparent ${
                     location === item.href ? "font-medium" : ""
                   }`}
                   style={{color: 'var(--text-light)'}}
@@ -91,7 +91,7 @@ export default function Header() {
             {/* Menu Toggle Button */}
                                       <motion.button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="relative z-50 p-3 focus:outline-none"
+                className="relative z-50 p-3"
                 whileTap={{ scale: 0.95 }}
                 aria-label="Toggle menu"
               >

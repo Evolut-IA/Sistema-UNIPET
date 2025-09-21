@@ -47,10 +47,6 @@ input:-webkit-autofill:active {
 }
 
 /* Prevenir mudanças de cor ao colar texto */
-input:focus-visible, textarea:focus-visible, select:focus-visible {
-  background-color: var(--input) !important;
-  color: var(--input-foreground) !important;
-}
 
 /* Garantir que o background não mude em nenhum estado */
 input[type="text"], input[type="email"], input[type="password"], input[type="number"], 
