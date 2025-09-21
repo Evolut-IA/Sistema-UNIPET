@@ -49,21 +49,21 @@ export default function AuthGuard({ children }: AuthGuardProps) {
     // Se houver erro na verificação, tratar como não autenticado
     if (error) {
       console.error("❌ [AUTH-GUARD] Authentication check failed:", error);
-      navigate("/login");
+      navigate("/admin/login");
       return;
     }
 
     // Se não há dados de auth status, tratar como não autenticado
     if (!authStatus) {
-      console.log("🔒 [AUTH-GUARD] No auth status data, redirecting to login");
-      navigate("/login");
+      console.log("🔒 [AUTH-GUARD] No auth status data, redirecting to admin login");
+      navigate("/admin/login");
       return;
     }
 
     // Se obtivemos uma resposta e não está autenticado, redirecionar para login
     if (!authStatus.authenticated) {
-      console.log("🔒 [AUTH-GUARD] Not authenticated, redirecting to login");
-      navigate("/login");
+      console.log("🔒 [AUTH-GUARD] Not authenticated, redirecting to admin login");
+      navigate("/admin/login");
       return;
     }
 
