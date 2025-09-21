@@ -29,7 +29,11 @@
   
   /* Tokens de bordas e inputs */
   --border: 229 231 235; /* #e5e7eb (border-gray) */
-  --input: 229 231 235; /* #e5e7eb (border-gray) */
+  --input: 226 226 226; /* #e2e2e2 (dropdown background) */
+  
+  /* Tokens de popover */
+  --popover: 226 226 226; /* #e2e2e2 (dropdown background) */
+  --popover-foreground: 48 48 48; /* #303030 (text-dark-primary) */
   
   /* Tokens de foco/rings */
   --ring: 58 155 157; /* #3a9b9d (border-teal) */
