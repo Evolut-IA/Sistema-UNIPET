@@ -21,7 +21,8 @@ import {
 } from "@/components/admin/ui/dropdown-menu";
 import { useLocation } from "wouter";
 import { Plus, Search, Edit, Trash2, CreditCard, MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
-import { apiRequest } from "@/lib/admin/queryClient";
+import { apiRequest, getQueryOptions } from "@/lib/admin/queryClient";
+import { createSmartInvalidation } from "@/lib/admin/cacheUtils";
 import { useToast } from "@/hooks/use-toast";
 import { ConfirmDialog } from "@/components/admin/ui/confirm-dialog";
 import { useConfirmDialog } from "@/hooks/admin/use-confirm-dialog";
@@ -46,26 +47,43 @@ export default function Plans() {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
   const queryClient = useQueryClient();
+  const smartCache = createSmartInvalidation(queryClient);
   const { toast } = useToast();
   const confirmDialog = useConfirmDialog();
   const passwordDialog = usePasswordDialog();
 
   const { data: plans, isLoading } = useQuery<Plan[]>({
     queryKey: ["/admin/api/plans"],
+    ...getQueryOptions('plans'),
   });
 
   const deletePlanMutation = useMutation({
     mutationFn: async (id: string) => {
       await apiRequest("DELETE", `/admin/api/plans/${id}`);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/admin/api/plans"] });
+    onMutate: async (id: string) => {
+      // Optimistically remove plan from cache
+      await queryClient.cancelQueries({ queryKey: ["/admin/api/plans"] });
+      const previousPlans = queryClient.getQueryData(["/admin/api/plans"]);
+      
+      queryClient.setQueryData(["/admin/api/plans"], (old: any[]) => {
+        return old?.filter(plan => plan.id !== id) || [];
+      });
+      
+      return { previousPlans };
+    },
+    onSuccess: (_, id) => {
+      smartCache.invalidatePlanData(id);
       toast({
         title: "Plano removido",
         description: "Plano foi removido com sucesso.",
       });
     },
-    onError: () => {
+    onError: (_, __, context) => {
+      // Restore previous data on error
+      if (context?.previousPlans) {
+        queryClient.setQueryData(["/admin/api/plans"], context.previousPlans);
+      }
       toast({
         title: "Erro",
         description: "Falha ao remover plano.",
@@ -78,14 +96,27 @@ export default function Plans() {
     mutationFn: async ({ id, isActive }: { id: string; isActive: boolean }) => {
       await apiRequest("PUT", `/admin/api/plans/${id}`, { isActive });
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/admin/api/plans"] });
+    onMutate: async ({ id, isActive }: { id: string; isActive: boolean }) => {
+      // Optimistically update plan status
+      await queryClient.cancelQueries({ queryKey: ["/admin/api/plans"] });
+      const previousPlans = queryClient.getQueryData(["/admin/api/plans"]);
+      
+      smartCache.updatePlanOptimistically(id, { isActive });
+      
+      return { previousPlans };
+    },
+    onSuccess: (_, { id }) => {
+      smartCache.invalidatePlanData(id);
       toast({
         title: "Status atualizado",
         description: "Status do plano foi atualizado.",
       });
     },
-    onError: () => {
+    onError: (_, __, context) => {
+      // Restore previous data on error
+      if (context?.previousPlans) {
+        queryClient.setQueryData(["/admin/api/plans"], context.previousPlans);
+      }
       toast({
         title: "Erro",
         description: "Falha ao atualizar status do plano.",

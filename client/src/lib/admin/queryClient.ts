@@ -98,12 +98,25 @@ export const getQueryFn: <T>() => QueryFunction<T> =
     
     console.log(`🔍 [ADMIN-CLIENT] Fetching: ${resolvedUrl}`);
     
+    // Only disable cache for real-time data or when explicitly needed
+    // Allow browser and React Query caching for better performance
+    const headers: HeadersInit = {
+      credentials: "include"
+    };
+    
+    // Only add no-cache headers for real-time endpoints
+    const isRealtimeEndpoint = url.includes('/dashboard/') || 
+                               url.includes('/stats') ||
+                               url.includes('/realtime');
+    
+    if (isRealtimeEndpoint) {
+      headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
+      headers['Pragma'] = 'no-cache';
+    }
+    
     const res = await fetch(resolvedUrl, {
       credentials: "include",
-      headers: {
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'Pragma': 'no-cache'
-      }
+      headers
     });
 
     console.log(`🔍 [ADMIN-CLIENT] Response status for ${resolvedUrl}: ${res.status}`);
@@ -130,9 +143,17 @@ export const queryClient = new QueryClient({
       queryFn: getQueryFn(),
       refetchInterval: false,
       refetchOnWindowFocus: false,
-      staleTime: 5 * 60 * 1000, // 5 minutos para dados gerais
-      gcTime: 10 * 60 * 1000, // 10 minutos
-      retry: false,
+      staleTime: 10 * 60 * 1000, // 10 minutos para dados gerais (increased from 5)
+      gcTime: 30 * 60 * 1000, // 30 minutos (increased from 10) 
+      retry: (failureCount, error) => {
+        // Don't retry on 401/403 errors (auth issues)
+        if (error?.message?.includes('401') || error?.message?.includes('403')) {
+          return false;
+        }
+        // Retry up to 2 times for other errors
+        return failureCount < 2;
+      },
+      retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
     },
     mutations: {
       retry: false,
@@ -145,19 +166,196 @@ adminQueryClient = queryClient;
 
 // Configurações específicas para diferentes tipos de dados
 export const queryOptions = {
-  // Settings change rarely - cache longer
+  // Static/rarely changing data - cache longest
   settings: {
-    staleTime: 10 * 60 * 1000, // 10 minutos
+    staleTime: 30 * 60 * 1000, // 30 minutos
+    gcTime: 60 * 60 * 1000, // 1 hora
+  },
+  
+  // Master data that changes infrequently - cache longer
+  masterData: {
+    staleTime: 20 * 60 * 1000, // 20 minutos
+    gcTime: 45 * 60 * 1000, // 45 minutos
+  },
+  
+  // List data (clients, plans, procedures) - moderate caching
+  listData: {
+    staleTime: 15 * 60 * 1000, // 15 minutos
     gcTime: 30 * 60 * 1000, // 30 minutos
   },
+  
+  // Detail/form data - shorter cache for consistency
+  detailData: {
+    staleTime: 10 * 60 * 1000, // 10 minutos
+    gcTime: 20 * 60 * 1000, // 20 minutos
+  },
+  
+  // Search results - short cache
+  searchData: {
+    staleTime: 5 * 60 * 1000, // 5 minutos
+    gcTime: 10 * 60 * 1000, // 10 minutos
+  },
+  
   // Dashboard data changes more frequently but still cacheable
   dashboard: {
     staleTime: 2 * 60 * 1000, // 2 minutos
     gcTime: 5 * 60 * 1000, // 5 minutos
   },
+  
   // Real-time data - minimal caching
   realtime: {
     staleTime: 0,
     gcTime: 1 * 60 * 1000, // 1 minuto
+  },
+  
+  // Specific configurations for commonly used admin queries
+  queries: {
+    // Plans are relatively static master data
+    plans: {
+      staleTime: 20 * 60 * 1000, // 20 minutos
+      gcTime: 45 * 60 * 1000, // 45 minutos
+    },
+    
+    // Active plans change even less frequently
+    activePlans: {
+      staleTime: 30 * 60 * 1000, // 30 minutos 
+      gcTime: 60 * 60 * 1000, // 1 hora
+    },
+    
+    // Clients list changes moderately
+    clients: {
+      staleTime: 15 * 60 * 1000, // 15 minutos
+      gcTime: 30 * 60 * 1000, // 30 minutos
+    },
+    
+    // Client details may change more frequently
+    clientDetails: {
+      staleTime: 10 * 60 * 1000, // 10 minutos
+      gcTime: 20 * 60 * 1000, // 20 minutos
+    },
+    
+    // Pets data is fairly static once entered
+    pets: {
+      staleTime: 15 * 60 * 1000, // 15 minutos
+      gcTime: 30 * 60 * 1000, // 30 minutos
+    },
+    
+    // Guides can change frequently
+    guides: {
+      staleTime: 10 * 60 * 1000, // 10 minutos
+      gcTime: 20 * 60 * 1000, // 20 minutos
+    },
+    
+    // Procedures are relatively static master data
+    procedures: {
+      staleTime: 20 * 60 * 1000, // 20 minutos
+      gcTime: 45 * 60 * 1000, // 45 minutos
+    },
+    
+    // Network units are fairly static
+    networkUnits: {
+      staleTime: 20 * 60 * 1000, // 20 minutos
+      gcTime: 45 * 60 * 1000, // 45 minutos
+    },
+    
+    // FAQ items are relatively static
+    faq: {
+      staleTime: 20 * 60 * 1000, // 20 minutos
+      gcTime: 45 * 60 * 1000, // 45 minutos
+    },
+    
+    // Contact submissions might be checked frequently
+    contactSubmissions: {
+      staleTime: 5 * 60 * 1000, // 5 minutos
+      gcTime: 15 * 60 * 1000, // 15 minutos
+    },
+    
+    // User administration data
+    users: {
+      staleTime: 15 * 60 * 1000, // 15 minutos
+      gcTime: 30 * 60 * 1000, // 30 minutos
+    }
   }
+};
+
+// Helper function to get query options by key
+export const getQueryOptions = (key: keyof typeof queryOptions.queries) => {
+  return queryOptions.queries[key] || queryOptions.detailData;
+};
+
+// Query key normalization utilities for better cache sharing
+export const queryKeys = {
+  // Core entity keys
+  clients: {
+    all: () => ["/admin/api/clients"] as const,
+    list: (filters?: Record<string, any>) => ["/admin/api/clients", filters] as const,
+    detail: (id: string) => ["/admin/api/clients", id] as const,
+    pets: (id: string) => ["/admin/api/clients", id, "pets"] as const,
+    search: (query: string) => ["/admin/api/clients/search", { search: query }] as const,
+  },
+  
+  plans: {
+    all: () => ["/admin/api/plans"] as const,
+    list: (filters?: Record<string, any>) => ["/admin/api/plans", filters] as const,
+    detail: (id: string) => ["/admin/api/plans", id] as const,
+    active: () => ["/admin/api/plans", "active"] as const,
+    procedures: (id: string) => ["/admin/api/plans", id, "procedures"] as const,
+  },
+  
+  guides: {
+    all: () => ["/admin/api/guides"] as const,
+    withUnits: (params?: Record<string, any>) => ["/admin/api/guides/with-network-units", params] as const,
+    detail: (id: string) => ["/admin/api/guides", id] as const,
+  },
+  
+  pets: {
+    all: () => ["/admin/api/pets"] as const,
+    detail: (id: string) => ["/admin/api/pets", id] as const,
+  },
+  
+  procedures: {
+    all: () => ["/admin/api/procedures"] as const,
+    detail: (id: string) => ["/admin/api/procedures", id] as const,
+    plans: (id: string) => ["/admin/api/procedures", id, "plans"] as const,
+  },
+  
+  networkUnits: {
+    all: () => ["/admin/api/network-units"] as const,
+    detail: (id: string) => ["/admin/api/network-units", id] as const,
+    credentials: () => ["/admin/api/network-units/credentials"] as const,
+  },
+  
+  dashboard: {
+    all: (dateParams?: Record<string, any>) => ["/admin/api/dashboard/all", dateParams] as const,
+  },
+  
+  settings: {
+    site: () => ["/admin/api/settings/site"] as const,
+    rules: () => ["/admin/api/settings/rules"] as const,
+  },
+  
+  users: {
+    all: () => ["/admin/api/users"] as const,
+    detail: (id: string) => ["/admin/api/users", id] as const,
+  },
+  
+  faq: {
+    all: () => ["/admin/api/faq"] as const,
+    detail: (id: string) => ["/admin/api/faq", id] as const,
+  },
+  
+  contactSubmissions: {
+    all: () => ["/admin/api/contact-submissions"] as const,
+    detail: (id: string) => ["/admin/api/contact-submissions", id] as const,
+  },
+} as const;
+
+// Utility function to create standardized query keys
+export const createQueryKey = (entity: keyof typeof queryKeys, operation: string, ...params: any[]) => {
+  const entityKeys = queryKeys[entity] as any;
+  if (entityKeys && typeof entityKeys[operation] === 'function') {
+    return entityKeys[operation](...params);
+  }
+  // Fallback for custom keys
+  return [entity, operation, ...params];
 };

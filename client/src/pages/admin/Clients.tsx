@@ -37,7 +37,8 @@ const AddPetIcon = ({ className }: { className?: string }) => (
 );
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { apiRequest } from "@/lib/admin/queryClient";
+import { apiRequest, getQueryOptions } from "@/lib/admin/queryClient";
+import { createSmartInvalidation } from "@/lib/admin/cacheUtils";
 import { useToast } from "@/hooks/use-toast";
 import { ConfirmDialog } from "@/components/admin/ui/confirm-dialog";
 import { useConfirmDialog } from "@/hooks/admin/use-confirm-dialog";
@@ -61,37 +62,57 @@ export default function Clients() {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
   const queryClient = useQueryClient();
+  const smartCache = createSmartInvalidation(queryClient);
   const { toast } = useToast();
   const confirmDialog = useConfirmDialog();
   const passwordDialog = usePasswordDialog();
 
   const { data: clients = [], isLoading } = useQuery<Client[]>({
     queryKey: ["/admin/api/clients"],
+    ...getQueryOptions('clients'),
   });
 
   // Query para buscar pets do cliente selecionado
   const { data: clientPets = [], isLoading: petsLoading } = useQuery<Pet[]>({
     queryKey: ["/admin/api/clients", selectedClient?.id, "pets"],
     enabled: !!selectedClient?.id,
+    ...getQueryOptions('pets'),
   });
 
   const { data: searchResults = [], isLoading: searchLoading } = useQuery<Client[]>({
-    queryKey: ["/admin/api/clients/search", searchQuery],
+    queryKey: ["/admin/api/clients/search", { search: searchQuery }],
     enabled: searchQuery.length > 2,
+    staleTime: 2 * 60 * 1000, // 2 minutos para resultados de busca
+    gcTime: 5 * 60 * 1000, // 5 minutos
   });
 
   const deleteClientMutation = useMutation({
     mutationFn: async (id: string) => {
       await apiRequest("DELETE", `/admin/api/clients/${id}`);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/admin/api/clients"] });
+    onMutate: async (id: string) => {
+      // Optimistically remove client from cache
+      await queryClient.cancelQueries({ queryKey: ["/admin/api/clients"] });
+      const previousClients = queryClient.getQueryData(["/admin/api/clients"]);
+      
+      queryClient.setQueryData(["/admin/api/clients"], (old: any[]) => {
+        return old?.filter(client => client.id !== id) || [];
+      });
+      
+      return { previousClients };
+    },
+    onSuccess: (_, id) => {
+      smartCache.invalidateClientData(id);
       toast({
         title: "Cliente removido",
         description: "Cliente foi removido com sucesso.",
       });
     },
-    onError: () => {
+    onError: (_, __, context) => {
+      // Restore previous data on error
+      if (context?.previousClients) {
+        queryClient.setQueryData(["/admin/api/clients"], context.previousClients);
+      }
       toast({
         title: "Erro",
         description: "Falha ao remover cliente.",

@@ -61,6 +61,7 @@ import { DateFilterComponent } from "@/components/admin/DateFilterComponent";
 import { getDateRangeParams } from "@/lib/date-utils";
 import { GUIDE_TYPES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { getQueryOptions } from "@/lib/admin/queryClient";
 
 const allColumns = [
   "Procedimento",
@@ -124,6 +125,7 @@ export default function Guides() {
 
   const { data: guides, isLoading } = useQuery<GuidesResponse>({
     queryKey: ["/admin/api/guides/with-network-units", queryParams],
+    ...getQueryOptions('guides'),
     // Using standard queryClient fetcher that supports [path, params] format and handles 401s globally
   });
 
