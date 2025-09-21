@@ -70,13 +70,13 @@ export default function Sidebar() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-[var(--bg-teal)] border-r border-[var(--border-teal-light)]">
+    <div className="flex flex-col h-full bg-white border-r border-[var(--border-teal-light)]">
       <div className="p-6">
         <div className="flex items-center space-x-3">
-          <Stethoscope className="h-8 w-8 text-[var(--text-light)]" />
+          <Stethoscope className="h-8 w-8 text-gray-700" />
           <div>
-            <h1 className="text-xl font-bold text-[var(--text-light)]">CRM UNIPET</h1>
-            <p className="text-sm text-[var(--text-light)] opacity-80">Plano de Saúde Pet</p>
+            <h1 className="text-xl font-bold text-gray-900">CRM UNIPET</h1>
+            <p className="text-sm text-gray-600">Plano de Saúde Pet</p>
           </div>
         </div>
       </div>
@@ -84,7 +84,7 @@ export default function Sidebar() {
       <nav className="flex-1 px-6 pb-6 space-y-6 overflow-y-auto">
         {navigation.map((section) => (
           <div key={section.name}>
-            <h3 className="text-xs font-semibold text-[var(--text-light)] opacity-70 uppercase tracking-wider mb-3">
+            <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
               {section.name}
             </h3>
             <div className="space-y-1">
@@ -100,8 +100,8 @@ export default function Sidebar() {
                     className={cn(
                       "flex items-center px-3 py-2 text-sm rounded-lg transition-colors",
                       isActive
-                        ? "bg-[var(--bg-teal-light)] text-[var(--text-light)]"
-                        : "text-[var(--text-light)] opacity-70"
+                        ? "bg-[#277677] text-white"
+                        : "text-gray-600 hover:text-gray-900"
                     )}
                     data-testid={`link-${item.name.toLowerCase().replace(/\s+/g, '-')}`}
                     onMouseEnter={() => handleNavigationHover(item.href)}
