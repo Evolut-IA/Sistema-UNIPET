@@ -711,6 +711,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const newUser = await storage.createUser({
         ...validatedData,
+        username: validatedData.username || validatedData.email || 'user',
         password: hashedPassword
       });
       
@@ -1026,7 +1027,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const updatedClient = await storage.updateClient(existingClient.id, updateData);
         
         // Save pets for existing client
-        const savedPets = [];
+        const savedPets: any[] = [];
         for (const petData of petsData) {
           const petToSave = {
             ...petData,
@@ -1039,7 +1040,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const parsedPetData = insertPetSchema.parse(petToSave);
           console.log("🐕 [CHECKOUT-STEP2] Criando pet para cliente existente:", parsedPetData.name);
           const savedPet = await storage.createPet(parsedPetData as any);
-          savedPets.push(savedPet);
+          savedPets.push(savedPet as any);
         }
         
         const { password: _, ...clientResponse } = updatedClient || existingClient;
@@ -1471,7 +1472,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
           
           // Handle renewal mode vs new contract creation
-          let contracts = [];
+          let contracts: any[] = [];
           
           if (isRenewal && renewalContractId) {
             console.log("🔄 [RENEWAL] Modo renovação detectado, atualizando contrato existente:", renewalContractId);
@@ -1533,7 +1534,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             
             const updatedContract = await storage.updateContract(renewalContractId, renewalData);
             if (updatedContract) {
-              contracts.push(updatedContract);
+              contracts.push(updatedContract as any);
               console.log("✅ [RENEWAL] Contrato renovado com sucesso:", {
                 contractId: updatedContract.id,
                 contractNumber: updatedContract.contractNumber
@@ -1725,6 +1726,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Hash password
+      // Validate password is provided
+      if (!parsed.password) {
+        return res.status(400).json({ error: "Senha é obrigatória" });
+      }
+      
       const hashedPassword = await bcrypt.hash(parsed.password, 12);
       
       // Create client with UUID
@@ -1773,7 +1779,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // First, try normal password authentication
       try {
-        isValidAuth = await bcrypt.compare(parsed.password, client.password);
+        if (client.password) {
+          isValidAuth = await bcrypt.compare(parsed.password, client.password);
+        }
       } catch (error) {
         console.log("Erro na comparação bcrypt, tentando CPF...");
       }

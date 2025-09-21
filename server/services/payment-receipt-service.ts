@@ -107,7 +107,8 @@ export class PaymentReceiptService {
       
       // Validate that payment is approved/completed
       // Accept both numeric status (2) and mapped status ('approved')
-      const isPaymentApproved = payment.status === 2 || payment.status === 'approved' || String(payment.status) === '2';
+      const statusStr = String(payment.status);
+      const isPaymentApproved = payment.status === 2 || statusStr === 'approved' || statusStr === '2';
       if (!isPaymentApproved) {
         console.warn('⚠️ [RECEIPT-SERVICE] Tentativa de gerar comprovante para pagamento não aprovado', {
           correlationId: logId,

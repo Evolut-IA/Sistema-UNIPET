@@ -23,5 +23,5 @@
     "moduleDetection": "force"
   },
   "include": ["server/**/*", "shared/**/*"],
-  "exclude": ["node_modules", "client/**/*", "dist/**/*", "*.config.ts", "*.config.js", "server/tests/**/*"]
+  "exclude": ["node_modules", "client/**/*", "dist/**/*", "*.config.ts", "*.config.js", "server/tests/**/*", "**/*.test.ts", "**/*.spec.ts"]
 }

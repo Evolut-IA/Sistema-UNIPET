@@ -72,7 +72,7 @@ export class CieloWebhookService {
       // Cielo uses HMAC-SHA256 for webhook signature
       const expectedSignature = crypto
         .createHmac('sha256', this.webhookSecret)
-        .update(payload, 'utf8')
+        .update(typeof payload === 'string' ? payload : payload.toString(), 'utf8')
         .digest('hex');
 
       const providedSignature = signature.replace('sha256=', '');

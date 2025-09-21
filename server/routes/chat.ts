@@ -42,11 +42,11 @@ router.get('/settings', async (req, res) => {
     
     // Chat icons served directly from Supabase Storage URLs only
     if (settings.botIconUrl) {
-      responseSettings.botIcon = settings.botIconUrl;
+      responseSettings.botIcon = settings.botIconUrl as any;
     }
     
     if (settings.userIconUrl) {
-      responseSettings.userIcon = settings.userIconUrl;
+      responseSettings.userIcon = settings.userIconUrl as any;
     }
     
     console.log('✅ [CHAT] Chat settings retrieved:', {
