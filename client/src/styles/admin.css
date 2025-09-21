@@ -27,13 +27,13 @@
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
   
-  --input: #e2e2e2;
+  --input: 226 226 226;
   --border: #e1eaef;
   --ring: #277677;
   
   --card: #e0e0e0;
   --card-foreground: #1a1a1a;
-  --popover: #e2e2e2;
+  --popover: 226 226 226;
   --popover-foreground: #1a1a1a;
   
   --sidebar: #ffffff;

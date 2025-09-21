@@ -11,7 +11,9 @@ module.exports = {
       colors: {
         // Tokens base
         border: 'rgb(var(--border))',
-        input: 'rgb(var(--input))', 
+        input: 'rgb(var(--input))',
+        popover: 'rgb(var(--popover))',
+        'popover-foreground': 'rgb(var(--popover-foreground))', 
         ring: 'rgb(var(--ring))',
         background: 'rgb(var(--background))',
         foreground: 'rgb(var(--foreground))',
