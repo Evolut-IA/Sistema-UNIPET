@@ -24,6 +24,7 @@ export interface GenerateReceiptResult {
   success: boolean;
   receiptId?: string;
   receiptNumber?: string; // ✅ Retornar receiptNumber para referência
+  pdfUrl?: string; // ✅ Added missing pdfUrl property
   error?: string;
 }
 
@@ -82,7 +83,8 @@ export class PaymentReceiptService {
         return {
           success: true,
           receiptId: existingReceipt.id,
-          receiptNumber: existingReceipt.receiptNumber
+          receiptNumber: existingReceipt.receiptNumber,
+          pdfUrl: existingReceipt.pdfUrl
         };
       }
 
@@ -197,7 +199,8 @@ export class PaymentReceiptService {
       return {
         success: true,
         receiptId: savedReceipt.id,
-        receiptNumber: receiptNumber // ✅ Retornar receiptNumber para referência
+        receiptNumber: receiptNumber, // ✅ Retornar receiptNumber para referência
+        pdfUrl: uploadResult.publicUrl || uploadResult.objectKey!
       };
 
     } catch (error) {
