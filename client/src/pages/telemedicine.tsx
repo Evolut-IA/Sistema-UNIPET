@@ -9,7 +9,7 @@ import {
   Clock,
   Shield,
   Phone,
-  MessageCircle,
+  MessageSquare,
   Monitor
 } from "lucide-react";
 
@@ -283,7 +283,7 @@ export default function TelemedicinePage() {
                 <div className="text-center mb-6">
                   <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" 
                     style={{background: 'var(--bg-beige)'}}>
-                    <MessageCircle className="w-8 h-8" style={{color: 'var(--text-gold)'}} />
+                    <MessageSquare className="w-8 h-8" style={{color: 'var(--text-gold)'}} />
                   </div>
                   <h3 className="text-xl font-bold mb-2" style={{color: 'var(--text-dark-primary)'}}>Chat Online</h3>
                   <p style={{color: 'var(--text-dark-secondary)'}}>
@@ -314,7 +314,7 @@ export default function TelemedicinePage() {
                     background: 'var(--bg-gold)',
                     color: 'var(--text-light)'
                   }}
-
+                >
                   {isRequestingService ? (
                     <>
                       <div className="w-5 h-5 border-2 rounded-full animate-spin" 
@@ -323,7 +323,7 @@ export default function TelemedicinePage() {
                     </>
                   ) : (
                     <>
-                      <MessageCircle className="w-5 h-5" />
+                      <MessageSquare className="w-5 h-5" />
                       <span>Iniciar Chat</span>
                     </>
                   )}
@@ -448,7 +448,6 @@ export default function TelemedicinePage() {
           </p>
           <button className="flex items-center space-x-2 mx-auto px-6 py-3 rounded-lg transition-colors"
             style={{color: 'var(--text-teal)'}}
-            }}
           >
             <Phone className="w-5 h-5" />
             <span>Falar com Suporte</span>
