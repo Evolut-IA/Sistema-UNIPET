@@ -42,9 +42,9 @@ export default function FaqSection({ showTitle = true, maxItems, showViewMoreBut
 
         <div className="max-w-4xl mx-auto">
           <Card className="bg-[var(--bg-cream-light)] border-none shadow-lg rounded-xl">
-            <CardContent className="p-4 sm:p-6">
+            <CardContent className="p-4 sm:p-6 px-6 sm:px-8">
               <Accordion type="single" collapsible className="space-y-4">
-                {displayItems.map((faq, index) => (
+                {displayItems.map((faq) => (
                   <AccordionItem 
                     key={faq.id} 
                     value={`item-${faq.id}`}
