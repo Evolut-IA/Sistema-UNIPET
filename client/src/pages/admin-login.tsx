@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { adminLoginSchema } from "@shared/schema";
 import type { z } from "zod";
+import { useQueryClient } from "@tanstack/react-query";
 
 type AdminLoginFormData = z.infer<typeof adminLoginSchema>;
 
@@ -13,6 +14,7 @@ export default function AdminLoginPage() {
   const [, navigate] = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
   const {
     register,
@@ -38,8 +40,31 @@ export default function AdminLoginPage() {
       const result = await response.json();
 
       if (response.ok) {
-        // Redirecionar para dashboard admin
-        navigate('/admin');
+        // Invalidar cache de autenticação para forçar verificação atualizada
+        queryClient.invalidateQueries({ queryKey: ['/admin/api/auth/status'] });
+        
+        // Aguardar um momento para garantir que a sessão foi estabelecida e verificar autenticação
+        setTimeout(async () => {
+          try {
+            // Verificar se a autenticação está funcionando antes de redirecionar
+            const authResponse = await fetch('/admin/api/auth/status', {
+              credentials: 'include'
+            });
+            const authResult = await authResponse.json();
+            
+            if (authResult.authenticated) {
+              // Redirecionar para dashboard admin
+              navigate('/admin');
+            } else {
+              // Se ainda não autenticado, tentar novamente em mais alguns milissegundos
+              setTimeout(() => navigate('/admin'), 200);
+            }
+          } catch (error) {
+            console.error('Erro ao verificar autenticação:', error);
+            // Mesmo com erro, tentar redirecionar
+            navigate('/admin');
+          }
+        }, 100);
       } else {
         setSubmitError(result.error || 'Erro no login');
       }
