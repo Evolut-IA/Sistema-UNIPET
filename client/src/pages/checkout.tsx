@@ -1544,14 +1544,14 @@ export default function Checkout() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col" style={{background: 'var(--bg-cream-lighter)'}}>
+    <div className="min-h-screen flex flex-col bg-background">
       <Header />
       
       <div className="flex-1 py-16 pt-28 md:py-20 md:pt-32">
         <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6">
           {/* Renewal Mode Indicator */}
           {isRenewalMode && (
-            <div className="mb-6 p-4 rounded-lg text-center" style={{background: 'var(--bg-teal-light)', color: 'var(--text-teal-dark)'}}>
+            <div className="mb-6 p-4 rounded-lg text-center bg-accent text-primary">
               <h2 className="text-lg font-semibold mb-2">🔄 Renovação de Plano</h2>
               <p className="text-sm">Você está renovando seu plano. Seus dados já estão preenchidos, basta escolher a forma de pagamento.</p>
             </div>
@@ -1588,7 +1588,7 @@ export default function Checkout() {
                       )
                     }
                   </div>
-                  <span className="hidden sm:block ml-1 sm:ml-2 font-medium text-xs sm:text-sm md:text-base" style={{color: 'var(--text-dark-primary)'}}>
+                  <span className="hidden sm:block ml-1 sm:ml-2 font-medium text-xs sm:text-sm md:text-base text-foreground">
                     {label}
                   </span>
                   {step < 3 && (
@@ -1610,7 +1610,7 @@ export default function Checkout() {
 
 
           {/* Step Content */}
-          <div className="rounded-xl shadow-lg p-8" style={{background: 'var(--bg-cream-lighter)'}}>
+          <div className="rounded-xl shadow-lg p-8" className="bg-background">
             
             {/* Error and Success Messages */}
             <AnimatePresence>
@@ -1671,12 +1671,12 @@ export default function Checkout() {
                   transition={{ duration: 0.4, ease: "easeInOut" }}
                   className="space-y-8"
                 >
-                  <h2 className="text-2xl font-bold mb-6" style={{color: 'var(--text-dark-primary)'}}>Selecione o Plano e dados do Pet</h2>
+                  <h2 className="text-2xl font-bold mb-6" className="text-foreground">Selecione o Plano e dados do Pet</h2>
                   
                   {/* Plan Selection */}
                   {!selectedPlan && (
                     <div className="mb-8">
-                      <h3 className="text-lg font-semibold mb-4" style={{color: 'var(--text-dark-primary)'}}>Escolha seu plano:</h3>
+                      <h3 className="text-lg font-semibold mb-4 text-foreground">Escolha seu plano:</h3>
                       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                         {plans.map((plan) => (
                           <div
@@ -1688,7 +1688,7 @@ export default function Checkout() {
                               borderColor: 'var(--border-gray)'
                             }}
                           >
-                            <h4 className="font-bold text-lg mb-2" style={{color: 'var(--text-dark-primary)'}}>{plan.name}</h4>
+                            <h4 className="font-bold text-lg mb-2" className="text-foreground">{plan.name}</h4>
                             <p className="text-2xl font-bold mb-2" style={{color: 'var(--text-teal)'}}>{formatPrice(plan.price)}/mês</p>
                             <p className="text-sm mb-3" style={{color: 'var(--text-dark-secondary)'}}>{plan.description}</p>
                           </div>
@@ -1702,7 +1702,7 @@ export default function Checkout() {
                     <div className="p-6 rounded-lg mb-6" style={{background: '#ffffff'}}>
                       <div className="flex flex-col md:flex-row md:justify-between md:items-center">
                         <div className="mb-3 md:mb-0">
-                          <h3 className="text-xl font-bold" style={{color: 'var(--text-dark-primary)'}}>{selectedPlan.name}</h3>
+                          <h3 className="text-xl font-bold" className="text-foreground">{selectedPlan.name}</h3>
                           <p className="text-2xl font-bold" style={{color: 'var(--text-teal)'}}>{formatPrice(selectedPlan.price)}/mês</p>
                         </div>
                         <button
@@ -1723,7 +1723,7 @@ export default function Checkout() {
                   {/* Pets Section - Only show when a plan is selected */}
                   {selectedPlan && (
                     <div className="space-y-6">
-                      <h3 className="text-lg font-semibold" style={{color: 'var(--text-dark-primary)'}}>Dados dos Pets</h3>
+                      <h3 className="text-lg font-semibold" className="text-foreground">Dados dos Pets</h3>
                     
                     {/* Pets List */}
                     {pets.map((pet, index) => (
@@ -1732,7 +1732,7 @@ export default function Checkout() {
                           /* Collapsed Pet View */
                           <div className="p-4 bg-[var(--bg-cream-lighter)] flex justify-between items-center">
                             <div>
-                              <h4 className="font-semibold" style={{color: 'var(--text-dark-primary)'}}>{pet.name}</h4>
+                              <h4 className="font-semibold" className="text-foreground">{pet.name}</h4>
                               <p className="text-sm" style={{color: 'var(--text-dark-secondary)'}}>
                                 {pet.species} • {pet.breed} • {pet.age} anos
                               </p>
@@ -1770,12 +1770,12 @@ export default function Checkout() {
                         ) : (
                           /* Expanded Pet Form */
                           <div className="p-6 bg-[var(--bg-cream-lighter)]">
-                            <h4 className="font-semibold mb-4" style={{color: 'var(--text-dark-primary)'}}>
+                            <h4 className="font-semibold mb-4" className="text-foreground">
                               {index === 0 ? 'Primeiro Pet' : `${index + 1}º Pet`}
                             </h4>
                             <div className="grid md:grid-cols-2 gap-4">
                               <div>
-                                <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
+                                <label className="block text-sm font-medium mb-2" className="text-foreground">
                                   Nome do Pet *
                                 </label>
                                 <input
@@ -1793,7 +1793,7 @@ export default function Checkout() {
                               </div>
 
                               <div>
-                                <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
+                                <label className="block text-sm font-medium mb-2" className="text-foreground">
                                   Espécie *
                                 </label>
                                 <Select onValueChange={(value) => setCurrentPetData({...currentPetData, species: value})} value={currentPetData.species}>
@@ -1811,7 +1811,7 @@ export default function Checkout() {
                               </div>
 
                               <div>
-                                <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
+                                <label className="block text-sm font-medium mb-2" className="text-foreground">
                                   Raça *
                                 </label>
                                 <input
@@ -1829,7 +1829,7 @@ export default function Checkout() {
                               </div>
 
                               <div>
-                                <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
+                                <label className="block text-sm font-medium mb-2" className="text-foreground">
                                   Idade (anos) *
                                 </label>
                                 <input
@@ -1934,11 +1934,11 @@ export default function Checkout() {
                   transition={{ duration: 0.4, ease: "easeInOut" }}
                   className="space-y-6"
                 >
-                  <h2 className="text-2xl font-bold mb-6" style={{color: 'var(--text-dark-primary)'}}>Seus Dados</h2>
+                  <h2 className="text-2xl font-bold mb-6" className="text-foreground">Seus Dados</h2>
                   
                   <div className="grid md:grid-cols-2 gap-6 mb-6">
                     <div>
-                      <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
+                      <label className="block text-sm font-medium mb-2" className="text-foreground">
                         Nome Completo *
                       </label>
                       <input
@@ -1955,7 +1955,7 @@ export default function Checkout() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
+                      <label className="block text-sm font-medium mb-2" className="text-foreground">
                         Email *
                       </label>
                       <input
@@ -1984,7 +1984,7 @@ export default function Checkout() {
 
 
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
+                      <label className="block text-sm font-medium mb-2" className="text-foreground">
                         Celular *
                       </label>
                       <input
@@ -2029,7 +2029,7 @@ export default function Checkout() {
                           backgroundRepeat: 'no-repeat'
                         }}
                       />
-                      <span className="text-sm leading-relaxed" style={{color: 'var(--text-dark-primary)'}}>
+                      <span className="text-sm leading-relaxed" className="text-foreground">
                         Eu declaro meu pleno consentimento para recebimento de promoções da Unipet e de seus parceiros comerciais, nos termos da nossa{' '}
                         <button
                           type="button"
@@ -2059,17 +2059,17 @@ export default function Checkout() {
                   transition={{ duration: 0.4, ease: "easeInOut" }}
                   className="space-y-6"
                 >
-                  <h2 className="text-2xl font-bold mb-6" style={{color: 'var(--text-dark-primary)'}}>Pagamento</h2>
+                  <h2 className="text-2xl font-bold mb-6" className="text-foreground">Pagamento</h2>
                   
                   {/* Mobile Layout - vertical stacking */}
                   <div className="lg:hidden space-y-6">
                     {/* Section 1: Cadastre seu endereço */}
-                    <div className="space-y-4 p-6 rounded-lg border" style={{background: '#ffffff', borderColor: 'var(--border-gray)'}}>
-                      <h3 className="text-lg font-semibold mb-4" style={{color: 'var(--text-dark-primary)'}}>Cadastre seu endereço</h3>
+                    <div className="space-y-4 p-6 rounded-lg border bg-background border-border">
+                      <h3 className="text-lg font-semibold mb-4 text-foreground">Cadastre seu endereço</h3>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
+                        <label className="block text-sm font-medium mb-2" className="text-foreground">
                           CPF *
                         </label>
                         <input
@@ -2094,7 +2094,7 @@ export default function Checkout() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
+                        <label className="block text-sm font-medium mb-2" className="text-foreground">
                           CEP *
                         </label>
                         <div className="relative">
@@ -2144,7 +2144,7 @@ export default function Checkout() {
                       </div>
 
                       <div className="md:col-span-2">
-                        <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
+                        <label className="block text-sm font-medium mb-2" className="text-foreground">
                           Endereço *
                         </label>
                         <input
@@ -2162,7 +2162,7 @@ export default function Checkout() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
+                        <label className="block text-sm font-medium mb-2" className="text-foreground">
                           Número / Complemento
                         </label>
                         <input
@@ -2183,7 +2183,7 @@ export default function Checkout() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
+                        <label className="block text-sm font-medium mb-2" className="text-foreground">
                           Bairro *
                         </label>
                         <input
@@ -2200,7 +2200,7 @@ export default function Checkout() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
+                        <label className="block text-sm font-medium mb-2" className="text-foreground">
                           Estado / Cidade *
                         </label>
                         <div className="flex gap-2">
@@ -2234,8 +2234,8 @@ export default function Checkout() {
                   </div>
 
                   {/* Section 2: Modalidade de contratação */}
-                  <div className="space-y-4 p-6 rounded-lg border" style={{background: 'white', borderColor: 'var(--border-gray)'}}>
-                    <h3 className="text-lg font-semibold mb-4" style={{color: 'var(--text-dark-primary)'}}>Modalidade de contratação</h3>
+                  <div className="space-y-4 p-6 rounded-lg border bg-background border-border">
+                    <h3 className="text-lg font-semibold mb-4 text-foreground">Modalidade de contratação</h3>
                     
                     {/* Segmented Control */}
                     <div 
@@ -2299,8 +2299,8 @@ export default function Checkout() {
                   </div>
 
                   {/* Section 3: Formas de pagamento */}
-                  <div className="space-y-4 p-4 sm:p-6 rounded-lg border overflow-hidden" style={{background: 'white', borderColor: 'var(--border-gray)'}}>
-                    <h3 className="text-lg font-semibold mb-4" style={{color: 'var(--text-dark-primary)'}}>Formas de pagamento</h3>
+                  <div className="space-y-4 p-4 sm:p-6 rounded-lg border overflow-hidden" className="bg-background border-border">
+                    <h3 className="text-lg font-semibold mb-4 text-foreground">Formas de pagamento</h3>
                     
                     <div className="space-y-3 w-full">
                       {(() => {
@@ -2353,8 +2353,8 @@ export default function Checkout() {
                                   />
                                 )}
                               </div>
-                              <Icon className="w-5 h-5 mr-3 flex-shrink-0" style={{color: 'var(--text-dark-primary)'}} />
-                              <span className="text-sm sm:text-base" style={{color: 'var(--text-dark-primary)'}}>{label}</span>
+                              <Icon className="w-5 h-5 mr-3 flex-shrink-0" className="text-foreground" />
+                              <span className="text-sm sm:text-base" className="text-foreground">{label}</span>
                             </div>
                           </div>
                         </label>
@@ -2366,11 +2366,11 @@ export default function Checkout() {
                   {/* Dados do Cartão */}
                   {paymentMethod === 'credit' && (
                     <div className="space-y-4 p-6 rounded-lg border" style={{background: 'var(--bg-cream-lighter)', borderColor: 'var(--border-gray)'}}>
-                      <h4 className="text-lg font-semibold" style={{color: 'var(--text-dark-primary)'}}>Dados do Cartão</h4>
+                      <h4 className="text-lg font-semibold" className="text-foreground">Dados do Cartão</h4>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="md:col-span-2">
-                          <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
+                          <label className="block text-sm font-medium mb-2" className="text-foreground">
                             Número do Cartão *
                           </label>
                           <input
@@ -2391,7 +2391,7 @@ export default function Checkout() {
                         </div>
                         
                         <div>
-                          <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
+                          <label className="block text-sm font-medium mb-2" className="text-foreground">
                             Nome no Cartão *
                           </label>
                           <input
@@ -2409,7 +2409,7 @@ export default function Checkout() {
                         </div>
                         
                         <div>
-                          <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
+                          <label className="block text-sm font-medium mb-2" className="text-foreground">
                             Validade *
                           </label>
                           <input
@@ -2430,7 +2430,7 @@ export default function Checkout() {
                         </div>
                         
                         <div>
-                          <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
+                          <label className="block text-sm font-medium mb-2" className="text-foreground">
                             CVV *
                           </label>
                           <input
@@ -2453,7 +2453,7 @@ export default function Checkout() {
                         {/* Parcelas para Cartão de Crédito */}
                         {paymentMethod === 'credit' && (
                           <div className="md:col-span-2">
-                            <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
+                            <label className="block text-sm font-medium mb-2" className="text-foreground">
                               Parcelas
                             </label>
                             <select
@@ -2478,26 +2478,26 @@ export default function Checkout() {
                   )}
 
                   {/* Section 4: Resumo do pedido */}
-                  <div className="space-y-4 p-6 rounded-lg border" style={{background: '#ffffff', borderColor: 'var(--border-gray)'}}>
+                  <div className="space-y-4 p-6 rounded-lg border bg-background border-border">
                     <div className="text-center mb-6">
-                      <h3 className="text-lg font-semibold" style={{color: 'var(--text-dark-primary)'}}>Resumo do pedido</h3>
+                      <h3 className="text-lg font-semibold" className="text-foreground">Resumo do pedido</h3>
                     </div>
                     <div className="space-y-4">
                       <div>
                         <span className="block text-sm" style={{color: 'var(--text-dark-secondary)'}}>Plano selecionado:</span>
-                        <span className="font-semibold" style={{color: 'var(--text-dark-primary)'}}>{selectedPlan?.name}</span>
+                        <span className="font-semibold" className="text-foreground">{selectedPlan?.name}</span>
                       </div>
                       <div>
                         <span className="block text-sm" style={{color: 'var(--text-dark-secondary)'}}>Quantidade de pets:</span>
-                        <span style={{color: 'var(--text-dark-primary)'}}>{pets.length} pet{pets.length > 1 ? 's' : ''}</span>
+                        <span className="text-foreground">{pets.length} pet{pets.length > 1 ? 's' : ''}</span>
                       </div>
                       <div>
                         <span className="block text-sm" style={{color: 'var(--text-dark-secondary)'}}>Modalidade:</span>
-                        <span style={{color: 'var(--text-dark-primary)'}}>{billingPeriod === 'annual' ? 'Anual (12 meses)' : 'Mensal'}</span>
+                        <span className="text-foreground">{billingPeriod === 'annual' ? 'Anual (12 meses)' : 'Mensal'}</span>
                       </div>
                       <div>
                         <span className="block text-sm" style={{color: 'var(--text-dark-secondary)'}}>Forma de pagamento:</span>
-                        <span style={{color: 'var(--text-dark-primary)'}}>
+                        <span className="text-foreground">
                           {paymentMethod === 'credit' ? 'Cartão de Crédito' : 'PIX'}
                         </span>
                       </div>
@@ -2528,17 +2528,17 @@ export default function Checkout() {
                   </div>
 
                   {/* Ver mensalidades - Container expansível */}
-                  <div className="rounded-lg border" style={{background: 'white', borderColor: 'var(--border-gray)'}}>
+                  <div className="rounded-lg border" className="bg-background border-border">
                     <button
                       onClick={() => setShowMonthlyBreakdown(!showMonthlyBreakdown)}
                       className="w-full p-4 flex items-center justify-between transition-colors"
                     >
-                      <span className="text-sm font-medium" style={{color: 'var(--text-dark-primary)'}}>Ver mensalidades</span>
+                      <span className="text-sm font-medium" className="text-foreground">Ver mensalidades</span>
                       <svg 
                         className={`w-4 h-4 transition-transform ${
                           showMonthlyBreakdown ? 'rotate-180' : ''
                         }`} 
-                        style={{color: 'var(--text-dark-primary)'}}
+                        className="text-foreground"
                         fill="none" 
                         stroke="currentColor" 
                         viewBox="0 0 24 24"
@@ -2552,7 +2552,7 @@ export default function Checkout() {
                           {Array.from({ length: 12 }, (_, i) => (
                             <div key={i + 1} className="flex justify-between">
                               <span style={{color: 'var(--text-dark-secondary)'}}>{i + 1})</span>
-                              <span style={{color: 'var(--text-dark-primary)'}}>{formatPrice(Math.round((selectedPlan?.price || 0) * pets.length))}</span>
+                              <span className="text-foreground">{formatPrice(Math.round((selectedPlan?.price || 0) * pets.length))}</span>
                             </div>
                           ))}
                         </div>
@@ -2578,7 +2578,7 @@ export default function Checkout() {
                             backgroundRepeat: 'no-repeat'
                           }}
                         />
-                        <label htmlFor="terms" className="text-sm" style={{color: 'var(--text-dark-primary)'}}>
+                        <label htmlFor="terms" className="text-sm" className="text-foreground">
                           Li e aceito os{' '}
                           <a
                             href="/termos"
@@ -2599,12 +2599,12 @@ export default function Checkout() {
                   <div className="hidden lg:grid lg:grid-cols-3 lg:gap-6 lg:items-start">
                     
                     {/* Column 1: Cadastre seu endereço */}
-                    <div className="space-y-4 p-6 rounded-lg border" style={{background: '#ffffff', borderColor: 'var(--border-gray)'}}>
-                      <h3 className="text-lg font-semibold mb-4" style={{color: 'var(--text-dark-primary)'}}>Cadastre seu endereço</h3>
+                    <div className="space-y-4 p-6 rounded-lg border bg-background border-border">
+                      <h3 className="text-lg font-semibold mb-4 text-foreground">Cadastre seu endereço</h3>
                       
                       <div className="space-y-4">
                         <div>
-                          <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
+                          <label className="block text-sm font-medium mb-2" className="text-foreground">
                             CPF *
                           </label>
                           <input
@@ -2628,7 +2628,7 @@ export default function Checkout() {
                         </div>
 
                         <div>
-                          <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
+                          <label className="block text-sm font-medium mb-2" className="text-foreground">
                             CEP *
                           </label>
                           <div className="relative">
@@ -2677,7 +2677,7 @@ export default function Checkout() {
                         </div>
 
                         <div>
-                          <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
+                          <label className="block text-sm font-medium mb-2" className="text-foreground">
                             Endereço *
                           </label>
                           <input
@@ -2696,7 +2696,7 @@ export default function Checkout() {
 
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
+                            <label className="block text-sm font-medium mb-2" className="text-foreground">
                               Número
                             </label>
                             <input
@@ -2716,7 +2716,7 @@ export default function Checkout() {
                             />
                           </div>
                           <div>
-                            <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
+                            <label className="block text-sm font-medium mb-2" className="text-foreground">
                               Complemento
                             </label>
                             <input
@@ -2732,7 +2732,7 @@ export default function Checkout() {
                         </div>
 
                         <div>
-                          <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
+                          <label className="block text-sm font-medium mb-2" className="text-foreground">
                             Bairro *
                           </label>
                           <input
@@ -2750,7 +2750,7 @@ export default function Checkout() {
 
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
+                            <label className="block text-sm font-medium mb-2" className="text-foreground">
                               Estado *
                             </label>
                             <input
@@ -2767,7 +2767,7 @@ export default function Checkout() {
                             />
                           </div>
                           <div>
-                            <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
+                            <label className="block text-sm font-medium mb-2" className="text-foreground">
                               Cidade *
                             </label>
                             <input
@@ -2790,8 +2790,8 @@ export default function Checkout() {
                     {/* Column 2: Modalidade de contratação + Formas de pagamento */}
                     <div className="space-y-6">
                       {/* Modalidade de contratação */}
-                      <div className="space-y-4 p-6 rounded-lg border" style={{background: 'white', borderColor: 'var(--border-gray)'}}>
-                        <h3 className="text-lg font-semibold mb-4" style={{color: 'var(--text-dark-primary)'}}>Modalidade de contratação</h3>
+                      <div className="space-y-4 p-6 rounded-lg border bg-background border-border">
+                        <h3 className="text-lg font-semibold mb-4 text-foreground">Modalidade de contratação</h3>
                         
                         {/* Segmented Control */}
                         <div 
@@ -2830,8 +2830,8 @@ export default function Checkout() {
                       </div>
 
                       {/* Formas de pagamento */}
-                      <div className="space-y-4 p-6 rounded-lg border" style={{background: 'white', borderColor: 'var(--border-gray)'}}>
-                        <h3 className="text-lg font-semibold mb-4" style={{color: 'var(--text-dark-primary)'}}>Formas de pagamento</h3>
+                      <div className="space-y-4 p-6 rounded-lg border bg-background border-border">
+                        <h3 className="text-lg font-semibold mb-4 text-foreground">Formas de pagamento</h3>
                         
                         <div className="space-y-3">
                           {[
@@ -2857,8 +2857,8 @@ export default function Checkout() {
                                   className="mr-3"
                                   style={{ accentColor: 'var(--bg-teal)' }}
                                 />
-                                <Icon className="w-5 h-5 mr-3" style={{color: 'var(--text-dark-primary)'}} />
-                                <span style={{color: 'var(--text-dark-primary)'}}>{label}</span>
+                                <Icon className="w-5 h-5 mr-3" className="text-foreground" />
+                                <span className="text-foreground">{label}</span>
                               </div>
                             </label>
                           ))}
@@ -2868,7 +2868,7 @@ export default function Checkout() {
                         {paymentMethod === 'credit' && (
                           <div className="space-y-4 mt-6">
                             <div>
-                              <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
+                              <label className="block text-sm font-medium mb-2" className="text-foreground">
                                 Número do cartão*
                               </label>
                               <input
@@ -2889,7 +2889,7 @@ export default function Checkout() {
                             </div>
 
                             <div>
-                              <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
+                              <label className="block text-sm font-medium mb-2" className="text-foreground">
                                 Nome impresso no cartão*
                               </label>
                               <input
@@ -2908,7 +2908,7 @@ export default function Checkout() {
 
                             <div className="grid grid-cols-2 gap-4">
                               <div>
-                                <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
+                                <label className="block text-sm font-medium mb-2" className="text-foreground">
                                   Vencimento*
                                 </label>
                                 <input
@@ -2929,7 +2929,7 @@ export default function Checkout() {
                               </div>
 
                               <div>
-                                <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
+                                <label className="block text-sm font-medium mb-2" className="text-foreground">
                                   CVV*
                                 </label>
                                 <input
@@ -2959,20 +2959,20 @@ export default function Checkout() {
                     {/* Column 3: Resumo do pedido */}
                     <div className="space-y-6">
                       {/* Resumo do pedido */}
-                      <div className="space-y-4 p-6 rounded-lg border" style={{background: 'white', borderColor: 'var(--border-gray)'}}>
-                        <h3 className="text-lg font-semibold mb-4" style={{color: 'var(--text-dark-primary)'}}>Resumo do pedido</h3>
+                      <div className="space-y-4 p-6 rounded-lg border bg-background border-border">
+                        <h3 className="text-lg font-semibold mb-4 text-foreground">Resumo do pedido</h3>
                         <div className="space-y-3">
                           <div>
                             <span className="block text-sm" style={{color: 'var(--text-dark-secondary)'}}>{selectedPlan?.name} | {pets[0]?.name} | {billingPeriod === 'annual' ? 'Anual' : 'Mensal'}</span>
-                            <span style={{color: 'var(--text-dark-primary)'}}>{formatPrice(selectedPlan?.price || 0)}</span>
+                            <span className="text-foreground">{formatPrice(selectedPlan?.price || 0)}</span>
                           </div>
                           <div>
                             <span className="block text-sm" style={{color: 'var(--text-dark-secondary)'}}>Modalidade:</span>
-                            <span style={{color: 'var(--text-dark-primary)'}}>{billingPeriod === 'annual' ? 'Anual (12 meses)' : 'Mensal'}</span>
+                            <span className="text-foreground">{billingPeriod === 'annual' ? 'Anual (12 meses)' : 'Mensal'}</span>
                           </div>
                           <div>
                             <span className="block text-sm" style={{color: 'var(--text-dark-secondary)'}}>Forma de pagamento:</span>
-                            <span style={{color: 'var(--text-dark-primary)'}}>
+                            <span className="text-foreground">
                               {paymentMethod === 'credit' ? 'Cartão de Crédito' : 'PIX'}
                             </span>
                           </div>
@@ -3002,17 +3002,17 @@ export default function Checkout() {
                       </div>
 
                       {/* Ver mensalidades */}
-                      <div className="rounded-lg border" style={{background: 'white', borderColor: 'var(--border-gray)'}}>
+                      <div className="rounded-lg border" className="bg-background border-border">
                         <button
                           onClick={() => setShowMonthlyBreakdown(!showMonthlyBreakdown)}
                           className="w-full p-4 flex items-center justify-between transition-colors"
                         >
-                          <span className="text-sm font-medium" style={{color: 'var(--text-dark-primary)'}}>Ver mensalidades</span>
+                          <span className="text-sm font-medium" className="text-foreground">Ver mensalidades</span>
                           <svg 
                             className={`w-4 h-4 transition-transform ${
                               showMonthlyBreakdown ? 'rotate-180' : ''
                             }`} 
-                            style={{color: 'var(--text-dark-primary)'}}
+                            className="text-foreground"
                             fill="none" 
                             stroke="currentColor" 
                             viewBox="0 0 24 24"
@@ -3026,7 +3026,7 @@ export default function Checkout() {
                               {Array.from({ length: 12 }, (_, i) => (
                                 <div key={i + 1} className="flex justify-between">
                                   <span style={{color: 'var(--text-dark-secondary)'}}>{i + 1})</span>
-                                  <span style={{color: 'var(--text-dark-primary)'}}>{formatPrice(Math.round((selectedPlan?.price || 0) * pets.length))}</span>
+                                  <span className="text-foreground">{formatPrice(Math.round((selectedPlan?.price || 0) * pets.length))}</span>
                                 </div>
                               ))}
                             </div>
@@ -3052,7 +3052,7 @@ export default function Checkout() {
                               backgroundRepeat: 'no-repeat'
                             }}
                           />
-                          <label htmlFor="terms-desktop" className="text-sm" style={{color: 'var(--text-dark-primary)'}}>
+                          <label htmlFor="terms-desktop" className="text-sm" className="text-foreground">
                             Li e aceito os{' '}
                             <a
                               href="/termos"
@@ -3194,7 +3194,7 @@ export default function Checkout() {
                   <div className="grid md:grid-cols-2 gap-8">
                     {/* QR Code */}
                     <div className="text-center">
-                      <h3 className="text-lg font-semibold mb-4" style={{color: 'var(--text-dark-primary)'}}>
+                      <h3 className="text-lg font-semibold mb-4 text-foreground">
                         QR Code PIX
                       </h3>
                       <div className="bg-white p-6 rounded-lg border inline-block">
@@ -3211,11 +3211,11 @@ export default function Checkout() {
 
                   {/* Copy and Paste Code */}
                   <div>
-                    <h3 className="text-lg font-semibold mb-4" style={{color: 'var(--text-dark-primary)'}}>
+                    <h3 className="text-lg font-semibold mb-4 text-foreground">
                       Código Copia e Cola
                     </h3>
                     <div className="bg-white p-4 rounded-lg border mb-4">
-                      <p className="text-xs font-mono break-all" style={{color: 'var(--text-dark-primary)'}}>
+                      <p className="text-xs font-mono break-all" className="text-foreground">
                         {pixPaymentResult.qrCodeString}
                       </p>
                     </div>
