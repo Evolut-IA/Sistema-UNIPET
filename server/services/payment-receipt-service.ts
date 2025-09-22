@@ -342,7 +342,7 @@ export class PaymentReceiptService {
           },
           layout: {
             fillColor: function (rowIndex: number) {
-              return rowIndex === 0 ? '#f5f5f5' : null;
+              return rowIndex === 0 ? 'rgb(var(--muted))' : null;
             }
           },
           marginBottom: 30
@@ -359,7 +359,7 @@ export class PaymentReceiptService {
                 body: [
                   ['Subtotal', { text: amount, alignment: 'right' }],
                   [{ text: 'Total', bold: true }, { text: amount, alignment: 'right', bold: true }],
-                  [{ text: 'Valor Pago', bold: true, color: '#16a34a' }, { text: amount, alignment: 'right', bold: true, color: '#16a34a' }]
+                  [{ text: 'Valor Pago', bold: true, color: 'rgb(var(--success))' }, { text: amount, alignment: 'right', bold: true, color: 'rgb(var(--success))' }]
                 ]
               },
               layout: 'lightHorizontalLines'
@@ -375,7 +375,7 @@ export class PaymentReceiptService {
             widths: ['35%', '65%'],
             body: [
               ['Método de Pagamento:', { text: this.getPaymentMethodLabel(cieloPayment.type), style: 'dataValue' }],
-              ['Status:', { text: cieloPayment.returnMessage || 'Aprovado', style: 'dataValue', color: '#16a34a' }],
+              ['Status:', { text: cieloPayment.returnMessage || 'Aprovado', style: 'dataValue', color: 'rgb(var(--success))' }],
               ['NSU (Proof of Sale):', { text: cieloPayment.proofOfSale || 'N/A', style: 'dataValue' }],
               ['TID (Transaction ID):', { text: cieloPayment.tid || 'N/A', style: 'dataValue' }],
               ...(cieloPayment.authorizationCode ? [['Código de Autorização:', { text: cieloPayment.authorizationCode, style: 'dataValue' }]] : []),

@@ -73,7 +73,7 @@ export function ConfirmationModal({
       onClick={handleOverlayClick}
     >
              {/* Overlay */}
-       <div className="absolute inset-0 bg-black/80" />
+       <div className="absolute inset-0 bg-[rgb(var(--overlay-black)/0.8)]" />
       
              {/* Modal */}
        <div className="relative rounded-lg shadow-xl max-w-md w-full mx-4 animate-in fade-in-0 zoom-in-95 duration-200 border" style={{background: 'var(--bg-teal)'}}>

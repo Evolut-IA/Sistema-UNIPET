@@ -302,9 +302,9 @@ export default function CustomerFinancial() {
       case 'generated':
         return 'var(--text-teal)';
       case 'downloaded':
-        return '#E1AC33';
+        return 'rgb(var(--star-active))';
       case 'sent':
-        return '#4F46E5';
+        return 'rgb(var(--primary))';
       default:
         return 'var(--text-dark-secondary)';
     }
@@ -328,10 +328,10 @@ export default function CustomerFinancial() {
       case 'active':
         return <CheckCircle className="w-5 h-5" style={{ color: 'var(--text-teal)' }} />;
       case 'pending':
-        return <Clock className="w-5 h-5" style={{ color: '#E1AC33' }} />;
+        return <Clock className="w-5 h-5" style={{ color: 'rgb(var(--star-active))' }} />;
       case 'cancelled':
       case 'declined':
-        return <XCircle className="w-5 h-5" style={{ color: '#DC2626' }} />;
+        return <XCircle className="w-5 h-5" style={{ color: 'rgb(var(--error-red))' }} />;
       default:
         return <Clock className="w-5 h-5" style={{ color: 'var(--text-dark-secondary)' }} />;
     }
@@ -632,19 +632,19 @@ export default function CustomerFinancial() {
             </h3>
             <div className="space-y-4">
               {paymentError ? (
-                <div className="p-6 text-center rounded-lg" style={{ background: '#FEF2F2', borderColor: '#FCA5A5' }}>
-                  <XCircle className="w-12 h-12 mx-auto mb-4" style={{ color: '#DC2626' }} />
-                  <p className="font-medium mb-2" style={{ color: '#DC2626' }}>
+                <div className="p-6 text-center rounded-lg" style={{ background: 'rgb(var(--error-bg))', borderColor: 'rgb(var(--error-border))' }}>
+                  <XCircle className="w-12 h-12 mx-auto mb-4" style={{ color: 'rgb(var(--error-red))' }} />
+                  <p className="font-medium mb-2" style={{ color: 'rgb(var(--error-red))' }}>
                     Erro ao carregar histórico de pagamentos
                   </p>
-                  <p className="text-sm mb-4" style={{ color: '#991B1B' }}>
+                  <p className="text-sm mb-4" style={{ color: 'rgb(var(--error-red-dark))' }}>
                     {paymentError}
                   </p>
                   <button
                     onClick={() => window.location.reload()}
                     className="px-4 py-2 rounded-lg text-sm font-medium"
                     style={{ 
-                      background: '#DC2626', 
+                      background: 'rgb(var(--error-red))', 
                       color: 'white',
                       transition: 'background-color 0.2s'
                     }}
@@ -777,19 +777,19 @@ export default function CustomerFinancial() {
             </h3>
             <div className="space-y-4">
               {receiptsError ? (
-                <div className="p-6 text-center rounded-lg" style={{ background: '#FEF2F2', borderColor: '#FCA5A5' }}>
-                  <XCircle className="w-12 h-12 mx-auto mb-4" style={{ color: '#DC2626' }} />
-                  <p className="font-medium mb-2" style={{ color: '#DC2626' }}>
+                <div className="p-6 text-center rounded-lg" style={{ background: 'rgb(var(--error-bg))', borderColor: 'rgb(var(--error-border))' }}>
+                  <XCircle className="w-12 h-12 mx-auto mb-4" style={{ color: 'rgb(var(--error-red))' }} />
+                  <p className="font-medium mb-2" style={{ color: 'rgb(var(--error-red))' }}>
                     Erro ao carregar comprovantes oficiais
                   </p>
-                  <p className="text-sm mb-4" style={{ color: '#991B1B' }}>
+                  <p className="text-sm mb-4" style={{ color: 'rgb(var(--error-red-dark))' }}>
                     {receiptsError}
                   </p>
                   <button
                     onClick={() => window.location.reload()}
                     className="px-4 py-2 rounded-lg text-sm font-medium"
                     style={{ 
-                      background: '#DC2626', 
+                      background: 'rgb(var(--error-red))', 
                       color: 'white',
                       transition: 'background-color 0.2s'
                     }}

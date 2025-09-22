@@ -758,7 +758,7 @@ export default function CustomerPets() {
 
       {/* Guides Modal */}
       {showGuides && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-foreground/50 flex items-center justify-center p-4 z-50">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -796,7 +796,7 @@ export default function CustomerPets() {
                   <div className="text-center">
                     <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4"
                       style={{ background: 'var(--bg-cream-light)' }}>
-                      <X className="w-6 h-6" style={{ color: '#ef4444' }} />
+                      <X className="w-6 h-6" style={{ color: 'rgb(var(--destructive))' }} />
                     </div>
                     <p className="text-lg font-medium" style={{ color: 'var(--text-dark-primary)' }}>
                       Erro ao carregar guias

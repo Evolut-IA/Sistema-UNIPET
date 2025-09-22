@@ -32,7 +32,7 @@ export default function CustomerLoginPage() {
           particleCount: 100,
           spread: 70,
           origin: { y: 0.6 },
-          colors: ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4']
+          colors: ['rgb(var(--gold))', 'rgb(var(--destructive))', 'rgb(var(--accent))', 'rgb(var(--primary))', 'rgb(var(--success))']
         });
       }, 300);
     }
@@ -150,7 +150,7 @@ export default function CustomerLoginPage() {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="p-3 rounded-lg text-sm"
-                    style={{background: 'var(--bg-cream-lighter)', border: '1px solid #ef4444', color: '#ef4444'}}
+                    style={{background: 'rgb(var(--background))', border: '1px solid rgb(var(--destructive))', color: 'rgb(var(--destructive))'}}
                   >
                     {submitError}
                   </motion.div>
@@ -210,7 +210,7 @@ export default function CustomerLoginPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 bg-foreground/50 flex items-center justify-center z-50 p-4"
             onClick={() => setShowPaymentSuccessPopup(false)}
           >
             <motion.div

@@ -173,7 +173,7 @@ export default function Stepper({
                 className="next-button"
                 style={{
                   background: 'rgb(var(--primary))',
-                  color: 'rgb(var(--primary-foreground)),',
+                  color: 'rgb(var(--primary-foreground))',
                   opacity: isLoading ? 0.8 : 1
                 }}
                 disabled={isLoading}

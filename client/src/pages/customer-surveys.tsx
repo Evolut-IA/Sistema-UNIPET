@@ -121,9 +121,9 @@ export default function CustomerSurveys() {
               <Star
                 className="w-6 h-6"
                 style={{ 
-                  color: isActive ? '#E1AC33' : '#9CA3AF',
-                  fill: isActive ? '#E1AC33' : 'transparent',
-                  stroke: isActive ? '#E1AC33' : '#9CA3AF',
+                  color: isActive ? 'rgb(var(--star-active))' : 'rgb(var(--star-inactive))',
+                  fill: isActive ? 'rgb(var(--star-active))' : 'transparent',
+                  stroke: isActive ? 'rgb(var(--star-active))' : 'rgb(var(--star-inactive))',
                   strokeWidth: '1.5px'
                 }}
               />

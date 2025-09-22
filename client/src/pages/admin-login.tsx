@@ -139,7 +139,7 @@ export default function AdminLoginPage() {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="p-3 rounded-lg text-sm"
-                  style={{background: 'var(--bg-cream-lighter)', border: '1px solid #ef4444', color: '#ef4444'}}
+                  style={{background: 'var(--bg-cream-lighter)', border: '1px solid rgb(var(--destructive))', color: 'rgb(var(--destructive))'}}
                   data-testid="error-message"
                 >
                   {submitError}

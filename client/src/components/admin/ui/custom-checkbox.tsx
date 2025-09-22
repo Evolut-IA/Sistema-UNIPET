@@ -59,8 +59,8 @@ const CustomCheckbox = React.forwardRef<HTMLInputElement, CustomCheckboxProps>(
               className
             )}
             style={{
-              backgroundColor: checked ? '#22c55e' : 'white',
-              borderColor: checked ? '#22c55e' : '#e1eaef',
+              backgroundColor: checked ? 'rgb(var(--checkbox-success))' : 'rgb(var(--bg-white))',
+              borderColor: checked ? 'rgb(var(--checkbox-success))' : 'rgb(var(--checkbox-border))',
               boxShadow: props.disabled ? 'inset 0 0 0 1px rgba(0, 0, 0, 0.25)' : 'none',
             }}
             data-checked={checked ? "true" : "false"}
@@ -71,7 +71,7 @@ const CustomCheckbox = React.forwardRef<HTMLInputElement, CustomCheckboxProps>(
           >
             {checked && (
               <Check 
-                className="h-3 w-3 text-white"
+                className="h-3 w-3 text-[rgb(var(--success-foreground))]"
                 strokeWidth={3}
               />
             )}

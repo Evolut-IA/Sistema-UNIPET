@@ -335,8 +335,8 @@ export default function Plans() {
                   </CardContent>
                 </Card>
 
-                <Card style={{ backgroundColor: '#277677' }} className="text-primary-foreground shadow-lg">
-                  <CardHeader style={{ backgroundColor: '#1f5e5f' }} className="border border-[#1f5e5f] rounded-t-lg">
+                <Card style={{ backgroundColor: 'rgb(var(--card-special))' }} className="text-primary-foreground shadow-lg">
+                  <CardHeader style={{ backgroundColor: 'rgb(var(--card-special-dark))' }} className="border border-[rgb(var(--card-special-dark))] rounded-t-lg">
                     <CardTitle className="text-xl font-bold flex items-center">
                       <Check className="h-5 w-5 mr-2 text-gold" />
                       Benefícios Especiais
@@ -563,8 +563,8 @@ export default function Plans() {
                   </CardContent>
                 </Card>
 
-                <Card style={{ backgroundColor: '#277677' }} className="text-primary-foreground shadow-lg">
-                  <CardHeader style={{ backgroundColor: '#1f5e5f' }} className="border border-[#1f5e5f] rounded-t-lg">
+                <Card style={{ backgroundColor: 'rgb(var(--card-special))' }} className="text-primary-foreground shadow-lg">
+                  <CardHeader style={{ backgroundColor: 'rgb(var(--card-special-dark))' }} className="border border-[rgb(var(--card-special-dark))] rounded-t-lg">
                     <CardTitle className="text-xl font-bold flex items-center">
                       <Check className="h-5 w-5 mr-2 text-gold" />
                       Benefícios Especiais
@@ -1103,8 +1103,8 @@ export default function Plans() {
                   </CardContent>
                 </Card>
 
-                <Card style={{ backgroundColor: '#277677' }} className="text-primary-foreground shadow-lg">
-                  <CardHeader style={{ backgroundColor: '#1f5e5f' }} className="border border-[#1f5e5f] rounded-t-lg">
+                <Card style={{ backgroundColor: 'rgb(var(--card-special))' }} className="text-primary-foreground shadow-lg">
+                  <CardHeader style={{ backgroundColor: 'rgb(var(--card-special-dark))' }} className="border border-[rgb(var(--card-special-dark))] rounded-t-lg">
                     <CardTitle className="text-xl font-bold flex items-center">
                       <Check className="h-5 w-5 mr-2 text-gold" />
                       Benefícios Especiais
@@ -1755,8 +1755,8 @@ export default function Plans() {
                   </CardContent>
                 </Card>
 
-                <Card style={{ backgroundColor: '#277677' }} className="text-primary-foreground shadow-lg">
-                  <CardHeader style={{ backgroundColor: '#1f5e5f' }} className="border border-[#1f5e5f] rounded-t-lg">
+                <Card style={{ backgroundColor: 'rgb(var(--card-special))' }} className="text-primary-foreground shadow-lg">
+                  <CardHeader style={{ backgroundColor: 'rgb(var(--card-special-dark))' }} className="border border-[rgb(var(--card-special-dark))] rounded-t-lg">
                     <CardTitle className="text-xl font-bold flex items-center">
                       <Check className="h-5 w-5 mr-2 text-gold" />
                       Benefícios Especiais

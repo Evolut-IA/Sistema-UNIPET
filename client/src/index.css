@@ -405,7 +405,7 @@ svg {
   right: 2px;
   width: 28px;
   height: 28px;
-  background: var(--bg-white);
+  background: rgb(var(--background));
   border-radius: 50%;
   transition: all 0.4s ease;
   box-shadow: 0 2px 8px var(--shadow-dark);

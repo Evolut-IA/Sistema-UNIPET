@@ -347,7 +347,7 @@ img:focus, svg:focus {
 }
 
 .custom-checkbox-input[data-checked="true"] {
-  background-color: #22c55e !important;
+  background-color: rgb(var(--success)) !important;
 }
 
 /* ========================================
