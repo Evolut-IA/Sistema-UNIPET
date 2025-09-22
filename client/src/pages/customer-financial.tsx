@@ -222,7 +222,7 @@ export default function CustomerFinancial() {
   const getCountdownDisplay = (daysRemaining: number, isExpired: boolean) => {
     if (isExpired) {
       return (
-        <span className="px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-700">
+        <span className="px-2 py-1 rounded text-xs font-medium" style={{ background: 'rgb(var(--error-background))', color: 'rgb(var(--error))' }}>
           ⚠️ Expirado
         </span>
       );
@@ -230,7 +230,7 @@ export default function CustomerFinancial() {
 
     if (daysRemaining <= 5) {
       return (
-        <span className="px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-700">
+        <span className="px-2 py-1 rounded text-xs font-medium" style={{ background: 'rgb(var(--error-background))', color: 'rgb(var(--error))' }}>
           🔴 {daysRemaining} dias restantes
         </span>
       );
@@ -238,14 +238,14 @@ export default function CustomerFinancial() {
 
     if (daysRemaining <= 15) {
       return (
-        <span className="px-2 py-1 rounded text-xs font-medium bg-yellow-100 text-yellow-700">
+        <span className="px-2 py-1 rounded text-xs font-medium" style={{ background: 'rgb(var(--warning-background))', color: 'rgb(var(--warning))' }}>
           🟡 {daysRemaining} dias restantes
         </span>
       );
     }
 
     return (
-      <span className="px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-700">
+      <span className="px-2 py-1 rounded text-xs font-medium" style={{ background: 'rgb(var(--success-background))', color: 'rgb(var(--success))' }}>
         🟢 {daysRemaining} dias restantes
       </span>
     );
@@ -328,10 +328,10 @@ export default function CustomerFinancial() {
       case 'active':
         return <CheckCircle className="w-5 h-5" style={{ color: 'var(--text-teal)' }} />;
       case 'pending':
-        return <Clock className="w-5 h-5" style={{ color: 'rgb(var(--star-active))' }} />;
+        return <Clock className="w-5 h-5" style={{ color: 'var(--star-active)' }} />;
       case 'cancelled':
       case 'declined':
-        return <XCircle className="w-5 h-5" style={{ color: 'rgb(var(--error-red))' }} />;
+        return <XCircle className="w-5 h-5" style={{ color: 'rgb(var(--error))' }} />;
       default:
         return <Clock className="w-5 h-5" style={{ color: 'var(--text-dark-secondary)' }} />;
     }
