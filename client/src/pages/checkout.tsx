@@ -2349,7 +2349,7 @@ export default function Checkout() {
                                 {paymentMethod === value && (
                                   <div 
                                     className="w-3 h-3 rounded-full"
-                                    style={{background: 'var(--bg-teal)'}}
+                                   
                                   />
                                 )}
                               </div>
@@ -3152,7 +3152,7 @@ export default function Checkout() {
                   ) : pixPaymentStatus === 'rejected' ? (
                     // Payment Rejected State
                     <>
-                      <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--bg-error)' }}>
+                      <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center bg-error">
                         <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
@@ -3290,7 +3290,7 @@ export default function Checkout() {
                   {creditCardPaymentStatus === 'rejected' ? (
                     // Payment Rejected State
                     <>
-                      <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--bg-error)' }}>
+                      <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center bg-error">
                         <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
