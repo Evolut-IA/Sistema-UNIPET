@@ -63,7 +63,7 @@
   --black: 0 0 0; /* #000000 - preto puro */
   
   /* Placeholder global - agora unificado */
-  --placeholder: 204 204 204; /* #cccccc (cor do placeholder nos campos) */
+  --placeholder: 165 165 165; /* #a5a5a5 (cor do placeholder nos campos) */
   
   /* Tokens de UI */
   --radius: 0.5rem;
@@ -82,7 +82,7 @@
   --admin-foreground: 26 26 26; /* #1a1a1a - texto mais escuro para admin */
   --admin-muted: 247 249 250; /* #f7f9fa */
   --admin-muted-foreground: 107 114 128; /* #6b7280 */
-  --admin-placeholder: 204 204 204; /* #cccccc (cor do placeholder nos campos) */
+  --admin-placeholder: 165 165 165; /* #a5a5a5 (cor do placeholder nos campos) */
   
   /* Admin: Cards e popovers específicos */
   --admin-card: 224 224 224; /* #e0e0e0 */
