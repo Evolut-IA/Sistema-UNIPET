@@ -82,7 +82,7 @@
   --admin-foreground: 26 26 26; /* #1a1a1a - texto mais escuro para admin */
   --admin-muted: 247 249 250; /* #f7f9fa */
   --admin-muted-foreground: 107 114 128; /* #6b7280 */
-  --admin-placeholder: 26 26 26; /* #1a1a1a */
+  --admin-placeholder: 204 204 204; /* #cccccc (cor do placeholder nos campos) */
   
   /* Admin: Cards e popovers específicos */
   --admin-card: 224 224 224; /* #e0e0e0 */
@@ -91,7 +91,7 @@
   --admin-popover-foreground: 26 26 26; /* #1a1a1a */
   
   /* Admin: Input override */
-  --admin-input: 247 249 250; /* #f7f9fa */
+  --admin-input: 226 226 226; /* #E2E2E2 (background dos campos) */
   --admin-border: 225 234 239; /* #e1eaef */
   
   /* Admin: Sidebar específico */
