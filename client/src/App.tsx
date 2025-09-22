@@ -41,8 +41,8 @@ function GlobalLoading() {
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-gradient-to-br from-primary to-teal-dark">
       <div className="text-center">
-        <div className="w-16 h-16 border-4 border-t-transparent border-gold rounded-full animate-spin mx-auto mb-6"></div>
-        <div className="text-lg text-gold">Carregando...</div>
+        <div className="w-16 h-16 border-4 rounded-full animate-spin mx-auto mb-6" style={{ borderColor: 'rgb(var(--gold))', borderTopColor: 'transparent' }}></div>
+        <div className="text-lg" style={{ color: 'rgb(var(--gold))' }}>Carregando...</div>
       </div>
     </div>
   );
