@@ -1690,7 +1690,7 @@ export default function Checkout() {
                           >
                             <h4 className="font-bold text-lg mb-2 text-foreground">{plan.name}</h4>
                             <p className="text-2xl font-bold mb-2" style={{color: 'var(--text-teal)'}}>{formatPrice(plan.price)}/mês</p>
-                            <p className="text-sm mb-3" style={{color: 'var(--text-dark-secondary)'}}>{plan.description}</p>
+                            <p className="text-sm mb-3 text-dark-secondary">{plan.description}</p>
                           </div>
                         ))}
                       </div>
@@ -1733,7 +1733,7 @@ export default function Checkout() {
                           <div className="p-4 bg-[var(--bg-cream-lighter)] flex justify-between items-center">
                             <div>
                               <h4 className="font-semibold text-foreground">{pet.name}</h4>
-                              <p className="text-sm" style={{color: 'var(--text-dark-secondary)'}}>
+                              <p className="text-sm text-dark-secondary">
                                 {pet.species} • {pet.breed} • {pet.age} anos
                               </p>
                               <p className="text-sm font-medium" style={{color: 'var(--text-teal)'}}>
@@ -2484,19 +2484,19 @@ export default function Checkout() {
                     </div>
                     <div className="space-y-4">
                       <div>
-                        <span className="block text-sm" style={{color: 'var(--text-dark-secondary)'}}>Plano selecionado:</span>
+                        <span className="block text-sm text-dark-secondary">Plano selecionado:</span>
                         <span className="font-semibold text-foreground">{selectedPlan?.name}</span>
                       </div>
                       <div>
-                        <span className="block text-sm" style={{color: 'var(--text-dark-secondary)'}}>Quantidade de pets:</span>
+                        <span className="block text-sm text-dark-secondary">Quantidade de pets:</span>
                         <span className="text-foreground">{pets.length} pet{pets.length > 1 ? 's' : ''}</span>
                       </div>
                       <div>
-                        <span className="block text-sm" style={{color: 'var(--text-dark-secondary)'}}>Modalidade:</span>
+                        <span className="block text-sm text-dark-secondary">Modalidade:</span>
                         <span className="text-foreground">{billingPeriod === 'annual' ? 'Anual (12 meses)' : 'Mensal'}</span>
                       </div>
                       <div>
-                        <span className="block text-sm" style={{color: 'var(--text-dark-secondary)'}}>Forma de pagamento:</span>
+                        <span className="block text-sm text-dark-secondary">Forma de pagamento:</span>
                         <span className="text-foreground">
                           {paymentMethod === 'credit' ? 'Cartão de Crédito' : 'PIX'}
                         </span>
@@ -2513,14 +2513,14 @@ export default function Checkout() {
                       <div className="mb-4">
                         <img src="/unipet-logo.png" alt="Unipet Plan" className="h-8 w-auto mx-auto" />
                       </div>
-                      <h3 className="text-xl font-bold mb-2" style={{color: 'var(--text-light)'}}>
+                      <h3 className="text-xl font-bold mb-2">
                         Total 1ª mensalidade
                       </h3>
-                      <div className="text-3xl font-bold" style={{color: 'var(--text-light)'}}>
+                      <div className="text-3xl font-bold">
                         {formatPrice(calculateFinalPrice())}
                       </div>
                       {billingPeriod === 'monthly' && paymentMethod === 'credit' && installments > 1 && (
-                        <div className="text-sm mt-2" style={{color: 'var(--text-light)'}}>
+                        <div className="text-sm mt-2">
                           Em {installments}x de {formatPrice(calculateFinalPrice() / installments)} no cartão
                         </div>
                       )}
@@ -2551,7 +2551,7 @@ export default function Checkout() {
                         <div className="grid grid-cols-3 gap-4 mt-4 text-sm">
                           {Array.from({ length: 12 }, (_, i) => (
                             <div key={i + 1} className="flex justify-between">
-                              <span style={{color: 'var(--text-dark-secondary)'}}>{i + 1})</span>
+                              <span className="text-dark-secondary">{i + 1})</span>
                               <span className="text-foreground">{formatPrice(Math.round((selectedPlan?.price || 0) * pets.length))}</span>
                             </div>
                           ))}
@@ -2963,15 +2963,15 @@ export default function Checkout() {
                         <h3 className="text-lg font-semibold mb-4 text-foreground">Resumo do pedido</h3>
                         <div className="space-y-3">
                           <div>
-                            <span className="block text-sm" style={{color: 'var(--text-dark-secondary)'}}>{selectedPlan?.name} | {pets[0]?.name} | {billingPeriod === 'annual' ? 'Anual' : 'Mensal'}</span>
+                            <span className="block text-sm text-dark-secondary">{selectedPlan?.name} | {pets[0]?.name} | {billingPeriod === 'annual' ? 'Anual' : 'Mensal'}</span>
                             <span className="text-foreground">{formatPrice(selectedPlan?.price || 0)}</span>
                           </div>
                           <div>
-                            <span className="block text-sm" style={{color: 'var(--text-dark-secondary)'}}>Modalidade:</span>
+                            <span className="block text-sm text-dark-secondary">Modalidade:</span>
                             <span className="text-foreground">{billingPeriod === 'annual' ? 'Anual (12 meses)' : 'Mensal'}</span>
                           </div>
                           <div>
-                            <span className="block text-sm" style={{color: 'var(--text-dark-secondary)'}}>Forma de pagamento:</span>
+                            <span className="block text-sm text-dark-secondary">Forma de pagamento:</span>
                             <span className="text-foreground">
                               {paymentMethod === 'credit' ? 'Cartão de Crédito' : 'PIX'}
                             </span>
@@ -2987,14 +2987,14 @@ export default function Checkout() {
                           <div className="mb-4">
                             <img src="/unipet-logo.png" alt="Unipet Plan" className="h-8 w-auto mx-auto" />
                           </div>
-                          <h3 className="text-xl font-bold mb-2" style={{color: 'var(--text-light)'}}>
+                          <h3 className="text-xl font-bold mb-2">
                             Total 1ª mensalidade
                           </h3>
-                          <div className="text-3xl font-bold" style={{color: 'var(--text-light)'}}>
+                          <div className="text-3xl font-bold">
                             {formatPrice(calculateFinalPrice())}
                           </div>
                           {billingPeriod === 'monthly' && paymentMethod === 'credit' && installments > 1 && (
-                            <div className="text-sm mt-2" style={{color: 'var(--text-light)'}}>
+                            <div className="text-sm mt-2">
                               Em {installments}x de {formatPrice(calculateFinalPrice() / installments)} no cartão
                             </div>
                           )}
@@ -3025,7 +3025,7 @@ export default function Checkout() {
                             <div className="grid grid-cols-3 gap-4 mt-4 text-sm">
                               {Array.from({ length: 12 }, (_, i) => (
                                 <div key={i + 1} className="flex justify-between">
-                                  <span style={{color: 'var(--text-dark-secondary)'}}>{i + 1})</span>
+                                  <span className="text-dark-secondary">{i + 1})</span>
                                   <span className="text-foreground">{formatPrice(Math.round((selectedPlan?.price || 0) * pets.length))}</span>
                                 </div>
                               ))}
@@ -3142,10 +3142,10 @@ export default function Checkout() {
                           Compra Concluída com Sucesso!
                         </span>
                       </h2>
-                      <p className="text-base md:text-lg" style={{color: 'var(--text-dark-secondary)'}}>
+                      <p className="text-base md:text-lg text-dark-secondary">
                         Seu pagamento PIX foi confirmado e seu plano foi ativado
                       </p>
-                      <p className="text-sm mt-2" style={{color: 'var(--text-dark-secondary)'}}>
+                      <p className="text-sm mt-2 text-dark-secondary">
                         Pedido: <span className="font-mono font-bold">{pixPaymentResult.orderId}</span>
                       </p>
                     </>
@@ -3160,10 +3160,10 @@ export default function Checkout() {
                       <h2 className="text-2xl font-bold mb-2" style={{ color: 'var(--text-error)' }}>
                         ❌ Pagamento Rejeitado
                       </h2>
-                      <p className="text-lg" style={{color: 'var(--text-dark-secondary)'}}>
+                      <p className="text-lg text-dark-secondary">
                         Houve um problema com o pagamento PIX
                       </p>
-                      <p className="text-sm mt-2" style={{color: 'var(--text-dark-secondary)'}}>
+                      <p className="text-sm mt-2 text-dark-secondary">
                         Pedido: <span className="font-mono font-bold">{pixPaymentResult.orderId}</span>
                       </p>
                     </>
@@ -3179,10 +3179,10 @@ export default function Checkout() {
                       <h2 className="text-2xl font-bold mb-2" style={{color: 'var(--text-teal)'}}>
                         PIX Gerado com Sucesso!
                       </h2>
-                      <p className="text-lg" style={{color: 'var(--text-dark-secondary)'}}>
+                      <p className="text-lg text-dark-secondary">
                         Escaneie o QR Code ou use o código copia e cola para finalizar o pagamento
                       </p>
-                      <p className="text-sm mt-2" style={{color: 'var(--text-dark-secondary)'}}>
+                      <p className="text-sm mt-2 text-dark-secondary">
                         Pedido: <span className="font-mono font-bold">{pixPaymentResult.orderId}</span>
                       </p>
                     </>
@@ -3204,7 +3204,7 @@ export default function Checkout() {
                           className="w-48 h-48 mx-auto"
                         />
                       </div>
-                      <p className="text-sm mt-4" style={{color: 'var(--text-dark-secondary)'}}>
+                      <p className="text-sm mt-4 text-dark-secondary">
                         Abra o app do seu banco e escaneie o QR Code
                     </p>
                   </div>
@@ -3247,7 +3247,7 @@ export default function Checkout() {
                         'Copiar Código'
                       )}
                     </button>
-                    <p className="text-sm mt-4" style={{color: 'var(--text-dark-secondary)'}}>
+                    <p className="text-sm mt-4 text-dark-secondary">
                       Copie o código e cole no app do seu banco na opção PIX
                     </p>
                   </div>
@@ -3298,13 +3298,13 @@ export default function Checkout() {
                       <h2 className="text-2xl font-bold mb-2" style={{ color: 'var(--text-error)' }}>
                         ❌ Pagamento Recusado
                       </h2>
-                      <p className="text-lg" style={{color: 'var(--text-dark-secondary)'}}>
+                      <p className="text-lg text-dark-secondary">
                         Houve um problema com o pagamento do cartão
                       </p>
-                      <p className="text-sm mt-2" style={{color: 'var(--text-dark-secondary)'}}>
+                      <p className="text-sm mt-2 text-dark-secondary">
                         Motivo: {creditCardPaymentResult.returnMessage}
                       </p>
-                      <p className="text-sm mt-1" style={{color: 'var(--text-dark-secondary)'}}>
+                      <p className="text-sm mt-1 text-dark-secondary">
                         Pedido: <span className="font-mono font-bold">{creditCardPaymentResult.orderId}</span>
                       </p>
                     </>
@@ -3320,13 +3320,13 @@ export default function Checkout() {
                       <h2 className="text-2xl font-bold mb-2" style={{color: 'var(--text-teal)'}}>
                         Pagamento em Análise
                       </h2>
-                      <p className="text-lg" style={{color: 'var(--text-dark-secondary)'}}>
+                      <p className="text-lg text-dark-secondary">
                         Seu pagamento está sendo processado pela operadora
                       </p>
-                      <p className="text-sm mt-2" style={{color: 'var(--text-dark-secondary)'}}>
+                      <p className="text-sm mt-2 text-dark-secondary">
                         Status: {creditCardPaymentResult.returnMessage}
                       </p>
-                      <p className="text-sm mt-1" style={{color: 'var(--text-dark-secondary)'}}>
+                      <p className="text-sm mt-1 text-dark-secondary">
                         Pedido: <span className="font-mono font-bold">{creditCardPaymentResult.orderId}</span>
                       </p>
                     </>
@@ -3351,7 +3351,7 @@ export default function Checkout() {
                     >
                       Tentar Novamente
                     </button>
-                    <p className="text-sm" style={{color: 'var(--text-dark-secondary)'}}>
+                    <p className="text-sm text-dark-secondary">
                       Verifique os dados do cartão ou tente outro método de pagamento
                     </p>
                   </div>
@@ -3368,7 +3368,7 @@ export default function Checkout() {
                 <button
                   onClick={() => currentStep === 1 ? navigate('/') : prevStep()}
                   className="flex items-center space-x-2 px-6 py-3 opacity-80 transition-colors"
-                  style={{color: 'var(--text-dark-secondary)'}}
+                  className="text-dark-secondary"
                 >
                   <span>{currentStep === 1 ? 'Voltar ao início' : 'Anterior'}</span>
                 </button>
@@ -3444,7 +3444,7 @@ export default function Checkout() {
               </h2>
               
               {/* Mensagem */}
-              <p className="text-lg mb-6" style={{color: 'var(--text-dark-secondary)'}}>
+              <p className="text-lg mb-6 text-dark-secondary">
                 Seu cartão de crédito foi aprovado com sucesso!<br />
                 <strong>Seu plano foi ativado</strong> e você já pode acessar a área do cliente.
               </p>
@@ -3452,7 +3452,7 @@ export default function Checkout() {
               {/* Detalhes do Pagamento */}
               {creditCardPaymentResult && (
                 <div className="bg-white bg-opacity-50 rounded-lg p-4 mb-6" style={{border: '1px solid var(--border-gray)'}}>
-                  <p className="text-sm mb-2" style={{color: 'var(--text-dark-secondary)'}}>
+                  <p className="text-sm mb-2 text-dark-secondary">
                     <strong>Pedido:</strong> {creditCardPaymentResult.orderId}
                   </p>
                 </div>
