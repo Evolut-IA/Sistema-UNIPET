@@ -75,6 +75,6 @@ localPort = 43643
 externalPort = 3003
 
 [deployment]
-deploymentTarget = "gce"
+deploymentTarget = "autoscale"
 run = ["npm", "start"]
 build = ["npm", "run", "build"]
