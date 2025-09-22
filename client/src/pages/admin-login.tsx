@@ -65,7 +65,7 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen" style={{background: 'var(--bg-cream-light)'}}>
+    <div className="min-h-screen bg-muted">
       <div className="flex items-center justify-center min-h-screen px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -74,16 +74,16 @@ export default function AdminLoginPage() {
         >
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold mb-2" style={{color: 'var(--text-dark-primary)'}}>Área Administrativa</h1>
-            <p style={{color: 'var(--text-dark-secondary)'}}>Acesse o painel administrativo</p>
+            <h1 className="text-3xl font-bold mb-2 text-foreground">Área Administrativa</h1>
+            <p className="text-muted-foreground">Acesse o painel administrativo</p>
           </div>
 
           {/* Login Form */}
-          <div className="rounded-xl shadow-lg p-8" style={{background: 'var(--bg-cream-lighter)'}}>
+          <div className="rounded-xl shadow-lg p-8 bg-background">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               {/* Login Field */}
               <div className="space-y-2">
-                <label className="flex items-center space-x-2 text-sm font-medium" style={{color: 'var(--text-dark-primary)'}}>
+                <label className="flex items-center space-x-2 text-sm font-medium text-foreground">
                   <User className="w-4 h-4" />
                   <span>Login</span>
                 </label>
@@ -109,7 +109,7 @@ export default function AdminLoginPage() {
 
               {/* Password Field */}
               <div className="space-y-2">
-                <label className="flex items-center space-x-2 text-sm font-medium" style={{color: 'var(--text-dark-primary)'}}>
+                <label className="flex items-center space-x-2 text-sm font-medium text-foreground">
                   <Lock className="w-4 h-4" />
                   <span>Senha</span>
                 </label>
@@ -176,7 +176,7 @@ export default function AdminLoginPage() {
 
           {/* Additional Info */}
           <div className="text-center mt-6">
-            <p className="text-sm" style={{color: 'var(--text-dark-secondary)'}}>
+            <p className="text-sm text-muted-foreground">
               Sistema de administração - Acesso restrito
             </p>
           </div>

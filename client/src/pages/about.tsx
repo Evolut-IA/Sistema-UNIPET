@@ -35,7 +35,7 @@ export default function About() {
         <div className="page-header">
           <AnimatedSection animation="slideUp" delay={100}>
             <h1 className="page-title text-[var(--text-dark-primary)]">
-              <span style={{ color: '#FFFFFF' }}>Sobre a</span> <span className="text-[var(--text-gold)]">UNIPET PLAN</span>
+              <span className="text-white">Sobre a</span> <span className="text-[var(--text-gold)]">UNIPET PLAN</span>
             </h1>
           </AnimatedSection>
         </div>
@@ -74,7 +74,7 @@ export default function About() {
             </AnimatedSection>
             <AnimatedSection animation="slideLeft" delay={300}>
               {shouldShow.ourStory && (
-                <div className="text-lg leading-relaxed whitespace-pre-line" style={{ color: '#FFFFFF' }}>
+                <div className="text-lg leading-relaxed whitespace-pre-line text-white">
                   {settings.ourStory}
                 </div>
               )}
@@ -88,12 +88,12 @@ export default function About() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-20">
           {values.map((item, index) => (
             <AnimatedSection key={index} animation="slideUp" delay={800 + (index * 200)}>
-              <Card className="backdrop-blur-sm shadow-xl border-0 h-full" style={{background: 'var(--bg-cream-light)'}}>
+              <Card className="backdrop-blur-sm shadow-xl border-0 h-full bg-muted">
                 <CardHeader>
                   <CardTitle className="text-2xl text-[var(--text-teal)]">{item.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="leading-relaxed" style={{ color: '#FFFFFF' }}>{item.content}</p>
+                  <p className="leading-relaxed text-white">{item.content}</p>
                 </CardContent>
               </Card>
             </AnimatedSection>
@@ -104,12 +104,12 @@ export default function About() {
         <div className="text-center mb-16">
           <AnimatedSection animation="slideUp" delay={600}>
             <h2 className="page-title text-[var(--text-dark-primary)]">
-              <span style={{ color: '#FFFFFF' }}>Nosso</span> <span className="text-[var(--text-gold)]">Compromisso</span>
+              <span className="text-white">Nosso</span> <span className="text-[var(--text-gold)]">Compromisso</span>
             </h2>
           </AnimatedSection>
           <div className="max-w-4xl mx-auto">
             <AnimatedSection animation="slideUp" delay={700}>
-              <p className="page-subtitle leading-relaxed mb-8" style={{ color: '#FFFFFF' }}>
+              <p className="page-subtitle leading-relaxed mb-8 text-white">
                 Nossa equipe é formada por veterinários, especialistas em seguros e profissionais
                 apaixonados por animais. Trabalhamos incansavelmente para garantir que cada pet
                 receba o cuidado que merece, quando precisa.
@@ -117,10 +117,10 @@ export default function About() {
             </AnimatedSection>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               <AnimatedSection animation="slideUp" delay={800}>
-                <Card className="backdrop-blur-sm shadow-xl border-0 h-full" style={{background: 'var(--bg-cream-light)'}}>
+                <Card className="backdrop-blur-sm shadow-xl border-0 h-full bg-muted">
                   <CardContent className="pt-6">
                     <h3 className="text-xl font-semibold text-[var(--text-teal)] mb-4">Atendimento Humanizado</h3>
-                    <p style={{ color: '#FFFFFF' }}>
+                    <p className="text-white">
                       Tratamos cada pet como se fosse nosso, oferecendo cuidado personalizado
                       e suporte emocional para as famílias em momentos difíceis.
                     </p>
@@ -128,10 +128,10 @@ export default function About() {
                 </Card>
               </AnimatedSection>
               <AnimatedSection animation="slideUp" delay={900}>
-                <Card className="backdrop-blur-sm shadow-xl border-0 h-full" style={{background: 'var(--bg-cream-light)'}}>
+                <Card className="backdrop-blur-sm shadow-xl border-0 h-full bg-muted">
                   <CardContent className="pt-6">
                     <h3 className="text-xl font-semibold text-[var(--text-teal)] mb-4">Inovação Constante</h3>
-                    <p style={{ color: '#FFFFFF' }}>
+                    <p className="text-white">
                       Investimos continuamente em tecnologia e processos para tornar
                       o acesso aos cuidados veterinários mais fácil e eficiente.
                     </p>

@@ -28,19 +28,19 @@ export default function Testimonials() {
   const renderStars = () => (
     <div className="flex mb-4">
       {[...Array(5)].map((_, i) => (
-        <Star key={i} className="h-4 w-4 fill-current" style={{color: 'var(--text-gold)'}} />
+        <Star key={i} className="h-4 w-4 fill-current text-gold" />
       ))}
     </div>
   );
 
   return (
-    <section className="py-20" style={{color: 'var(--text-teal)', background: 'var(--bg-beige)'}}>
+    <section className="py-20 text-teal bg-beige">
       <div className="section-container">
         <div className="text-center mb-12 sm:mb-16">
-          <h2 className="text-[28px] md:text-[36px] font-bold mb-4 leading-tight" style={{color: 'var(--text-dark-primary)'}}>
-            <span className="block sm:inline">O que nossos</span> <span style={{color: 'var(--text-teal)'}}>clientes dizem</span>
+          <h2 className="text-[28px] md:text-[36px] font-bold mb-4 leading-tight text-foreground">
+            <span className="block sm:inline">O que nossos</span> <span className="text-teal">clientes dizem</span>
           </h2>
-          <p className="text-[18px] font-normal" style={{color: 'var(--text-dark-primary)'}}>Depoimentos reais de quem<br className="lg:hidden" /><span className="lg:hidden"> </span>confia na UNIPET PLAN</p>
+          <p className="text-[18px] font-normal text-foreground">Depoimentos reais de quem<br className="lg:hidden" /><span className="lg:hidden"> </span>confia na UNIPET PLAN</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
@@ -48,8 +48,8 @@ export default function Testimonials() {
             return (
               <Card
                 key={index}
-                className="rounded-2xl shadow-lg border-0 h-[200px] sm:h-[260px] w-full max-w-[380px] sm:max-w-[420px] mx-auto flex flex-col"
-                style={{background: 'var(--bg-cream-light)'}}
+                className="rounded-2xl shadow-lg border-0 h-[200px] sm:h-[260px] w-full max-w-[380px] sm:max-w-[420px] mx-auto flex flex-col bg-muted"
+
               >
                 <CardContent className="pt-4 sm:pt-8 p-4 sm:p-6 flex flex-col flex-1 justify-center sm:justify-start">
                   <div className="flex items-center mb-4 sm:mb-6 flex-shrink-0">
@@ -60,14 +60,14 @@ export default function Testimonials() {
                       onError={(error) => console.warn(`Testimonial image error for ${testimonial.name}:`, error)}
                     />
                     <div className="ml-3 sm:ml-4">
-                      <h4 className="font-semibold text-sm sm:text-base" style={{color: 'var(--text-dark-primary)'}}>{testimonial.name}</h4>
-                      {testimonial.location && <p className="text-xs sm:text-sm" style={{color: 'var(--text-dark-primary)'}}>{testimonial.location}</p>}
+                      <h4 className="font-semibold text-sm sm:text-base text-foreground">{testimonial.name}</h4>
+                      {testimonial.location && <p className="text-xs sm:text-sm text-foreground">{testimonial.location}</p>}
                     </div>
                   </div>
                   <div className="flex-shrink-0">
                     {renderStars()}
                   </div>
-                  <p className="italic text-sm sm:text-base leading-relaxed flex-1 overflow-y-auto" style={{color: 'var(--text-dark-primary)'}}>
+                  <p className="italic text-sm sm:text-base leading-relaxed flex-1 overflow-y-auto text-foreground">
                     "{testimonial.testimonial}"
                   </p>
                 </CardContent>
