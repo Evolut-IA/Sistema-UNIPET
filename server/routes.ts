@@ -1535,8 +1535,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
               name: targetClient.full_name
             });
           } else if (!needsClientCreation) {
-            // Update existing client with address data
+            // CRITICAL FIX: Get current client data to preserve CPF
+            const currentClient = await storage.getClientById(clientId);
+            console.log("🔄 [CHECKOUT-PROCESS] Preservando CPF do cliente:", { 
+              clientId, 
+              currentCpf: currentClient?.cpf ? 'PRESENTE' : 'AUSENTE',
+              hasAddress: !!addressData.address 
+            });
+            
+            // Update existing client with address data while preserving CPF
             targetClient = await storage.updateClient(clientId, {
+              cpf: currentClient?.cpf, // CRITICAL FIX: Preserve CPF during address update
               address: addressData.address,
               number: addressData.number,
               complement: addressData.complement,
