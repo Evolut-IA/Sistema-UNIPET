@@ -113,7 +113,7 @@ class AutoConfig {
       return process.env.HOST;
     }
 
-    return '0.0.0.0';
+    return 'localhost';
   }
 
   /**
