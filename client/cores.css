@@ -50,6 +50,11 @@
   
   /* Tokens de UI */
   --radius: 0.5rem;
+
+  /* Tokens RGB para cores personalizadas do projeto */
+  --teal-dark: 26 90 92; /* Mapeamento da cor legacy */
+  --gold: 225 172 51; /* Mapeamento da cor legacy */
+  --gold-darker: 201 149 36; /* Mapeamento da cor legacy */
   
   /* ========================================
      TOKENS ESPECÍFICOS ADMIN - EXTENSÕES

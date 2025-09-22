@@ -1684,7 +1684,7 @@ export default function Checkout() {
                             onClick={() => setSelectedPlan(plan)}
                             className="p-4 rounded-lg border-2 cursor-pointer transition-all"
                             style={{
-                              background: 'white',
+                              background: 'rgb(var(--background))',
                               borderColor: 'var(--border-gray)'
                             }}
                           >
@@ -1699,7 +1699,7 @@ export default function Checkout() {
 
                   {/* Selected Plan Display */}
                   {selectedPlan && (
-                    <div className="p-6 rounded-lg mb-6" style={{background: '#ffffff'}}>
+                    <div className="p-6 rounded-lg mb-6" className="bg-background">
                       <div className="flex flex-col md:flex-row md:justify-between md:items-center">
                         <div className="mb-3 md:mb-0">
                           <h3 className="text-xl font-bold" className="text-foreground">{selectedPlan.name}</h3>
@@ -1711,7 +1711,7 @@ export default function Checkout() {
                           style={{
                             color: 'var(--text-dark-secondary)',
                             borderColor: 'var(--border-gray)',
-                            background: 'white'
+                            background: 'rgb(var(--background))'
                           }}
                         >
                           Trocar Plano
@@ -1747,7 +1747,7 @@ export default function Checkout() {
                                 style={{
                                   color: 'var(--text-teal)',
                                   borderColor: 'var(--text-teal)',
-                                  background: 'white'
+                                  background: 'rgb(var(--background))'
                                 }}
                               >
                                 Editar
@@ -1890,7 +1890,7 @@ export default function Checkout() {
                                 className="flex-1 px-4 py-2 rounded-lg border"
                                 style={{
                                   color: 'var(--text-dark-primary)',
-                                  backgroundColor: 'white',
+                                  backgroundColor: 'rgb(var(--background))',
                                   borderColor: 'var(--border-gray)'
                                 }}
                               >
@@ -1911,7 +1911,7 @@ export default function Checkout() {
                           style={{
                             color: 'var(--text-teal)',
                             borderColor: 'var(--text-teal)',
-                            background: 'white'
+                            background: 'rgb(var(--background))'
                           }}
                         >
                           + Adicionar outro pet
@@ -1948,7 +1948,7 @@ export default function Checkout() {
                         className="w-full p-3 rounded-lg border"
                         style={{
                           borderColor: 'var(--border-gray)',
-                          background: 'white'
+                          background: 'rgb(var(--background))'
                         }}
                         required
                       />
@@ -1971,7 +1971,7 @@ export default function Checkout() {
                         className="w-full p-3 rounded-lg border"
                         style={{
                           borderColor: fieldErrors.email ? 'var(--text-error-alt)' : 'var(--border-gray)',
-                          background: 'white'
+                          background: 'rgb(var(--background))'
                         }}
                         placeholder="exemplo@email.com"
                         required
@@ -2000,7 +2000,7 @@ export default function Checkout() {
                         className="w-full p-3 rounded-lg border"
                         style={{
                           borderColor: fieldErrors.phone ? 'var(--text-error-alt)' : 'var(--border-gray)',
-                          background: 'white'
+                          background: 'rgb(var(--background))'
                         }}
                         placeholder="(11) 99999-9999"
                         required
@@ -2085,7 +2085,7 @@ export default function Checkout() {
                           className="w-full p-3 rounded-lg border"
                           style={{
                             borderColor: 'var(--border-gray)',
-                            background: 'white'
+                            background: 'rgb(var(--background))'
                           }}
                           placeholder="000.000.000-00"
                           required
@@ -2123,7 +2123,7 @@ export default function Checkout() {
                             className="w-full p-3 rounded-lg border pr-10"
                             style={{
                               borderColor: cepError ? 'red' : 'var(--border-gray)',
-                              background: 'white'
+                              background: 'rgb(var(--background))'
                             }}
                             placeholder="00000-000"
                             required
@@ -2154,7 +2154,7 @@ export default function Checkout() {
                           className="w-full p-3 rounded-lg border"
                           style={{
                             borderColor: 'var(--border-gray)',
-                            background: 'white'
+                            background: 'rgb(var(--background))'
                           }}
                           placeholder="Rua e número"
                           required
@@ -2175,7 +2175,7 @@ export default function Checkout() {
                           className="w-full p-3 rounded-lg border"
                           style={{
                             borderColor: 'var(--border-gray)',
-                            background: 'white'
+                            background: 'rgb(var(--background))'
                           }}
                           placeholder="123"
                           data-testid="input-number"
@@ -2193,7 +2193,7 @@ export default function Checkout() {
                           className="w-full p-3 rounded-lg border"
                           style={{
                             borderColor: 'var(--border-gray)',
-                            background: 'white'
+                            background: 'rgb(var(--background))'
                           }}
                           required
                         />
@@ -2211,7 +2211,7 @@ export default function Checkout() {
                             className="w-1/3 p-3 rounded-lg border"
                             style={{
                               borderColor: 'var(--border-gray)',
-                              background: 'white'
+                              background: 'rgb(var(--background))'
                             }}
                             placeholder="SP"
                             required
@@ -2223,7 +2223,7 @@ export default function Checkout() {
                             className="w-2/3 p-3 rounded-lg border"
                             style={{
                               borderColor: 'var(--border-gray)',
-                              background: 'white'
+                              background: 'rgb(var(--background))'
                             }}
                             placeholder="Cidade"
                             required
@@ -2343,7 +2343,7 @@ export default function Checkout() {
                                 className="w-5 h-5 rounded-full border-2 mr-3 flex items-center justify-center flex-shrink-0"
                                 style={{
                                   borderColor: paymentMethod === value ? 'var(--bg-teal-dark)' : 'var(--border-gray)',
-                                  background: 'white'
+                                  background: 'rgb(var(--background))'
                                 }}
                               >
                                 {paymentMethod === value && (
@@ -2383,7 +2383,7 @@ export default function Checkout() {
                             className="w-full p-3 rounded-lg border"
                             style={{
                               borderColor: 'var(--border-gray)',
-                              background: 'white'
+                              background: 'rgb(var(--background))'
                             }}
                             placeholder="1234 5678 9012 3456"
                             required
@@ -2401,7 +2401,7 @@ export default function Checkout() {
                             className="w-full p-3 rounded-lg border"
                             style={{
                               borderColor: 'var(--border-gray)',
-                              background: 'white'
+                              background: 'rgb(var(--background))'
                             }}
                             placeholder="NOME COMPLETO"
                             required
@@ -2422,7 +2422,7 @@ export default function Checkout() {
                             className="w-full p-3 rounded-lg border"
                             style={{
                               borderColor: 'var(--border-gray)',
-                              background: 'white'
+                              background: 'rgb(var(--background))'
                             }}
                             placeholder="12/2030"
                             required
@@ -2443,7 +2443,7 @@ export default function Checkout() {
                             className="w-full p-3 rounded-lg border"
                             style={{
                               borderColor: 'var(--border-gray)',
-                              background: 'white'
+                              background: 'rgb(var(--background))'
                             }}
                             placeholder="123"
                             required
@@ -2462,7 +2462,7 @@ export default function Checkout() {
                               className="w-full p-3 rounded-lg border"
                               style={{
                                 borderColor: 'var(--border-gray)',
-                                background: 'white'
+                                background: 'rgb(var(--background))'
                               }}
                             >
                               {[1, 2, 3, 4, 5, 6].map(i => (
@@ -2620,7 +2620,7 @@ export default function Checkout() {
                             className="w-full p-3 rounded-lg border"
                             style={{
                               borderColor: 'var(--border-gray)',
-                              background: 'white'
+                              background: 'rgb(var(--background))'
                             }}
                             placeholder="000.000.000-00"
                             required
@@ -2657,7 +2657,7 @@ export default function Checkout() {
                               className="w-full p-3 rounded-lg border pr-10"
                               style={{
                                 borderColor: cepError ? 'red' : 'var(--border-gray)',
-                                background: 'white'
+                                background: 'rgb(var(--background))'
                               }}
                               placeholder="00000-000"
                               required
@@ -2687,7 +2687,7 @@ export default function Checkout() {
                             className="w-full p-3 rounded-lg border"
                             style={{
                               borderColor: 'var(--border-gray)',
-                              background: 'white'
+                              background: 'rgb(var(--background))'
                             }}
                             placeholder="Rua e número"
                             required
@@ -2709,7 +2709,7 @@ export default function Checkout() {
                               className="w-full p-3 rounded-lg border"
                               style={{
                                 borderColor: 'var(--border-gray)',
-                                background: 'white'
+                                background: 'rgb(var(--background))'
                               }}
                               placeholder="123"
                               data-testid="input-number-desktop"
@@ -2724,7 +2724,7 @@ export default function Checkout() {
                               className="w-full p-3 rounded-lg border"
                               style={{
                                 borderColor: 'var(--border-gray)',
-                                background: 'white'
+                                background: 'rgb(var(--background))'
                               }}
                               placeholder="Apartamento"
                             />
@@ -2742,7 +2742,7 @@ export default function Checkout() {
                             className="w-full p-3 rounded-lg border"
                             style={{
                               borderColor: 'var(--border-gray)',
-                              background: 'white'
+                              background: 'rgb(var(--background))'
                             }}
                             required
                           />
@@ -2760,7 +2760,7 @@ export default function Checkout() {
                               className="w-full p-3 rounded-lg border"
                               style={{
                                 borderColor: 'var(--border-gray)',
-                                background: 'white'
+                                background: 'rgb(var(--background))'
                               }}
                               placeholder="SP"
                               required
@@ -2777,7 +2777,7 @@ export default function Checkout() {
                               className="w-full p-3 rounded-lg border"
                               style={{
                                 borderColor: 'var(--border-gray)',
-                                background: 'white'
+                                background: 'rgb(var(--background))'
                               }}
                               placeholder="Cidade"
                               required
@@ -2881,7 +2881,7 @@ export default function Checkout() {
                                 className="w-full p-3 rounded-lg border"
                                 style={{
                                   borderColor: 'var(--border-gray)',
-                                  background: 'white'
+                                  background: 'rgb(var(--background))'
                                 }}
                                 placeholder="0000 0000 0000 0000"
                                 required
@@ -2899,7 +2899,7 @@ export default function Checkout() {
                                 className="w-full p-3 rounded-lg border"
                                 style={{
                                   borderColor: 'var(--border-gray)',
-                                  background: 'white'
+                                  background: 'rgb(var(--background))'
                                 }}
                                 placeholder="NOME SOBRENOME"
                                 required

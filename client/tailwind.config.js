@@ -43,12 +43,12 @@ module.exports = {
         // Mantém cores personalizadas do projeto via variáveis existentes
         'teal': 'rgb(var(--primary))',
         'teal-light': 'rgb(var(--accent))', 
-        'teal-dark': 'rgb(26 90 92)',
+        'teal-dark': 'rgb(var(--teal-dark))',
         'cream-light': 'rgb(var(--muted))',
         'cream-lighter': 'rgb(var(--background))',
         'beige': 'rgb(var(--secondary))',
-        'gold': 'rgb(225 172 51)',
-        'gold-darker': 'rgb(201 149 36)'
+        'gold': 'rgb(var(--gold))',
+        'gold-darker': 'rgb(var(--gold-darker))'
       },
       fontFamily: {
         sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'sans-serif'],
