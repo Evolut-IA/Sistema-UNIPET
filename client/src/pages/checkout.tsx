@@ -1689,7 +1689,7 @@ export default function Checkout() {
                             }}
                           >
                             <h4 className="font-bold text-lg mb-2 text-foreground">{plan.name}</h4>
-                            <p className="text-2xl font-bold mb-2" style={{color: 'var(--text-teal)'}}>{formatPrice(plan.price)}/mês</p>
+                            <p className="text-2xl font-bold mb-2 text-primary">{formatPrice(plan.price)}/mês</p>
                             <p className="text-sm mb-3 text-dark-secondary">{plan.description}</p>
                           </div>
                         ))}
@@ -1703,7 +1703,7 @@ export default function Checkout() {
                       <div className="flex flex-col md:flex-row md:justify-between md:items-center">
                         <div className="mb-3 md:mb-0">
                           <h3 className="text-xl font-bold text-foreground">{selectedPlan.name}</h3>
-                          <p className="text-2xl font-bold" style={{color: 'var(--text-teal)'}}>{formatPrice(selectedPlan.price)}/mês</p>
+                          <p className="text-2xl font-bold text-primary">{formatPrice(selectedPlan.price)}/mês</p>
                         </div>
                         <button
                           onClick={() => setSelectedPlan(null)}
@@ -1736,7 +1736,7 @@ export default function Checkout() {
                               <p className="text-sm text-dark-secondary">
                                 {pet.species} • {pet.breed} • {pet.age} anos
                               </p>
-                              <p className="text-sm font-medium" style={{color: 'var(--text-teal)'}}>
+                              <p className="text-sm font-medium text-primary">
                                 Plano: {selectedPlan?.name}
                               </p>
                             </div>
@@ -1978,7 +1978,7 @@ export default function Checkout() {
                         data-testid="input-email"
                       />
                       {fieldErrors.email && (
-                        <p className="text-sm mt-1" style={{ color: 'var(--text-error)' }}>{fieldErrors.email}</p>
+                        <p className="text-sm mt-1 text-destructive">{fieldErrors.email}</p>
                       )}
                     </div>
 
@@ -2007,7 +2007,7 @@ export default function Checkout() {
                         data-testid="input-phone"
                       />
                       {fieldErrors.phone && (
-                        <p className="text-sm mt-1" style={{ color: 'var(--text-error)' }}>{fieldErrors.phone}</p>
+                        <p className="text-sm mt-1 text-destructive">{fieldErrors.phone}</p>
                       )}
                     </div>
                   </div>
@@ -2034,15 +2034,15 @@ export default function Checkout() {
                         <button
                           type="button"
                           onClick={() => window.open('/politica-privacidade', '_blank')}
-                          className="font-medium opacity-80 transition-opacity"
-                          style={{color: 'var(--text-teal)', textDecoration: 'none'}}
+
+                          className="font-medium opacity-80 transition-opacity text-primary"
                         >
                           Política de Privacidade
                         </button>.
                       </span>
                     </label>
                     {fieldErrors.consent && (
-                      <p className="text-sm mt-2" style={{ color: 'var(--text-error)' }}>{fieldErrors.consent}</p>
+                      <p className="text-sm mt-2 text-destructive">{fieldErrors.consent}</p>
                     )}
                   </div>
                 </motion.div>
@@ -2136,10 +2136,10 @@ export default function Checkout() {
                           )}
                         </div>
                         {fieldErrors.zipCode && (
-                          <div className="text-sm mt-1" style={{ color: 'var(--text-error)' }}>{fieldErrors.zipCode}</div>
+                          <div className="text-sm mt-1" className="text-destructive">{fieldErrors.zipCode}</div>
                         )}
                         {cepError && (
-                          <div className="text-sm mt-1" style={{ color: 'var(--text-error)' }}>{cepError}</div>
+                          <div className="text-sm mt-1" className="text-destructive">{cepError}</div>
                         )}
                       </div>
 
@@ -2365,7 +2365,7 @@ export default function Checkout() {
 
                   {/* Dados do Cartão */}
                   {paymentMethod === 'credit' && (
-                    <div className="space-y-4 p-6 rounded-lg border" style={{background: 'var(--bg-cream-lighter)', borderColor: 'var(--border-gray)'}}>
+                    <div className="space-y-4 p-6 rounded-lg border" className="space-y-4 p-6 rounded-lg border bg-muted border">
                       <h4 className="text-lg font-semibold text-foreground">Dados do Cartão</h4>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -2507,7 +2507,7 @@ export default function Checkout() {
 
 
                   {/* Section 6: Total da 1ª mensalidade */}
-                  <div className="p-6 rounded-lg border-2" style={{borderColor: 'var(--bg-teal-dark)', background: 'var(--bg-teal)'}}>
+                  <div className="p-6 rounded-lg border-2" className="p-6 rounded-lg border-2 border-teal-dark bg-primary">
                     <div className="text-center">
                       {/* Logo do cabeçalho */}
                       <div className="mb-4">
@@ -2585,7 +2585,7 @@ export default function Checkout() {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="font-medium no-underline opacity-80 transition-opacity"
-                            style={{color: 'var(--text-teal)'}}
+                            className="text-primary"
                           >
                             Termos de Uso
                           </a>
@@ -2669,10 +2669,10 @@ export default function Checkout() {
                             )}
                           </div>
                           {fieldErrors.zipCode && (
-                            <div className="text-sm mt-1" style={{ color: 'var(--text-error)' }}>{fieldErrors.zipCode}</div>
+                            <div className="text-sm mt-1" className="text-destructive">{fieldErrors.zipCode}</div>
                           )}
                           {cepError && (
-                            <div className="text-sm mt-1" style={{ color: 'var(--text-error)' }}>{cepError}</div>
+                            <div className="text-sm mt-1" className="text-destructive">{cepError}</div>
                           )}
                         </div>
 
@@ -2982,7 +2982,7 @@ export default function Checkout() {
     
 
                       {/* Total 1ª mensalidade */}
-                      <div className="p-6 rounded-lg border-2" style={{borderColor: 'var(--bg-teal-dark)', background: 'var(--bg-teal)'}}>
+                      <div className="p-6 rounded-lg border-2" className="p-6 rounded-lg border-2 border-teal-dark bg-primary">
                         <div className="text-center">
                           <div className="mb-4">
                             <img src="/unipet-logo.png" alt="Unipet Plan" className="h-8 w-auto mx-auto" />
@@ -3058,8 +3058,8 @@ export default function Checkout() {
                               href="/termos"
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="font-medium no-underline opacity-80 transition-opacity"
-                              style={{color: 'var(--text-teal)'}}
+
+                              className="font-medium no-underline opacity-80 transition-opacity text-primary"
                             >
                               Termos de Uso
                             </a>
@@ -3129,12 +3129,12 @@ export default function Checkout() {
                     // Payment Confirmed State
                     <>
                       <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
-                        style={{ background: 'var(--text-gold)' }}>
+                        className="bg-gold">
                         <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                         </svg>
                       </div>
-                      <h2 className="text-2xl md:text-2xl font-bold mb-2" style={{color: 'var(--text-gold)'}}>
+                      <h2 className="text-2xl md:text-2xl font-bold mb-2 text-gold">
                         <span className="md:hidden">
                           Compra Concluída<br />com Sucesso!
                         </span>
@@ -3157,7 +3157,7 @@ export default function Checkout() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
                       </div>
-                      <h2 className="text-2xl font-bold mb-2" style={{ color: 'var(--text-error)' }}>
+                      <h2 className="text-2xl font-bold mb-2" className="text-destructive">
                         ❌ Pagamento Rejeitado
                       </h2>
                       <p className="text-lg text-dark-secondary">
@@ -3171,12 +3171,12 @@ export default function Checkout() {
                     // Payment Pending State
                     <>
                       <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
-                        style={{ background: 'var(--text-teal)' }}>
+                        className="bg-primary">
                         <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                       </div>
-                      <h2 className="text-2xl font-bold mb-2" style={{color: 'var(--text-teal)'}}>
+                      <h2 className="text-2xl font-bold mb-2" className="text-primary">
                         PIX Gerado com Sucesso!
                       </h2>
                       <p className="text-lg text-dark-secondary">
@@ -3295,7 +3295,7 @@ export default function Checkout() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
                       </div>
-                      <h2 className="text-2xl font-bold mb-2" style={{ color: 'var(--text-error)' }}>
+                      <h2 className="text-2xl font-bold mb-2" className="text-destructive">
                         ❌ Pagamento Recusado
                       </h2>
                       <p className="text-lg text-dark-secondary">
@@ -3312,12 +3312,12 @@ export default function Checkout() {
                     // Payment Pending State  
                     <>
                       <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
-                        style={{ background: 'var(--text-teal)' }}>
+                        className="bg-primary">
                         <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                       </div>
-                      <h2 className="text-2xl font-bold mb-2" style={{color: 'var(--text-teal)'}}>
+                      <h2 className="text-2xl font-bold mb-2" className="text-primary">
                         Pagamento em Análise
                       </h2>
                       <p className="text-lg text-dark-secondary">
@@ -3432,14 +3432,14 @@ export default function Checkout() {
             >
               {/* Ícone de Sucesso */}
               <div className="w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center"
-                style={{ background: 'var(--text-gold)' }}>
+                className="bg-gold">
                 <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
               
               {/* Título */}
-              <h2 className="text-2xl font-bold mb-4" style={{color: 'var(--text-gold)'}}>
+              <h2 className="text-2xl font-bold mb-4" className="text-gold">
                 Pagamento Aprovado!
               </h2>
               
