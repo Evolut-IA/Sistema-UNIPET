@@ -56,7 +56,7 @@ const ExpandableChat: React.FC<ExpandableChatProps> = ({
       <div
         ref={chatRef}
         className={cn(
-          "flex flex-col bg-[var(--bg-cream-lighter)] border border-[var(--border-teal)] rounded-lg shadow-xl shadow-[var(--shadow-dark)] overflow-hidden transition-all duration-200 ease-out absolute",
+          "flex flex-col bg-background border border-primary rounded-lg shadow-xl overflow-hidden transition-all duration-200 ease-out absolute",
           chatConfig.chatPositions[position],
           chatConfig.dimensions[size],
           isOpen ? chatConfig.states.open : chatConfig.states.closed,
@@ -81,7 +81,7 @@ const ExpandableChatHeader: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
   ...props
 }) => (
   <div
-    className={cn("flex items-center justify-between p-4 border-b border-[var(--border-teal)] bg-[var(--bg-teal)] text-[var(--text-light)] relative", className)}
+    className={cn("flex items-center justify-between p-4 border-b border-primary bg-primary text-primary-foreground relative", className)}
     {...props}
   >
     {props.children}
@@ -93,14 +93,14 @@ ExpandableChatHeader.displayName = "ExpandableChatHeader";
 const ExpandableChatBody: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
   className,
   ...props
-}) => <div className={cn("flex-grow overflow-y-auto p-4 bg-[var(--bg-cream-light)] modern-chat-scrollbar", className)} {...props} />;
+}) => <div className={cn("flex-grow overflow-y-auto p-4 bg-muted modern-chat-scrollbar", className)} {...props} />;
 
 ExpandableChatBody.displayName = "ExpandableChatBody";
 
 const ExpandableChatFooter: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
   className,
   ...props
-}) => <div className={cn("border-t border-[var(--border-teal)] p-4 bg-[var(--bg-cream-lighter)]", className)} {...props} />;
+}) => <div className={cn("border-t border-primary p-4 bg-background", className)} {...props} />;
 
 ExpandableChatFooter.displayName = "ExpandableChatFooter";
 
@@ -117,7 +117,7 @@ const PureCSSChatIcon = () => (
     style={{
       width: '24px',
       height: '18px',
-      backgroundColor: '#ffffff',
+      backgroundColor: 'rgb(var(--primary-foreground))',
       borderRadius: '8px 8px 2px 8px',
       position: 'relative',
       display: 'flex',
@@ -134,14 +134,14 @@ const PureCSSChatIcon = () => (
         height: '0',
         borderLeft: '6px solid transparent',
         borderRight: '6px solid transparent',
-        borderTop: '6px solid #ffffff',
+        borderTop: '6px solid rgb(var(--primary-foreground))',
       }}
     />
     {/* Pontos internos do chat */}
     <div style={{ display: 'flex', gap: '2px' }}>
-      <div style={{ width: '3px', height: '3px', backgroundColor: '#2d5a5a', borderRadius: '50%' }} />
-      <div style={{ width: '3px', height: '3px', backgroundColor: '#2d5a5a', borderRadius: '50%' }} />
-      <div style={{ width: '3px', height: '3px', backgroundColor: '#2d5a5a', borderRadius: '50%' }} />
+      <div style={{ width: '3px', height: '3px', backgroundColor: 'rgb(var(--primary))', borderRadius: '50%' }} />
+      <div style={{ width: '3px', height: '3px', backgroundColor: 'rgb(var(--primary))', borderRadius: '50%' }} />
+      <div style={{ width: '3px', height: '3px', backgroundColor: 'rgb(var(--primary))', borderRadius: '50%' }} />
     </div>
   </div>
 );
@@ -163,7 +163,7 @@ const PureCSSCloseIcon = () => (
         position: 'absolute',
         width: '20px',
         height: '2px',
-        backgroundColor: '#ffffff',
+        backgroundColor: 'rgb(var(--primary-foreground))',
         transform: 'rotate(45deg)',
       }}
     />
@@ -172,7 +172,7 @@ const PureCSSCloseIcon = () => (
         position: 'absolute',
         width: '20px',
         height: '2px',
-        backgroundColor: '#ffffff',
+        backgroundColor: 'rgb(var(--primary-foreground))',
         transform: 'rotate(-45deg)',
       }}
     />
@@ -192,7 +192,7 @@ const ExpandableChatToggle: React.FC<ExpandableChatToggleProps> = ({
       width: '56px',
       height: '56px',
       borderRadius: '50%',
-      background: 'var(--btn-ver-planos-bg)',
+      background: 'rgb(var(--primary))',
       border: 'none',
       outline: 'none',
       boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
