@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectSeparator, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Phone, Mail, Clock, Facebook, Instagram, Linkedin, Youtube } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
@@ -178,7 +178,9 @@ export default function ContactSection() {
                               </FormControl>
                               <SelectContent>
                                 <SelectItem value="cao">Cão</SelectItem>
+                                <SelectSeparator />
                                 <SelectItem value="gato">Gato</SelectItem>
+                                <SelectSeparator />
                                 <SelectItem value="outros">Outros</SelectItem>
                               </SelectContent>
                             </Select>
@@ -200,8 +202,11 @@ export default function ContactSection() {
                               </FormControl>
                               <SelectContent>
                                 <SelectItem value="0-1">0-1 ano</SelectItem>
+                                <SelectSeparator />
                                 <SelectItem value="1-3">1-3 anos</SelectItem>
+                                <SelectSeparator />
                                 <SelectItem value="3-7">3-7 anos</SelectItem>
+                                <SelectSeparator />
                                 <SelectItem value="7+">7+ anos</SelectItem>
                               </SelectContent>
                             </Select>
@@ -235,8 +240,9 @@ export default function ContactSection() {
                                 ) : plans && plans.length > 0 ? (
                                   plans
                                     .sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0))
-                                    .map((plan) => (
-                                      <SelectItem key={plan.id} value={plan.name}>
+                                    .map((plan, index) => (
+                                      <React.Fragment key={plan.id}>
+                                        <SelectItem value={plan.name}>
                                         {getPlanDisplayText(plan)}
                                       </SelectItem>
                                     ))

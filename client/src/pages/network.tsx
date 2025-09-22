@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectSeparator, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   MapPin, 
   Phone, 
@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { NetworkUnit } from "@shared/schema";
-import { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useNetworkPageData } from "@/hooks/use-parallel-data";
 import { AnimatedSection } from "@/components/ui/animated-section";
 import { AnimatedList } from "@/components/ui/animated-list";
@@ -182,10 +182,16 @@ export default function Network() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">Todas as cidades</SelectItem>
+                            {index < uniqueServices.length - 1 && <SelectSeparator />}
+                          </React.Fragment>
+                        {uniqueCities.length > 0 && <SelectSeparator />}
                         {(uniqueCities as string[]).map((city: string) => (
-                          <SelectItem key={city} value={city}>
+                          <React.Fragment key={city}>
+                            <SelectItem value={city}>
                             {city}
                           </SelectItem>
+                            {index < uniqueServices.length - 1 && <SelectSeparator />}
+                          </React.Fragment>
                         ))}
                       </SelectContent>
                     </Select>
@@ -206,10 +212,16 @@ export default function Network() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">Todos os serviços</SelectItem>
+                        {uniqueServices.length > 0 && <SelectSeparator />}
+                            {index < uniqueServices.length - 1 && <SelectSeparator />}
+                          </React.Fragment>
                         {(uniqueServices as string[]).map((service: string) => (
-                          <SelectItem key={service} value={service}>
+                          <React.Fragment key={service}>
+                            <SelectItem value={service}>
                             {service}
                           </SelectItem>
+                            {index < uniqueServices.length - 1 && <SelectSeparator />}
+                          </React.Fragment>
                         ))}
                       </SelectContent>
                     </Select>

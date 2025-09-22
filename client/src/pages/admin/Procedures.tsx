@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,7 +11,7 @@ import { Badge } from "@/components/admin/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/admin/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/admin/ui/form";
 import { CustomCheckbox } from "@/components/admin/ui/custom-checkbox";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/admin/ui/select";
+import { Select, SelectContent, SelectItem, SelectSeparator, SelectTrigger, SelectValue } from "@/components/admin/ui/select";
 import {
   Table,
   TableBody,
@@ -766,10 +766,13 @@ export default function Procedures() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {PROCEDURE_TYPES.map((type) => (
-                            <SelectItem key={type} value={type}>
-                              {PROCEDURE_TYPE_LABELS[type as keyof typeof PROCEDURE_TYPE_LABELS]}
-                            </SelectItem>
+                          {PROCEDURE_TYPES.map((type, index) => (
+                            <React.Fragment key={type}>
+                              <SelectItem value={type}>
+                                {PROCEDURE_TYPE_LABELS[type as keyof typeof PROCEDURE_TYPE_LABELS]}
+                              </SelectItem>
+                              {index < PROCEDURE_TYPES.length - 1 && <SelectSeparator />}
+                            </React.Fragment>
                           ))}
                         </SelectContent>
                       </Select>
