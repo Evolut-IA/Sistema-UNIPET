@@ -146,7 +146,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
     <div className={cn('relative', className)}>
       {isLoading && (
         <div className="absolute inset-0 animate-pulse rounded flex items-center justify-center" style={{ backgroundColor: 'var(--bg-loading-200)' }}>
-          <div className="text-sm" style={{ color: 'var(--text-placeholder)' }}>Carregando...</div>
+          <div className="text-sm text-muted">Carregando...</div>
         </div>
       )}
 
@@ -166,7 +166,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
         />
       ) : (
         <div className="absolute inset-0 rounded flex items-center justify-center" style={{ backgroundColor: 'var(--bg-loading-100)' }}>
-          <div className="text-sm text-center" style={{ color: 'var(--text-placeholder)' }}>
+          <div className="text-sm text-center text-muted">
             <div>Imagem não disponível</div>
             <div className="text-xs">{alt}</div>
           </div>
