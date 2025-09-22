@@ -1642,9 +1642,9 @@ export default function Checkout() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   style={{
-                    background: 'rgb(34 197 94 / 0.1)',
-                    borderColor: 'rgb(34 197 94)',
-                    color: 'rgb(34 197 94)'
+                    background: 'rgb(var(--success-background))',
+                    borderColor: 'rgb(var(--success))',
+                    color: 'rgb(var(--success))'
                   }}
                   className="mb-6 p-4 rounded-lg border-l-4 bg-success/10 border-success text-success"
                   data-testid="success-message"
@@ -2021,7 +2021,7 @@ export default function Checkout() {
                         onChange={(e) => setConsentAccepted(e.target.checked)}
                         className="w-5 h-5 text-teal-600 bg-white border-2 border-gray-300 rounded-md appearance-none cursor-pointer relative transition-all"
                         style={{
-                          backgroundColor: consentAccepted ? 'rgb(var(--teal-dark))' : 'white',
+                          backgroundColor: consentAccepted ? 'rgb(var(--teal-dark))' : 'rgb(var(--white))',
                           borderColor: consentAccepted ? 'rgb(var(--teal-dark))' : 'rgb(var(--border))',
                           backgroundImage: consentAccepted ? 'url("data:image/svg+xml,%3csvg xmlns=\'http://www.w3.org/2000/svg\' height=\'20px\' viewBox=\'0 -960 960 960\' width=\'20px\' fill=\'white\'%3e%3cpath d=\'M400-304 240-464l56-56 104 104 264-264 56 56-320 320Z\'/%3e%3c/svg%3e")' : 'none',
                           backgroundSize: '16px 16px',
@@ -2122,7 +2122,7 @@ export default function Checkout() {
                             }}
                             className="w-full p-3 rounded-lg border pr-10"
                             style={{
-                              borderColor: cepError ? 'red' : 'rgb(var(--border))',
+                              borderColor: cepError ? 'rgb(var(--error))' : 'rgb(var(--border))',
                               background: 'rgb(var(--background))'
                             }}
                             placeholder="00000-000"
@@ -2656,7 +2656,7 @@ export default function Checkout() {
                               }}
                               className="w-full p-3 rounded-lg border pr-10"
                               style={{
-                                borderColor: cepError ? 'red' : 'rgb(var(--border))',
+                                borderColor: cepError ? 'rgb(var(--error))' : 'rgb(var(--border))',
                                 background: 'rgb(var(--background))'
                               }}
                               placeholder="00000-000"
