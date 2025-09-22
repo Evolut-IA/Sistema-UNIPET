@@ -29,13 +29,13 @@ export default function About() {
   ];
 
   return (
-    <main className="page-section" style={{ backgroundColor: '#277677' }}>
+    <main className="page-section bg-primary">
       <div className="section-container">
         {/* Header */}
         <div className="page-header">
           <AnimatedSection animation="slideUp" delay={100}>
-            <h1 className="page-title text-[var(--text-dark-primary)]">
-              <span className="text-white">Sobre a</span> <span className="text-[var(--text-gold)]">UNIPET PLAN</span>
+            <h1 className="page-title text-foreground">
+              <span className="text-primary-foreground">Sobre a</span> <span className="text-gold">UNIPET PLAN</span>
             </h1>
           </AnimatedSection>
         </div>
@@ -70,11 +70,11 @@ export default function About() {
           </AnimatedSection>
           <div>
             <AnimatedSection animation="slideLeft" delay={200}>
-              <h2 className="section-title text-[var(--text-gold)] mb-6">Nossa História</h2>
+              <h2 className="section-title text-gold mb-6">Nossa História</h2>
             </AnimatedSection>
             <AnimatedSection animation="slideLeft" delay={300}>
               {shouldShow.ourStory && (
-                <div className="text-lg leading-relaxed whitespace-pre-line text-white">
+                <div className="text-lg leading-relaxed whitespace-pre-line text-primary-foreground">
                   {settings.ourStory}
                 </div>
               )}
@@ -90,10 +90,10 @@ export default function About() {
             <AnimatedSection key={index} animation="slideUp" delay={800 + (index * 200)}>
               <Card className="backdrop-blur-sm shadow-xl border-0 h-full bg-muted">
                 <CardHeader>
-                  <CardTitle className="text-2xl text-[var(--text-teal)]">{item.title}</CardTitle>
+                  <CardTitle className="text-2xl text-primary">{item.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="leading-relaxed text-white">{item.content}</p>
+                  <p className="leading-relaxed text-primary-foreground">{item.content}</p>
                 </CardContent>
               </Card>
             </AnimatedSection>
@@ -103,13 +103,13 @@ export default function About() {
         {/* Team Section */}
         <div className="text-center mb-16">
           <AnimatedSection animation="slideUp" delay={600}>
-            <h2 className="page-title text-[var(--text-dark-primary)]">
-              <span className="text-white">Nosso</span> <span className="text-[var(--text-gold)]">Compromisso</span>
+            <h2 className="page-title text-foreground">
+              <span className="text-primary-foreground">Nosso</span> <span className="text-gold">Compromisso</span>
             </h2>
           </AnimatedSection>
           <div className="max-w-4xl mx-auto">
             <AnimatedSection animation="slideUp" delay={700}>
-              <p className="page-subtitle leading-relaxed mb-8 text-white">
+              <p className="page-subtitle leading-relaxed mb-8 text-primary-foreground">
                 Nossa equipe é formada por veterinários, especialistas em seguros e profissionais
                 apaixonados por animais. Trabalhamos incansavelmente para garantir que cada pet
                 receba o cuidado que merece, quando precisa.
@@ -119,8 +119,8 @@ export default function About() {
               <AnimatedSection animation="slideUp" delay={800}>
                 <Card className="backdrop-blur-sm shadow-xl border-0 h-full bg-muted">
                   <CardContent className="pt-6">
-                    <h3 className="text-xl font-semibold text-[var(--text-teal)] mb-4">Atendimento Humanizado</h3>
-                    <p className="text-white">
+                    <h3 className="text-xl font-semibold text-primary mb-4">Atendimento Humanizado</h3>
+                    <p className="text-primary-foreground">
                       Tratamos cada pet como se fosse nosso, oferecendo cuidado personalizado
                       e suporte emocional para as famílias em momentos difíceis.
                     </p>
@@ -130,8 +130,8 @@ export default function About() {
               <AnimatedSection animation="slideUp" delay={900}>
                 <Card className="backdrop-blur-sm shadow-xl border-0 h-full bg-muted">
                   <CardContent className="pt-6">
-                    <h3 className="text-xl font-semibold text-[var(--text-teal)] mb-4">Inovação Constante</h3>
-                    <p className="text-white">
+                    <h3 className="text-xl font-semibold text-primary mb-4">Inovação Constante</h3>
+                    <p className="text-primary-foreground">
                       Investimos continuamente em tecnologia e processos para tornar
                       o acesso aos cuidados veterinários mais fácil e eficiente.
                     </p>
