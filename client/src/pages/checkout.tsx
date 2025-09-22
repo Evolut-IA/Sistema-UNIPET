@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useRoute } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from '../components/layout/header';
@@ -9,6 +9,7 @@ import {
   Select,
   SelectContent,
   SelectItem,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
@@ -1801,10 +1802,13 @@ export default function Checkout() {
                                     <SelectValue placeholder="Selecione..." />
                                   </SelectTrigger>
                                   <SelectContent>
-                                    {species.map((speciesItem) => (
-                                      <SelectItem key={speciesItem.id} value={speciesItem.name}>
+                                    {species.map((speciesItem, index) => (
+                                      <React.Fragment key={speciesItem.id}>
+                                        <SelectItem value={speciesItem.name}>
                                         {speciesItem.name}
                                       </SelectItem>
+                                        {index < species.length - 1 && <SelectSeparator />}
+                                      </React.Fragment>
                                     ))}
                                   </SelectContent>
                                 </Select>
