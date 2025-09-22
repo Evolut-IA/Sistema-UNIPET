@@ -31,6 +31,8 @@ interface Plan {
   planType?: string;
   isActive?: boolean;
   displayOrder?: number;
+  availableBillingOptions?: string[];
+  availablePaymentMethods?: string[];
 }
 
 interface Species {
@@ -98,15 +100,15 @@ export default function Checkout() {
   const getPlanIdFromUrl = () => {
     // Não buscar plano se estivermos na página de sucesso
     const pathname = location.split('?')[0];
-    if (pathname.includes('/success')) {
+    if (pathname?.includes('/success')) {
       return null;
     }
     
     // Verificar se é uma rota numérica
-    const pathParts = pathname.split('/');
+    const pathParts = pathname?.split('/') || [];
     const planIndex = pathParts[pathParts.length - 1];
     
-    if (PLAN_MAPPINGS[planIndex]) {
+    if (planIndex && PLAN_MAPPINGS[planIndex]) {
       return PLAN_MAPPINGS[planIndex];
     }
     
@@ -149,7 +151,7 @@ export default function Checkout() {
   const [savedClientId, setSavedClientId] = useState<string | null>(null);
   
   // Renewal mode states  
-  const [isLoadingRenewal, setIsLoadingRenewal] = useState(false);
+  // const [isLoadingRenewal, setIsLoadingRenewal] = useState(false); // Removed unused variable
   
   const [cardData, setCardData] = useState({
     cardNumber: '',
@@ -350,7 +352,7 @@ export default function Checkout() {
   const loadRenewalData = async () => {
     if (!isRenewalMode || !renewalContractId) return;
     
-    setIsLoadingRenewal(true);
+    // setIsLoadingRenewal(true); // Removed unused variable
     setGeneralError(null);
     
     try {
@@ -371,7 +373,8 @@ export default function Checkout() {
       const result = await response.json();
       console.log('✅ [RENEWAL] Dados de renovação carregados:', result.renewalData);
       
-      const renewalData = result.renewalData;
+      // Remove unused variable renewalData
+      // const renewalData = result.renewalData;
       
       // Pre-fill customer data
       setCustomerData({
@@ -431,7 +434,7 @@ export default function Checkout() {
       console.error('❌ [RENEWAL] Erro ao carregar dados de renovação:', error);
       setGeneralError('Erro ao carregar dados de renovação. Tente novamente.');
     } finally {
-      setIsLoadingRenewal(false);
+      // setIsLoadingRenewal(false); // Removed unused variable
     }
   };
 
@@ -816,6 +819,8 @@ export default function Checkout() {
   };
 
   // Função para validar CPF
+  // Removed unused function
+  /*
   const isValidCPF = (cpf: string) => {
     const numbersOnly = cpf.replace(/\D/g, '');
     
@@ -1968,21 +1973,21 @@ export default function Checkout() {
                         onChange={(e) => {
                           setCustomerData({...customerData, email: e.target.value});
                           // Limpar erro quando usuário começar a digitar
-                          if (fieldErrors.email) {
+                          if (fieldErrors['email']) {
                             clearFieldError('email');
                           }
                         }}
                         className="w-full p-3 rounded-lg border border-border bg-background"
                         style={{
-                          borderColor: fieldErrors.email ? 'var(--text-error-alt)' : 'rgb(var(--border))',
+                          borderColor: fieldErrors['email'] ? 'var(--text-error-alt)' : 'rgb(var(--border))',
                           background: 'rgb(var(--background))'
                         }}
                         placeholder="exemplo@email.com"
                         required
                         data-testid="input-email"
                       />
-                      {fieldErrors.email && (
-                        <p className="text-sm mt-1 text-destructive">{fieldErrors.email}</p>
+                      {fieldErrors['email'] && (
+                        <p className="text-sm mt-1 text-destructive">{fieldErrors['email']}</p>
                       )}
                     </div>
 
@@ -1997,21 +2002,21 @@ export default function Checkout() {
                         onChange={(e) => {
                           setCustomerData({...customerData, phone: formatPhone(e.target.value)});
                           // Limpar erro quando usuário começar a digitar
-                          if (fieldErrors.phone) {
+                          if (fieldErrors['phone']) {
                             clearFieldError('phone');
                           }
                         }}
                         className="w-full p-3 rounded-lg border border-border bg-background"
                         style={{
-                          borderColor: fieldErrors.phone ? 'var(--text-error-alt)' : 'rgb(var(--border))',
+                          borderColor: fieldErrors['phone'] ? 'var(--text-error-alt)' : 'rgb(var(--border))',
                           background: 'rgb(var(--background))'
                         }}
                         placeholder="(11) 99999-9999"
                         required
                         data-testid="input-phone"
                       />
-                      {fieldErrors.phone && (
-                        <p className="text-sm mt-1 text-destructive">{fieldErrors.phone}</p>
+                      {fieldErrors['phone'] && (
+                        <p className="text-sm mt-1 text-destructive">{fieldErrors['phone']}</p>
                       )}
                     </div>
                   </div>
@@ -2045,8 +2050,8 @@ export default function Checkout() {
                         </button>.
                       </span>
                     </label>
-                    {fieldErrors.consent && (
-                      <p className="text-sm mt-2 text-destructive">{fieldErrors.consent}</p>
+                    {fieldErrors['consent'] && (
+                      <p className="text-sm mt-2 text-destructive">{fieldErrors['consent']}</p>
                     )}
                   </div>
                 </motion.div>
@@ -2139,8 +2144,8 @@ export default function Checkout() {
                             </div>
                           )}
                         </div>
-                        {fieldErrors.zipCode && (
-                          <div className="text-sm mt-1 text-destructive">{fieldErrors.zipCode}</div>
+                        {fieldErrors['zipCode'] && (
+                          <div className="text-sm mt-1 text-destructive">{fieldErrors['zipCode']}</div>
                         )}
                         {cepError && (
                           <div className="text-sm mt-1 text-destructive">{cepError}</div>
@@ -2672,8 +2677,8 @@ export default function Checkout() {
                               </div>
                             )}
                           </div>
-                          {fieldErrors.zipCode && (
-                            <div className="text-sm mt-1 text-destructive">{fieldErrors.zipCode}</div>
+                          {fieldErrors['zipCode'] && (
+                            <div className="text-sm mt-1 text-destructive">{fieldErrors['zipCode']}</div>
                           )}
                           {cepError && (
                             <div className="text-sm mt-1 text-destructive">{cepError}</div>
