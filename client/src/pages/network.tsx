@@ -182,15 +182,11 @@ export default function Network() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">Todas as cidades</SelectItem>
-                            {index < uniqueServices.length - 1 && <SelectSeparator />}
-                          </React.Fragment>
                         {uniqueCities.length > 0 && <SelectSeparator />}
-                        {(uniqueCities as string[]).map((city: string) => (
-                          <React.Fragment key={city}>
-                            <SelectItem value={city}>
-                            {city}
-                          </SelectItem>
-                            {index < uniqueServices.length - 1 && <SelectSeparator />}
+                        {(uniqueCities as string[]).map((city, index) => (
+                          <React.Fragment key={`city-${index}`}>
+                            <SelectItem value={city}>{city}</SelectItem>
+                            {index < uniqueCities.length - 1 && <SelectSeparator />}
                           </React.Fragment>
                         ))}
                       </SelectContent>
@@ -213,13 +209,9 @@ export default function Network() {
                       <SelectContent>
                         <SelectItem value="all">Todos os serviços</SelectItem>
                         {uniqueServices.length > 0 && <SelectSeparator />}
-                            {index < uniqueServices.length - 1 && <SelectSeparator />}
-                          </React.Fragment>
-                        {(uniqueServices as string[]).map((service: string) => (
-                          <React.Fragment key={service}>
-                            <SelectItem value={service}>
-                            {service}
-                          </SelectItem>
+                        {(uniqueServices as string[]).map((service, index) => (
+                          <React.Fragment key={`service-${index}`}>
+                            <SelectItem value={service}>{service}</SelectItem>
                             {index < uniqueServices.length - 1 && <SelectSeparator />}
                           </React.Fragment>
                         ))}
@@ -230,7 +222,7 @@ export default function Network() {
 
                 {/* Clear Filters and Results Count */}
                 <div className="flex justify-between items-center">
-                  <p className="text-smtext-[var(--text-dark-secondary)]">
+                  <p className="text-sm text-[var(--text-dark-secondary)]">
                     {isLoading ? "Carregando..." : `${filteredUnits.length} unidade${filteredUnits.length !== 1 ? 's' : ''} encontrada${filteredUnits.length !== 1 ? 's' : ''}`}
                   </p>
                   {(searchText || selectedCity !== "all" || selectedService !== "all") && (
@@ -292,7 +284,7 @@ export default function Network() {
                           </div>
                           <div className="flex items-center space-x-3">
                             <Phone className="h-4 w-4 text-[var(--icon-teal)] flex-shrink-0" />
-                            <span className="text-[var(--text-dark-primary)] text-smfont-medium">{unit.phone}</span>
+                            <span className="text-[var(--text-dark-primary)] text-sm font-medium">{unit.phone}</span>
                           </div>
                         </div>
 

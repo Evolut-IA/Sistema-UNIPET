@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectSeparator, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Phone, Mail, Clock, Facebook, Instagram, Linkedin, Youtube } from "lucide-react";
+import { Phone, Mail, Facebook, Instagram, Linkedin, Youtube } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { apiRequest } from "@/lib/queryClient";
 import { useSiteSettingsWithDefaults } from "@/hooks/use-site-settings";
@@ -37,8 +37,6 @@ export default function Contact() {
   const { settings, shouldShow } = useSiteSettingsWithDefaults();
   const { getWhatsAppLink } = useWhatsAppRedirect();
   const { data: plans, isLoading: plansLoading, error: plansError } = usePlans();
-
-
 
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactFormSchema),
@@ -272,8 +270,10 @@ export default function Contact() {
                                     .map((plan, index) => (
                                       <React.Fragment key={plan.id}>
                                         <SelectItem value={plan.name}>
-                                        {getPlanDisplayText(plan)}
-                                      </SelectItem>
+                                          {getPlanDisplayText(plan)}
+                                        </SelectItem>
+                                        {index < plans.length - 1 && <SelectSeparator />}
+                                      </React.Fragment>
                                     ))
                                 ) : (
                                   <SelectItem value="no-plans" disabled>

@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectSeparator, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Phone, Mail, Clock, Facebook, Instagram, Linkedin, Youtube } from "lucide-react";
+import { Phone, Mail, Facebook, Instagram, Linkedin, Youtube } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 
 import { apiRequest } from "@/lib/queryClient";
@@ -37,8 +37,6 @@ export default function ContactSection() {
   const { settings, shouldShow } = useSiteSettingsWithDefaults();
   const { getWhatsAppLink } = useWhatsAppRedirect();
   const { data: plans, isLoading: plansLoading, error: plansError } = usePlans();
-
-
 
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactFormSchema),
@@ -229,28 +227,30 @@ export default function ContactSection() {
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                                                              {plansLoading ? (
-                                  <SelectItem value="loading" disabled>
-                                    Carregando planos...
-                                  </SelectItem>
-                                ) : plansError ? (
-                                  <SelectItem value="error" disabled>
-                                    Erro ao carregar planos
-                                  </SelectItem>
-                                ) : plans && plans.length > 0 ? (
-                                  plans
-                                    .sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0))
-                                    .map((plan, index) => (
-                                      <React.Fragment key={plan.id}>
-                                        <SelectItem value={plan.name}>
+                              {plansLoading ? (
+                                <SelectItem value="loading" disabled>
+                                  Carregando planos...
+                                </SelectItem>
+                              ) : plansError ? (
+                                <SelectItem value="error" disabled>
+                                  Erro ao carregar planos
+                                </SelectItem>
+                              ) : plans && plans.length > 0 ? (
+                                plans
+                                  .sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0))
+                                  .map((plan, index) => (
+                                    <React.Fragment key={plan.id}>
+                                      <SelectItem value={plan.name}>
                                         {getPlanDisplayText(plan)}
                                       </SelectItem>
-                                    ))
-                                ) : (
-                                  <SelectItem value="no-plans" disabled>
-                                    Nenhum plano disponível
-                                  </SelectItem>
-                                )}
+                                      {index < plans.length - 1 && <SelectSeparator />}
+                                    </React.Fragment>
+                                  ))
+                              ) : (
+                                <SelectItem value="no-plans" disabled>
+                                  Nenhum plano disponível
+                                </SelectItem>
+                              )}
                             </SelectContent>
                           </Select>
                           <FormMessage />
@@ -345,8 +345,6 @@ export default function ContactSection() {
                           rel="noopener noreferrer"
                           className="opacity-80 transition-colors cursor-pointer"
                           style={{color: 'var(--text-light)'}}
-
-
                         >
                           {settings.whatsapp}
                         </a>
