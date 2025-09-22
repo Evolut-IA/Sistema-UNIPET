@@ -2136,10 +2136,10 @@ export default function Checkout() {
                           )}
                         </div>
                         {fieldErrors.zipCode && (
-                          <div className="text-sm mt-1" className="text-destructive">{fieldErrors.zipCode}</div>
+                          <div className="text-sm mt-1 text-destructive">{fieldErrors.zipCode}</div>
                         )}
                         {cepError && (
-                          <div className="text-sm mt-1" className="text-destructive">{cepError}</div>
+                          <div className="text-sm mt-1 text-destructive">{cepError}</div>
                         )}
                       </div>
 
@@ -2365,7 +2365,7 @@ export default function Checkout() {
 
                   {/* Dados do Cartão */}
                   {paymentMethod === 'credit' && (
-                    <div className="space-y-4 p-6 rounded-lg border" className="space-y-4 p-6 rounded-lg border bg-muted border">
+                    <div className="space-y-4 p-6 rounded-lg border bg-muted">
                       <h4 className="text-lg font-semibold text-foreground">Dados do Cartão</h4>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -2507,7 +2507,7 @@ export default function Checkout() {
 
 
                   {/* Section 6: Total da 1ª mensalidade */}
-                  <div className="p-6 rounded-lg border-2" className="p-6 rounded-lg border-2 border-teal-dark bg-primary">
+                  <div className="p-6 rounded-lg border-2 border-teal-dark bg-primary">
                     <div className="text-center">
                       {/* Logo do cabeçalho */}
                       <div className="mb-4">
@@ -2538,7 +2538,7 @@ export default function Checkout() {
                         className={`w-4 h-4 transition-transform ${
                           showMonthlyBreakdown ? 'rotate-180' : ''
                         }`} 
-                        className="text-foreground"
+
                         fill="none" 
                         stroke="currentColor" 
                         viewBox="0 0 24 24"
@@ -2584,8 +2584,8 @@ export default function Checkout() {
                             href="/termos"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="font-medium no-underline opacity-80 transition-opacity"
-                            className="text-primary"
+                            className="font-medium no-underline opacity-80 transition-opacity text-primary"
+
                           >
                             Termos de Uso
                           </a>
@@ -2669,10 +2669,10 @@ export default function Checkout() {
                             )}
                           </div>
                           {fieldErrors.zipCode && (
-                            <div className="text-sm mt-1" className="text-destructive">{fieldErrors.zipCode}</div>
+                            <div className="text-sm mt-1 text-destructive">{fieldErrors.zipCode}</div>
                           )}
                           {cepError && (
-                            <div className="text-sm mt-1" className="text-destructive">{cepError}</div>
+                            <div className="text-sm mt-1 text-destructive">{cepError}</div>
                           )}
                         </div>
 
@@ -2982,7 +2982,7 @@ export default function Checkout() {
     
 
                       {/* Total 1ª mensalidade */}
-                      <div className="p-6 rounded-lg border-2" className="p-6 rounded-lg border-2 border-teal-dark bg-primary">
+                      <div className="p-6 rounded-lg border-2 border-teal-dark bg-primary">
                         <div className="text-center">
                           <div className="mb-4">
                             <img src="/unipet-logo.png" alt="Unipet Plan" className="h-8 w-auto mx-auto" />
@@ -3128,8 +3128,8 @@ export default function Checkout() {
                   {pixPaymentStatus === 'approved' ? (
                     // Payment Confirmed State
                     <>
-                      <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
-                        className="bg-gold">
+                      <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center bg-success">
+
                         <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                         </svg>
@@ -3157,7 +3157,7 @@ export default function Checkout() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
                       </div>
-                      <h2 className="text-2xl font-bold mb-2" className="text-destructive">
+                      <h2 className="text-2xl font-bold mb-2 text-destructive">
                         ❌ Pagamento Rejeitado
                       </h2>
                       <p className="text-lg text-dark-secondary">
@@ -3170,13 +3170,13 @@ export default function Checkout() {
                   ) : (
                     // Payment Pending State
                     <>
-                      <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
-                        className="bg-primary">
+                      <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center bg-success">
+
                         <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                       </div>
-                      <h2 className="text-2xl font-bold mb-2" className="text-primary">
+                      <h2 className="text-2xl font-bold mb-2 text-primary">
                         PIX Gerado com Sucesso!
                       </h2>
                       <p className="text-lg text-dark-secondary">
@@ -3295,7 +3295,7 @@ export default function Checkout() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
                       </div>
-                      <h2 className="text-2xl font-bold mb-2" className="text-destructive">
+                      <h2 className="text-2xl font-bold mb-2 text-destructive">
                         ❌ Pagamento Recusado
                       </h2>
                       <p className="text-lg text-dark-secondary">
@@ -3311,13 +3311,13 @@ export default function Checkout() {
                   ) : (
                     // Payment Pending State  
                     <>
-                      <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
-                        className="bg-primary">
+                      <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center bg-success">
+
                         <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                       </div>
-                      <h2 className="text-2xl font-bold mb-2" className="text-primary">
+                      <h2 className="text-2xl font-bold mb-2 text-primary">
                         Pagamento em Análise
                       </h2>
                       <p className="text-lg text-dark-secondary">
@@ -3431,15 +3431,14 @@ export default function Checkout() {
               }}
             >
               {/* Ícone de Sucesso */}
-              <div className="w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center"
-                className="bg-gold">
+              <div className="w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center">
                 <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
               
               {/* Título */}
-              <h2 className="text-2xl font-bold mb-4" className="text-gold">
+              <h2 className="text-2xl font-bold mb-4 text-gold">
                 Pagamento Aprovado!
               </h2>
               
