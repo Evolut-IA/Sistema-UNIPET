@@ -388,6 +388,47 @@ export default function Checkout() {
         return 6;
     }
   };
+
+  // ============================================
+  // DISCOUNT CALCULATION FUNCTIONS
+  // ============================================
+
+  // Calculate discount percentage based on number of pets
+  const calculateDiscountPercentage = (numPets: number): number => {
+    if (numPets >= 4) return 15; // 4+ pets: 15% discount
+    if (numPets === 3) return 10; // 3 pets: 10% discount
+    if (numPets === 2) return 5;  // 2 pets: 5% discount
+    return 0; // 1 pet or 0 pets: no discount
+  };
+
+  // Check if plan is eligible for discounts (only BASIC and INFINITY)
+  const isPlanEligibleForDiscount = (planId: string | undefined): boolean => {
+    if (!planId) return false;
+    const planType = getPlanType(planId);
+    return planType === 'BASIC_INFINITY';
+  };
+
+  // Calculate total discount amount
+  const calculateDiscount = (planPrice: number, numPets: number, planId: string | undefined): { discountPercentage: number, discountAmount: number, finalPrice: number } => {
+    // Check if plan is eligible for discount
+    if (!isPlanEligibleForDiscount(planId)) {
+      return {
+        discountPercentage: 0,
+        discountAmount: 0,
+        finalPrice: planPrice
+      };
+    }
+
+    const discountPercentage = calculateDiscountPercentage(numPets);
+    const discountAmount = (planPrice * discountPercentage) / 100;
+    const finalPrice = planPrice - discountAmount;
+
+    return {
+      discountPercentage,
+      discountAmount,
+      finalPrice
+    };
+  };
   
   // Função para scroll suave até a div de resultado
   const scrollToPaymentResult = () => {
@@ -1034,15 +1075,18 @@ export default function Checkout() {
     return true;
   };
 
-  // Calcular preço final - sempre preço cheio
+  // Calcular preço final com desconto aplicado
   const calculateFinalPrice = () => {
-    let basePrice = selectedPlan?.price || 0;
+    const basePrice = selectedPlan?.price || 0;
+    const numPets = pets.length;
     let totalPrice = basePrice;
     
-    // Multiplicar por quantidade de pets (preço cheio para cada)
-    totalPrice = basePrice * pets.length;
+    // Aplicar desconto por pets e calcular total
+    // Aplicar desconto baseado no número de pets se elegível
+    const discountInfo = calculateDiscount(basePrice, numPets, selectedPlan?.id);
+    totalPrice = discountInfo.finalPrice * numPets;
     
-    // Se anual, multiplicar por 12 meses (preço cheio)
+    // Se anual, multiplicar por 12 meses
     if (billingPeriod === 'annual') {
       totalPrice = totalPrice * 12;
     }
@@ -3152,6 +3196,7 @@ export default function Checkout() {
                                 <div className="w-4 h-4 border-2 rounded-full animate-spin" 
                                   style={{borderColor: 'rgb(var(--primary-foreground))', borderTopColor: 'transparent'}} />
                                 <span>Processando...</span>
+                        
                               </>
                             ) : (
                               <>
@@ -3163,6 +3208,7 @@ export default function Checkout() {
                                     : 'Próximo'
                                   }
                                 </span>
+                        
                               </>
                             )}
                           </button>
@@ -3218,6 +3264,7 @@ export default function Checkout() {
                       <p className="text-sm mt-2 text-dark-secondary">
                         Pedido: <span className="font-mono font-bold">{pixPaymentResult.orderId}</span>
                       </p>
+              
                     </>
                   ) : pixPaymentStatus === 'rejected' ? (
                     // Payment Rejected State
@@ -3236,9 +3283,9 @@ export default function Checkout() {
                       <p className="text-sm mt-2 text-dark-secondary">
                         Pedido: <span className="font-mono font-bold">{pixPaymentResult.orderId}</span>
                       </p>
+              
                     </>
                   ) : (
-                    // Payment Pending State
                     <>
                       <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center bg-success">
 
@@ -3256,6 +3303,7 @@ export default function Checkout() {
                         Pedido: <span className="font-mono font-bold">{pixPaymentResult.orderId}</span>
                       </p>
                     </>
+              
                   )}
                 </div>
 
@@ -3377,6 +3425,7 @@ export default function Checkout() {
                       <p className="text-sm mt-1 text-dark-secondary">
                         Pedido: <span className="font-mono font-bold">{creditCardPaymentResult.orderId}</span>
                       </p>
+              
                     </>
                   ) : (
                     // Payment Pending State  
@@ -3399,6 +3448,7 @@ export default function Checkout() {
                       <p className="text-sm mt-1 text-dark-secondary">
                         Pedido: <span className="font-mono font-bold">{creditCardPaymentResult.orderId}</span>
                       </p>
+              
                     </>
                   )}
                 </div>
@@ -3457,8 +3507,9 @@ export default function Checkout() {
                     <div className="w-4 h-4 border-2 rounded-full animate-spin" 
                       style={{borderColor: 'rgb(var(--primary-foreground))', borderTopColor: 'transparent'}} />
                     <span>Processando...</span>
-                  </>
+            
                 ) : (
+                  </>
                   <>
                     <span>
                       {currentStep === 3 
@@ -3468,16 +3519,16 @@ export default function Checkout() {
                         : 'Próximo'
                       }
                     </span>
-                  </>
+            
                 )}
+                  </>
               </button>
             </div>
             )}
           </div>
         </div>
       </div>
-      <>
-        <Footer />
+
       
       {/* 🎉 Popup de Sucesso para Cartão de Crédito */}
       <AnimatePresence>
@@ -3559,7 +3610,7 @@ export default function Checkout() {
           </motion.div>
         )}
       </AnimatePresence>
-      </>
+
     </div>
   );
 }
