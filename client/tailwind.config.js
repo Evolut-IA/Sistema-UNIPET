@@ -48,7 +48,18 @@ module.exports = {
         'cream-lighter': 'rgb(var(--background))',
         'beige': 'rgb(var(--secondary))',
         'gold': 'rgb(var(--gold))',
-        'gold-darker': 'rgb(var(--gold-darker))'
+        'gold-darker': 'rgb(var(--gold-darker))',
+        
+        // Status colors - CSS variables for alerts and feedback
+        'success': 'rgb(var(--success))',
+        'warning': 'rgb(var(--warning))',
+        'error': 'rgb(var(--error))',
+        'success-background': 'rgb(var(--success-background))',
+        'warning-background': 'rgb(var(--warning-background))',
+        'error-background': 'rgb(var(--error-background))',
+        'success-foreground': 'rgb(var(--success-foreground))',
+        'warning-foreground': 'rgb(var(--warning-foreground))',
+        'error-foreground': 'rgb(var(--error-foreground))'
       },
       fontFamily: {
         sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'sans-serif'],
