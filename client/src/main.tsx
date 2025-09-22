@@ -91,7 +91,7 @@ function showInitializationError(error: Error): void {
         justify-content: center;
         z-index: 10000;
         font-family: system-ui, -apple-system, sans-serif;
-        color: white;
+        color: rgb(var(--primary-foreground));
         text-align: center;
         padding: 20px;
         box-sizing: border-box;

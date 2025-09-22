@@ -1610,7 +1610,7 @@ export default function Checkout() {
 
 
           {/* Step Content */}
-          <div className="rounded-xl shadow-lg p-8" className="bg-background">
+          <div className="rounded-xl shadow-lg p-8 bg-background">
             
             {/* Error and Success Messages */}
             <AnimatePresence>
@@ -1671,7 +1671,7 @@ export default function Checkout() {
                   transition={{ duration: 0.4, ease: "easeInOut" }}
                   className="space-y-8"
                 >
-                  <h2 className="text-2xl font-bold mb-6" className="text-foreground">Selecione o Plano e dados do Pet</h2>
+                  <h2 className="text-2xl font-bold mb-6 text-foreground">Selecione o Plano e dados do Pet</h2>
                   
                   {/* Plan Selection */}
                   {!selectedPlan && (
@@ -1688,7 +1688,7 @@ export default function Checkout() {
                               borderColor: 'var(--border-gray)'
                             }}
                           >
-                            <h4 className="font-bold text-lg mb-2" className="text-foreground">{plan.name}</h4>
+                            <h4 className="font-bold text-lg mb-2 text-foreground">{plan.name}</h4>
                             <p className="text-2xl font-bold mb-2" style={{color: 'var(--text-teal)'}}>{formatPrice(plan.price)}/mês</p>
                             <p className="text-sm mb-3" style={{color: 'var(--text-dark-secondary)'}}>{plan.description}</p>
                           </div>
@@ -1699,10 +1699,10 @@ export default function Checkout() {
 
                   {/* Selected Plan Display */}
                   {selectedPlan && (
-                    <div className="p-6 rounded-lg mb-6" className="bg-background">
+                    <div className="p-6 rounded-lg mb-6 bg-background">
                       <div className="flex flex-col md:flex-row md:justify-between md:items-center">
                         <div className="mb-3 md:mb-0">
-                          <h3 className="text-xl font-bold" className="text-foreground">{selectedPlan.name}</h3>
+                          <h3 className="text-xl font-bold text-foreground">{selectedPlan.name}</h3>
                           <p className="text-2xl font-bold" style={{color: 'var(--text-teal)'}}>{formatPrice(selectedPlan.price)}/mês</p>
                         </div>
                         <button
@@ -1723,7 +1723,7 @@ export default function Checkout() {
                   {/* Pets Section - Only show when a plan is selected */}
                   {selectedPlan && (
                     <div className="space-y-6">
-                      <h3 className="text-lg font-semibold" className="text-foreground">Dados dos Pets</h3>
+                      <h3 className="text-lg font-semibold text-foreground">Dados dos Pets</h3>
                     
                     {/* Pets List */}
                     {pets.map((pet, index) => (
@@ -2235,7 +2235,7 @@ export default function Checkout() {
 
                   {/* Section 2: Modalidade de contratação */}
                   <div className="space-y-4 p-6 rounded-lg border bg-background border-border">
-                    <h3 className="text-lg font-semibold mb-4 text-foreground">Modalidade de contratação</h3>
+                    <h3 className="text-lg font-semibold mb-4 className="text-foreground">Modalidade de contratação</h3>
                     
                     {/* Segmented Control */}
                     <div 
@@ -2300,7 +2300,7 @@ export default function Checkout() {
 
                   {/* Section 3: Formas de pagamento */}
                   <div className="space-y-4 p-4 sm:p-6 rounded-lg border overflow-hidden" className="bg-background border-border">
-                    <h3 className="text-lg font-semibold mb-4 text-foreground">Formas de pagamento</h3>
+                    <h3 className="text-lg font-semibold mb-4 className="text-foreground">Formas de pagamento</h3>
                     
                     <div className="space-y-3 w-full">
                       {(() => {
@@ -2791,7 +2791,7 @@ export default function Checkout() {
                     <div className="space-y-6">
                       {/* Modalidade de contratação */}
                       <div className="space-y-4 p-6 rounded-lg border bg-background border-border">
-                        <h3 className="text-lg font-semibold mb-4 text-foreground">Modalidade de contratação</h3>
+                        <h3 className="text-lg font-semibold mb-4 className="text-foreground">Modalidade de contratação</h3>
                         
                         {/* Segmented Control */}
                         <div 
@@ -2831,7 +2831,7 @@ export default function Checkout() {
 
                       {/* Formas de pagamento */}
                       <div className="space-y-4 p-6 rounded-lg border bg-background border-border">
-                        <h3 className="text-lg font-semibold mb-4 text-foreground">Formas de pagamento</h3>
+                        <h3 className="text-lg font-semibold mb-4 className="text-foreground">Formas de pagamento</h3>
                         
                         <div className="space-y-3">
                           {[
@@ -2960,7 +2960,7 @@ export default function Checkout() {
                     <div className="space-y-6">
                       {/* Resumo do pedido */}
                       <div className="space-y-4 p-6 rounded-lg border bg-background border-border">
-                        <h3 className="text-lg font-semibold mb-4 text-foreground">Resumo do pedido</h3>
+                        <h3 className="text-lg font-semibold mb-4 className="text-foreground">Resumo do pedido</h3>
                         <div className="space-y-3">
                           <div>
                             <span className="block text-sm" style={{color: 'var(--text-dark-secondary)'}}>{selectedPlan?.name} | {pets[0]?.name} | {billingPeriod === 'annual' ? 'Anual' : 'Mensal'}</span>
@@ -3194,7 +3194,7 @@ export default function Checkout() {
                   <div className="grid md:grid-cols-2 gap-8">
                     {/* QR Code */}
                     <div className="text-center">
-                      <h3 className="text-lg font-semibold mb-4 text-foreground">
+                      <h3 className="text-lg font-semibold mb-4 className="text-foreground">
                         QR Code PIX
                       </h3>
                       <div className="bg-white p-6 rounded-lg border inline-block">
@@ -3211,7 +3211,7 @@ export default function Checkout() {
 
                   {/* Copy and Paste Code */}
                   <div>
-                    <h3 className="text-lg font-semibold mb-4 text-foreground">
+                    <h3 className="text-lg font-semibold mb-4 className="text-foreground">
                       Código Copia e Cola
                     </h3>
                     <div className="bg-white p-4 rounded-lg border mb-4">

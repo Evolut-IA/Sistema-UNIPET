@@ -70,7 +70,7 @@ export default function Sidebar() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-white border-r border-[var(--border-teal-light)]">
+    <div className="flex flex-col h-full bg-background border-r border-accent">
       <div className="p-6">
         <div className="flex items-center space-x-3">
           <Stethoscope className="h-8 w-8 text-gray-700" />
@@ -100,7 +100,7 @@ export default function Sidebar() {
                     className={cn(
                       "flex items-center px-3 py-2 text-sm rounded-lg transition-colors",
                       isActive
-                        ? "bg-[#277677] text-white"
+                        ? "bg-primary text-primary-foreground"
                         : "text-gray-600 hover:text-gray-900"
                     )}
                     data-testid={`link-${item.name.toLowerCase().replace(/\s+/g, '-')}`}

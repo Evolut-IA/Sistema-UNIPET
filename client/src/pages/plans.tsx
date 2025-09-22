@@ -111,7 +111,7 @@ export default function Plans() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center" className="bg-primary">
+      <div className="min-h-screen flex items-center justify-center bg-primary">
         <div className="text-center text-primary-foreground max-w-md mx-auto px-4">
           <h2 className="text-2xl font-bold mb-4">Ops! Algo deu errado</h2>
           <p className="text-lg mb-6">Não conseguimos carregar os planos no momento. Por favor, tente acessar novamente mais tarde.</p>
@@ -123,7 +123,7 @@ export default function Plans() {
   // If no plans available, show a friendly message
   if (!isLoading && (!plansData || plansData.length === 0)) {
     return (
-      <div className="min-h-screen flex items-center justify-center" className="bg-primary">
+      <div className="min-h-screen flex items-center justify-center bg-primary">
         <div className="text-center text-primary-foreground max-w-md mx-auto px-4">
           <h2 className="text-2xl font-bold mb-4">Planos em Breve!</h2>
           <p className="text-lg mb-6">Estamos preparando os melhores planos para seu pet. Volte em breve!</p>
