@@ -41,14 +41,14 @@ module.exports = {
         },
         
         // Mantém cores personalizadas do projeto via variáveis existentes
-        'teal': 'var(--bg-teal)',
-        'teal-light': 'var(--bg-teal-light)', 
-        'teal-dark': 'var(--bg-teal-dark)',
-        'cream-light': 'var(--bg-cream-light)',
-        'cream-lighter': 'var(--bg-cream-lighter)',
-        'beige': 'var(--bg-beige)',
-        'gold': 'var(--bg-gold)',
-        'gold-darker': 'var(--bg-gold-darker)'
+        'teal': 'rgb(var(--primary))',
+        'teal-light': 'rgb(var(--accent))', 
+        'teal-dark': 'rgb(26 90 92)',
+        'cream-light': 'rgb(var(--muted))',
+        'cream-lighter': 'rgb(var(--background))',
+        'beige': 'rgb(var(--secondary))',
+        'gold': 'rgb(225 172 51)',
+        'gold-darker': 'rgb(201 149 36)'
       },
       fontFamily: {
         sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'sans-serif'],
