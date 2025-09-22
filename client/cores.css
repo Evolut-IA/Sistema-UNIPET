@@ -30,8 +30,8 @@
   
   /* Tokens de bordas e inputs */
   --border: 229 231 235; /* #e5e7eb (border-gray) */
-  --input: 226 226 226; /* #e2e2e2 (dropdown background) */
-  --input-foreground: 48 48 48; /* #303030 (text-dark-primary) */
+  --input: 226 226 226; /* #E2E2E2 (background dos campos) */
+  --input-foreground: 30 30 30; /* #1e1e1e (texto escrito nos campos) */
   
   /* Tokens de popover */
   --popover: 226 226 226; /* #e2e2e2 (dropdown background) */
@@ -63,7 +63,7 @@
   --black: 0 0 0; /* #000000 - preto puro */
   
   /* Placeholder global - agora unificado */
-  --placeholder: 48 48 48; /* #303030 (text-dark-primary) */
+  --placeholder: 204 204 204; /* #cccccc (cor do placeholder nos campos) */
   
   /* Tokens de UI */
   --radius: 0.5rem;
