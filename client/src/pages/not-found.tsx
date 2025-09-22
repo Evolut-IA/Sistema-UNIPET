@@ -3,8 +3,8 @@ import { AlertCircle } from "lucide-react";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-[var(--bg-cream-light)]">
-      <Card className="w-full max-w-md mx-4 bg-[var(--bg-cream-lighter)] border-[var(--border-gray)]">
+    <div className="min-h-screen w-full flex items-center justify-center bg-muted">
+      <Card className="w-full max-w-md mx-4 bg-background border-border">
         <CardContent className="pt-6">
           <div className="flex mb-4 gap-2">
             <AlertCircle className="h-8 w-8 text-[var(--text-error)]" />

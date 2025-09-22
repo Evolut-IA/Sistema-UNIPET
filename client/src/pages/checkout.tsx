@@ -1569,8 +1569,8 @@ export default function Checkout() {
                   <div 
                     className={`w-10 h-10 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-all ${
                       currentStep >= step 
-                        ? 'text-[rgb(var(--primary-foreground))]' 
-                        : 'text-[rgb(var(--muted-foreground))]'
+                        ? 'text-primary-foreground bg-teal-dark' 
+                        : 'text-muted-foreground bg-border'
                     }`}
                     style={{
                       background: currentStep >= step 
@@ -1641,12 +1641,12 @@ export default function Checkout() {
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  className="mb-6 p-4 rounded-lg border-l-4"
                   style={{
                     background: 'rgb(34 197 94 / 0.1)',
                     borderColor: 'rgb(34 197 94)',
                     color: 'rgb(34 197 94)'
                   }}
+                  className="mb-6 p-4 rounded-lg border-l-4 bg-success/10 border-success text-success"
                   data-testid="success-message"
                 >
                   <div className="flex items-center">
@@ -1682,10 +1682,10 @@ export default function Checkout() {
                           <div
                             key={plan.id}
                             onClick={() => setSelectedPlan(plan)}
-                            className="p-4 rounded-lg border-2 cursor-pointer transition-all"
+                            className="p-4 rounded-lg border-2 cursor-pointer transition-all bg-background border-border"
                             style={{
-                              background: 'rgb(var(--background))',
-                              borderColor: 'rgb(var(--border))'
+  
+
                             }}
                           >
                             <h4 className="font-bold text-lg mb-2 text-foreground">{plan.name}</h4>
@@ -1707,10 +1707,10 @@ export default function Checkout() {
                         </div>
                         <button
                           onClick={() => setSelectedPlan(null)}
-                          className="text-sm px-4 py-2 rounded-lg border w-fit md:w-auto"
+                          className="text-sm px-4 py-2 rounded-lg border w-fit md:w-auto text-muted-foreground border-border bg-background"
                           style={{
                             color: 'rgb(var(--muted-foreground))',
-                            borderColor: 'rgb(var(--border))',
+
                             background: 'rgb(var(--background))'
                           }}
                         >
@@ -1730,7 +1730,7 @@ export default function Checkout() {
                       <div key={pet.id} className="border rounded-lg overflow-hidden">
                         {pet.collapsed ? (
                           /* Collapsed Pet View */
-                          <div className="p-4 bg-[var(--bg-cream-lighter)] flex justify-between items-center">
+                          <div className="p-4 bg-background flex justify-between items-center">
                             <div>
                               <h4 className="font-semibold text-foreground">{pet.name}</h4>
                               <p className="text-sm text-dark-secondary">
@@ -1745,8 +1745,8 @@ export default function Checkout() {
                                 onClick={() => editPet(index)}
                                 className="px-3 py-1 text-sm rounded border"
                                 style={{
-                                  color: 'var(--text-teal)',
-                                  borderColor: 'var(--text-teal)',
+                                  color: 'rgb(var(--primary))',
+                                  borderColor: 'rgb(var(--primary))',
                                   background: 'rgb(var(--background))'
                                 }}
                               >
@@ -1758,8 +1758,8 @@ export default function Checkout() {
                                   className="px-3 py-1 text-sm rounded border"
                                   style={{
                                     color: 'rgb(var(--destructive))',
-                                    borderColor: 'var(--border-error)',
-                                    background: 'var(--bg-cream-lighter)'
+                                    borderColor: 'rgb(var(--destructive))',
+                                    background: 'rgb(var(--background))'
                                   }}
                                 >
                                   Excluir
@@ -1769,7 +1769,7 @@ export default function Checkout() {
                           </div>
                         ) : (
                           /* Expanded Pet Form */
-                          <div className="p-6 bg-[var(--bg-cream-lighter)]">
+                          <div className="p-6 bg-background">
                             <h4 className="font-semibold mb-4 text-foreground">
                               {index === 0 ? 'Primeiro Pet' : `${index + 1}º Pet`}
                             </h4>
@@ -1782,10 +1782,10 @@ export default function Checkout() {
                                   type="text"
                                   value={currentPetData.name}
                                   onChange={(e) => setCurrentPetData({...currentPetData, name: e.target.value})}
-                                  className="w-full p-3 rounded-lg border"
+                                  className="w-full p-3 rounded-lg border border-border bg-background"
                                   style={{
-                                    borderColor: 'rgb(var(--border))',
-                                    background: 'var(--bg-cream-lighter)'
+
+                                    background: 'rgb(var(--background))'
                                   }}
                                   placeholder="Digite o nome do seu pet"
                                   required
@@ -1818,10 +1818,10 @@ export default function Checkout() {
                                   type="text"
                                   value={currentPetData.breed}
                                   onChange={(e) => setCurrentPetData({...currentPetData, breed: e.target.value})}
-                                  className="w-full p-3 rounded-lg border"
+                                  className="w-full p-3 rounded-lg border border-border bg-background"
                                   style={{
-                                    borderColor: 'rgb(var(--border))',
-                                    background: 'var(--bg-cream-lighter)'
+
+                                    background: 'rgb(var(--background))'
                                   }}
                                   placeholder="Digite a raça do seu pet"
                                   required
@@ -1836,10 +1836,10 @@ export default function Checkout() {
                                   type="number"
                                   value={currentPetData.age}
                                   onChange={(e) => setCurrentPetData({...currentPetData, age: parseInt(e.target.value)})}
-                                  className="w-full p-3 rounded-lg border"
+                                  className="w-full p-3 rounded-lg border border-border bg-background"
                                   style={{
-                                    borderColor: 'rgb(var(--border))',
-                                    background: 'var(--bg-cream-lighter)'
+
+                                    background: 'rgb(var(--background))'
                                   }}
                                   min="0"
                                   max="30"
@@ -1891,7 +1891,7 @@ export default function Checkout() {
                                 style={{
                                   color: 'var(--text-dark-primary)',
                                   backgroundColor: 'rgb(var(--background))',
-                                  borderColor: 'rgb(var(--border))'
+    
                                 }}
                               >
                                 Cancelar
@@ -1945,7 +1945,7 @@ export default function Checkout() {
                         type="text"
                         value={customerData.name}
                         onChange={(e) => setCustomerData({...customerData, name: e.target.value})}
-                        className="w-full p-3 rounded-lg border"
+                        className="w-full p-3 rounded-lg border border-border bg-background"
                         style={{
                           borderColor: 'rgb(var(--border))',
                           background: 'rgb(var(--background))'
@@ -1968,7 +1968,7 @@ export default function Checkout() {
                             clearFieldError('email');
                           }
                         }}
-                        className="w-full p-3 rounded-lg border"
+                        className="w-full p-3 rounded-lg border border-border bg-background"
                         style={{
                           borderColor: fieldErrors.email ? 'var(--text-error-alt)' : 'rgb(var(--border))',
                           background: 'rgb(var(--background))'
@@ -1997,7 +1997,7 @@ export default function Checkout() {
                             clearFieldError('phone');
                           }
                         }}
-                        className="w-full p-3 rounded-lg border"
+                        className="w-full p-3 rounded-lg border border-border bg-background"
                         style={{
                           borderColor: fieldErrors.phone ? 'var(--text-error-alt)' : 'rgb(var(--border))',
                           background: 'rgb(var(--background))'
@@ -2082,9 +2082,9 @@ export default function Checkout() {
                               setCustomerData({...customerData, cpf: formatCPF(numbersOnly)});
                             }
                           }}
-                          className="w-full p-3 rounded-lg border"
+                          className="w-full p-3 rounded-lg border border-border bg-background"
                           style={{
-                            borderColor: 'rgb(var(--border))',
+
                             background: 'rgb(var(--background))'
                           }}
                           placeholder="000.000.000-00"
@@ -2151,9 +2151,9 @@ export default function Checkout() {
                           type="text"
                           value={customerData.address}
                           onChange={(e) => setCustomerData({...customerData, address: e.target.value})}
-                          className="w-full p-3 rounded-lg border"
+                          className="w-full p-3 rounded-lg border border-border bg-background"
                           style={{
-                            borderColor: 'rgb(var(--border))',
+
                             background: 'rgb(var(--background))'
                           }}
                           placeholder="Rua e número"
@@ -2172,9 +2172,9 @@ export default function Checkout() {
                             const numbersOnly = e.target.value.replace(/\D/g, '');
                             e.target.value = numbersOnly;
                           }}
-                          className="w-full p-3 rounded-lg border"
+                          className="w-full p-3 rounded-lg border border-border bg-background"
                           style={{
-                            borderColor: 'rgb(var(--border))',
+
                             background: 'rgb(var(--background))'
                           }}
                           placeholder="123"
@@ -2190,9 +2190,9 @@ export default function Checkout() {
                           type="text"
                           value={customerData.district}
                           onChange={(e) => setCustomerData({...customerData, district: e.target.value})}
-                          className="w-full p-3 rounded-lg border"
+                          className="w-full p-3 rounded-lg border border-border bg-background"
                           style={{
-                            borderColor: 'rgb(var(--border))',
+
                             background: 'rgb(var(--background))'
                           }}
                           required
@@ -2210,7 +2210,7 @@ export default function Checkout() {
                             onChange={(e) => setCustomerData({...customerData, state: e.target.value})}
                             className="w-1/3 p-3 rounded-lg border"
                             style={{
-                              borderColor: 'rgb(var(--border))',
+
                               background: 'rgb(var(--background))'
                             }}
                             placeholder="SP"
@@ -2222,7 +2222,7 @@ export default function Checkout() {
                             onChange={(e) => setCustomerData({...customerData, city: e.target.value})}
                             className="w-2/3 p-3 rounded-lg border"
                             style={{
-                              borderColor: 'rgb(var(--border))',
+
                               background: 'rgb(var(--background))'
                             }}
                             placeholder="Cidade"
@@ -2380,9 +2380,9 @@ export default function Checkout() {
                               const value = formatCardNumber(e.target.value);
                               setCardData({...cardData, cardNumber: value});
                             }}
-                            className="w-full p-3 rounded-lg border"
+                            className="w-full p-3 rounded-lg border border-border bg-background"
                             style={{
-                              borderColor: 'rgb(var(--border))',
+
                               background: 'rgb(var(--background))'
                             }}
                             placeholder="1234 5678 9012 3456"
@@ -2398,9 +2398,9 @@ export default function Checkout() {
                             type="text"
                             value={cardData.cardHolder}
                             onChange={(e) => setCardData({...cardData, cardHolder: e.target.value.toUpperCase()})}
-                            className="w-full p-3 rounded-lg border"
+                            className="w-full p-3 rounded-lg border border-border bg-background"
                             style={{
-                              borderColor: 'rgb(var(--border))',
+
                               background: 'rgb(var(--background))'
                             }}
                             placeholder="NOME COMPLETO"
@@ -2419,9 +2419,9 @@ export default function Checkout() {
                               const value = formatExpirationDate(e.target.value);
                               setCardData({...cardData, expirationDate: value});
                             }}
-                            className="w-full p-3 rounded-lg border"
+                            className="w-full p-3 rounded-lg border border-border bg-background"
                             style={{
-                              borderColor: 'rgb(var(--border))',
+
                               background: 'rgb(var(--background))'
                             }}
                             placeholder="12/2030"
@@ -2440,9 +2440,9 @@ export default function Checkout() {
                               const value = e.target.value.replace(/\D/g, '');
                               if (value.length <= 4) setCardData({...cardData, securityCode: value});
                             }}
-                            className="w-full p-3 rounded-lg border"
+                            className="w-full p-3 rounded-lg border border-border bg-background"
                             style={{
-                              borderColor: 'rgb(var(--border))',
+
                               background: 'rgb(var(--background))'
                             }}
                             placeholder="123"
@@ -2459,9 +2459,9 @@ export default function Checkout() {
                             <select
                               value={installments}
                               onChange={(e) => setInstallments(parseInt(e.target.value))}
-                              className="w-full p-3 rounded-lg border"
+                              className="w-full p-3 rounded-lg border border-border bg-background"
                               style={{
-                                borderColor: 'rgb(var(--border))',
+
                                 background: 'rgb(var(--background))'
                               }}
                             >
@@ -2617,9 +2617,9 @@ export default function Checkout() {
                                 setCustomerData({...customerData, cpf: formatCPF(numbersOnly)});
                               }
                             }}
-                            className="w-full p-3 rounded-lg border"
+                            className="w-full p-3 rounded-lg border border-border bg-background"
                             style={{
-                              borderColor: 'rgb(var(--border))',
+
                               background: 'rgb(var(--background))'
                             }}
                             placeholder="000.000.000-00"
@@ -2684,9 +2684,9 @@ export default function Checkout() {
                             type="text"
                             value={customerData.address}
                             onChange={(e) => setCustomerData({...customerData, address: e.target.value})}
-                            className="w-full p-3 rounded-lg border"
+                            className="w-full p-3 rounded-lg border border-border bg-background"
                             style={{
-                              borderColor: 'rgb(var(--border))',
+
                               background: 'rgb(var(--background))'
                             }}
                             placeholder="Rua e número"
@@ -2706,9 +2706,9 @@ export default function Checkout() {
                                 const numbersOnly = e.target.value.replace(/\D/g, '');
                                 e.target.value = numbersOnly;
                               }}
-                              className="w-full p-3 rounded-lg border"
+                              className="w-full p-3 rounded-lg border border-border bg-background"
                               style={{
-                                borderColor: 'rgb(var(--border))',
+
                                 background: 'rgb(var(--background))'
                               }}
                               placeholder="123"
@@ -2721,9 +2721,9 @@ export default function Checkout() {
                             </label>
                             <input
                               type="text"
-                              className="w-full p-3 rounded-lg border"
+                              className="w-full p-3 rounded-lg border border-border bg-background"
                               style={{
-                                borderColor: 'rgb(var(--border))',
+
                                 background: 'rgb(var(--background))'
                               }}
                               placeholder="Apartamento"
@@ -2739,9 +2739,9 @@ export default function Checkout() {
                             type="text"
                             value={customerData.district}
                             onChange={(e) => setCustomerData({...customerData, district: e.target.value})}
-                            className="w-full p-3 rounded-lg border"
+                            className="w-full p-3 rounded-lg border border-border bg-background"
                             style={{
-                              borderColor: 'rgb(var(--border))',
+
                               background: 'rgb(var(--background))'
                             }}
                             required
@@ -2757,9 +2757,9 @@ export default function Checkout() {
                               type="text"
                               value={customerData.state}
                               onChange={(e) => setCustomerData({...customerData, state: e.target.value})}
-                              className="w-full p-3 rounded-lg border"
+                              className="w-full p-3 rounded-lg border border-border bg-background"
                               style={{
-                                borderColor: 'rgb(var(--border))',
+
                                 background: 'rgb(var(--background))'
                               }}
                               placeholder="SP"
@@ -2774,9 +2774,9 @@ export default function Checkout() {
                               type="text"
                               value={customerData.city}
                               onChange={(e) => setCustomerData({...customerData, city: e.target.value})}
-                              className="w-full p-3 rounded-lg border"
+                              className="w-full p-3 rounded-lg border border-border bg-background"
                               style={{
-                                borderColor: 'rgb(var(--border))',
+
                                 background: 'rgb(var(--background))'
                               }}
                               placeholder="Cidade"
@@ -2798,7 +2798,7 @@ export default function Checkout() {
                           className="rounded-md p-1 flex relative border"
                           style={{
                             background: 'var(--bg-gray-50)',
-                            borderColor: 'rgb(var(--border))'
+
                           }}
                         >
                           <div 
@@ -2878,9 +2878,9 @@ export default function Checkout() {
                                   const value = formatCardNumber(e.target.value);
                                   setCardData({...cardData, cardNumber: value});
                                 }}
-                                className="w-full p-3 rounded-lg border"
+                                className="w-full p-3 rounded-lg border border-border bg-background"
                                 style={{
-                                  borderColor: 'rgb(var(--border))',
+
                                   background: 'rgb(var(--background))'
                                 }}
                                 placeholder="0000 0000 0000 0000"
@@ -2896,9 +2896,9 @@ export default function Checkout() {
                                 type="text"
                                 value={cardData.cardHolder}
                                 onChange={(e) => setCardData({...cardData, cardHolder: e.target.value.toUpperCase()})}
-                                className="w-full p-3 rounded-lg border"
+                                className="w-full p-3 rounded-lg border border-border bg-background"
                                 style={{
-                                  borderColor: 'rgb(var(--border))',
+
                                   background: 'rgb(var(--background))'
                                 }}
                                 placeholder="NOME SOBRENOME"
@@ -2918,10 +2918,10 @@ export default function Checkout() {
                                     const value = formatExpirationDate(e.target.value);
                                     setCardData({...cardData, expirationDate: value});
                                   }}
-                                  className="w-full p-3 rounded-lg border"
+                                  className="w-full p-3 rounded-lg border border-border bg-background"
                                   style={{
-                                    borderColor: 'rgb(var(--border))',
-                                    background: 'var(--bg-cream-lighter)'
+
+                                    background: 'rgb(var(--background))'
                                   }}
                                   placeholder="(Mês/Ano)"
                                   required
@@ -2941,10 +2941,10 @@ export default function Checkout() {
                                       setCardData({...cardData, securityCode: value});
                                     }
                                   }}
-                                  className="w-full p-3 rounded-lg border"
+                                  className="w-full p-3 rounded-lg border border-border bg-background"
                                   style={{
-                                    borderColor: 'rgb(var(--border))',
-                                    background: 'var(--bg-cream-lighter)'
+
+                                    background: 'rgb(var(--background))'
                                   }}
                                   placeholder="Número de 3 ou 4 dígitos na parte posterior do cartão"
                                   required
@@ -3071,7 +3071,7 @@ export default function Checkout() {
                           <button
                             onClick={nextStep}
                             disabled={isLoading}
-                            className="w-full flex items-center justify-center space-x-2 px-8 py-3 rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full flex items-center justify-center space-x-2 px-8 py-3 rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed bg-primary text-primary-foreground"
                             style={{
                               background: 'var(--btn-ver-planos-bg)',
                               color: 'rgb(var(--primary-foreground))'
@@ -3259,7 +3259,7 @@ export default function Checkout() {
                   <div className="text-center">
                     <button
                       onClick={() => navigate('/customer/login')}
-                      className="px-8 py-3 rounded-lg font-semibold transition-all opacity-80"
+                      className="px-8 py-3 rounded-lg font-semibold transition-all opacity-80 bg-primary text-primary-foreground"
                       style={{
                         background: 'var(--btn-ver-planos-bg)',
                         color: 'rgb(var(--primary-foreground))'
@@ -3343,7 +3343,7 @@ export default function Checkout() {
                         setCreditCardPaymentStatus('pending');
                         setCurrentStep(3); // Volta para o step de pagamento
                       }}
-                      className="px-8 py-3 rounded-lg font-semibold transition-all opacity-80"
+                      className="px-8 py-3 rounded-lg font-semibold transition-all opacity-80 bg-primary text-primary-foreground"
                       style={{
                         background: 'var(--btn-ver-planos-bg)',
                         color: 'rgb(var(--primary-foreground))'
@@ -3376,7 +3376,7 @@ export default function Checkout() {
               <button
                 onClick={nextStep}
                 disabled={isLoading}
-                className={`flex items-center justify-center space-x-2 px-8 py-3 rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed ${currentStep === 3 ? 'w-full md:hidden' : ''}`}
+                className={`flex items-center justify-center space-x-2 px-8 py-3 rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed bg-primary text-primary-foreground ${currentStep === 3 ? 'w-full md:hidden' : ''}`}
                 style={{
                   background: 'var(--btn-ver-planos-bg)',
                   color: 'rgb(var(--primary-foreground))'

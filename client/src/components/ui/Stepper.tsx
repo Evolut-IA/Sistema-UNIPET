@@ -150,9 +150,9 @@ export default function Stepper({
                   }}
                   className={`back-button ${currentStep === 1 ? "inactive" : ""}`}
                   style={{
-                    background: currentStep === 1 ? 'var(--bg-teal-dark)' : 'var(--bg-gold)',
-                    borderColor: currentStep === 1 ? 'var(--bg-teal-dark)' : 'var(--bg-gold)',
-                    color: currentStep === 1 ? 'var(--text-muted)' : 'var(--text-light)'
+                    background: currentStep === 1 ? 'rgb(var(--primary))' : 'rgb(var(--gold))',
+                    borderColor: currentStep === 1 ? 'rgb(var(--primary))' : 'rgb(var(--gold))',
+                    color: currentStep === 1 ? 'rgb(var(--muted-foreground))' : 'rgb(var(--primary-foreground))'
                   }}
                   disabled={isLoading}
                   {...backButtonProps}
@@ -172,8 +172,8 @@ export default function Stepper({
                 }}
                 className="next-button"
                 style={{
-                  background: 'var(--bg-teal-dark)',
-                  color: 'var(--text-light)',
+                  background: 'rgb(var(--primary))',
+                  color: 'rgb(var(--primary-foreground)),',
                   opacity: isLoading ? 0.8 : 1
                 }}
                 disabled={isLoading}
@@ -299,9 +299,9 @@ function StepIndicator({ step, currentStep, onClickStep, disableStepIndicators }
     >
       <motion.div
         variants={{
-          inactive: { scale: 1, background: "var(--bg-cream-dark)", color: "var(--bg-cream-dark)" },
-          active: { scale: 1, background: "var(--bg-gold)", color: "var(--bg-gold)" },
-          complete: { scale: 1, background: "var(--bg-gold)", color: "var(--bg-gold)" },
+          inactive: { scale: 1, background: "rgb(var(--muted))", color: "rgb(var(--muted))" },
+          active: { scale: 1, background: "rgb(var(--gold))", color: "rgb(var(--gold))" },
+          complete: { scale: 1, background: "rgb(var(--gold))", color: "rgb(var(--gold))" },
         }}
         transition={{ duration: 0.3 }}
         className={`step-indicator-inner ${status === "inactive" ? "inactive" : ""}`}
@@ -320,8 +320,8 @@ function StepIndicator({ step, currentStep, onClickStep, disableStepIndicators }
 
 function StepConnector({ isComplete }: { isComplete: boolean }) {
   const lineVariants = {
-    incomplete: { width: "100%", background: "var(--bg-cream-dark)" },
-    complete: { width: "100%", background: "var(--bg-gold)" },
+    incomplete: { width: "100%", background: "rgb(var(--muted))" },
+    complete: { width: "100%", background: "rgb(var(--gold))" },
   };
 
   return (

@@ -118,8 +118,7 @@ export default function Header() {
                     stiffness: 300, 
                     damping: 30
                   }}
-                  className="fixed top-0 right-0 h-full w-80 z-40 shadow-lg"
-                  style={{background: 'linear-gradient(to top, var(--bg-beige), var(--bg-cream-light))'}}
+                  className="fixed top-0 right-0 h-full w-80 z-40 shadow-lg bg-gradient-to-t from-secondary to-background"
                 >
                   <div className="flex flex-col h-full">
                     {/* Header */}
