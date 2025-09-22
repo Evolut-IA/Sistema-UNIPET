@@ -3497,6 +3497,7 @@ export default function Checkout() {
           </motion.div>
         )}
       </AnimatePresence>
+      </>
     </div>
   );
 }
