@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Phone, Mail, MapPin, Facebook, Instagram, Linkedin, Youtube, Clock, Building } from "lucide-react";
+import { Phone, Mail, Facebook, Instagram, Linkedin, Youtube } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { useSiteSettingsWithDefaults } from "@/hooks/use-site-settings";
 import { useWhatsAppRedirect } from "@/hooks/use-whatsapp-redirect";
@@ -25,7 +25,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="border-t py-12" style={{background: 'var(--bg-cream-light)', borderTopColor: 'var(--border-teal-light)'}}>
+    <footer className="border-t border-t-accent bg-muted py-12">
       <div className="section-container">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
           {/* Company Info */}
@@ -33,7 +33,7 @@ export default function Footer() {
             <div className="flex items-start justify-start mb-4 sm:mb-6">
               <img src="/unipet-logo.png" alt="Unipet Plan" className="h-8 sm:h-10 w-auto" />
             </div>
-            <p className="mb-4 sm:mb-6 text-sm sm:text-base leading-relaxed" style={{color: 'var(--text-dark-primary)'}}>
+            <p className="mb-4 sm:mb-6 text-sm sm:text-base leading-relaxed text-foreground">
               <span className="sm:hidden">
                 Cuidando da saúde do seu pet com carinho,<br />
                 qualidade e preços acessíveis.
@@ -44,22 +44,22 @@ export default function Footer() {
             </p>
             <div className="flex space-x-4">
               {shouldShow.facebookUrl && (
-                <a href={settings.facebookUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200" style={{background: 'var(--bg-teal)', color: 'var(--text-light)'}}>
+                <a href={settings.facebookUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200 bg-primary text-primary-foreground">
                   <Facebook className="h-4 w-4" />
                 </a>
               )}
               {shouldShow.instagramUrl && (
-                <a href={settings.instagramUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200" style={{background: 'var(--bg-teal)', color: 'var(--text-light)'}}>
+                <a href={settings.instagramUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200 bg-primary text-primary-foreground">
                   <Instagram className="h-4 w-4" />
                 </a>
               )}
               {shouldShow.linkedinUrl && (
-                <a href={settings.linkedinUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200" style={{background: 'var(--bg-teal)', color: 'var(--text-light)'}}>
+                <a href={settings.linkedinUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200 bg-primary text-primary-foreground">
                   <Linkedin className="h-4 w-4" />
                 </a>
               )}
               {shouldShow.youtubeUrl && (
-                <a href={settings.youtubeUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200" style={{background: 'var(--bg-teal)', color: 'var(--text-light)'}}>
+                <a href={settings.youtubeUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200 bg-primary text-primary-foreground">
                   <Youtube className="h-4 w-4" />
                 </a>
               )}
@@ -68,16 +68,13 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6" style={{color: 'var(--text-teal)'}}>Links Rápidos</h4>
+            <h4 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6 text-primary">Links Rápidos</h4>
             <ul className="space-y-2 sm:space-y-3">
               {quickLinks.map((link) => (
                 <li key={link.name}>
                   <Link 
                     href={link.href}
-                    className="transition-colors text-sm sm:text-base"
-                    style={{color: 'var(--text-dark-primary)'}}
-
-
+                    className="transition-colors text-sm sm:text-base text-foreground"
                   >
                     {link.name}
                   </Link>
@@ -88,11 +85,11 @@ export default function Footer() {
 
           {/* Services */}
           <div>
-            <h4 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6" style={{color: 'var(--text-teal)'}}>Serviços</h4>
+            <h4 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6 text-primary">Serviços</h4>
             <ul className="space-y-2 sm:space-y-3">
               {services.map((service) => (
                 <li key={service}>
-                  <span className="cursor-default text-sm sm:text-base" style={{color: 'var(--text-dark-primary)'}}>
+                  <span className="cursor-default text-sm sm:text-base text-foreground">
                     {service}
                   </span>
                 </li>
@@ -102,39 +99,36 @@ export default function Footer() {
 
           {/* Contact */}
           <div className="col-span-1 sm:col-span-2 md:col-span-1">
-            <h4 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6" style={{color: 'var(--text-teal)'}}>Contato</h4>
+            <h4 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6 text-primary">Contato</h4>
             <div className="space-y-3 sm:space-y-4">
               {shouldShow.phone && (
                 <div className="flex items-start gap-3">
-                  <Phone className="h-4 w-4 flex-shrink-0 mt-0.5" style={{color: 'var(--icon-teal)'}} />
+                  <Phone className="h-4 w-4 flex-shrink-0 mt-0.5 text-primary" />
                   <div>
-                    <div className="font-semibold text-sm sm:text-base" style={{color: 'var(--text-dark-primary)'}}>Telefone</div>
-                    <div className="text-sm sm:text-base" style={{color: 'var(--text-dark-primary)'}}>{settings.phone}</div>
+                    <div className="font-semibold text-sm sm:text-base text-foreground">Telefone</div>
+                    <div className="text-sm sm:text-base text-foreground">{settings.phone}</div>
                   </div>
                 </div>
               )}
               {shouldShow.email && (
                 <div className="flex items-start gap-3">
-                  <Mail className="h-4 w-4 flex-shrink-0 mt-0.5" style={{color: 'var(--icon-teal)'}} />
+                  <Mail className="h-4 w-4 flex-shrink-0 mt-0.5 text-primary" />
                   <div>
-                    <div className="font-semibold text-sm sm:text-base" style={{color: 'var(--text-dark-primary)'}}>E-mail</div>
-                    <div className="text-sm sm:text-base break-all md:break-normal" style={{color: 'var(--text-dark-primary)'}}>{settings.email}</div>
+                    <div className="font-semibold text-sm sm:text-base text-foreground">E-mail</div>
+                    <div className="text-sm sm:text-base break-all md:break-normal text-foreground">{settings.email}</div>
                   </div>
                 </div>
               )}
               {shouldShow.whatsapp && (
                 <div className="flex items-start gap-3">
-                  <FaWhatsapp className="h-4 w-4 flex-shrink-0 mt-0.5" style={{color: 'var(--icon-teal)'}} />
+                  <FaWhatsapp className="h-4 w-4 flex-shrink-0 mt-0.5 text-primary" />
                   <div>
-                    <div className="font-semibold text-sm sm:text-base" style={{color: 'var(--text-dark-primary)'}}>WhatsApp</div>
+                    <div className="font-semibold text-sm sm:text-base text-foreground">WhatsApp</div>
                     <a 
                       href={getWhatsAppLink()}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm sm:text-base transition-colors cursor-pointer"
-                      style={{color: 'var(--text-dark-primary)'}}
-  
-  
+                      className="text-sm sm:text-base transition-colors cursor-pointer text-foreground"
                     >
                       {settings.whatsapp}
                     </a>
@@ -147,9 +141,9 @@ export default function Footer() {
         </div>
 
         {/* Bottom Footer */}
-        <div className="border-t mt-8 sm:mt-12 pt-6 sm:pt-8" style={{borderTopColor: 'var(--border-teal-light)'}}>
+        <div className="border-t border-t-accent mt-8 sm:mt-12 pt-6 sm:pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="text-xs sm:text-sm text-center md:text-left" style={{color: 'var(--text-dark-primary)'}}>
+            <div className="text-xs sm:text-sm text-center md:text-left text-foreground">
               <div>© {new Date().getFullYear()} UNIPET PLAN - Todos os direitos reservados.</div>
               {shouldShow.cnpj && (
                 <div className="mt-1">CNPJ: {settings.cnpj}</div>
@@ -158,19 +152,13 @@ export default function Footer() {
             <div className="flex flex-row justify-center sm:justify-end gap-4 sm:gap-6 text-xs sm:text-sm text-center">
               <Link 
                 href="/politica-privacidade" 
-                className="transition-colors" 
-                style={{color: 'var(--text-dark-primary)'}} 
-
-
+                className="transition-colors text-foreground" 
               >
                 Política de Privacidade
               </Link>
               <Link 
                 href="/termos-uso" 
-                className="transition-colors" 
-                style={{color: 'var(--text-dark-primary)'}} 
-
-
+                className="transition-colors text-foreground" 
               >
                 Termos de Uso
               </Link>

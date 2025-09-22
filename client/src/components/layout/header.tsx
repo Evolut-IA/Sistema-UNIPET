@@ -21,8 +21,7 @@ export default function Header() {
     return (
       <div className="w-6 h-6 flex flex-col justify-center items-center">
         <motion.span
-          className="block w-6 h-0.5 mb-1"
-          style={{background: 'var(--text-light)'}}
+          className="block w-6 h-0.5 mb-1 bg-primary-foreground"
           animate={{
             rotate: isOpen ? 45 : 0,
             y: isOpen ? 6 : 0,
@@ -30,16 +29,14 @@ export default function Header() {
           transition={{ duration: 0.3 }}
         />
         <motion.span
-          className="block w-6 h-0.5 mb-1"
-          style={{background: 'var(--text-light)'}}
+          className="block w-6 h-0.5 mb-1 bg-primary-foreground"
           animate={{
             opacity: isOpen ? 0 : 1,
           }}
           transition={{ duration: 0.3 }}
         />
         <motion.span
-          className="block w-6 h-0.5"
-          style={{background: 'var(--text-light)'}}
+          className="block w-6 h-0.5 bg-primary-foreground"
           animate={{
             rotate: isOpen ? -45 : 0,
             y: isOpen ? -6 : 0,
@@ -51,7 +48,7 @@ export default function Header() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 border-b z-50" style={{borderBottomColor: 'var(--border-teal-light)', background: 'var(--bg-teal)'}}>
+    <header className="fixed top-0 left-0 right-0 border-b border-b-accent bg-primary z-50">
       <div className="section-container">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -65,12 +62,9 @@ export default function Header() {
               <div key={item.name} className="relative flex flex-col items-center">
                 <Button
                   variant="ghost"
-                  className={`text-lg px-4 py-2 rounded-lg transition-all duration-200 hover:bg-transparent active:bg-transparent ${
+                  className={`text-lg px-4 py-2 rounded-lg transition-all duration-200 hover:bg-transparent active:bg-transparent text-primary-foreground ${
                     location === item.href ? "font-medium" : ""
                   }`}
-                  style={{color: 'var(--text-light)'}}
-
-
                   onClick={() => {
                     // Navegar para a rota usando wouter
                     setLocation(item.href);
@@ -79,7 +73,7 @@ export default function Header() {
                   {item.name}
                 </Button>
                 {location === item.href && (
-                  <div className="h-0.5 mt-1" style={{ width: `${item.name.length * 0.6}em`, background: 'var(--bg-gold)' }}>
+                  <div className="h-0.5 mt-1 bg-gold" style={{ width: `${item.name.length * 0.6}em` }}>
                   </div>
                 )}
               </div>
@@ -89,12 +83,12 @@ export default function Header() {
           {/* Mobile Menu */}
           <div className="md:hidden relative">
             {/* Menu Toggle Button */}
-                                      <motion.button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="relative z-50 p-3"
-                whileTap={{ scale: 0.95 }}
-                aria-label="Toggle menu"
-              >
+            <motion.button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="relative z-50 p-3"
+              whileTap={{ scale: 0.95 }}
+              aria-label="Toggle menu"
+            >
               <AnimatedMenuIcon isOpen={isMobileMenuOpen} />
             </motion.button>
 
@@ -112,28 +106,28 @@ export default function Header() {
               )}
             </AnimatePresence>
 
-                         {/* Menu Panel */}
-             <AnimatePresence>
-               {isMobileMenuOpen && (
-                 <motion.div
-                   initial={{ x: '100%' }}
-                   animate={{ x: 0 }}
-                   exit={{ x: '100%' }}
-                   transition={{ 
-                     type: 'spring', 
-                     stiffness: 300, 
-                     damping: 30
-                   }}
-                   className="fixed top-0 right-0 h-full w-80 z-40 shadow-lg"
-                   style={{background: 'linear-gradient(to top, var(--bg-beige), var(--bg-cream-light))'}}
-                 >
-                   <div className="flex flex-col h-full">
-                     {/* Header */}
-                     <div className="flex justify-start items-center px-6 py-6 border-b" style={{borderBottomColor: 'var(--border-teal-light)', background: 'var(--bg-teal)'}}>
-                       <h2 className="text-xl font-semibold" style={{color: 'var(--text-light)'}}>
-                         Menu
-                       </h2>
-                     </div>
+            {/* Menu Panel */}
+            <AnimatePresence>
+              {isMobileMenuOpen && (
+                <motion.div
+                  initial={{ x: '100%' }}
+                  animate={{ x: 0 }}
+                  exit={{ x: '100%' }}
+                  transition={{ 
+                    type: 'spring', 
+                    stiffness: 300, 
+                    damping: 30
+                  }}
+                  className="fixed top-0 right-0 h-full w-80 z-40 shadow-lg"
+                  style={{background: 'linear-gradient(to top, var(--bg-beige), var(--bg-cream-light))'}}
+                >
+                  <div className="flex flex-col h-full">
+                    {/* Header */}
+                    <div className="flex justify-start items-center px-6 py-6 border-b border-b-accent bg-primary">
+                      <h2 className="text-xl font-semibold text-primary-foreground">
+                        Menu
+                      </h2>
+                    </div>
 
                     {/* Menu Items */}
                     <nav className="flex-1 py-6">
@@ -153,11 +147,9 @@ export default function Header() {
                                 setLocation(item.href);
                                 setIsMobileMenuOpen(false);
                               }}
-                              className="w-full text-left px-4 py-3 rounded-lg font-medium transition-all duration-200"
-                              style={{
-                                color: location === item.href ? 'var(--text-light)' : 'var(--text-teal)',
-                                background: location === item.href ? 'var(--bg-teal)' : 'transparent'
-                              }}
+                              className={`w-full text-left px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
+                                location === item.href ? 'text-primary-foreground bg-primary' : 'text-primary bg-transparent'
+                              }`}
                               whileTap={{ scale: 0.98 }}
                             >
                               {item.name}
@@ -168,15 +160,15 @@ export default function Header() {
                     </nav>
 
                     {/* Footer */}
-                    <div className="p-6 border-t" style={{borderTopColor: 'var(--border-teal-light)'}}>
-                      <p className="text-sm text-center" style={{color: 'var(--text-teal)'}}>
+                    <div className="p-6 border-t border-t-accent">
+                      <p className="text-sm text-center text-primary">
                         © {new Date().getFullYear()} UNIPET PLAN
                       </p>
                     </div>
-                   </div>
-                 </motion.div>
-               )}
-             </AnimatePresence>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </div>
