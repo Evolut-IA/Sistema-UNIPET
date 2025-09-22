@@ -1868,7 +1868,7 @@ export class DatabaseStorage implements IStorage {
     const { page = 1, limit = 10, search, status, type, startDate, endDate } = params;
     
     let query = db.select().from(guides);
-    let conditions = [];
+    let conditions: any[] = [];
     
     if (search && search.trim()) {
       const searchTerm = `%${search.toLowerCase()}%`;

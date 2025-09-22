@@ -3192,11 +3192,13 @@ export default function Checkout() {
                             }}
                           >
                             {isLoading ? (
+                              <>
             
                                 <div className="w-4 h-4 border-2 rounded-full animate-spin" 
                                   style={{borderColor: 'rgb(var(--primary-foreground))', borderTopColor: 'transparent'}} />
                                 <span>Processando...</span>
                         
+                              </>
             
                             ) : (
             
@@ -3243,6 +3245,7 @@ export default function Checkout() {
                 <div className="text-center mb-8">
                   {pixPaymentStatus === 'approved' ? (
                     // Payment Confirmed State
+                    <>
   
                       <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center bg-success">
 
@@ -3264,11 +3267,13 @@ export default function Checkout() {
                       <p className="text-sm mt-2 text-dark-secondary">
                         Pedido: <span className="font-mono font-bold">{pixPaymentResult.orderId}</span>
                       </p>
+                    </>
               
   
                   ) : pixPaymentStatus === 'rejected' ? (
                     // Payment Rejected State
   
+                    <>
                       <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center bg-error">
                         <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -3283,10 +3288,12 @@ export default function Checkout() {
                       <p className="text-sm mt-2 text-dark-secondary">
                         Pedido: <span className="font-mono font-bold">{pixPaymentResult.orderId}</span>
                       </p>
+                    </>
               
   
                   ) : (
   
+                    <>
                       <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center bg-success">
 
                         <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
