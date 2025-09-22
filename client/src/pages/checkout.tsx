@@ -328,6 +328,67 @@ export default function Checkout() {
   const [creditCardPaymentStatus, setCreditCardPaymentStatus] = useState<'pending' | 'approved' | 'rejected'>('pending');
   const [showCreditCardSuccessPopup, setShowCreditCardSuccessPopup] = useState(false);
   
+  // ============================================
+  // BUSINESS RULES FOR PAYMENT RESTRICTIONS
+  // ============================================
+  
+  // Plan ID mappings for business rules
+  const PLAN_BUSINESS_RULES = {
+    BASIC: '87aee1ab-774f-45bb-b43f-a4ca46ab21e5',
+    COMFORT: '8e5dba0c-1ae1-44f6-a341-5f0139c1ec16', 
+    PLATINUM: '734da3d8-a66f-4b44-ae63-befc6a3307fd',
+    INFINITY: 'b48fabf4-1644-46e1-99c8-f8187de286ad'
+  };
+
+  // Function to determine plan type based on business rules
+  const getPlanType = (planId: string | undefined): 'BASIC_INFINITY' | 'COMFORT_PLATINUM' | 'UNKNOWN' => {
+    if (!planId) return 'UNKNOWN';
+    
+    if (planId === PLAN_BUSINESS_RULES.BASIC || planId === PLAN_BUSINESS_RULES.INFINITY) {
+      return 'BASIC_INFINITY';
+    }
+    
+    if (planId === PLAN_BUSINESS_RULES.COMFORT || planId === PLAN_BUSINESS_RULES.PLATINUM) {
+      return 'COMFORT_PLATINUM';
+    }
+    
+    return 'UNKNOWN';
+  };
+
+  // Get available billing periods based on plan type
+  const getAvailableBillingPeriods = (planId: string | undefined): ('monthly' | 'annual')[] => {
+    const planType = getPlanType(planId);
+    
+    switch (planType) {
+      case 'BASIC_INFINITY':
+        // BASIC and INFINITY: Accept monthly OR annual
+        return ['monthly', 'annual'];
+      case 'COMFORT_PLATINUM':
+        // COMFORT and PLATINUM: ONLY annual
+        return ['annual'];
+      default:
+        // Default fallback
+        return ['monthly', 'annual'];
+    }
+  };
+
+  // Get maximum installments based on plan type
+  const getMaxInstallments = (planId: string | undefined): number => {
+    const planType = getPlanType(planId);
+    
+    switch (planType) {
+      case 'BASIC_INFINITY':
+        // BASIC and INFINITY: Credit card ONLY 1x (no installments)
+        return 1;
+      case 'COMFORT_PLATINUM':
+        // COMFORT and PLATINUM: Credit card up to 12x
+        return 12;
+      default:
+        // Default fallback
+        return 6;
+    }
+  };
+  
   // Função para scroll suave até a div de resultado
   const scrollToPaymentResult = () => {
     // Aguarda um pouco para a div ser renderizada
@@ -2255,7 +2316,7 @@ export default function Checkout() {
                       }}
                     >
                       {/* Modalidade Anual */}
-                      {(selectedPlan?.availableBillingOptions || ['monthly']).includes('annual') && (
+                      {getAvailableBillingPeriods(selectedPlan?.id).includes('annual') && (
                         <div 
                           className="flex-1 px-5 py-3 text-center cursor-pointer rounded font-medium transition-all duration-200 relative z-10"
                           style={{
@@ -2270,7 +2331,7 @@ export default function Checkout() {
                       )}
                       
                       {/* Modalidade Mensal */}
-                      {(selectedPlan?.availableBillingOptions || ['monthly']).includes('monthly') && (
+                      {getAvailableBillingPeriods(selectedPlan?.id).includes('monthly') && (
                         <div 
                           className="flex-1 px-5 py-3 text-center cursor-pointer rounded font-medium transition-all duration-200 relative z-10"
                           style={{
@@ -2474,7 +2535,7 @@ export default function Checkout() {
                                 background: 'rgb(var(--background))'
                               }}
                             >
-                              {[1, 2, 3, 4, 5, 6].map(i => (
+                              {Array.from({ length: getMaxInstallments(selectedPlan?.id) }, (_, i) => i + 1).map(i => (
                                 <option key={i} value={i}>
                                   {i}x de {formatPrice((selectedPlan?.price || 0) / i)}
                                 </option>
@@ -3415,7 +3476,8 @@ export default function Checkout() {
           </div>
         </div>
       </div>
-      <Footer />
+      <>
+        <Footer />
       
       {/* 🎉 Popup de Sucesso para Cartão de Crédito */}
       <AnimatePresence>

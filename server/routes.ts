@@ -1305,6 +1305,82 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Track if we need to create a client after payment approval (não mais necessário pois já validamos)
       const needsClientCreation = false;
+
+      // ============================================
+      // VALIDATE PLAN-SPECIFIC PAYMENT RULES
+      // ============================================
+      
+      // Plan ID mappings for business rules
+      const PLAN_BUSINESS_RULES = {
+        BASIC: '87aee1ab-774f-45bb-b43f-a4ca46ab21e5',
+        COMFORT: '8e5dba0c-1ae1-44f6-a341-5f0139c1ec16', 
+        PLATINUM: '734da3d8-a66f-4b44-ae63-befc6a3307fd',
+        INFINITY: 'b48fabf4-1644-46e1-99c8-f8187de286ad'
+      };
+
+      // Function to determine plan type based on business rules
+      const getPlanType = (planId: string): 'BASIC_INFINITY' | 'COMFORT_PLATINUM' | 'UNKNOWN' => {
+        if (planId === PLAN_BUSINESS_RULES.BASIC || planId === PLAN_BUSINESS_RULES.INFINITY) {
+          return 'BASIC_INFINITY';
+        }
+        
+        if (planId === PLAN_BUSINESS_RULES.COMFORT || planId === PLAN_BUSINESS_RULES.PLATINUM) {
+          return 'COMFORT_PLATINUM';
+        }
+        
+        return 'UNKNOWN';
+      };
+
+      // Validate payment rules based on plan type
+      const planType = getPlanType(planData.planId);
+      const billingPeriod = planData.billingPeriod;
+      const installments = paymentData.payment?.installments || 1;
+
+      console.log("🔍 [PAYMENT-RULES] Validating payment rules:", {
+        planId: planData.planId,
+        planType,
+        billingPeriod,
+        installments,
+        paymentMethod
+      });
+
+      // Rule 1: COMFORT and PLATINUM plans can only use annual billing
+      if (planType === 'COMFORT_PLATINUM' && billingPeriod === 'monthly') {
+        console.error("❌ [PAYMENT-RULES] Planos COMFORT/PLATINUM só permitem cobrança anual");
+        return res.status(400).json({
+          error: "Regra de pagamento violada",
+          details: "Planos COMFORT e PLATINUM só aceitam pagamento anual"
+        });
+      }
+
+      // Rule 2: BASIC and INFINITY plans can only use 1x installments with credit card
+      if (planType === 'BASIC_INFINITY' && paymentMethod === 'credit_card' && installments > 1) {
+        console.error("❌ [PAYMENT-RULES] Planos BASIC/INFINITY só permitem cartão 1x à vista");
+        return res.status(400).json({
+          error: "Regra de pagamento violada", 
+          details: "Planos BASIC e INFINITY só aceitam cartão de crédito à vista (1x)"
+        });
+      }
+
+      // Rule 3: COMFORT and PLATINUM plans can use up to 12x installments with credit card
+      if (planType === 'COMFORT_PLATINUM' && paymentMethod === 'credit_card' && installments > 12) {
+        console.error("❌ [PAYMENT-RULES] Planos COMFORT/PLATINUM permitem no máximo 12x no cartão");
+        return res.status(400).json({
+          error: "Regra de pagamento violada",
+          details: "Planos COMFORT e PLATINUM permitem no máximo 12x no cartão de crédito"
+        });
+      }
+
+      // Rule 4: PIX is always à vista (installments should be 1)
+      if (paymentMethod === 'pix' && installments > 1) {
+        console.error("❌ [PAYMENT-RULES] PIX só permite pagamento à vista");
+        return res.status(400).json({
+          error: "Regra de pagamento violada",
+          details: "PIX só permite pagamento à vista"
+        });
+      }
+
+      console.log("✅ [PAYMENT-RULES] Regras de pagamento validadas com sucesso");
       
       // Import Cielo service
       const { CieloService } = await import("./services/cielo-service.js");
