@@ -85,6 +85,17 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### Visual Dropdown Separators Implementation (September 22, 2025)
+**SEPARADORES VISUAIS IMPLEMENTADOS**: Implementação completa de separadores visuais em todos os dropdowns do sistema usando SelectSeparator do Radix UI
+- ✅ **Correções JSX Críticas**: Corrigidos erros complexos de sintaxe JSX em network.tsx, contact.tsx e contact-section.tsx
+- ✅ **Separadores Implementados**: SelectSeparator adicionados em todos os dropdowns (cidades, serviços, planos, tipos de animais, procedimentos)
+- ✅ **Estrutura Correta**: React.Fragment com chaves únicas e separadores condicionais (não aparecem após último item)
+- ✅ **Casos Extremos**: Tratamento adequado para listas vazias, loading e estados de erro
+- ✅ **Páginas Afetadas**: network.tsx, contact.tsx, contact-section.tsx, checkout.tsx, admin/Procedures.tsx, admin/PlanForm.tsx
+- ✅ **Qualidade Validada**: Arquiteto confirmou implementação seguindo melhores práticas com chaves estáveis e separadores condicionais
+
+**Resultado**: Todos os dropdowns agora exibem separadores visuais elegantes entre opções, melhorando significativamente a experiência do usuário na navegação e seleção de itens.
+
 ### Theme Functionality Removal (September 20, 2025)
 **TEMA DINÂMICO REMOVIDO COMPLETAMENTE**: Funcionalidade de personalização de tema removida conforme solicitado pelo usuário
 - ✅ **Arquivos de tema deletados**: client/src/lib/theme-defaults.ts e client/src/lib/admin/theme-defaults.ts removidos
