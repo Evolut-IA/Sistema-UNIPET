@@ -1727,7 +1727,7 @@ export default function Checkout() {
                     
                     {/* Pets List */}
                     {pets.map((pet, index) => (
-                      <div key={pet.id} className="border rounded-lg overflow-hidden" style={{borderColor: 'var(--border-gray)'}}>
+                      <div key={pet.id} className="border rounded-lg overflow-hidden">
                         {pet.collapsed ? (
                           /* Collapsed Pet View */
                           <div className="p-4 bg-[var(--bg-cream-lighter)] flex justify-between items-center">
@@ -1849,7 +1849,7 @@ export default function Checkout() {
                             </div>
                             
                             {/* Action Buttons */}
-                            <div className="flex gap-3 mt-6 pt-4 border-t" style={{borderColor: 'var(--border-gray)'}}>
+                            <div className="flex gap-3 mt-6 pt-4 border-t">
                               <button
                                 onClick={() => {
                                   // Save pet data
@@ -2131,7 +2131,7 @@ export default function Checkout() {
                           />
                           {isLoadingCep && (
                             <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                              <div className="w-4 h-4 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: 'var(--bg-teal)' }}></div>
+                              <div className="w-4 h-4 border-2 border-t-transparent rounded-full animate-spin"></div>
                             </div>
                           )}
                         </div>
@@ -2547,7 +2547,7 @@ export default function Checkout() {
                       </svg>
                     </button>
                     {showMonthlyBreakdown && (
-                      <div className="px-4 pb-4 border-t" style={{borderColor: 'var(--border-gray)'}}>
+                      <div className="px-4 pb-4 border-t">
                         <div className="grid grid-cols-3 gap-4 mt-4 text-sm">
                           {Array.from({ length: 12 }, (_, i) => (
                             <div key={i + 1} className="flex justify-between">
@@ -2664,7 +2664,7 @@ export default function Checkout() {
                             />
                             {isLoadingCep && (
                               <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                                <div className="w-4 h-4 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: 'var(--bg-teal)' }}></div>
+                                <div className="w-4 h-4 border-2 border-t-transparent rounded-full animate-spin"></div>
                               </div>
                             )}
                           </div>
@@ -3021,7 +3021,7 @@ export default function Checkout() {
                           </svg>
                         </button>
                         {showMonthlyBreakdown && (
-                          <div className="px-4 pb-4 border-t" style={{borderColor: 'var(--border-gray)'}}>
+                          <div className="px-4 pb-4 border-t">
                             <div className="grid grid-cols-3 gap-4 mt-4 text-sm">
                               {Array.from({ length: 12 }, (_, i) => (
                                 <div key={i + 1} className="flex justify-between">
@@ -3363,7 +3363,7 @@ export default function Checkout() {
 
             {/* Navigation Buttons - Hidden when PIX or Credit Card result is displayed */}
             {!showPixResult && !showCreditCardResult && (
-            <div className={`mt-8 pt-8 border-t ${currentStep === 3 ? 'md:hidden flex justify-center' : 'flex justify-between'}`} style={{borderColor: 'var(--border-gray)'}}>
+            <div className={`mt-8 pt-8 border-t ${currentStep === 3 ? 'md:hidden flex justify-center' : 'flex justify-between'}`}>
               {currentStep !== 3 && (
                 <button
                   onClick={() => currentStep === 1 ? navigate('/') : prevStep()}
