@@ -729,3 +729,13 @@ svg {
     @apply py-20;
   }
 }
+/* Checkbox de consentimento com máxima especificidade */
+input[type="checkbox"][class*="w-5"][class*="h-5"] {
+  background-color: white !important;
+  border-color: #d1d5db !important;
+}
+
+input[type="checkbox"][class*="w-5"][class*="h-5"]:checked {
+  background-color: #277677 !important;
+  border-color: transparent !important;
+}

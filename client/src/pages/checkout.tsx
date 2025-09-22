@@ -2021,8 +2021,8 @@ export default function Checkout() {
                         onChange={(e) => setConsentAccepted(e.target.checked)}
                         className="w-5 h-5 text-teal-600 bg-white border-2 border-gray-300 rounded-md appearance-none cursor-pointer relative transition-all"
                         style={{
-                          backgroundColor: consentAccepted ? '#277677 !important' : 'rgb(var(--white)) !important',
-                          borderColor: consentAccepted ? 'transparent !important' : 'rgb(var(--border)) !important',
+                          backgroundColor: consentAccepted ? '#277677' : 'rgb(var(--white))',
+                          borderColor: consentAccepted ? 'transparent' : 'rgb(var(--border))',
                           backgroundImage: consentAccepted ? 'url("data:image/svg+xml,%3csvg xmlns=\'http://www.w3.org/2000/svg\' height=\'20px\' viewBox=\'0 -960 960 960\' width=\'20px\' fill=\'white\'%3e%3cpath d=\'M400-304 240-464l56-56 104 104 264-264 56 56-320 320Z\'/%3e%3c/svg%3e")' : 'none',
                           backgroundSize: '16px 16px',
                           backgroundPosition: 'center',
