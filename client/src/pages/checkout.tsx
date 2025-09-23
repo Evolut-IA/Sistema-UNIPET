@@ -984,12 +984,13 @@ export default function Checkout() {
                       </div>
                       
                       <div className="mt-6 bg-blue-50 p-4 rounded-lg border border-blue-200">
-                        <div className="flex items-center space-x-2 text-blue-800">
-                          <span className="text-lg">ℹ️</span>
-                          <div>
-                            <p className="font-medium">Pedido #{pixData.orderId}</p>
-                            <p className="text-sm">O pagamento PIX é processado instantaneamente. Após a confirmação, você receberá um e-mail com os detalhes do seu plano.</p>
-                          </div>
+                        <div className="text-blue-800">
+                          <p className="font-medium mb-1">Como pagar:</p>
+                          <ol className="list-decimal list-inside space-y-1 text-sm">
+                            <li>Vá na opção PIX</li>
+                            <li>Escaneie o QR Code ou cole o código</li>
+                            <li>Confirme o pagamento</li>
+                          </ol>
                         </div>
                       </div>
                     </div>
