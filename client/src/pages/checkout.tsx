@@ -1010,7 +1010,7 @@ export default function Checkout() {
                   
                   {/* Informações do PIX */}
                   {paymentData.method === 'pix' && (
-                    <div className="bg-blue-50 p-4 rounded-lg">
+                    <div className="p-4 rounded-lg" style={{backgroundColor: 'rgba(39, 118, 119, 0.2)'}}>
                       <h3 className="text-lg font-medium mb-2">Pagamento via PIX</h3>
                       <p className="text-sm text-gray-600">
                         Após confirmar o pedido, você receberá um QR Code para pagamento instantâneo via PIX.
