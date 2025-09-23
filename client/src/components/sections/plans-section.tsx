@@ -166,7 +166,7 @@ export default function PlansSection({
   return (
     <section 
       id="planos" 
-      className={`py-20 ${showBackground ? 'bg-[#277677]' : ''}`}
+      className={`${location === '/planos' ? 'pb-20' : 'py-20'} ${showBackground ? 'bg-[#277677]' : ''}`}
     >
       <div className="section-container">
         {showTitle && (
