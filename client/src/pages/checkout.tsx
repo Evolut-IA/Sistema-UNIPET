@@ -365,7 +365,14 @@ export default function Checkout() {
                   {petsData.map((pet, index) => (
                     <div key={index} className="border border-gray-200 rounded-lg p-6 relative">
                       <div className="flex justify-between items-center mb-4">
-                        <h3 className="text-lg font-semibold">Pet {index + 1}</h3>
+                        <h3 className="text-lg font-semibold">
+                          Pet {index + 1}
+                          {selectedPlan && isPlanEligibleForDiscount(selectedPlan.name) && (
+                            <span className="text-sm text-green-600 ml-2">
+                              ({calculatePetDiscount(index)}% desconto)
+                            </span>
+                          )}
+                        </h3>
                         {petsData.length > 1 && (
                           <button
                             type="button"
