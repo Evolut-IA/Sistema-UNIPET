@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useRoute } from 'wouter';
 import { motion } from 'framer-motion';
-import { CheckCircle, ArrowLeft, ArrowRight, Plus, Trash2 } from 'lucide-react';
+import { CheckCircle, ArrowLeft, ArrowRight, Plus, Trash2, Edit } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -120,6 +120,16 @@ export default function Checkout() {
     if (petsData.length > 1) {
       setPetsData(petsData.filter((_, i) => i !== index));
       setCollapsedPets(collapsedPets.filter((_, i) => i !== index));
+    } else {
+      // Se é o último pet, substitui por um pet vazio
+      setPetsData([{
+        name: '',
+        species: '',
+        breed: '',
+        age: 0,
+        weight: 0
+      }]);
+      setCollapsedPets([false]); // Mantém expandido para preenchimento
     }
   };
 
@@ -513,16 +523,27 @@ export default function Checkout() {
                           )}
                           </div>
                           
-                          {petsData.length > 1 && (
+                          {/* Botões para Desktop */}
+                          <div className="hidden lg:flex items-center gap-2">
+                            {isCollapsed && (
+                              <button
+                                type="button"
+                                onClick={() => togglePetCollapse(index)}
+                                className="flex items-center justify-center w-8 h-8 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                                title="Editar"
+                              >
+                                <Edit className="w-4 h-4" />
+                              </button>
+                            )}
                             <button
                               type="button"
                               onClick={() => removePet(index)}
-                              className="hidden lg:flex items-center px-3 py-1 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                              className="flex items-center justify-center w-8 h-8 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                              title="Remover"
                             >
-                              <Trash2 className="w-4 h-4 mr-1" />
-                              Remover
+                              <Trash2 className="w-4 h-4" />
                             </button>
-                          )}
+                          </div>
                         </div>
 
                         {!isCollapsed && (
@@ -594,20 +615,31 @@ export default function Checkout() {
                                 placeholder="Idade"
                               />
                               
-                              {/* Botão Remover - Versão Mobile (embaixo do campo Idade) */}
-                              {petsData.length > 1 && (
-                                <button
-                                  type="button"
-                                  onClick={() => removePet(index)}
-                                  className="lg:hidden flex items-center justify-center w-full mt-3 px-3 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                                >
-                                  <Trash2 className="w-4 h-4 mr-1" />
-                                  Remover
-                                </button>
-                              )}
                             </div>
                           </div>
                         )}
+
+                        {/* Botões Mobile (sempre visíveis em mobile) */}
+                        <div className="lg:hidden flex gap-2 mt-3 pt-3 border-t border-gray-100">
+                          {isCollapsed && (
+                            <button
+                              type="button"
+                              onClick={() => togglePetCollapse(index)}
+                              className="flex items-center justify-center flex-1 px-3 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                              title="Editar"
+                            >
+                              <Edit className="w-4 h-4" />
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => removePet(index)}
+                            className="flex items-center justify-center flex-1 px-3 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                            title="Remover"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
                       </div>
                     );
                   })}
