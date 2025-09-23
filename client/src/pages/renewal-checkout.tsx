@@ -226,10 +226,10 @@ export default function RenewalCheckout() {
         toast.success('QR Code PIX gerado! Escaneie para pagar.');
       } else {
         // Pagamento com cartão aprovado
-        toast.success('Pagamento processado com sucesso!');
-        setTimeout(() => {
-          navigate(`/payment-success?order=${result.orderId}&method=credit&renewal=true`);
-        }, 2000);
+        // Redirecionar imediatamente para customer/login com parâmetro para mostrar popup
+        navigate('/customer/login?payment_success=true');
+
+
       }
 
     } catch (error) {

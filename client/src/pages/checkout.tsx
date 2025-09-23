@@ -138,7 +138,6 @@ export default function Checkout() {
   const [editingPets, setEditingPets] = useState<boolean[]>([false]); // Controla quais pets estão em modo de edição
   const [pixData, setPixData] = useState<{ qrCode: string; copyPasteCode: string; orderId: string; paymentId: string } | null>(null);
   const [isPaymentConfirmed, setIsPaymentConfirmed] = useState(false);
-  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
   // Função para validar se o último pet permite adicionar um novo
   const canAddNewPet = () => {
@@ -309,12 +308,9 @@ export default function Checkout() {
       if (isConfirmed) {
         clearInterval(pollInterval);
         setIsPaymentConfirmed(true);
-        setShowSuccessPopup(true);
         
-        // Redirecionar após 3 segundos
-        setTimeout(() => {
-          navigate('/customer/login');
-        }, 3000);
+        // Redirecionar imediatamente para customer/login com parâmetro para mostrar popup
+        navigate('/customer/login?payment_success=true');
       }
     }, 3000); // Verificar a cada 3 segundos
 
@@ -511,14 +507,9 @@ export default function Checkout() {
             paymentId: result.payment.paymentId
           });
         } else if (paymentData.method === 'credit_card' && result.payment?.status === 2) {
-          // Para cartão aprovado (status 2), mostrar popup de sucesso e redirecionar
-          setShowSuccessPopup(true);
-          console.log('🎉 [CHECKOUT] Pagamento com cartão aprovado, mostrando popup de sucesso!');
-          
-          // Redirecionar após 3 segundos
-          setTimeout(() => {
-            navigate('/customer/login');
-          }, 3000);
+          // Para cartão aprovado (status 2), redirecionar imediatamente para customer/login com parâmetro para mostrar popup
+          console.log('🎉 [CHECKOUT] Pagamento com cartão aprovado, redirecionando para login!');
+          navigate('/customer/login?payment_success=true');
         } else {
           navigate(`/checkout-success?order=${result.payment?.orderId}&method=${paymentData.method}`);
         }
@@ -1389,42 +1380,6 @@ export default function Checkout() {
         </div>
       </div>
       
-      {/* Popup de Parabéns - sucesso do pagamento PIX */}
-      {showSuccessPopup && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-lg p-8 max-w-md mx-4 text-center shadow-xl"
-          >
-            <div className="mb-6">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CheckCircle className="w-8 h-8 text-green-600" />
-              </div>
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">
-                🎉 Parabéns pela compra!
-              </h2>
-              <p className="text-gray-600 mb-4">
-                Seu pagamento foi confirmado com sucesso!
-              </p>
-              <div className="bg-teal-50 border border-teal-200 rounded-lg p-4 mb-4">
-                <p className="text-sm text-teal-800">
-                  <strong>Você já pode acessar a área do cliente!</strong>
-                </p>
-                <p className="text-sm text-teal-700 mt-1">
-                  Use seu <strong>email</strong> e <strong>CPF</strong> utilizado durante a compra para fazer login.
-                </p>
-              </div>
-              <p className="text-sm text-gray-500">
-                Redirecionando para a página de login...
-              </p>
-            </div>
-            <div className="flex justify-center">
-              <div className="w-6 h-6 border-2 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
-            </div>
-          </motion.div>
-        </div>
-      )}
       
       <Footer />
     </>
