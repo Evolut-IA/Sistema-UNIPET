@@ -87,6 +87,7 @@ export default function Checkout() {
   const [isLoading, setIsLoading] = useState(false);
   const [plans, setPlans] = useState<Plan[]>([]);
   const [collapsedPets, setCollapsedPets] = useState<boolean[]>([false]); // Controla quais pets estão colapsados
+  const [editingPets, setEditingPets] = useState<boolean[]>([false]); // Controla quais pets estão em modo de edição
   const [pixData, setPixData] = useState<{ qrCode: string; copyPasteCode: string; orderId: string } | null>(null);
 
   // Função para validar se o último pet permite adicionar um novo
@@ -100,10 +101,14 @@ export default function Checkout() {
   // Funções para gerenciar múltiplos pets
   const addPet = () => {
     if (canAddNewPet()) {
-      // Colapsar todos os pets anteriores
+      // Colapsar todos os pets anteriores e sair do modo de edição
       const newCollapsedState = new Array(petsData.length).fill(true);
       newCollapsedState.push(false); // Novo pet fica aberto
       setCollapsedPets(newCollapsedState);
+      
+      const newEditingState = new Array(petsData.length).fill(false);
+      newEditingState.push(false); // Novo pet não está editando
+      setEditingPets(newEditingState);
       
       // Adicionar novo pet
       setPetsData([...petsData, {
@@ -120,6 +125,7 @@ export default function Checkout() {
     if (petsData.length > 1) {
       setPetsData(petsData.filter((_, i) => i !== index));
       setCollapsedPets(collapsedPets.filter((_, i) => i !== index));
+      setEditingPets(editingPets.filter((_, i) => i !== index));
     } else {
       // Se é o último pet, substitui por um pet vazio
       setPetsData([{
@@ -130,6 +136,7 @@ export default function Checkout() {
         weight: 0
       }]);
       setCollapsedPets([false]); // Mantém expandido para preenchimento
+      setEditingPets([false]); // Não está editando
     }
   };
 
@@ -138,6 +145,25 @@ export default function Checkout() {
     const newCollapsedState = [...collapsedPets];
     newCollapsedState[index] = !newCollapsedState[index];
     setCollapsedPets(newCollapsedState);
+  };
+
+  // Função para iniciar modo de edição
+  const startEditingPet = (index: number) => {
+    const newEditingState = [...editingPets];
+    newEditingState[index] = true;
+    setEditingPets(newEditingState);
+    
+    // Expandir o pet quando entrar em modo de edição
+    const newCollapsedState = [...collapsedPets];
+    newCollapsedState[index] = false;
+    setCollapsedPets(newCollapsedState);
+  };
+
+  // Função para finalizar modo de edição
+  const finishEditingPet = (index: number) => {
+    const newEditingState = [...editingPets];
+    newEditingState[index] = false;
+    setEditingPets(newEditingState);
   };
 
   const updatePet = (index: number, field: keyof PetData, value: string | number) => {
@@ -486,7 +512,7 @@ export default function Checkout() {
               >
                 <div className="mb-6">
                   <h2 className="text-xl xs:text-2xl font-bold">
-                    Dados dos Pets
+                    Dados do Pet
                   </h2>
                 </div>
 
