@@ -143,12 +143,12 @@ export default function Checkout() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-blue-50">
+    <div className="min-h-screen" style={{backgroundColor: '#277677'}}>
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            <h1 className="text-3xl font-bold text-white mb-2">
               Checkout - UNIPET PLAN
             </h1>
             <div className="flex justify-center items-center space-x-4">
@@ -157,8 +157,8 @@ export default function Checkout() {
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                       currentStep >= step
-                        ? 'bg-teal-600 text-white'
-                        : 'bg-gray-200 text-gray-600'
+                        ? 'bg-white/20 text-white border border-white'
+                        : 'bg-teal-700 text-white border border-white/30'
                     }`}
                   >
                     {currentStep > step ? <CheckCircle className="w-4 h-4" /> : step}
@@ -166,7 +166,7 @@ export default function Checkout() {
                   {step < 3 && (
                     <div
                       className={`w-12 h-1 mx-2 ${
-                        currentStep > step ? 'bg-teal-600' : 'bg-gray-200'
+                        currentStep > step ? 'bg-white' : 'bg-teal-700'
                       }`}
                     />
                   )}
@@ -176,45 +176,45 @@ export default function Checkout() {
           </div>
 
           {/* Step Content */}
-          <div className="bg-white rounded-lg shadow-lg p-8">
-            {currentStep === 1 && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="space-y-6"
-              >
-                <h2 className="text-2xl font-bold text-center mb-6">
-                  Escolha seu Plano
-                </h2>
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {plans.map((plan) => (
-                    <div
-                      key={plan.id}
-                      className={`border-2 rounded-lg p-6 cursor-pointer transition-all ${
-                        selectedPlan?.id === plan.id
-                          ? 'border-teal-600 bg-teal-50'
-                          : 'border-gray-200 hover:border-teal-300'
-                      }`}
-                      onClick={() => handlePlanSelect(plan)}
-                    >
-                      <h3 className="text-xl font-bold mb-2">{plan.name}</h3>
-                      <p className="text-2xl font-bold text-teal-600 mb-4">
-                        {formatPrice(plan.price)}
-                      </p>
-                      <p className="text-gray-600 mb-4">{plan.description}</p>
-                      <ul className="space-y-2">
-                        {plan.features.slice(0, 3).map((feature, index) => (
-                          <li key={index} className="flex items-center text-sm">
-                            <CheckCircle className="w-4 h-4 text-teal-600 mr-2" />
-                            {feature}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
-            )}
+          {currentStep === 1 ? (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-6"
+            >
+              <h2 className="text-2xl font-bold text-center mb-6 text-white">
+                Escolha seu Plano
+              </h2>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                {plans.map((plan) => (
+                  <div
+                    key={plan.id}
+                    className={`bg-white border-2 rounded-lg p-6 cursor-pointer transition-all shadow-lg ${
+                      selectedPlan?.id === plan.id
+                        ? 'border-teal-600 ring-2 ring-teal-300'
+                        : 'border-gray-200 hover:border-teal-300 hover:shadow-xl'
+                    }`}
+                    onClick={() => handlePlanSelect(plan)}
+                  >
+                    <h3 className="text-xl font-bold mb-2 text-gray-900">{plan.name}</h3>
+                    <p className="text-2xl font-bold text-teal-600 mb-4">
+                      {formatPrice(plan.price)}
+                    </p>
+                    <p className="text-gray-600 mb-4 text-sm">{plan.description}</p>
+                    <ul className="space-y-2">
+                      {plan.features.slice(0, 4).map((feature, index) => (
+                        <li key={index} className="flex items-start text-sm">
+                          <CheckCircle className="w-4 h-4 text-teal-600 mr-2 mt-0.5 flex-shrink-0" />
+                          <span className="text-gray-700">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          ) : (
+            <div className="bg-white rounded-lg shadow-lg p-8">
 
             {currentStep === 2 && (
               <motion.div
@@ -354,7 +354,7 @@ export default function Checkout() {
               </motion.div>
             )}
 
-            {/* Navigation Buttons */}
+            {/* Navigation Buttons for Steps 2 and 3 */}
             <div className="flex justify-between mt-8 pt-6 border-t">
               <button
                 onClick={handlePrevStep}
@@ -382,7 +382,30 @@ export default function Checkout() {
                 )}
               </button>
             </div>
-          </div>
+            </div>
+          )}
+          
+          {/* Navigation Buttons for Step 1 (outside white container) */}
+          {currentStep === 1 && (
+            <div className="flex justify-between mt-8 max-w-6xl mx-auto">
+              <button
+                onClick={handlePrevStep}
+                className="flex items-center px-6 py-3 text-white border border-white/30 rounded-lg hover:bg-white/10 transition-colors"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Voltar
+              </button>
+
+              <button
+                onClick={handleNextStep}
+                disabled={!selectedPlan}
+                className="flex items-center px-6 py-3 bg-white text-teal-600 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Próximo
+                <CreditCard className="w-4 h-4 ml-2" />
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
