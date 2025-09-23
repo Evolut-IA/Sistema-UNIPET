@@ -934,9 +934,6 @@ export default function Checkout() {
                               className="w-48 h-48 mx-auto"
                             />
                           </div>
-                          <p className="text-sm text-gray-600 mt-2">
-                            Abra o app do seu banco e escaneie o código
-                          </p>
                         </div>
                         
                         {/* Código Copia e Cola */}
@@ -965,7 +962,6 @@ export default function Checkout() {
                           <div className="mt-4 text-sm text-gray-600">
                             <p className="font-medium mb-1">Como pagar:</p>
                             <ol className="list-decimal list-inside space-y-1">
-                              <li>Abra o app do seu banco</li>
                               <li>Vá na opção PIX</li>
                               <li>Escaneie o QR Code ou cole o código</li>
                               <li>Confirme o pagamento</li>
