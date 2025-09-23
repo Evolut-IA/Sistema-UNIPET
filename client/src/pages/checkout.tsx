@@ -87,6 +87,7 @@ export default function Checkout() {
   const [isLoading, setIsLoading] = useState(false);
   const [plans, setPlans] = useState<Plan[]>([]);
   const [collapsedPets, setCollapsedPets] = useState<boolean[]>([false]); // Controla quais pets estão colapsados
+  const [pixData, setPixData] = useState<{ qrCode: string; copyPasteCode: string; orderId: string } | null>(null);
 
   // Função para validar se o último pet permite adicionar um novo
   const canAddNewPet = () => {
@@ -319,7 +320,12 @@ export default function Checkout() {
       if (response.ok) {
         const result = await response.json();
         if (paymentData.method === 'pix' && result.pixQrCode) {
-          navigate(`/checkout-success?order=${result.orderId}&method=pix&pixQrCode=${encodeURIComponent(result.pixQrCode || '')}&pixCopyPaste=${encodeURIComponent(result.pixCode || '')}`);
+          // Para PIX, armazenar dados no estado ao invés de navegar
+          setPixData({
+            qrCode: result.pixQrCode,
+            copyPasteCode: result.pixCode,
+            orderId: result.orderId
+          });
         } else {
           navigate(`/checkout-success?order=${result.orderId}&method=${paymentData.method}`);
         }
@@ -912,6 +918,72 @@ export default function Checkout() {
                       </div>
                     </div>
                   </div>
+
+                  {/* Seção do PIX - aparece após processamento */}
+                  {pixData && paymentData.method === 'pix' && (
+                    <div className="bg-green-50 border border-green-200 p-6 rounded-lg">
+                      <h3 className="text-lg font-bold text-green-800 mb-4 text-center">
+                        🎉 Pedido Confirmado! Realize o Pagamento PIX
+                      </h3>
+                      
+                      <div className="grid md:grid-cols-2 gap-6">
+                        {/* QR Code */}
+                        <div className="text-center">
+                          <h4 className="font-medium mb-3 text-gray-700">Escaneie o QR Code</h4>
+                          <div className="bg-white p-4 rounded-lg border shadow-sm inline-block">
+                            <img 
+                              src={`data:image/png;base64,${pixData.qrCode}`}
+                              alt="QR Code PIX" 
+                              className="w-48 h-48 mx-auto"
+                            />
+                          </div>
+                          <p className="text-sm text-gray-600 mt-2">
+                            Abra o app do seu banco e escaneie o código
+                          </p>
+                        </div>
+                        
+                        {/* Código Copia e Cola */}
+                        <div>
+                          <h4 className="font-medium mb-3 text-gray-700">Ou copie o código PIX</h4>
+                          <div className="bg-white p-4 rounded-lg border">
+                            <div className="text-sm text-gray-600 mb-2">Código PIX:</div>
+                            <div className="bg-gray-50 p-3 rounded text-xs font-mono break-all border">
+                              {pixData.copyPasteCode}
+                            </div>
+                            <button
+                              onClick={() => {
+                                navigator.clipboard.writeText(pixData.copyPasteCode);
+                                alert('Código PIX copiado!');
+                              }}
+                              className="mt-3 w-full bg-teal-600 text-white py-2 px-4 rounded-lg hover:bg-teal-700 transition-colors"
+                            >
+                              📋 Copiar Código PIX
+                            </button>
+                          </div>
+                          
+                          <div className="mt-4 text-sm text-gray-600">
+                            <p className="font-medium mb-1">Como pagar:</p>
+                            <ol className="list-decimal list-inside space-y-1">
+                              <li>Abra o app do seu banco</li>
+                              <li>Vá na opção PIX</li>
+                              <li>Escaneie o QR Code ou cole o código</li>
+                              <li>Confirme o pagamento</li>
+                            </ol>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="mt-6 bg-blue-50 p-4 rounded-lg border border-blue-200">
+                        <div className="flex items-center space-x-2 text-blue-800">
+                          <span className="text-lg">ℹ️</span>
+                          <div>
+                            <p className="font-medium">Pedido #{pixData.orderId}</p>
+                            <p className="text-sm">O pagamento PIX é processado instantaneamente. Após a confirmação, você receberá um e-mail com os detalhes do seu plano.</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </motion.div>
             )}
