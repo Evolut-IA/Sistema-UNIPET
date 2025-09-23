@@ -830,7 +830,7 @@ export default function Checkout() {
                       placeholder="seu@email.com"
                     />
                     {customerData.email && !validateEmail(customerData.email) && (
-                      <p className="text-red-500 text-sm mt-1">Email deve conter @</p>
+                      <p className="text-red-500 text-sm mt-1">Insira um email válido</p>
                     )}
                   </div>
                   <div>
