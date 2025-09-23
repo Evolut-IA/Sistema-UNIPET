@@ -185,17 +185,15 @@ export default function PlansSection({
             </AnimatedSection>
           )}
           
-          <AnimatedSection animation="slideUp" delay={100}>
-            <Pricing 
-              plans={pricingPlans}
-              onPlanSelect={(plan) => {
+          <Pricing 
+            plans={pricingPlans}
+            onPlanSelect={(plan) => {
 
-                // Redirecionar diretamente para /checkout com o ID do plano para ir direto para etapa "Dados do Pet"
-                navigate(`/checkout/${plan.id}`);
-              }}
-              onPlanDetails={scrollToPlanDetails}
-            />
-          </AnimatedSection>
+              // Redirecionar diretamente para /checkout com o ID do plano para ir direto para etapa "Dados do Pet"
+              navigate(`/checkout/${plan.id}`);
+            }}
+            onPlanDetails={scrollToPlanDetails}
+          />
       </div>
     </section>
   );

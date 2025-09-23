@@ -2,9 +2,9 @@
 
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
 import { Check, Star } from "lucide-react";
 import { useLocation } from "wouter";
+import { AnimatedSection } from "@/components/ui/animated-section";
 
 interface PricingPlan {
   id: string;
@@ -62,24 +62,11 @@ export function Pricing({
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 perspective-1000">
           {plans.map((plan, index) => (
-            <motion.div
+            <AnimatedSection
               key={plan.id}
-              initial={{
-                opacity: 0,
-                rotateY: 30,
-                z: -50,
-              }}
-              whileInView={{
-                opacity: 1,
-                rotateY: 0,
-                z: 0,
-              }}
-              viewport={{ once: true }}
-              transition={{
-                duration: 0.5,
-                ease: "easeOut",
-                delay: index * 0.1,
-              }}
+              animation="slideUp"
+              delay={index * 80}
+              duration={400}
               className={cn(
                 "rounded-2xl border-[1px] bg-[var(--bg-cream-light)] text-center flex flex-col relative transform-style-preserve-3d backface-hidden transition-all duration-300",
                 plan.isPopular ? "border-[var(--text-gold)] border-2" : "border-[var(--border-teal-light)]",
@@ -179,7 +166,7 @@ export function Pricing({
                   </button>
                 </div>
               </div>
-            </motion.div>
+            </AnimatedSection>
           ))}
         </div>
       </div>
