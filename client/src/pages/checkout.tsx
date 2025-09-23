@@ -952,7 +952,11 @@ export default function Checkout() {
                                 navigator.clipboard.writeText(pixData.copyPasteCode);
                                 alert('Código PIX copiado!');
                               }}
-                              className="mt-3 w-full bg-teal-600 text-white py-2 px-4 rounded-lg hover:bg-teal-700 transition-colors"
+                              className="mt-3 w-full text-white py-2 px-4 rounded-lg transition-colors"
+                              style={{
+                                background: 'var(--btn-cotacao-gratuita-bg)',
+                                border: 'none'
+                              }}
                             >
                               📋 Copiar Código PIX
                             </button>
