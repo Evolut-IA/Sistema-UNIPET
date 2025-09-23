@@ -1,0 +1,166 @@
+💾 [PRE-PAYMENT] Salvando cliente e pet antes do pagamento...
+Query: update "clients" set "full_name" = $1, "email" = $2, "cpf" = $3, "phone" = $4, "cep" = $5, "address" = $6, "number" = $7, "complement" = $8, "district" = $9, "city" = $10, "state" = $11, "updated_at" = $12 where "clients"."id" = $13 returning "id", "full_name", "email", "phone", "cpf", "cep", "address", "number", "complement", "district", "state", "city", "password", "image", "image_url", "created_at", "updated_at" -- params: ["Gabriel Alves", "gabrielmarquez00333ni@gmail.com", "54498358848", "(12) 97404-1539", "11618-222", "Rua Manoel Marcelino de Mattos", "21", "casa", "Boiçucanga", "São Sebastião", "SP", "2025-09-23T12:20:52.841Z", "client-1758630050387-97o30pwy8"]
+❌ Error updating client: error: duplicate key value violates unique constraint "clients_cpf_key"
+    at /home/runner/workspace/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at <anonymous> (/home/runner/workspace/node_modules/src/node-postgres/session.ts:65:19)
+    at DatabaseStorage.updateClient (/home/runner/workspace/server/storage.ts:1283:31)
+    at <anonymous> (/home/runner/workspace/server/routes.ts:1450:9) {
+  length: 203,
+  severity: 'ERROR',
+  code: '23505',
+  detail: 'Key (cpf)=(54498358848) already exists.',
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: 'public',
+  table: 'clients',
+  column: undefined,
+  dataType: undefined,
+  constraint: 'clients_cpf_key',
+  file: 'nbtinsert.c',
+  line: '666',
+  routine: '_bt_check_unique'
+}
+✅ [PRE-PAYMENT] Cliente atualizado com endereço completo
+💳 [CHECKOUT-STEP3] Processando pagamento via Cielo: {
+  paymentMethod: 'credit_card',
+  clientId: 'client-1758630050387-97o30pwy8',
+  clientEmail: 'gabrielmarquez00333ni@gmail.com',
+  paymentAmount: 100,
+  originalAmount: 195
+}
+🔍 [CHECKOUT-DEBUG] payment existe? true
+🔍 [CHECKOUT-DEBUG] payment keys: [
+  'cardNumber',
+  'holder',
+  'expirationDate',
+  'securityCode',
+  'installments'
+]
+🔄 [Cielo] Processando pagamento com cartão de crédito {
+  correlationId: '2a92069c-d664-41a9-a62a-356949ff7c64',
+  merchantId: '47ea3034...',
+  environment: 'production',
+  apiUrl: 'https://api.cieloecommerce.cielo.com.br'
+}
+🔍 [DEBUG] Data de expiração - ANTES da formatação: 08/2031
+🔍 [DEBUG] Data de expiração - DEPOIS da formatação: 08/2031
+🔍 [DEBUG] Formato esperado pela Cielo: MM/YYYY (exemplo: 12/2025)
+🔍 [DEBUG] Comprimento da data formatada: 7 caracteres
+🔍 [DEBUG] Data de expiração - DEPOIS da formatação: 08/2031
+🔄 [Cielo] Enviando formato oficial 2025 para cartão: {
+  MerchantOrderId: 'ORDER_1758630053081_r4j71obwg',
+  Payment: {
+    Type: 'CreditCard',
+    Amount: 100,
+    Installments: 1,
+    CreditCard: {
+      cardNumber: '****0972',
+      holder: 'GABRIEL ALVES MARQUES DOS SANTOS',
+      brand: 'Visa',
+      expirationDate: '08/2031'
+    }
+  }
+}
+📋 [Cielo] Resposta RAW completa do Credit Card: {
+  correlationId: '2a92069c-d664-41a9-a62a-356949ff7c64',
+  responseStatus: 201,
+  fullResponse: '{\n' +
+    '  "MerchantOrderId": "ORDER_1758630053081_r4j71obwg",\n' +
+    '  "Customer": {\n' +
+    '    "Name": "Gabriel Alves",\n' +
+    '    "Identity": "54498358848",\n' +
+    '    "IdentityType": "CPF",\n' +
+    '    "Email": "gabrielmarquez00333ni@gmail.com",\n' +
+    '    "Address": {\n' +
+    '      "Street": "Rua Manoel Marcelino de Mattos",\n' +
+    '      "Number": "21",\n' +
+    '      "Complement": "casa",\n' +
+    '      "ZipCode": "11618222",\n' +
+    '      "City": "São Sebastião",\n' +
+    '      "State": "SP",\n' +
+    '      "Country": "BRA",\n' +
+    '      "AddressType": 0\n' +
+    '    }\n' +
+    '  },\n' +
+    '  "Payment": {\n' +
+    '    "ServiceTaxAmount": 0,\n' +
+    '    "Installments": 1,\n' +
+    '    "Interest": 0,\n' +
+    '    "Capture": true,\n' +
+    '    "Authenticate": false,\n' +
+    '    "Recurrent": false,\n' +
+    '    "CreditCard": {\n' +
+    '      "CardNumber": "417401******0972",\n' +
+    '      "Holder": "GABRIEL ALVES MARQUES DOS SANTOS",\n' +
+    '      "ExpirationDate": "08/2031",\n' +
+    '      "SaveCard": false,\n' +
+    '      "Brand": "Visa"\n' +
+    '    },\n' +
+    '    "Tid": "28224704854P8FMBNVBE",\n' +
+    '    "ProofOfSale": "004020",\n' +
+    '    "SoftDescriptor": "UNIPETPLAN",\n' +
+    '    "Provider": "Cielo",\n' +
+    '    "Eci": "7",\n' +
+    '    "IsQrCode": false,\n' +
+    '    "Amount": 100,\n' +
+    '    "ReceivedDate": "2025-09-23 09:20:53",\n' +
+    '    "Status": 3,\n' +
+    '    "IsSplitted": false,\n' +
+    '    "ReturnMessage": "Autorizacao negada",\n' +
+    '    "ReturnCode": "GA",\n' +
+    '    "PaymentId": "a5357469-bdcd-4c77-9649-9d1f41bfa624",\n' +
+    '    "Type": "CreditCard",\n' +
+    '    "Currency": "BRL",\n' +
+    '    "Country": "BRA",\n' +
+    '    "Links": [\n' +
+    '      {\n' +
+    '        "Method": "GET",\n' +
+    '        "Rel": "self",\n' +
+    '        "Href": "https://apiquery.cieloecommerce.cielo.com.br/1/sales/a5357469-bdcd-4c77-9649-9d1f41bfa624"\n' +
+    '      }\n' +
+    '    ]\n' +
+    '  }\n' +
+    '}'
+}
+📋 [Cielo] Resposta processada do Credit Card: {
+  correlationId: '2a92069c-d664-41a9-a62a-356949ff7c64',
+  responseStatus: 201,
+  hasPayment: true,
+  hasPaymentCapital: true,
+  hasPaymentLower: false,
+  paymentFields: [
+    'ServiceTaxAmount', 'Installments',
+    'Interest',         'Capture',
+    'Authenticate',     'Recurrent',
+    'CreditCard',       'Tid',
+    'ProofOfSale',      'SoftDescriptor',
+    'Provider',         'Eci',
+    'IsQrCode',         'Amount',
+    'ReceivedDate',     'Status',
+    'IsSplitted',       'ReturnMessage',
+    'ReturnCode',       'PaymentId',
+    'Type',             'Currency',
+    'Country',          'Links'
+  ],
+  paymentId: 'a5357469-bdcd-4c77-9649-9d1f41bfa624',
+  status: 3,
+  returnCode: 'GA',
+  returnMessage: 'Autorizacao negada',
+  allResponseKeys: [ 'MerchantOrderId', 'Customer', 'Payment' ]
+}
+✅ [Cielo] Credit Card processado com sucesso {
+  correlationId: '2a92069c-d664-41a9-a62a-356949ff7c64',
+  paymentId: 'a5357469-bdcd-4c77-9649-9d1f41bfa624',
+  status: 3
+}
+✅ [CHECKOUT-STEP3] Pagamento processado: {
+  paymentId: 'a5357469-bdcd-4c77-9649-9d1f41bfa624',
+  status: 3,
+  method: 'credit_card'
+}
+❌ [CHECKOUT-STEP3] Pagamento não autorizado: { status: 3, returnCode: 'GA', returnMessage: 'Autorizacao negada' }
+POST /api/checkout/process 400 in 1680ms :: {"error":"Pagamento não autorizado"…
