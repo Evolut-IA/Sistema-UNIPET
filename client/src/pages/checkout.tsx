@@ -512,7 +512,7 @@ export default function Checkout() {
                     Dados do Pet
                   </h2>
                   {getStepSummary(2) && (
-                    <div className="text-sm text-gray-600 mb-2">
+                    <div className="text-sm mb-2" style={{ color: '#E1AC33' }}>
                       {getStepSummary(2)}
                     </div>
                   )}
@@ -706,7 +706,7 @@ export default function Checkout() {
                   Dados do Cliente
                 </h2>
                 {getStepSummary(3) && (
-                  <div className="text-sm text-gray-600 text-center mb-4">
+                  <div className="text-sm text-center mb-4" style={{ color: '#E1AC33' }}>
                     {getStepSummary(3)}
                   </div>
                 )}
@@ -773,7 +773,7 @@ export default function Checkout() {
                   Pagamento
                 </h2>
                 {getStepSummary(4) && (
-                  <div className="text-sm text-gray-600 text-center mb-4">
+                  <div className="text-sm text-center mb-4" style={{ color: '#E1AC33' }}>
                     {getStepSummary(4)}
                   </div>
                 )}
