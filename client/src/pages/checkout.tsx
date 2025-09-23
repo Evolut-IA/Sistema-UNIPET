@@ -672,9 +672,7 @@ export default function Checkout() {
                       }}
                       className={cn(
                         "rounded-2xl border-[1px] bg-[var(--bg-cream-light)] text-center flex flex-col relative transform-style-preserve-3d backface-hidden transition-all duration-300 cursor-pointer",
-                        selectedPlan?.id === plan.id
-                          ? 'border-[var(--text-gold)] border-2 ring-2 ring-[var(--text-gold)]/30'
-                          : index === 1
+                        index === 1
                           ? "border-[var(--text-gold)] border-2"
                           : "border-[var(--border-teal-light)] hover:border-[var(--text-gold)] hover:shadow-lg",
                         // Apply 3D effects only on desktop and when there are exactly 3 plans visible
@@ -731,29 +729,17 @@ export default function Checkout() {
                         <div className="mt-auto">
                           <hr className="w-full my-4 border-[var(--border-teal-light)]" />
 
-                          {/* Badge de selecionado */}
+                          {/* Badge de coparticipação */}
                           <div className="mb-4 text-center">
-                            {selectedPlan?.id === plan.id ? (
-                              <span 
-                                className="inline-block px-3 py-1 text-xs font-semibold rounded-full" 
-                                style={{
-                                  background: 'var(--text-gold)', 
-                                  color: 'var(--text-light)'
-                                }}
-                              >
-                                Plano Selecionado
-                              </span>
-                            ) : (
-                              <span 
-                                className="inline-block px-3 py-1 text-xs font-semibold rounded-full" 
-                                style={{
-                                  background: 'var(--bg-teal)', 
-                                  color: 'var(--text-light)'
-                                }}
-                              >
-                                {getCoParticipationText(plan.planType)}
-                              </span>
-                            )}
+                            <span 
+                              className="inline-block px-3 py-1 text-xs font-semibold rounded-full" 
+                              style={{
+                                background: 'var(--bg-teal)', 
+                                color: 'var(--text-light)'
+                              }}
+                            >
+                              {getCoParticipationText(plan.planType)}
+                            </span>
                           </div>
                         </div>
                       </div>
