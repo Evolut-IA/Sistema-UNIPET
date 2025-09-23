@@ -295,14 +295,6 @@ export default function CheckoutSuccessPage() {
                   </div>
                 )}
                 
-                <div className="rounded-lg p-4" style={{ backgroundColor: 'var(--bg-warning-50)', borderColor: 'var(--border-warning-200)', border: '1px solid' }}>
-                  <h4 className="font-medium mb-2" style={{ color: 'var(--text-warning-800)' }}>⚠️ Importante</h4>
-                  <ul className="text-sm space-y-1" style={{ color: 'var(--text-warning-700)' }}>
-                    <li>• O pagamento PIX é processado instantaneamente</li>
-                    <li>• Este código é válido por 30 minutos</li>
-                    <li>• Após o pagamento, seu plano será ativado automaticamente</li>
-                  </ul>
-                </div>
               </div>
             )}
 
