@@ -319,15 +319,15 @@ export default function Checkout() {
 
       if (response.ok) {
         const result = await response.json();
-        if (paymentData.method === 'pix' && result.pixQrCode) {
+        if (paymentData.method === 'pix' && result.payment?.pixQrCode) {
           // Para PIX, armazenar dados no estado ao invés de navegar
           setPixData({
-            qrCode: result.pixQrCode,
-            copyPasteCode: result.pixCode,
-            orderId: result.orderId
+            qrCode: result.payment.pixQrCode,
+            copyPasteCode: result.payment.pixCode,
+            orderId: result.payment.orderId
           });
         } else {
-          navigate(`/checkout-success?order=${result.orderId}&method=${paymentData.method}`);
+          navigate(`/checkout-success?order=${result.payment?.orderId}&method=${paymentData.method}`);
         }
       } else {
         console.error('Checkout failed');
