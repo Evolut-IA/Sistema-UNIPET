@@ -10,6 +10,7 @@ interface PricingPlan {
   id: string;
   name: string;
   price: number;
+  basePrice?: string | number;
   period: string;
   features: string[];
   description?: string | undefined;
@@ -25,11 +26,6 @@ interface PricingProps {
   onPlanSelect?: (plan: PricingPlan) => void;
   onPlanDetails?: (planName: string) => void;
 }
-
-
-const formatPrice = (priceInCents: number): string => {
-  return (priceInCents / 100).toFixed(2).replace('.', ',');
-};
 
 export function Pricing({
   plans,
@@ -68,9 +64,15 @@ export function Pricing({
           {plans.map((plan, index) => (
             <motion.div
               key={plan.id}
-              initial={{ opacity: 0 }}
+              initial={{
+                opacity: 0,
+                rotateY: 30,
+                z: -50,
+              }}
               whileInView={{
                 opacity: 1,
+                rotateY: 0,
+                z: 0,
               }}
               viewport={{ once: true }}
               transition={{
@@ -111,7 +113,7 @@ export function Pricing({
                   {/* Preço */}
                   <div className="mb-4 flex items-center justify-center">
                     <span className="text-3xl font-bold tracking-tight text-[var(--text-teal)]">
-                      R$ {formatPrice(plan.price)}/{plan.period}
+                      R$ {parseFloat(String(plan.basePrice || 0)).toFixed(2).replace('.', ',')}/{plan.period}
                     </span>
                   </div>
 
@@ -174,16 +176,6 @@ export function Pricing({
                     onClick={() => handlePlanDetails(plan.name)}
                   >
                     Ver detalhes
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="16px"
-                      viewBox="0 -960 960 960"
-                      width="16px"
-                      fill="currentColor"
-                      className="translate-y-0.5"
-                    >
-                      <path d="M480-240 240-480l56-56 144 144v-368h80v368l144-144 56 56-240 240Z"/>
-                    </svg>
                   </button>
                 </div>
               </div>
