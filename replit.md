@@ -85,6 +85,15 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### Checkout Species Options Expansion (September 23, 2025)
+**EXPANDED SPECIES OPTIONS**: Added comprehensive pet species selection to checkout form
+- ✅ **Additional Species Added**: Extended from 2 to 7 species options in the checkout pet data form
+- ✅ **Complete Species List**: Now includes Cão, Gato, Aves, Tartarugas ou jabutis, Coelhos ou hamsters, Porquinho da índia, Outros
+- ✅ **User Experience**: Better coverage for all pet types that clients might want to insure
+- ✅ **Form Validation**: All new options properly integrated with existing form handling logic
+
+**Result**: The checkout form now supports a comprehensive range of pet species, making the application more inclusive for different types of pets beyond just dogs and cats.
+
 ### Visual Dropdown Separators Implementation (September 22, 2025)
 **SEPARADORES VISUAIS IMPLEMENTADOS**: Implementação completa de separadores visuais em todos os dropdowns do sistema usando SelectSeparator do Radix UI
 - ✅ **Correções JSX Críticas**: Corrigidos erros complexos de sintaxe JSX em network.tsx, contact.tsx e contact-section.tsx

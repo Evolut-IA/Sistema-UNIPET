@@ -250,6 +250,11 @@ export default function Checkout() {
                       <option value="">Selecione a espécie</option>
                       <option value="Cão">Cão</option>
                       <option value="Gato">Gato</option>
+                      <option value="Aves">Aves</option>
+                      <option value="Tartarugas ou jabutis">Tartarugas ou jabutis</option>
+                      <option value="Coelhos ou hamsters">Coelhos ou hamsters</option>
+                      <option value="Porquinho da índia">Porquinho da índia</option>
+                      <option value="Outros">Outros</option>
                     </select>
                   </div>
                   <div>
