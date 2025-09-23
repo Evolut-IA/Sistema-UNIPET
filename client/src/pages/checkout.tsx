@@ -559,7 +559,7 @@ export default function Checkout() {
 
           {/* Step Content */}
           {currentStep === 1 ? (
-            <div className="bg-white rounded-lg shadow-lg px-12 py-8">
+            <div className="bg-white rounded-lg shadow-lg px-4 md:px-12 py-8">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
