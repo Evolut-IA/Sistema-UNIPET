@@ -328,7 +328,7 @@ export default function Contact() {
             {/* Contact Information */}
             <AnimatedSection animation="slideLeft" delay={400}>
               <div className="pl-0 lg:pl-2 space-y-6 mt-5 lg:mt-0">
-                <Card className="shadow-md rounded-xl w-full border-0 bg-transparent">
+                <Card className="shadow-md rounded-xl w-full border-0 bg-transparent" style={{filter: 'drop-shadow(0 8px 16px rgba(0, 0, 0, 0.1))'}}>
                 <CardContent className="p-6 sm:p-8 text-left">
                   <div className="mb-6">
                     <div className="text-xl sm:text-2xl font-bold text-[var(--text-light)] mb-3">
@@ -400,7 +400,7 @@ export default function Contact() {
 
               {/* Social Media */}
               {(shouldShow.facebookUrl || shouldShow.instagramUrl || shouldShow.linkedinUrl || shouldShow.youtubeUrl) && (
-                <Card className="shadow-md rounded-xl w-full border-0 bg-transparent">
+                <Card className="shadow-md rounded-xl w-full border-0 bg-transparent" style={{filter: 'drop-shadow(0 8px 16px rgba(0, 0, 0, 0.1))'}}>
                   <CardContent className="p-6 sm:p-8 text-left">
                     <div className="mb-6">
                       <div className="text-xl sm:text-2xl font-bold text-[var(--text-light)] mb-3">Siga-nos</div>
@@ -434,7 +434,7 @@ export default function Contact() {
 
               {/* Service Hours */}
               {shouldShow.businessHours && (
-                <Card className="shadow-md rounded-xl w-full border-0 bg-transparent">
+                <Card className="shadow-md rounded-xl w-full border-0 bg-transparent" style={{filter: 'drop-shadow(0 8px 16px rgba(0, 0, 0, 0.1))'}}>
                   <CardContent className="p-6 sm:p-8 text-center">
                                       <div className="flex items-center justify-center mb-4">
                     <div className="text-xl sm:text-2xl font-bold text-[var(--text-light)]">
