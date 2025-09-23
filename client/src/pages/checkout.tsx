@@ -739,11 +739,17 @@ export default function Checkout() {
                         onClick={() => setPaymentData({...paymentData, method: 'credit_card'})}
                       >
                         <div className="flex items-center space-x-3">
-                          <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                            paymentData.method === 'credit_card' 
-                              ? 'border-teal-600 bg-teal-600' 
-                              : 'border-gray-300'
-                          }`}>
+                          <div 
+                            className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                              paymentData.method === 'credit_card' 
+                                ? 'border-gray-300' 
+                                : 'border-gray-300'
+                            }`}
+                            style={paymentData.method === 'credit_card' ? {
+                              borderColor: '#277677',
+                              backgroundColor: '#277677'
+                            } : {}}
+                          >
                             {paymentData.method === 'credit_card' && <div className="w-3 h-3 bg-white rounded-full"></div>}
                           </div>
                           <div>
@@ -762,11 +768,17 @@ export default function Checkout() {
                         onClick={() => setPaymentData({...paymentData, method: 'pix'})}
                       >
                         <div className="flex items-center space-x-3">
-                          <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                            paymentData.method === 'pix' 
-                              ? 'border-teal-600 bg-teal-600' 
-                              : 'border-gray-300'
-                          }`}>
+                          <div 
+                            className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                              paymentData.method === 'pix' 
+                                ? 'border-gray-300' 
+                                : 'border-gray-300'
+                            }`}
+                            style={paymentData.method === 'pix' ? {
+                              borderColor: '#277677',
+                              backgroundColor: '#277677'
+                            } : {}}
+                          >
                             {paymentData.method === 'pix' && <div className="w-3 h-3 bg-white rounded-full"></div>}
                           </div>
                           <div>
