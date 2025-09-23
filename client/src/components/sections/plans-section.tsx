@@ -92,7 +92,7 @@ export default function PlansSection({
       <div className="min-h-screen bg-gradient-to-br from-[var(--bg-teal)] to-[var(--bg-teal-dark)] py-12">
         <div className="container mx-auto px-4">
           {showTitle && (
-            <div className="text-center mb-12">
+            <div className="text-center mb-12 sm:mb-16">
               <h1 className="text-[28px] md:text-[36px] font-bold text-[var(--text-light)] mb-4">Nossos Planos</h1>
               <p className="text-xl text-[var(--text-light)] mb-8">Encontre o plano ideal para seu pet</p>
             </div>
@@ -166,11 +166,11 @@ export default function PlansSection({
   return (
     <section 
       id="planos" 
-      className={`${showBackground ? 'bg-[#277677]' : ''}`}
+      className={`py-20 ${showBackground ? 'bg-[#277677]' : ''}`}
     >
       {showTitle && (
           <AnimatedSection animation="slideUp" delay={50}>
-            <div className="text-center mb-12">
+            <div className="text-center mb-12 sm:mb-16">
               <h1 className="text-[28px] md:text-[36px] font-bold text-[var(--text-light)] mb-4">
                 Nossos <span className="text-[var(--text-gold)]">Planos</span>
               </h1>
