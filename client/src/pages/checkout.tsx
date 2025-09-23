@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation, useRoute } from 'wouter';
 import { motion } from 'framer-motion';
-import { CheckCircle, CreditCard, User, ArrowLeft } from 'lucide-react';
+import { CheckCircle, CreditCard, ArrowLeft } from 'lucide-react';
 
 interface Plan {
   id: string;
@@ -31,7 +31,7 @@ interface CustomerData {
 }
 
 export default function Checkout() {
-  const [location, navigate] = useLocation();
+  const [, navigate] = useLocation();
   const [, params] = useRoute('/checkout/:planId?');
   
   const [currentStep, setCurrentStep] = useState(1);

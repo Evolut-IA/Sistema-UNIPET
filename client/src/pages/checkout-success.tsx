@@ -49,7 +49,10 @@ export default function CheckoutSuccessPage() {
       const pixQrCode = urlParams.get('pixQrCode');
       const pixCopyPaste = urlParams.get('pixCopyPaste');
       if (pixQrCode || pixCopyPaste) {
-        setPixData({ qrCode: pixQrCode || undefined, copyPaste: pixCopyPaste || undefined });
+        setPixData({ 
+          ...(pixQrCode && { qrCode: pixQrCode }), 
+          ...(pixCopyPaste && { copyPaste: pixCopyPaste }) 
+        });
       }
     }
 
