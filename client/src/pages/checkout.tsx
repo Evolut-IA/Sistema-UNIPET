@@ -973,15 +973,6 @@ export default function Checkout() {
                         </div>
                       </div>
                       
-                      {/* Como pagar - largura total */}
-                      <div className="mt-6 text-sm text-gray-600">
-                        <p className="font-medium mb-1">Como pagar:</p>
-                        <ol className="list-decimal list-inside space-y-1">
-                          <li>Vá na opção PIX</li>
-                          <li>Escaneie o QR Code ou cole o código</li>
-                          <li>Confirme o pagamento</li>
-                        </ol>
-                      </div>
                       
                     </div>
                   )}
