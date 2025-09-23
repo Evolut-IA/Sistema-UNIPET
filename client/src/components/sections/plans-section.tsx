@@ -3,6 +3,7 @@ interface Plan {
   id: string;
   name: string;
   price: number;
+  basePrice?: string | number; // ✅ Adicionar campo basePrice
   description: string;
   features: string[];
   buttonText?: string;
@@ -152,6 +153,7 @@ export default function PlansSection({
       id: plan.id,
       name: plan.name,
       price: plan.price,
+      basePrice: plan.basePrice || 0, // ✅ Adicionar campo basePrice com fallback
       period: "mês",
       features: plan.features,
       description: plan.description || "",
