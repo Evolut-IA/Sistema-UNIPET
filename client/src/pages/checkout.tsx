@@ -97,6 +97,7 @@ export default function Checkout() {
   
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
+  const [showValidationErrors, setShowValidationErrors] = useState(false);
   const [petsData, setPetsData] = useState<PetData[]>([{
     name: '',
     species: '',
@@ -290,14 +291,29 @@ export default function Checkout() {
   };
 
   const handleNextStep = () => {
+    // Se está no step 3 (Dados do Cliente), validar email
+    if (currentStep === 3) {
+      setShowValidationErrors(true);
+      
+      // Se email não é válido, não prosseguir
+      if (!validateEmail(customerData.email)) {
+        return;
+      }
+    }
+    
     if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
+      // Reset validation errors quando muda de step
+      setShowValidationErrors(false);
     } else {
       handleSubmit();
     }
   };
 
   const handlePrevStep = () => {
+    // Reset validation errors ao voltar
+    setShowValidationErrors(false);
+    
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     } else {
@@ -823,13 +839,13 @@ export default function Checkout() {
                       value={customerData.email}
                       onChange={(e) => setCustomerData({...customerData, email: e.target.value})}
                       className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500 ${
-                        customerData.email && !validateEmail(customerData.email) 
+                        showValidationErrors && !validateEmail(customerData.email) 
                           ? 'border-red-500' 
                           : ''
                       }`}
                       placeholder="seu@email.com"
                     />
-                    {customerData.email && !validateEmail(customerData.email) && (
+                    {showValidationErrors && !validateEmail(customerData.email) && (
                       <p className="text-red-500 text-sm mt-1">Insira um email válido</p>
                     )}
                   </div>
