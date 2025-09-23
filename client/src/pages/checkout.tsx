@@ -983,16 +983,6 @@ export default function Checkout() {
                         </ol>
                       </div>
                       
-                      <div className="mt-6 bg-blue-50 p-4 rounded-lg border border-blue-200">
-                        <div className="text-blue-800">
-                          <p className="font-medium mb-1">Como pagar:</p>
-                          <ol className="list-decimal list-inside space-y-1 text-sm">
-                            <li>Vá na opção PIX</li>
-                            <li>Escaneie o QR Code ou cole o código</li>
-                            <li>Confirme o pagamento</li>
-                          </ol>
-                        </div>
-                      </div>
                     </div>
                   )}
                 </div>
