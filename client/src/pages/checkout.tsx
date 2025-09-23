@@ -1162,8 +1162,12 @@ export default function Checkout() {
                       />
                       {/* Indicador de carregamento */}
                       {isLoadingCEP && (
-                        <div className="absolute right-3 top-3">
-                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-teal-500"></div>
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                          <div className="flex space-x-1">
+                            <div className="w-2 h-2 bg-teal-500 rounded-full loading-dot"></div>
+                            <div className="w-2 h-2 bg-teal-500 rounded-full loading-dot"></div>
+                            <div className="w-2 h-2 bg-teal-500 rounded-full loading-dot"></div>
+                          </div>
                         </div>
                       )}
                     </div>
@@ -1173,8 +1177,8 @@ export default function Checkout() {
                     )}
                   </div>
                   
-                  {/* Só mostra os outros campos se o CEP foi digitado */}
-                  {customerData.zipCode && customerData.zipCode.replace(/\D/g, '').length >= 5 && (
+                  {/* Só mostra os outros campos se o CEP tem 8 dígitos */}
+                  {customerData.zipCode && customerData.zipCode.replace(/\D/g, '').length === 8 && (
                     <>
                       <div className="col-span-1 lg:col-span-2">
                         <label className="block text-sm font-medium mb-2">
