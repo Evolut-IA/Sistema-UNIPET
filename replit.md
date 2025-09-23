@@ -4,6 +4,15 @@
 UNIPET PLAN is a comprehensive pet health plan management system designed to streamline pet insurance plan management, customer relationships, and healthcare network unit administration. It features a customer-facing website for plan selection and quote requests, alongside an admin dashboard for content and business management. The system is built with a full-stack TypeScript solution, utilizing a React frontend, Express.js backend, and PostgreSQL database with Drizzle ORM. The project emphasizes security, performance, scalability, and aims to simplify pet healthcare administration.
 
 ## Recent Changes
+- **September 23, 2025**: Complete Database Integration for Checkout System
+  - Added integration with `/api/checkout/complete-registration` endpoint to save CPF and address data
+  - Enhanced checkout form with complete address fields (street, number, complement, district, city, state, ZIP)
+  - Modified checkout flow to make three sequential API calls: save-customer-data → complete-registration → process
+  - Ensured all customer data, pets, contracts, and payment information are correctly saved in PostgreSQL
+  - Verified credit card data is NOT persisted for security compliance
+  - Automatic payment receipt generation for approved transactions
+  - Successfully tested full checkout workflow with database persistence
+
 - **September 23, 2025**: PIX Payment Completion Workflow Implementation
   - Added PIX payment status polling system that checks payment confirmation every 3 seconds
   - Implemented congratulations popup component with bilingual support (Portuguese/English)
