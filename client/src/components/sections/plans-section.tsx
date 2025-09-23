@@ -168,31 +168,33 @@ export default function PlansSection({
       id="planos" 
       className={`py-20 ${showBackground ? 'bg-[#277677]' : ''}`}
     >
-      {showTitle && (
-          <AnimatedSection animation="slideUp" delay={50}>
-            <div className="text-center mb-12 sm:mb-16">
-              <h1 className="text-[28px] md:text-[36px] font-bold text-[var(--text-light)] mb-4">
-                Nossos <span className="text-[var(--text-gold)]">Planos</span>
-              </h1>
-              <p className="text-xl text-[var(--text-light)] mb-8">
-                Escolha a proteção ideal <br className="sm:hidden" />
-                para seu melhor amigo
-              </p>
-            </div>
-          </AnimatedSection>
-        )}
-        
-        <AnimatedSection animation="slideUp" delay={100}>
-          <Pricing 
-            plans={pricingPlans}
-            onPlanSelect={(plan) => {
+      <div className="section-container">
+        {showTitle && (
+            <AnimatedSection animation="slideUp" delay={50}>
+              <div className="text-center mb-12 sm:mb-16">
+                <h1 className="text-[28px] md:text-[36px] font-bold text-[var(--text-light)] mb-4">
+                  Nossos <span className="text-[var(--text-gold)]">Planos</span>
+                </h1>
+                <p className="text-xl text-[var(--text-light)] mb-8">
+                  Escolha a proteção ideal <br className="sm:hidden" />
+                  para seu melhor amigo
+                </p>
+              </div>
+            </AnimatedSection>
+          )}
+          
+          <AnimatedSection animation="slideUp" delay={100}>
+            <Pricing 
+              plans={pricingPlans}
+              onPlanSelect={(plan) => {
 
-              // Redirecionar diretamente para /checkout com o ID do plano para ir direto para etapa "Dados do Pet"
-              navigate(`/checkout/${plan.id}`);
-            }}
-            onPlanDetails={scrollToPlanDetails}
-          />
-        </AnimatedSection>
+                // Redirecionar diretamente para /checkout com o ID do plano para ir direto para etapa "Dados do Pet"
+                navigate(`/checkout/${plan.id}`);
+              }}
+              onPlanDetails={scrollToPlanDetails}
+            />
+          </AnimatedSection>
+      </div>
     </section>
   );
 }
