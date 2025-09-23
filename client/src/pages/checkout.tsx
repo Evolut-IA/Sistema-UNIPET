@@ -381,7 +381,7 @@ export default function Checkout() {
               <button
                 onClick={handleNextStep}
                 disabled={isLoading}
-                className="flex items-center px-6 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors disabled:opacity-50"
+                className="flex items-center px-6 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors disabled:opacity-50 font-semibold"
               >
                 {isLoading ? (
                   <>
