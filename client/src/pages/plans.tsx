@@ -163,7 +163,7 @@ export default function Plans() {
         </div>
         
         {/* Plans Section */}
-        <PlansSection showTitle={false} showBackground={false} removePadding={false} />
+        <PlansSection />
       </div>
       
       {/* Detailed Plan Sections */}
