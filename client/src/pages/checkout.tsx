@@ -33,6 +33,9 @@ interface CustomerData {
   cpf: string;
   phone: string;
   address: string;
+  addressNumber?: string;
+  complement?: string;
+  neighborhood?: string;
   city: string;
   state: string;
   zipCode: string;
@@ -901,6 +904,8 @@ export default function Checkout() {
                           <label className="block text-sm font-medium mb-2">Número</label>
                           <input
                             type="text"
+                            value={customerData.addressNumber || ''}
+                            onChange={(e) => setCustomerData({...customerData, addressNumber: e.target.value})}
                             className="w-full p-3 border border-gray-300 rounded-lg"
                             placeholder="123"
                           />
@@ -909,6 +914,8 @@ export default function Checkout() {
                           <label className="block text-sm font-medium mb-2">Complemento</label>
                           <input
                             type="text"
+                            value={customerData.complement || ''}
+                            onChange={(e) => setCustomerData({...customerData, complement: e.target.value})}
                             className="w-full p-3 border border-gray-300 rounded-lg"
                             placeholder="Apartamento"
                           />
@@ -918,7 +925,10 @@ export default function Checkout() {
                         <label className="block text-sm font-medium mb-2">Bairro *</label>
                         <input
                           type="text"
+                          value={customerData.neighborhood || ''}
+                          onChange={(e) => setCustomerData({...customerData, neighborhood: e.target.value})}
                           className="w-full p-3 border border-gray-300 rounded-lg"
+                          placeholder="Bairro"
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-4">
@@ -1108,9 +1118,39 @@ export default function Checkout() {
                         </div>
                       </div>
                       
-                      <select className="w-full mt-4 p-2 border border-gray-300 rounded text-sm">
-                        <option>Ver mensalidades</option>
-                      </select>
+                      <Select onValueChange={(value) => {
+                        if (paymentData.creditCard) {
+                          setPaymentData({
+                            ...paymentData,
+                            creditCard: {
+                              ...paymentData.creditCard,
+                              installments: parseInt(value)
+                            }
+                          });
+                        }
+                      }}>
+                        <SelectTrigger className="w-full mt-4 p-2 border border-gray-300 rounded text-sm">
+                          <SelectValue placeholder={`${paymentData.creditCard?.installments || 1}x de ${formatPrice(calculateTotal() / (paymentData.creditCard?.installments || 1))}`} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {(() => {
+                            const isBasicOrInfinity = selectedPlan && ['BASIC', 'INFINITY'].some(type => selectedPlan.name.toUpperCase().includes(type));
+                            const maxInstallments = isBasicOrInfinity ? 1 : 12;
+                            const options = [];
+                            
+                            for (let i = 1; i <= maxInstallments; i++) {
+                              const installmentValue = calculateTotal() / i;
+                              options.push(
+                                <SelectItem key={i} value={i.toString()}>
+                                  {i}x de {formatPrice(installmentValue)} {i === 1 ? 'à vista' : ''}
+                                </SelectItem>
+                              );
+                            }
+                            
+                            return options;
+                          })()}
+                        </SelectContent>
+                      </Select>
                     </div>
 
                     <div className="flex items-start gap-2">
