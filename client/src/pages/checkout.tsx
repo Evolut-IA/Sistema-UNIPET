@@ -284,7 +284,12 @@ export default function Checkout() {
                     <button
                       type="button"
                       onClick={addPet}
-                      className="flex items-center px-4 py-2 text-sm font-medium rounded-lg border-2 border-teal-600 text-teal-600 hover:bg-teal-50 transition-colors"
+                      className="flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors"
+                      style={{
+                        background: 'var(--btn-cotacao-gratuita-bg)',
+                        color: 'var(--btn-cotacao-gratuita-text)',
+                        border: 'var(--btn-cotacao-gratuita-border)'
+                      }}
                     >
                       <Plus className="w-4 h-4 mr-1" />
                       Adicionar Pet
