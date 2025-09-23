@@ -955,7 +955,7 @@ export default function Checkout() {
                                 border: 'none'
                               }}
                             >
-                              📋 Copiar Código PIX
+                              Copiar Código PIX
                             </button>
                           </div>
                         </div>
