@@ -295,6 +295,18 @@ export default function Checkout() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-2">
+                      Raça
+                    </label>
+                    <input
+                      type="text"
+                      value={petData.breed}
+                      onChange={(e) => setPetData({...petData, breed: e.target.value})}
+                      className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
+                      placeholder="Raça do pet (opcional)"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
                       Idade (anos)
                     </label>
                     <input
