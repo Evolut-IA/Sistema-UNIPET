@@ -99,6 +99,45 @@ export default function Checkout() {
     }
   };
 
+  const formatCEP = (value: string) => {
+    // Remove tudo que não é número
+    const numbers = value.replace(/\D/g, '');
+    
+    // Limita a 8 dígitos
+    const limitedNumbers = numbers.slice(0, 8);
+    
+    // Aplica a máscara
+    if (limitedNumbers.length <= 5) return limitedNumbers;
+    return `${limitedNumbers.slice(0, 5)}-${limitedNumbers.slice(5)}`;
+  };
+
+  // Função para buscar endereço pelo CEP
+  const fetchAddressByCEP = async (cep: string) => {
+    const cleanCEP = cep.replace(/\D/g, '');
+    
+    if (cleanCEP.length !== 8) return;
+    
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${cleanCEP}/json/`);
+      const data = await response.json();
+      
+      if (!data.erro) {
+        setCustomerData(prev => ({
+          ...prev,
+          address: data.logradouro || '',
+          district: data.bairro || '',
+          city: data.localidade || '',
+          state: data.uf || '',
+          // Mantém os campos que o usuário já preencheu
+          number: prev.number,
+          complement: prev.complement
+        }));
+      }
+    } catch (error) {
+      console.error('Erro ao buscar CEP:', error);
+    }
+  };
+
   const validateEmail = (value: string) => {
     return value.includes('@');
   };
@@ -1092,85 +1131,100 @@ export default function Checkout() {
                     <input
                       type="text"
                       value={customerData.zipCode}
-                      onChange={(e) => setCustomerData({...customerData, zipCode: e.target.value})}
+                      onChange={async (e) => {
+                        const formattedCEP = formatCEP(e.target.value);
+                        setCustomerData({...customerData, zipCode: formattedCEP});
+                        
+                        // Busca endereço quando CEP tem 8 dígitos
+                        const cleanCEP = formattedCEP.replace(/\D/g, '');
+                        if (cleanCEP.length === 8) {
+                          await fetchAddressByCEP(formattedCEP);
+                        }
+                      }}
                       className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
                       placeholder="00000-000"
                       maxLength={9}
                     />
                   </div>
-                  <div className="col-span-1 lg:col-span-2">
-                    <label className="block text-sm font-medium mb-2">
-                      Endereço
-                    </label>
-                    <input
-                      type="text"
-                      value={customerData.address}
-                      onChange={(e) => setCustomerData({...customerData, address: e.target.value})}
-                      className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
-                      placeholder="Rua, Avenida, etc."
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Número
-                    </label>
-                    <input
-                      type="text"
-                      value={customerData.number}
-                      onChange={(e) => setCustomerData({...customerData, number: e.target.value})}
-                      className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
-                      placeholder="Número"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Complemento (opcional)
-                    </label>
-                    <input
-                      type="text"
-                      value={customerData.complement}
-                      onChange={(e) => setCustomerData({...customerData, complement: e.target.value})}
-                      className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
-                      placeholder="Apto, Sala, etc."
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Bairro
-                    </label>
-                    <input
-                      type="text"
-                      value={customerData.district}
-                      onChange={(e) => setCustomerData({...customerData, district: e.target.value})}
-                      className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
-                      placeholder="Bairro"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Cidade
-                    </label>
-                    <input
-                      type="text"
-                      value={customerData.city}
-                      onChange={(e) => setCustomerData({...customerData, city: e.target.value})}
-                      className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
-                      placeholder="Cidade"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Estado
-                    </label>
-                    <input
-                      type="text"
-                      value={customerData.state}
-                      onChange={(e) => setCustomerData({...customerData, state: e.target.value})}
-                      className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
-                      placeholder="UF"
-                      maxLength={2}
-                    />
-                  </div>
+                  
+                  {/* Só mostra os outros campos se o CEP foi digitado */}
+                  {customerData.zipCode && customerData.zipCode.replace(/\D/g, '').length >= 5 && (
+                    <>
+                      <div className="col-span-1 lg:col-span-2">
+                        <label className="block text-sm font-medium mb-2">
+                          Endereço
+                        </label>
+                        <input
+                          type="text"
+                          value={customerData.address}
+                          onChange={(e) => setCustomerData({...customerData, address: e.target.value})}
+                          className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
+                          placeholder="Rua, Avenida, etc."
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">
+                          Número
+                        </label>
+                        <input
+                          type="text"
+                          value={customerData.number}
+                          onChange={(e) => setCustomerData({...customerData, number: e.target.value})}
+                          className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
+                          placeholder="Número"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">
+                          Complemento (opcional)
+                        </label>
+                        <input
+                          type="text"
+                          value={customerData.complement}
+                          onChange={(e) => setCustomerData({...customerData, complement: e.target.value})}
+                          className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
+                          placeholder="Apto, Sala, etc."
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">
+                          Bairro
+                        </label>
+                        <input
+                          type="text"
+                          value={customerData.district}
+                          onChange={(e) => setCustomerData({...customerData, district: e.target.value})}
+                          className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
+                          placeholder="Bairro"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">
+                          Cidade
+                        </label>
+                        <input
+                          type="text"
+                          value={customerData.city}
+                          onChange={(e) => setCustomerData({...customerData, city: e.target.value})}
+                          className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
+                          placeholder="Cidade"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">
+                          Estado
+                        </label>
+                        <input
+                          type="text"
+                          value={customerData.state}
+                          onChange={(e) => setCustomerData({...customerData, state: e.target.value.toUpperCase()})}
+                          className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
+                          placeholder="UF"
+                          maxLength={2}
+                        />
+                      </div>
+                    </>
+                  )}
                 </div>
               </motion.div>
             )}
