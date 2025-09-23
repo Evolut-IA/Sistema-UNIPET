@@ -278,7 +278,7 @@ export default function Checkout() {
               >
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-2xl font-bold">
-                    Dados dos Pets ({petsData.length}/5)
+                    Dados dos Pets
                   </h2>
                   {petsData.length < 5 && (
                     <button
