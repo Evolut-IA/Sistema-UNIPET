@@ -474,26 +474,10 @@ export default function Checkout() {
                 animate={{ opacity: 1, y: 0 }}
                 className="space-y-6"
               >
-                <div className="flex justify-between items-center mb-6">
+                <div className="mb-6">
                   <h2 className="text-xl xs:text-2xl font-bold">
                     Dados dos Pets
                   </h2>
-                  {petsData.length < 5 && (
-                    <button
-                      type="button"
-                      onClick={addPet}
-                      disabled={!canAddNewPet()}
-                      className="flex lg:flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full xs:w-auto justify-center xs:justify-start"
-                      style={{
-                        background: 'var(--btn-cotacao-gratuita-bg)',
-                        color: 'var(--btn-cotacao-gratuita-text)',
-                        border: 'var(--btn-cotacao-gratuita-border)'
-                      }}
-                    >
-                      <Plus className="w-4 h-4 mr-1" />
-                      Adicionar Pet
-                    </button>
-                  )}
                 </div>
 
                 <div className="space-y-6">
@@ -629,6 +613,26 @@ export default function Checkout() {
                   })}
                 </div>
                 
+                {/* Botão Adicionar Pet - Embaixo da div dos pets */}
+                {petsData.length < 5 && (
+                  <div className="flex justify-center mt-6">
+                    <button
+                      type="button"
+                      onClick={addPet}
+                      disabled={!canAddNewPet()}
+                      className="flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full xs:w-auto justify-center"
+                      style={{
+                        background: 'var(--btn-cotacao-gratuita-bg)',
+                        color: 'var(--btn-cotacao-gratuita-text)',
+                        border: 'var(--btn-cotacao-gratuita-border)'
+                      }}
+                    >
+                      <Plus className="w-4 h-4 mr-1" />
+                      Adicionar Pet
+                    </button>
+                  </div>
+                )}
+
               </motion.div>
             )}
 
