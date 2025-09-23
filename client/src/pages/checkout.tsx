@@ -933,7 +933,13 @@ export default function Checkout() {
 
                   {/* Seção do PIX - aparece após processamento */}
                   {pixData && paymentData.method === 'pix' && (
-                    <div className="bg-green-50 border border-green-200 p-6 rounded-lg">
+                    <div 
+                      className="p-6 rounded-lg"
+                      style={{
+                        backgroundColor: 'rgba(39, 118, 119, 0.2)',
+                        border: '1px solid #277677'
+                      }}
+                    >
                       
                       <div className="grid md:grid-cols-2 gap-6">
                         {/* QR Code */}
