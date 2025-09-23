@@ -224,7 +224,12 @@ export default function Checkout() {
                   <button
                     onClick={handleNextStep}
                     disabled={!selectedPlan}
-                    className="flex items-center px-6 py-3 bg-white text-teal-600 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex items-center px-6 py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{
+                      background: 'var(--btn-ver-planos-bg)',
+                      color: 'var(--btn-ver-planos-text)',
+                      border: 'none'
+                    }}
                   >
                     Próximo
                     <ArrowRight className="w-4 h-4 ml-2" />
@@ -403,11 +408,16 @@ export default function Checkout() {
               <button
                 onClick={handleNextStep}
                 disabled={isLoading}
-                className="flex items-center px-6 py-3 bg-white text-teal-600 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center px-6 py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  background: 'var(--btn-ver-planos-bg)',
+                  color: 'var(--btn-ver-planos-text)',
+                  border: 'none'
+                }}
               >
                 {isLoading ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-teal-600 border-t-transparent rounded-full animate-spin mr-2" />
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
                     Processando...
                   </>
                 ) : (
