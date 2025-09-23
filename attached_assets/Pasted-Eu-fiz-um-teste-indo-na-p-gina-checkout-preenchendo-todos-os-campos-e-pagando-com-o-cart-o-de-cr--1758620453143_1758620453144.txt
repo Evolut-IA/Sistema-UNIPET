@@ -1,0 +1,215 @@
+Eu fiz um teste indo na página '/checkout' preenchendo todos os campos e pagando com o cartão de crédito. Porem quando eu cliquei em 'Finalizar' o pagamento não foi realizado. Por favor analise a documentação anexada da Cielo e as informações abaixo e descubra o problema. (OBS: Atualmente o pagamento via PIX está funcionando 100% corretamente.)
+
+AS CREDENCIAIS DA CIELO ESTÃO ASSIM NAS SECRETS:
+CIELO_MERCHANT_KEY="GeerAlQS4O9GylzRJyJ6449F9DZqfhKRNSKb5zmS"
+CIELO_MERCHANT_ID="47ea3034-f969-452a-8044-ab3d7c45053e"
+CIELO_ENVIRONMENT="production"
+CIELO_QUERY_URL="https://apiquery.cieloecommerce.cielo.com.br"
+CIELO_API_URL="https://api.cieloecommerce.cielo.com.br"
+
+LOGS DO CONSOLE:
+[vite] connecting...
+[vite] connected.
+🌐 Configurações do cliente carregadas: 
+Object {contact: {…}, env: {…}, api: {…}, upload: {…}, pagination: {…}, …}
+🛡️ Error Handler inicializado com sucesso
+⚙️ Inicializando configuração da aplicação...
+✅ Configuração válida e completa
+🌍 Ambiente: development
+🔗 API: http://localhost:3000
+📧 Contato: contato@unipetplan.com.br
+🎨 Tema: var(--bg-teal-dark)
+🔍 [useSiteSettings] Fetching site settings...
+🔍 AboutSection component - Settings: 
+Object {hasImage: false, imageLoaded: "missing"}
+✅ [useSiteSettings] Successfully fetched site settings: 
+Object {id: "19c61b78-d8a3-4b26-a289-7b71e87856f4", whatsapp: "558632327374", email: "contato@unipetplan.com.br", phone: "558632327374", instagramUrl: "https://www.instagram.com/unipetplan/", …}
+🔍 AboutSection component - Settings: 
+Object {hasImage: true, imageLoaded: "loaded"}
+🔍 [CHAT] Loaded chat settings: 
+Object {id: "77d0d663-ecc3-48a8-8100-c6c6a39cd50b", welcomeMessage: "🐾 Olá! Sou o assistente virtual da UniPet Plan! Estou aqui para ajudar você com informações sobre…", placeholderText: "Digite sua dúvida...", chatTitle: "Assistente Virtual", buttonIcon: "MessageCircle", …}
+🔍 [CHAT] Bot icon: Present (Binary Data)
+🔍 [CHAT] Support icon: Not set
+Checkout failed
+at t.value (https://f44ffc35-0760-4ab3-ba89-bd699339511d-00-12b397mvrk17z.janeway.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://f44ffc35-0760-4ab3-ba89-bd699339511d-00-12b397mvrk17z.janeway.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://f44ffc35-0760-4ab3-ba89-bd699339511d-00-12b397mvrk17z.janeway.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://f44ffc35-0760-4ab3-ba89-bd699339511d-00-12b397mvrk17z.janeway.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+
+LOGS DO TERMINAL:
+🛒 [CHECKOUT-STEP3] Iniciando processamento do checkout
+🔍 [CHECKOUT-VALIDATION] Validando dados do checkout: {
+  clientId: 'client-1758619516834-4d106ppzx',
+  customerEmail: 'contatogabrielmarquez@gmail.com',
+  customerName: 'Gabriel'
+}
+Query: select "id", "full_name", "email", "phone", "cpf", "cep", "address", "number", "complement", "district", "state", "city", "password", "image", "image_url", "created_at", "updated_at" from "clients" where "clients"."id" = $1 limit $2 -- params: ["client-1758619516834-4d106ppzx", 1]
+Query: select "id", "full_name", "email", "phone", "cpf", "cep", "address", "number", "complement", "district", "state", "city", "password", "image", "image_url", "created_at", "updated_at" from "clients" where "clients"."email" = $1 limit $2 -- params: ["contatogabrielmarquez@gmail.com", 1]
+✅ [CHECKOUT-VALIDATION] Cliente validado com sucesso: {
+  clientId: 'client-1758619516834-4d106ppzx',
+  email: 'contatogabrielmarquez@gmail.com',
+  name: undefined
+}
+🔍 [PAYMENT-RULES] Validating payment rules: {
+  planId: 'ec994283-76de-4605-afa3-0670a8a0a475',
+  planType: 'UNKNOWN',
+  billingPeriod: 'monthly',
+  installments: 1,
+  paymentMethod: 'credit_card'
+}
+✅ [PAYMENT-RULES] Regras de pagamento validadas com sucesso
+💳 [CHECKOUT-STEP3] Processando pagamento via Cielo: {
+  paymentMethod: 'credit_card',
+  clientId: 'client-1758619516834-4d106ppzx',
+  clientEmail: 'contatogabrielmarquez@gmail.com',
+  paymentAmount: 1
+}
+🔍 [CHECKOUT-DEBUG] Estrutura completa paymentData: {
+  "customer": {
+    "name": "Gabriel",
+    "email": "contatogabrielmarquez@gmail.com",
+    "cpf": "544.983.588-48"
+  },
+  "payment": {
+    "cardNumber": "4174012420450972",
+    "holder": "Gabriel Alves Marques Dos Santos",
+    "expirationDate": "08/31",
+    "securityCode": "091",
+    "installments": 1
+  }
+}
+🔍 [CHECKOUT-DEBUG] payment existe? true
+🔍 [CHECKOUT-DEBUG] payment keys: [
+  'cardNumber',
+  'holder',
+  'expirationDate',
+  'securityCode',
+  'installments'
+]
+🔄 [Cielo] Processando pagamento com cartão de crédito {
+  correlationId: '302de779-50fc-458e-9715-4b3fc54008a2',
+  merchantId: '47ea3034...',
+  environment: 'production',
+  apiUrl: 'https://api.cieloecommerce.cielo.com.br'
+}
+🔍 [DEBUG] Data de expiração - ANTES da formatação: 08/2031
+🔍 [DEBUG] Data de expiração - DEPOIS da formatação: 08/2031
+🔍 [DEBUG] Formato esperado pela Cielo: MM/YYYY (exemplo: 12/2025)
+🔍 [DEBUG] Comprimento da data formatada: 7 caracteres
+🔍 [DEBUG] Data de expiração - DEPOIS da formatação: 08/2031
+🔄 [Cielo] Enviando formato oficial 2025 para cartão: {
+  MerchantOrderId: 'ORDER_1758620257928_e86g07az5',
+  Payment: {
+    Type: 'CreditCard',
+    Amount: 1,
+    Installments: 1,
+    CreditCard: {
+      cardNumber: '****0972',
+      holder: 'GABRIEL ALVES MARQUES DOS SANTOS',
+      brand: 'Visa',
+      expirationDate: '08/2031'
+    }
+  }
+}
+📋 [Cielo] Resposta RAW completa do Credit Card: {
+  correlationId: '302de779-50fc-458e-9715-4b3fc54008a2',
+  responseStatus: 201,
+  fullResponse: '{\n' +
+    '  "MerchantOrderId": "ORDER_1758620257928_e86g07az5",\n' +
+    '  "Customer": {\n' +
+    '    "Name": "Gabriel",\n' +
+    '    "Identity": "54498358848",\n' +
+    '    "IdentityType": "CPF",\n' +
+    '    "Email": "contatogabrielmarquez@gmail.com",\n' +
+    '    "Address": {\n' +
+    '      "Street": "",\n' +
+    '      "Number": "123",\n' +
+    '      "Complement": "",\n' +
+    '      "ZipCode": "00000000",\n' +
+    '      "City": "",\n' +
+    '      "State": "",\n' +
+    '      "Country": "BRA",\n' +
+    '      "AddressType": 0\n' +
+    '    }\n' +
+    '  },\n' +
+    '  "Payment": {\n' +
+    '    "ServiceTaxAmount": 0,\n' +
+    '    "Installments": 1,\n' +
+    '    "Interest": 0,\n' +
+    '    "Capture": true,\n' +
+    '    "Authenticate": false,\n' +
+    '    "Recurrent": false,\n' +
+    '    "CreditCard": {\n' +
+    '      "CardNumber": "417401******0972",\n' +
+    '      "Holder": "GABRIEL ALVES MARQUES DOS SANTOS",\n' +
+    '      "ExpirationDate": "08/2031",\n' +
+    '      "SaveCard": false,\n' +
+    '      "Brand": "Visa",\n' +
+    '      "PaymentAccountReference": "V0010013025266346580587465957"\n' +
+    '    },\n' +
+    '    "Tid": "28224704854P8FM677HE",\n' +
+    '    "ProofOfSale": "003006",\n' +
+    '    "SoftDescriptor": "UNIPETPLAN",\n' +
+    '    "Provider": "Cielo",\n' +
+    '    "Eci": "7",\n' +
+    '    "IsQrCode": false,\n' +
+    '    "IssuerTransactionId": "305266346608742",\n' +
+    '    "Amount": 1,\n' +
+    '    "ReceivedDate": "2025-09-23 06:37:38",\n' +
+    '    "Status": 3,\n' +
+    '    "IsSplitted": false,\n' +
+    '    "ReturnMessage": "Autorizacao negada",\n' +
+    '    "ReturnCode": "13",\n' +
+    '    "PaymentId": "8ab1a91a-a697-41fd-8cba-9b3b2c5e382e",\n' +
+    '    "Type": "CreditCard",\n' +
+    '    "Currency": "BRL",\n' +
+    '    "Country": "BRA",\n' +
+    '    "Links": [\n' +
+    '      {\n' +
+    '        "Method": "GET",\n' +
+    '        "Rel": "self",\n' +
+    '        "Href": "https://apiquery.cieloecommerce.cielo.com.br/1/sales/8ab1a91a-a697-41fd-8cba-9b3b2c5e382e"\n' +
+    '      }\n' +
+    '    ]\n' +
+    '  }\n' +
+    '}'
+}
+📋 [Cielo] Resposta processada do Credit Card: {
+  correlationId: '302de779-50fc-458e-9715-4b3fc54008a2',
+  responseStatus: 201,
+  hasPayment: true,
+  hasPaymentCapital: true,
+  hasPaymentLower: false,
+  paymentFields: [
+    'ServiceTaxAmount', 'Installments',
+    'Interest',         'Capture',
+    'Authenticate',     'Recurrent',
+    'CreditCard',       'Tid',
+    'ProofOfSale',      'SoftDescriptor',
+    'Provider',         'Eci',
+    'IsQrCode',         'IssuerTransactionId',
+    'Amount',           'ReceivedDate',
+    'Status',           'IsSplitted',
+    'ReturnMessage',    'ReturnCode',
+    'PaymentId',        'Type',
+    'Currency',         'Country',
+    'Links'
+  ],
+  paymentId: '8ab1a91a-a697-41fd-8cba-9b3b2c5e382e',
+  status: 3,
+  returnCode: '13',
+  returnMessage: 'Autorizacao negada',
+  allResponseKeys: [ 'MerchantOrderId', 'Customer', 'Payment' ]
+}
+✅ [Cielo] Credit Card processado com sucesso {
+  correlationId: '302de779-50fc-458e-9715-4b3fc54008a2',
+  paymentId: '8ab1a91a-a697-41fd-8cba-9b3b2c5e382e',
+  status: 3
+}
+✅ [CHECKOUT-STEP3] Pagamento processado: {
+  paymentId: '8ab1a91a-a697-41fd-8cba-9b3b2c5e382e',
+  status: 3,
+  method: 'credit_card'
+}
+❌ [CHECKOUT-STEP3] Pagamento não autorizado: { status: 3, returnCode: '13', returnMessage: 'Autorizacao negada' }
+POST /api/checkout/process 400 in 2629ms :: {"error":"Pagamento não autorizado"…

@@ -328,6 +328,33 @@ export default function Checkout() {
     };
   }, [pixData?.paymentId, isPaymentConfirmed, navigate]);
 
+  // Funções utilitárias para máscaras de cartão
+  const formatCardNumber = (value: string): string => {
+    // Remove tudo que não é número
+    const digits = value.replace(/\D/g, '');
+    // Limita a 16 dígitos
+    const limitedDigits = digits.substring(0, 16);
+    // Formata com espaços a cada 4 dígitos
+    return limitedDigits.replace(/(\d{4})(?=\d)/g, '$1 ');
+  };
+
+  const formatCVV = (value: string): string => {
+    // Remove tudo que não é número e limita a 3 dígitos
+    return value.replace(/\D/g, '').substring(0, 3);
+  };
+
+  const formatExpiry = (value: string): string => {
+    // Remove tudo que não é número
+    const digits = value.replace(/\D/g, '');
+    // Limita a 4 dígitos
+    const limitedDigits = digits.substring(0, 4);
+    // Formata como MM/AA
+    if (limitedDigits.length >= 3) {
+      return limitedDigits.substring(0, 2) + '/' + limitedDigits.substring(2);
+    }
+    return limitedDigits;
+  };
+
   const fetchPlans = async () => {
     try {
       const response = await fetch('/api/plans');
@@ -1129,13 +1156,16 @@ export default function Checkout() {
                           <input
                             type="text"
                             value={paymentData.creditCard?.cardNumber || ''}
-                            onChange={(e) => setPaymentData({
-                              ...paymentData,
-                              creditCard: {
-                                ...paymentData.creditCard!,
-                                cardNumber: e.target.value
-                              }
-                            })}
+                            onChange={(e) => {
+                              const formattedValue = formatCardNumber(e.target.value);
+                              setPaymentData({
+                                ...paymentData,
+                                creditCard: {
+                                  ...paymentData.creditCard!,
+                                  cardNumber: formattedValue
+                                }
+                              });
+                            }}
                             className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
                             placeholder="0000 0000 0000 0000"
                           />
@@ -1165,15 +1195,18 @@ export default function Checkout() {
                           <input
                             type="text"
                             value={paymentData.creditCard?.expirationDate || ''}
-                            onChange={(e) => setPaymentData({
-                              ...paymentData,
-                              creditCard: {
-                                ...paymentData.creditCard!,
-                                expirationDate: e.target.value
-                              }
-                            })}
+                            onChange={(e) => {
+                              const formattedValue = formatExpiry(e.target.value);
+                              setPaymentData({
+                                ...paymentData,
+                                creditCard: {
+                                  ...paymentData.creditCard!,
+                                  expirationDate: formattedValue
+                                }
+                              });
+                            }}
                             className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
-                            placeholder="MM/AAAA"
+                            placeholder="MM/AA"
                           />
                         </div>
                         <div>
@@ -1183,13 +1216,16 @@ export default function Checkout() {
                           <input
                             type="text"
                             value={paymentData.creditCard?.securityCode || ''}
-                            onChange={(e) => setPaymentData({
-                              ...paymentData,
-                              creditCard: {
-                                ...paymentData.creditCard!,
-                                securityCode: e.target.value
-                              }
-                            })}
+                            onChange={(e) => {
+                              const formattedValue = formatCVV(e.target.value);
+                              setPaymentData({
+                                ...paymentData,
+                                creditCard: {
+                                  ...paymentData.creditCard!,
+                                  securityCode: formattedValue
+                                }
+                              });
+                            }}
                             className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
                             placeholder="000"
                           />
