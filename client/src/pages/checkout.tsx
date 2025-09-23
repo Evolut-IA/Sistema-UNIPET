@@ -180,6 +180,42 @@ export default function Checkout() {
     }).format(price / 100);
   };
 
+  // Função para identificar se o plano tem desconto por múltiplos pets
+  const isPlanEligibleForDiscount = (planName: string) => {
+    const name = planName.toLowerCase();
+    return name === 'básico' || name === 'plano emergência';
+  };
+
+  // Função para calcular desconto por pet
+  const calculatePetDiscount = (petIndex: number) => {
+    if (petIndex === 0) return 0; // Primeiro pet não tem desconto
+    if (petIndex === 1) return 5; // 2º pet: 5%
+    if (petIndex === 2) return 10; // 3º pet: 10%
+    return 15; // 4º e 5º pet: 15%
+  };
+
+  // Função para calcular preço total com descontos
+  const calculateTotalPrice = (plan: Plan | null) => {
+    if (!plan) return 0;
+
+    const basePrice = plan.price;
+    let totalPrice = 0;
+
+    // Se o plano não é elegível para desconto, cobra preço normal por cada pet
+    if (!isPlanEligibleForDiscount(plan.name)) {
+      return basePrice * petsData.length;
+    }
+
+    // Para planos Basic e Infinity, aplica desconto progressivo
+    petsData.forEach((_, index) => {
+      const discount = calculatePetDiscount(index);
+      const petPrice = basePrice * (1 - discount / 100);
+      totalPrice += petPrice;
+    });
+
+    return Math.round(totalPrice);
+  };
+
   return (
     <div className="min-h-screen" style={{backgroundColor: '#277677'}}>
       <div className="container mx-auto px-4 py-8">
@@ -234,8 +270,36 @@ export default function Checkout() {
                     >
                       <h3 className="text-xl font-bold mb-2 text-gray-900">{plan.name}</h3>
                       <p className="text-2xl font-bold text-teal-600 mb-4">
-                        {formatPrice(plan.price)}
+                        {petsData.length === 1 ? (
+                          formatPrice(plan.price)
+                        ) : (
+                          <span>
+                            <span className="text-lg text-gray-500 line-through">
+                              {formatPrice(plan.price)} /pet
+                            </span>
+                            <br />
+                            <span className="text-green-600">
+                              Total: {formatPrice(calculateTotalPrice(plan))}
+                            </span>
+                          </span>
+                        )}
                       </p>
+                      {petsData.length > 1 && isPlanEligibleForDiscount(plan.name) && (
+                        <div className="text-xs text-green-600 bg-green-50 p-2 rounded mb-4">
+                          <strong>Descontos aplicados:</strong>
+                          <ul className="mt-1">
+                            {petsData.map((_, index) => {
+                              const discount = calculatePetDiscount(index);
+                              const petPrice = plan.price * (1 - discount / 100);
+                              return (
+                                <li key={index}>
+                                  Pet {index + 1}: {discount > 0 ? `${discount}% desconto - ` : ''}{formatPrice(petPrice)}
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </div>
+                      )}
                       <p className="text-gray-600 mb-4 text-sm">{plan.description}</p>
                     </div>
                   ))}
