@@ -530,7 +530,7 @@ export default function Checkout() {
       <Header />
       <div className="min-h-screen pt-16" style={{backgroundColor: '#277677'}}>
         <div className="container mx-auto px-4 py-8">
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="text-center mb-6 xs:mb-8">
             <div className="flex justify-center items-center space-x-1 xs:space-x-2 lg:space-x-4">
