@@ -152,15 +152,6 @@ export default function Plans() {
   return (
     <main className="pt-32 pb-0 bg-primary">
       <div className="section-container p-0">
-        <div className="page-header">
-          <h1 className="page-title">
-            <span className="text-primary-foreground">Nossos</span> <span className="text-gold">Planos</span>
-          </h1>
-          <p className="page-subtitle text-primary-foreground">
-            Escolha a proteção ideal <br className="sm:hidden" />
-            para seu melhor amigo
-          </p>
-        </div>
         
         {/* Plans Section */}
         <PlansSection />
