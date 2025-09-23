@@ -559,7 +559,7 @@ export default function Checkout() {
 
           {/* Step Content */}
           {currentStep === 1 ? (
-            <div className="bg-white rounded-lg shadow-lg p-8">
+            <div className="bg-white rounded-lg shadow-lg px-12 py-8">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -568,7 +568,7 @@ export default function Checkout() {
                 <h2 className="text-xl xs:text-2xl font-bold text-center mb-4 xs:mb-6">
                   Escolha seu Plano
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 perspective-1000 max-w-7xl mx-auto">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 perspective-1000 max-w-7xl mx-auto">
                   {plans.map((plan, index) => (
                     <motion.div
                       key={plan.id}
