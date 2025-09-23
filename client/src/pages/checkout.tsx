@@ -959,7 +959,6 @@ export default function Checkout() {
                             <button
                               onClick={() => {
                                 navigator.clipboard.writeText(pixData.copyPasteCode);
-                                alert('Código PIX copiado!');
                               }}
                               className="mt-3 w-full text-white py-2 px-4 rounded-lg transition-colors"
                               style={{
