@@ -182,34 +182,56 @@ export default function Checkout() {
 
           {/* Step Content */}
           {currentStep === 1 ? (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-6"
-            >
-              <h2 className="text-2xl font-bold text-center mb-6 text-white">
-                Escolha seu Plano
-              </h2>
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-                {plans.map((plan) => (
-                  <div
-                    key={plan.id}
-                    className={`bg-white border-2 rounded-lg p-6 cursor-pointer transition-all shadow-lg ${
-                      selectedPlan?.id === plan.id
-                        ? 'border-teal-600 ring-2 ring-teal-300'
-                        : 'border-gray-200 hover:border-teal-300 hover:shadow-xl'
-                    }`}
-                    onClick={() => handlePlanSelect(plan)}
+            <div className="bg-white rounded-lg shadow-lg p-8">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="space-y-6"
+              >
+                <h2 className="text-2xl font-bold text-center mb-6">
+                  Escolha seu Plano
+                </h2>
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+                  {plans.map((plan) => (
+                    <div
+                      key={plan.id}
+                      className={`bg-white border-2 rounded-lg p-6 cursor-pointer transition-all shadow-lg ${
+                        selectedPlan?.id === plan.id
+                          ? 'border-teal-600 ring-2 ring-teal-300'
+                          : 'border-gray-200 hover:border-teal-300 hover:shadow-xl'
+                      }`}
+                      onClick={() => handlePlanSelect(plan)}
+                    >
+                      <h3 className="text-xl font-bold mb-2 text-gray-900">{plan.name}</h3>
+                      <p className="text-2xl font-bold text-teal-600 mb-4">
+                        {formatPrice(plan.price)}
+                      </p>
+                      <p className="text-gray-600 mb-4 text-sm">{plan.description}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Navigation Buttons for Step 1 (now inside white container) */}
+                <div className="flex justify-between mt-8 pt-6 border-t">
+                  <button
+                    onClick={handlePrevStep}
+                    className="flex items-center px-6 py-3 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                   >
-                    <h3 className="text-xl font-bold mb-2 text-gray-900">{plan.name}</h3>
-                    <p className="text-2xl font-bold text-teal-600 mb-4">
-                      {formatPrice(plan.price)}
-                    </p>
-                    <p className="text-gray-600 mb-4 text-sm">{plan.description}</p>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Voltar
+                  </button>
+
+                  <button
+                    onClick={handleNextStep}
+                    disabled={!selectedPlan}
+                    className="flex items-center px-6 py-3 bg-white text-teal-600 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Próximo
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </button>
+                </div>
+              </motion.div>
+            </div>
           ) : (
             <div className="bg-white rounded-lg shadow-lg p-8">
 
@@ -396,28 +418,6 @@ export default function Checkout() {
                 )}
               </button>
             </div>
-            </div>
-          )}
-          
-          {/* Navigation Buttons for Step 1 (outside white container) */}
-          {currentStep === 1 && (
-            <div className="flex justify-between mt-8 max-w-6xl mx-auto">
-              <button
-                onClick={handlePrevStep}
-                className="flex items-center px-6 py-3 text-white border border-white/30 rounded-lg hover:bg-white/10 transition-colors"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Voltar
-              </button>
-
-              <button
-                onClick={handleNextStep}
-                disabled={!selectedPlan}
-                className="flex items-center px-6 py-3 bg-white text-teal-600 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Próximo
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </button>
             </div>
           )}
         </div>
