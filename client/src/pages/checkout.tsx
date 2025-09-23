@@ -2,6 +2,14 @@ import { useState, useEffect } from 'react';
 import { useLocation, useRoute } from 'wouter';
 import { motion } from 'framer-motion';
 import { CheckCircle, CreditCard, ArrowLeft } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  SelectSeparator
+} from '@/components/ui/select';
 
 interface Plan {
   id: string;
@@ -242,20 +250,32 @@ export default function Checkout() {
                     <label className="block text-sm font-medium mb-2">
                       Espécie
                     </label>
-                    <select
-                      value={petData.species}
-                      onChange={(e) => setPetData({...petData, species: e.target.value})}
-                      className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
-                    >
-                      <option value="">Selecione a espécie</option>
-                      <option value="Cão">Cão</option>
-                      <option value="Gato">Gato</option>
-                      <option value="Aves">Aves</option>
-                      <option value="Tartarugas ou jabutis">Tartarugas ou jabutis</option>
-                      <option value="Coelhos ou hamsters">Coelhos ou hamsters</option>
-                      <option value="Porquinho da índia">Porquinho da índia</option>
-                      <option value="Outros">Outros</option>
-                    </select>
+                    <Select value={petData.species} onValueChange={(value) => setPetData({...petData, species: value})}>
+                      <SelectTrigger 
+                        className="w-full p-3 rounded-lg border text-sm"
+                        style={{
+                          borderColor: 'var(--border-gray)',
+                          background: 'white'
+                        }}
+                      >
+                        <SelectValue placeholder="Selecione a espécie" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Cão">Cão</SelectItem>
+                        <SelectSeparator />
+                        <SelectItem value="Gato">Gato</SelectItem>
+                        <SelectSeparator />
+                        <SelectItem value="Aves">Aves</SelectItem>
+                        <SelectSeparator />
+                        <SelectItem value="Tartarugas ou jabutis">Tartarugas ou jabutis</SelectItem>
+                        <SelectSeparator />
+                        <SelectItem value="Coelhos ou hamsters">Coelhos ou hamsters</SelectItem>
+                        <SelectSeparator />
+                        <SelectItem value="Porquinho da índia">Porquinho da índia</SelectItem>
+                        <SelectSeparator />
+                        <SelectItem value="Outros">Outros</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-2">
