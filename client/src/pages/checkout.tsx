@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useRoute } from 'wouter';
 import { motion } from 'framer-motion';
-import { CheckCircle, ArrowLeft, ArrowRight } from 'lucide-react';
+import { CheckCircle, ArrowLeft, ArrowRight, Plus, Trash2 } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -44,13 +44,13 @@ export default function Checkout() {
   
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
-  const [petData, setPetData] = useState<PetData>({
+  const [petsData, setPetsData] = useState<PetData[]>([{
     name: '',
     species: '',
     breed: '',
     age: 0,
     weight: 0
-  });
+  }]);
   const [customerData, setCustomerData] = useState<CustomerData>({
     name: '',
     email: '',
@@ -64,6 +64,36 @@ export default function Checkout() {
   
   const [isLoading, setIsLoading] = useState(false);
   const [plans, setPlans] = useState<Plan[]>([]);
+
+  // Funções para gerenciar múltiplos pets
+  const addPet = () => {
+    if (petsData.length < 5) {
+      setPetsData([...petsData, {
+        name: '',
+        species: '',
+        breed: '',
+        age: 0,
+        weight: 0
+      }]);
+    }
+  };
+
+  const removePet = (index: number) => {
+    if (petsData.length > 1) {
+      setPetsData(petsData.filter((_, i) => i !== index));
+    }
+  };
+
+  const updatePet = (index: number, field: keyof PetData, value: string | number) => {
+    const updatedPets = [...petsData];
+    updatedPets[index] = { ...updatedPets[index], [field]: value } as PetData;
+    setPetsData(updatedPets);
+  };
+
+  // Validação para pets - todos os campos obrigatórios devem estar preenchidos
+  const isPetsDataValid = () => {
+    return petsData.every(pet => pet.name && pet.species && pet.age);
+  };
 
   // Fetch plans on component mount
   useEffect(() => {
@@ -124,7 +154,7 @@ export default function Checkout() {
         },
         body: JSON.stringify({
           planId: selectedPlan?.id,
-          petData,
+          petData: petsData, // Enviando array de pets
           customerData,
           paymentMethod: 'credit_card'
         }),
@@ -246,77 +276,110 @@ export default function Checkout() {
                 animate={{ opacity: 1, y: 0 }}
                 className="space-y-6"
               >
-                <h2 className="text-2xl font-bold text-center mb-6">
-                  Dados do Pet
-                </h2>
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Nome do Pet
-                    </label>
-                    <input
-                      type="text"
-                      value={petData.name}
-                      onChange={(e) => setPetData({...petData, name: e.target.value})}
-                      className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
-                      placeholder="Nome do seu pet"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Espécie
-                    </label>
-                    <Select value={petData.species} onValueChange={(value) => setPetData({...petData, species: value})}>
-                      <SelectTrigger 
-                        className="w-full p-3 rounded-lg border text-sm"
-                        style={{
-                          borderColor: 'var(--border-gray)',
-                          background: 'white'
-                        }}
-                      >
-                        <SelectValue placeholder="Selecione a espécie" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Cão">Cão</SelectItem>
-                        <SelectSeparator />
-                        <SelectItem value="Gato">Gato</SelectItem>
-                        <SelectSeparator />
-                        <SelectItem value="Aves">Aves</SelectItem>
-                        <SelectSeparator />
-                        <SelectItem value="Tartarugas ou jabutis">Tartarugas ou jabutis</SelectItem>
-                        <SelectSeparator />
-                        <SelectItem value="Coelhos ou hamsters">Coelhos ou hamsters</SelectItem>
-                        <SelectSeparator />
-                        <SelectItem value="Porquinho da índia">Porquinho da índia</SelectItem>
-                        <SelectSeparator />
-                        <SelectItem value="Outros">Outros</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Raça
-                    </label>
-                    <input
-                      type="text"
-                      value={petData.breed}
-                      onChange={(e) => setPetData({...petData, breed: e.target.value})}
-                      className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
-                      placeholder="Raça do pet (opcional)"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Idade (anos)
-                    </label>
-                    <input
-                      type="number"
-                      value={petData.age}
-                      onChange={(e) => setPetData({...petData, age: parseInt(e.target.value) || 0})}
-                      className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
-                      placeholder="Idade"
-                    />
-                  </div>
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-2xl font-bold">
+                    Dados dos Pets ({petsData.length}/5)
+                  </h2>
+                  {petsData.length < 5 && (
+                    <button
+                      type="button"
+                      onClick={addPet}
+                      className="flex items-center px-4 py-2 text-sm font-medium rounded-lg border-2 border-teal-600 text-teal-600 hover:bg-teal-50 transition-colors"
+                    >
+                      <Plus className="w-4 h-4 mr-1" />
+                      Adicionar Pet
+                    </button>
+                  )}
+                </div>
+
+                <div className="space-y-6">
+                  {petsData.map((pet, index) => (
+                    <div key={index} className="border border-gray-200 rounded-lg p-6 relative">
+                      <div className="flex justify-between items-center mb-4">
+                        <h3 className="text-lg font-semibold">Pet {index + 1}</h3>
+                        {petsData.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => removePet(index)}
+                            className="flex items-center px-3 py-1 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          >
+                            <Trash2 className="w-4 h-4 mr-1" />
+                            Remover
+                          </button>
+                        )}
+                      </div>
+
+                      <div className="grid md:grid-cols-2 gap-6">
+                        <div>
+                          <label className="block text-sm font-medium mb-2">
+                            Nome do Pet
+                          </label>
+                          <input
+                            type="text"
+                            value={pet.name}
+                            onChange={(e) => updatePet(index, 'name', e.target.value)}
+                            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
+                            placeholder="Nome do seu pet"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium mb-2">
+                            Espécie
+                          </label>
+                          <Select value={pet.species} onValueChange={(value) => updatePet(index, 'species', value)}>
+                            <SelectTrigger 
+                              className="w-full p-3 rounded-lg border text-sm"
+                              style={{
+                                borderColor: 'var(--border-gray)',
+                                background: 'white'
+                              }}
+                            >
+                              <SelectValue placeholder="Selecione a espécie" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Cão">Cão</SelectItem>
+                              <SelectSeparator />
+                              <SelectItem value="Gato">Gato</SelectItem>
+                              <SelectSeparator />
+                              <SelectItem value="Aves">Aves</SelectItem>
+                              <SelectSeparator />
+                              <SelectItem value="Tartarugas ou jabutis">Tartarugas ou jabutis</SelectItem>
+                              <SelectSeparator />
+                              <SelectItem value="Coelhos ou hamsters">Coelhos ou hamsters</SelectItem>
+                              <SelectSeparator />
+                              <SelectItem value="Porquinho da índia">Porquinho da índia</SelectItem>
+                              <SelectSeparator />
+                              <SelectItem value="Outros">Outros</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium mb-2">
+                            Raça
+                          </label>
+                          <input
+                            type="text"
+                            value={pet.breed}
+                            onChange={(e) => updatePet(index, 'breed', e.target.value)}
+                            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
+                            placeholder="Raça do pet (opcional)"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium mb-2">
+                            Idade (anos)
+                          </label>
+                          <input
+                            type="number"
+                            value={pet.age}
+                            onChange={(e) => updatePet(index, 'age', parseInt(e.target.value) || 0)}
+                            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
+                            placeholder="Idade"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </motion.div>
             )}
@@ -397,7 +460,7 @@ export default function Checkout() {
                 onClick={handleNextStep}
                 disabled={
                   isLoading || 
-                  (currentStep === 2 && (!petData.name || !petData.species || !petData.age))
+                  (currentStep === 2 && !isPetsDataValid())
                 }
                 className="flex items-center px-6 py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{
