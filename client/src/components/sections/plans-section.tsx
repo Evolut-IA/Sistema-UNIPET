@@ -166,7 +166,7 @@ export default function PlansSection({
   return (
     <section 
       id="planos" 
-      className={`${showBackground ? 'bg-gradient-to-br from-[var(--bg-teal)] to-[var(--bg-teal-dark)]' : ''}`}
+      className={`${showBackground ? 'bg-[#277677]' : ''}`}
     >
       {showTitle && (
           <AnimatedSection animation="slideUp" delay={50}>
