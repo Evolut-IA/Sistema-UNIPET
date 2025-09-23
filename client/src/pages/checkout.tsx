@@ -260,10 +260,10 @@ export default function Checkout() {
           petsData: petsData.map(pet => ({
             name: pet.name,
             species: pet.species,
-            breed: pet.breed,
-            age: pet.age.toString(),
-            weight: pet.weight.toString(),
-            sex: 'Macho', // Valor padrão
+            breed: pet.breed || '',
+            age: String(pet.age || 1),
+            weight: String(pet.weight || 1),
+            sex: 'Macho',
             planId: selectedPlan?.id
           }))
         }),
