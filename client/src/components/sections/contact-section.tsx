@@ -299,7 +299,7 @@ export default function ContactSection() {
             {/* Contact Information Container */}
             <div className="space-y-6 pl-0 lg:pl-2 mt-5 lg:mt-0">
             {/* Contact Information */}
-            <Card className="shadow-md rounded-xl w-full border-0 bg-transparent" style={{filter: 'drop-shadow(0 8px 16px rgba(0, 0, 0, 0.1))'}}>
+            <Card className="shadow-md rounded-xl w-full border-0 bg-transparent" style={{boxShadow: '0 8px 16px rgba(0, 0, 0, 0.15)'}}>
               <CardContent className="p-6 sm:p-8 text-left">
                 <div className="mb-6">
                   <div className="text-xl sm:text-2xl font-bold mb-3" style={{color: 'var(--text-light)'}}>
@@ -372,7 +372,7 @@ export default function ContactSection() {
 
             {/* Social Media */}
             {(shouldShow.facebookUrl || shouldShow.instagramUrl || shouldShow.linkedinUrl || shouldShow.youtubeUrl) && (
-              <Card className="shadow-md rounded-xl w-full border-0 bg-transparent" style={{filter: 'drop-shadow(0 8px 16px rgba(0, 0, 0, 0.1))'}}>
+              <Card className="shadow-md rounded-xl w-full border-0 bg-transparent" style={{boxShadow: '0 8px 16px rgba(0, 0, 0, 0.15)'}}>
                 <CardContent className="p-6 sm:p-8 text-left">
                   <div className="mb-6">
                     <div className="text-xl sm:text-2xl font-bold mb-3" style={{color: 'var(--text-light)'}}>Siga-nos</div>
@@ -406,7 +406,7 @@ export default function ContactSection() {
 
             {/* Service Hours */}
             {shouldShow.businessHours && (
-              <Card className="shadow-md rounded-xl w-full border-0 bg-transparent" style={{filter: 'drop-shadow(0 8px 16px rgba(0, 0, 0, 0.1))'}}>
+              <Card className="shadow-md rounded-xl w-full border-0 bg-transparent" style={{boxShadow: '0 8px 16px rgba(0, 0, 0, 0.15)'}}>
                 <CardContent className="p-6 sm:p-8 text-center">
                   <div className="flex items-center justify-center mb-4">
                     <div className="text-xl sm:text-2xl font-bold" style={{color: 'var(--text-light)'}}>
