@@ -54,6 +54,46 @@ interface PaymentData {
 export default function Checkout() {
   const [, navigate] = useLocation();
   const [, params] = useRoute('/checkout/:planId?');
+
+  // Funções de máscara
+  const formatCPF = (value: string) => {
+    // Remove tudo que não é número
+    const numbers = value.replace(/\D/g, '');
+    
+    // Limita a 11 dígitos
+    const limitedNumbers = numbers.slice(0, 11);
+    
+    // Aplica a máscara
+    if (limitedNumbers.length <= 3) return limitedNumbers;
+    if (limitedNumbers.length <= 6) return `${limitedNumbers.slice(0, 3)}.${limitedNumbers.slice(3)}`;
+    if (limitedNumbers.length <= 9) return `${limitedNumbers.slice(0, 3)}.${limitedNumbers.slice(3, 6)}.${limitedNumbers.slice(6)}`;
+    return `${limitedNumbers.slice(0, 3)}.${limitedNumbers.slice(3, 6)}.${limitedNumbers.slice(6, 9)}-${limitedNumbers.slice(9)}`;
+  };
+
+  const formatPhone = (value: string) => {
+    // Remove tudo que não é número
+    const numbers = value.replace(/\D/g, '');
+    
+    // Limita a 11 dígitos
+    const limitedNumbers = numbers.slice(0, 11);
+    
+    // Aplica a máscara
+    if (limitedNumbers.length <= 2) return limitedNumbers;
+    if (limitedNumbers.length <= 6) {
+      // Formato para até 6 dígitos: (xx) xxxx
+      return `(${limitedNumbers.slice(0, 2)}) ${limitedNumbers.slice(2)}`;
+    } else if (limitedNumbers.length <= 10) {
+      // Formato para 7-10 dígitos: (xx) xxxx-xxxx
+      return `(${limitedNumbers.slice(0, 2)}) ${limitedNumbers.slice(2, 6)}-${limitedNumbers.slice(6)}`;
+    } else {
+      // Formato para 11 dígitos: (xx) xxxxx-xxxx
+      return `(${limitedNumbers.slice(0, 2)}) ${limitedNumbers.slice(2, 7)}-${limitedNumbers.slice(7)}`;
+    }
+  };
+
+  const validateEmail = (value: string) => {
+    return value.includes('@');
+  };
   
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
@@ -782,9 +822,16 @@ export default function Checkout() {
                       type="email"
                       value={customerData.email}
                       onChange={(e) => setCustomerData({...customerData, email: e.target.value})}
-                      className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
+                      className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500 ${
+                        customerData.email && !validateEmail(customerData.email) 
+                          ? 'border-red-500' 
+                          : ''
+                      }`}
                       placeholder="seu@email.com"
                     />
+                    {customerData.email && !validateEmail(customerData.email) && (
+                      <p className="text-red-500 text-sm mt-1">Email deve conter @</p>
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-2">
@@ -793,9 +840,13 @@ export default function Checkout() {
                     <input
                       type="text"
                       value={customerData.cpf}
-                      onChange={(e) => setCustomerData({...customerData, cpf: e.target.value})}
+                      onChange={(e) => {
+                        const formattedCPF = formatCPF(e.target.value);
+                        setCustomerData({...customerData, cpf: formattedCPF});
+                      }}
                       className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
                       placeholder="000.000.000-00"
+                      maxLength={14}
                     />
                   </div>
                   <div>
@@ -805,9 +856,13 @@ export default function Checkout() {
                     <input
                       type="text"
                       value={customerData.phone}
-                      onChange={(e) => setCustomerData({...customerData, phone: e.target.value})}
+                      onChange={(e) => {
+                        const formattedPhone = formatPhone(e.target.value);
+                        setCustomerData({...customerData, phone: formattedPhone});
+                      }}
                       className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
                       placeholder="(11) 99999-9999"
+                      maxLength={15}
                     />
                   </div>
                 </div>
@@ -1010,7 +1065,7 @@ export default function Checkout() {
                   
                   {/* Informações do PIX */}
                   {paymentData.method === 'pix' && (
-                    <div className="p-4 rounded-lg" style={{backgroundColor: 'rgba(39, 118, 119, 0.2)'}}>
+                    <div className="p-4 rounded-lg" style={{backgroundColor: 'rgba(39, 118, 119, 0.1)'}}>
                       <h3 className="text-lg font-medium mb-2">Pagamento via PIX</h3>
                       <p className="text-sm text-gray-600">
                         Após confirmar o pedido, você receberá um QR Code para pagamento instantâneo via PIX.
@@ -1042,7 +1097,7 @@ export default function Checkout() {
                     <div 
                       className="p-6 rounded-lg"
                       style={{
-                        backgroundColor: 'rgba(39, 118, 119, 0.2)',
+                        backgroundColor: 'rgba(39, 118, 119, 0.1)',
                         border: '1px solid #277677'
                       }}
                     >
