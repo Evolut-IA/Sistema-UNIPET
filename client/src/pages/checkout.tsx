@@ -135,7 +135,9 @@ export default function Checkout() {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [collapsedPets, setCollapsedPets] = useState<boolean[]>([false]); // Controla quais pets estão colapsados
   const [editingPets, setEditingPets] = useState<boolean[]>([false]); // Controla quais pets estão em modo de edição
-  const [pixData, setPixData] = useState<{ qrCode: string; copyPasteCode: string; orderId: string } | null>(null);
+  const [pixData, setPixData] = useState<{ qrCode: string; copyPasteCode: string; orderId: string; paymentId: string } | null>(null);
+  const [isPaymentConfirmed, setIsPaymentConfirmed] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
   // Função para validar se o último pet permite adicionar um novo
   const canAddNewPet = () => {
@@ -276,6 +278,55 @@ export default function Checkout() {
       }
     }
   }, [params?.planId, plans]);
+
+  // Função para verificar status do pagamento PIX
+  const checkPixPaymentStatus = async (paymentId: string): Promise<boolean> => {
+    try {
+      const response = await fetch(`/api/payments/query/${paymentId}`, {
+        credentials: 'include'
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        // Status 2 da Cielo significa "Paid/Captured"
+        return data.data?.cieloStatus === 2;
+      }
+      return false;
+    } catch (error) {
+      console.error('Erro ao verificar status PIX:', error);
+      return false;
+    }
+  };
+
+  // Hook para polling do pagamento PIX
+  useEffect(() => {
+    if (!pixData?.paymentId || isPaymentConfirmed) return;
+
+    const pollInterval = setInterval(async () => {
+      const isConfirmed = await checkPixPaymentStatus(pixData.paymentId);
+      
+      if (isConfirmed) {
+        clearInterval(pollInterval);
+        setIsPaymentConfirmed(true);
+        setShowSuccessPopup(true);
+        
+        // Redirecionar após 3 segundos
+        setTimeout(() => {
+          navigate('/customer/login');
+        }, 3000);
+      }
+    }, 3000); // Verificar a cada 3 segundos
+
+    // Limpar polling após 10 minutos (600 segundos) para evitar polling infinito
+    const timeout = setTimeout(() => {
+      clearInterval(pollInterval);
+    }, 600000);
+
+    return () => {
+      clearInterval(pollInterval);
+      clearTimeout(timeout);
+    };
+  }, [pixData?.paymentId, isPaymentConfirmed, navigate]);
 
   const fetchPlans = async () => {
     try {
@@ -428,7 +479,8 @@ export default function Checkout() {
           setPixData({
             qrCode: result.payment.pixQrCode,
             copyPasteCode: result.payment.pixCode,
-            orderId: result.payment.orderId
+            orderId: result.payment.orderId,
+            paymentId: result.payment.paymentId
           });
         } else {
           navigate(`/checkout-success?order=${result.payment?.orderId}&method=${paymentData.method}`);
@@ -1303,6 +1355,44 @@ export default function Checkout() {
           </div>
         </div>
       </div>
+      
+      {/* Popup de Parabéns - sucesso do pagamento PIX */}
+      {showSuccessPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-lg p-8 max-w-md mx-4 text-center shadow-xl"
+          >
+            <div className="mb-6">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="w-8 h-8 text-green-600" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                🎉 Parabéns pela compra!
+              </h2>
+              <p className="text-gray-600 mb-4">
+                Seu pagamento PIX foi confirmado com sucesso!
+              </p>
+              <div className="bg-teal-50 border border-teal-200 rounded-lg p-4 mb-4">
+                <p className="text-sm text-teal-800">
+                  <strong>Você já pode acessar a área do cliente!</strong>
+                </p>
+                <p className="text-sm text-teal-700 mt-1">
+                  Use seu <strong>email</strong> e <strong>CPF</strong> utilizado durante a compra para fazer login.
+                </p>
+              </div>
+              <p className="text-sm text-gray-500">
+                Redirecionando para a página de login...
+              </p>
+            </div>
+            <div className="flex justify-center">
+              <div className="w-6 h-6 border-2 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          </motion.div>
+        </div>
+      )}
+      
       <Footer />
     </>
   );
