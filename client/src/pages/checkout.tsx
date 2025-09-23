@@ -513,7 +513,6 @@ export default function Checkout() {
           // Para cartão aprovado (status 2), mostrar popup de sucesso e redirecionar
           setShowSuccessPopup(true);
           console.log('🎉 [CHECKOUT] Pagamento com cartão aprovado, mostrando popup de sucesso!');
-          console.log('🔍 [CHECKOUT] Dados do pagamento aprovado:', result.payment);
           
           // Redirecionar após 3 segundos
           setTimeout(() => {
