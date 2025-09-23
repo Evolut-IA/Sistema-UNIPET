@@ -149,24 +149,6 @@ export default function Checkout() {
     setCollapsedPets(newCollapsedState);
   };
 
-  // Função para iniciar modo de edição
-  const startEditingPet = (index: number) => {
-    const newEditingState = [...editingPets];
-    newEditingState[index] = true;
-    setEditingPets(newEditingState);
-    
-    // Expandir o pet quando entrar em modo de edição
-    const newCollapsedState = [...collapsedPets];
-    newCollapsedState[index] = false;
-    setCollapsedPets(newCollapsedState);
-  };
-
-  // Função para finalizar modo de edição
-  const finishEditingPet = (index: number) => {
-    const newEditingState = [...editingPets];
-    newEditingState[index] = false;
-    setEditingPets(newEditingState);
-  };
 
   const updatePet = (index: number, field: keyof PetData, value: string | number) => {
     const updatedPets = [...petsData];
@@ -423,6 +405,32 @@ export default function Checkout() {
     return 15; // 4º e 5º pet: 15%
   };
 
+  // Função para gerar resumo das etapas anteriores
+  const getStepSummary = (step: number) => {
+    const parts = [];
+    
+    // Plano selecionado (disponível a partir da etapa 2)
+    if (step >= 2 && selectedPlan) {
+      parts.push(selectedPlan.name.toLowerCase());
+    }
+    
+    // Número de pets (disponível a partir da etapa 3)
+    if (step >= 3 && petsData.length > 0) {
+      const validPets = petsData.filter(pet => pet.name.trim() !== '');
+      parts.push(`${validPets.length}-pet${validPets.length !== 1 ? 's' : ''}`);
+    }
+    
+    // Primeiro nome do cliente (disponível a partir da etapa 4)
+    if (step >= 4 && customerData.name.trim() !== '') {
+      const firstName = customerData.name.trim().split(' ')[0];
+      if (firstName) {
+        parts.push(firstName.toLowerCase());
+      }
+    }
+    
+    return parts.join('/');
+  };
+
 
   return (
     <>
@@ -503,6 +511,11 @@ export default function Checkout() {
                   <h2 className="text-xl xs:text-2xl font-bold">
                     Dados do Pet
                   </h2>
+                  {getStepSummary(2) && (
+                    <div className="text-sm text-gray-600 mb-2">
+                      {getStepSummary(2)}
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-6">
@@ -692,6 +705,11 @@ export default function Checkout() {
                 <h2 className="text-xl xs:text-2xl font-bold text-center mb-4 xs:mb-6">
                   Dados do Cliente
                 </h2>
+                {getStepSummary(3) && (
+                  <div className="text-sm text-gray-600 text-center mb-4">
+                    {getStepSummary(3)}
+                  </div>
+                )}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
                   <div>
                     <label className="block text-sm font-medium mb-2">
@@ -754,6 +772,11 @@ export default function Checkout() {
                 <h2 className="text-xl xs:text-2xl font-bold text-center mb-4 xs:mb-6">
                   Pagamento
                 </h2>
+                {getStepSummary(4) && (
+                  <div className="text-sm text-gray-600 text-center mb-4">
+                    {getStepSummary(4)}
+                  </div>
+                )}
                 
                 <div className="space-y-6">
                   {/* Seleção de método de pagamento */}
