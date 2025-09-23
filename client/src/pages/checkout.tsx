@@ -391,12 +391,12 @@ export default function Checkout() {
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-8">
-            <div className="flex justify-center items-center space-x-4">
+          <div className="text-center mb-6 xs:mb-8">
+            <div className="flex justify-center items-center space-x-1 xs:space-x-2 lg:space-x-4">
               {[1, 2, 3, 4].map((step) => (
                 <div key={step} className="flex items-center">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                    className={`w-6 h-6 xs:w-8 xs:h-8 rounded-full flex items-center justify-center text-xs xs:text-sm font-medium ${
                       currentStep >= step
                         ? 'bg-white/20 text-white border border-white'
                         : 'bg-teal-700 text-white border border-white/30'
@@ -406,7 +406,7 @@ export default function Checkout() {
                   </div>
                   {step < 4 && (
                     <div
-                      className={`w-12 h-1 mx-2 ${
+                      className={`w-6 xs:w-12 h-1 mx-1 xs:mx-2 ${
                         currentStep > step ? 'bg-white' : 'bg-teal-700'
                       }`}
                     />
@@ -424,10 +424,10 @@ export default function Checkout() {
                 animate={{ opacity: 1, y: 0 }}
                 className="space-y-6"
               >
-                <h2 className="text-2xl font-bold text-center mb-6">
+                <h2 className="text-xl xs:text-2xl font-bold text-center mb-4 xs:mb-6">
                   Escolha seu Plano
                 </h2>
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+                <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 max-w-6xl mx-auto">
                   {plans.map((plan) => (
                     <div
                       key={plan.id}
@@ -452,7 +452,7 @@ export default function Checkout() {
                   <button
                     onClick={handleNextStep}
                     disabled={!selectedPlan}
-                    className="flex items-center justify-center w-full md:w-auto px-6 py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex items-center justify-center w-full xs:w-auto px-6 py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     style={{
                       background: 'var(--btn-ver-planos-bg)',
                       color: 'var(--btn-ver-planos-text)',
@@ -475,7 +475,7 @@ export default function Checkout() {
                 className="space-y-6"
               >
                 <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-bold">
+                  <h2 className="text-xl xs:text-2xl font-bold">
                     Dados dos Pets
                   </h2>
                   {petsData.length < 5 && (
@@ -483,7 +483,7 @@ export default function Checkout() {
                       type="button"
                       onClick={addPet}
                       disabled={!canAddNewPet()}
-                      className="hidden md:flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex lg:flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full xs:w-auto justify-center xs:justify-start"
                       style={{
                         background: 'var(--btn-cotacao-gratuita-bg)',
                         color: 'var(--btn-cotacao-gratuita-text)',
@@ -503,14 +503,14 @@ export default function Checkout() {
                     return (
                       <div key={index} className={`border border-gray-200 rounded-lg relative ${isCollapsed ? 'py-3 px-4' : 'p-6'}`}>
                         <div className={`flex justify-between items-center ${isCollapsed ? 'mb-0' : 'mb-4'}`}>
-                          <div className="flex flex-col md:flex-row md:items-center">
+                          <div className="flex flex-col lg:flex-row lg:items-center">
                           <h3 
                             className="text-lg font-semibold cursor-pointer flex items-center"
                             onClick={() => togglePetCollapse(index)}
                           >
                             Pet {index + 1}
                             {selectedPlan && isPlanEligibleForDiscount(selectedPlan.name) && calculatePetDiscount(index) > 0 && (
-                              <span className="hidden md:inline text-sm text-green-600 ml-2">
+                              <span className="hidden lg:inline text-sm text-green-600 ml-2">
                                 ({calculatePetDiscount(index)}% desconto)
                               </span>
                             )}
@@ -523,7 +523,7 @@ export default function Checkout() {
                           
                           {/* Texto de desconto - Versão Mobile (embaixo do título) */}
                           {selectedPlan && isPlanEligibleForDiscount(selectedPlan.name) && calculatePetDiscount(index) > 0 && (
-                            <span className="md:hidden text-xs text-green-600 mt-1">
+                            <span className="lg:hidden text-xs text-green-600 mt-1">
                               ({calculatePetDiscount(index)}% desconto)
                             </span>
                           )}
@@ -533,7 +533,7 @@ export default function Checkout() {
                             <button
                               type="button"
                               onClick={() => removePet(index)}
-                              className="hidden md:flex items-center px-3 py-1 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                              className="hidden lg:flex items-center px-3 py-1 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                             >
                               <Trash2 className="w-4 h-4 mr-1" />
                               Remover
@@ -542,7 +542,7 @@ export default function Checkout() {
                         </div>
 
                         {!isCollapsed && (
-                          <div className="grid md:grid-cols-2 gap-6">
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
                             <div>
                               <label className="block text-sm font-medium mb-2">
                                 Nome do Pet
@@ -615,7 +615,7 @@ export default function Checkout() {
                                 <button
                                   type="button"
                                   onClick={() => removePet(index)}
-                                  className="md:hidden flex items-center justify-center w-full mt-3 px-3 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                                  className="lg:hidden flex items-center justify-center w-full mt-3 px-3 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                                 >
                                   <Trash2 className="w-4 h-4 mr-1" />
                                   Remover
@@ -629,25 +629,6 @@ export default function Checkout() {
                   })}
                 </div>
                 
-                {/* Botão Adicionar Pet - Versão Mobile (embaixo dos pets) */}
-                {petsData.length < 5 && (
-                  <div className="flex md:hidden justify-center mt-4">
-                    <button
-                      type="button"
-                      onClick={addPet}
-                      disabled={!canAddNewPet()}
-                      className="flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                      style={{
-                        background: 'var(--btn-cotacao-gratuita-bg)',
-                        color: 'var(--btn-cotacao-gratuita-text)',
-                        border: 'var(--btn-cotacao-gratuita-border)'
-                      }}
-                    >
-                      <Plus className="w-4 h-4 mr-1" />
-                      Adicionar Pet
-                    </button>
-                  </div>
-                )}
               </motion.div>
             )}
 
@@ -657,10 +638,10 @@ export default function Checkout() {
                 animate={{ opacity: 1, y: 0 }}
                 className="space-y-6"
               >
-                <h2 className="text-2xl font-bold text-center mb-6">
+                <h2 className="text-xl xs:text-2xl font-bold text-center mb-4 xs:mb-6">
                   Dados do Cliente
                 </h2>
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
                   <div>
                     <label className="block text-sm font-medium mb-2">
                       Nome Completo
@@ -719,7 +700,7 @@ export default function Checkout() {
                 animate={{ opacity: 1, y: 0 }}
                 className="space-y-6"
               >
-                <h2 className="text-2xl font-bold text-center mb-6">
+                <h2 className="text-xl xs:text-2xl font-bold text-center mb-4 xs:mb-6">
                   Pagamento
                 </h2>
                 
@@ -794,8 +775,8 @@ export default function Checkout() {
                   {paymentData.method === 'credit_card' && (
                     <div className="space-y-4">
                       <h3 className="text-lg font-medium">Dados do Cartão</h3>
-                      <div className="grid md:grid-cols-2 gap-4">
-                        <div className="md:col-span-2">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="col-span-1 md:col-span-2">
                           <label className="block text-sm font-medium mb-2">
                             Número do Cartão
                           </label>
@@ -941,7 +922,7 @@ export default function Checkout() {
                       }}
                     >
                       
-                      <div className="grid md:grid-cols-2 gap-6">
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         {/* QR Code */}
                         <div className="text-center">
                           <h4 className="font-medium mb-3 text-gray-700">Escaneie o QR Code</h4>
@@ -986,10 +967,10 @@ export default function Checkout() {
             )}
 
             {/* Navigation Buttons for Steps 2, 3 and 4 */}
-            <div className="flex flex-col md:flex-row md:justify-between gap-3 md:gap-0 mt-8 pt-6 border-t">
+            <div className="flex flex-col xs:flex-row xs:justify-between gap-3 xs:gap-0 mt-8 pt-6 border-t">
               <button
                 onClick={handlePrevStep}
-                className="flex items-center justify-center w-full md:w-auto px-6 py-3 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex items-center justify-center w-full xs:w-auto px-6 py-3 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Voltar
@@ -1003,7 +984,7 @@ export default function Checkout() {
                   (currentStep === 3 && !isCustomerDataValid()) ||
                   (currentStep === 4 && !isPaymentDataValid())
                 }
-                className="flex items-center justify-center w-full md:w-auto px-6 py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center justify-center w-full xs:w-auto px-6 py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{
                   background: 'var(--btn-ver-planos-bg)',
                   color: 'var(--btn-ver-planos-text)',
