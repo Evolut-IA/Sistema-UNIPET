@@ -4,6 +4,15 @@
 UNIPET PLAN is a comprehensive pet health plan management system designed to streamline pet insurance plan management, customer relationships, and healthcare network unit administration. It features a customer-facing website for plan selection and quote requests, alongside an admin dashboard for content and business management. The system is built with a full-stack TypeScript solution, utilizing a React frontend, Express.js backend, and PostgreSQL database with Drizzle ORM. The project emphasizes security, performance, scalability, and aims to simplify pet healthcare administration.
 
 ## Recent Changes
+- **September 23, 2025**: Automatic CEP Address Lookup Implementation
+  - Added automatic address lookup via ViaCEP API when Brazilian postal code (CEP) is entered
+  - Implemented conditional field display - initially shows only CEP field
+  - Other address fields appear automatically after CEP is typed (5+ digits)
+  - Auto-fills street, neighborhood, city, and state when valid CEP is found
+  - Added loading indicator during API call and error handling for invalid CEPs
+  - Formatted CEP input automatically with mask (00000-000)
+  - Keeps user-entered data for number and complement fields
+
 - **September 23, 2025**: Complete Database Integration for Checkout System
   - Added integration with `/api/checkout/complete-registration` endpoint to save CPF and address data
   - Enhanced checkout form with complete address fields (street, number, complement, district, city, state, ZIP)
