@@ -343,13 +343,14 @@ export default function Checkout() {
                     return (
                       <div key={index} className={`border border-gray-200 rounded-lg relative ${isCollapsed ? 'py-3 px-4' : 'p-6'}`}>
                         <div className={`flex justify-between items-center ${isCollapsed ? 'mb-0' : 'mb-4'}`}>
+                          <div className="flex flex-col md:flex-row md:items-center">
                           <h3 
                             className="text-lg font-semibold cursor-pointer flex items-center"
                             onClick={() => togglePetCollapse(index)}
                           >
                             Pet {index + 1}
                             {selectedPlan && isPlanEligibleForDiscount(selectedPlan.name) && calculatePetDiscount(index) > 0 && (
-                              <span className="text-sm text-green-600 ml-2">
+                              <span className="hidden md:inline text-sm text-green-600 ml-2">
                                 ({calculatePetDiscount(index)}% desconto)
                               </span>
                             )}
@@ -359,6 +360,15 @@ export default function Checkout() {
                               </span>
                             )}
                           </h3>
+                          
+                          {/* Texto de desconto - Versão Mobile (embaixo do título) */}
+                          {selectedPlan && isPlanEligibleForDiscount(selectedPlan.name) && calculatePetDiscount(index) > 0 && (
+                            <span className="md:hidden text-xs text-green-600 mt-1">
+                              ({calculatePetDiscount(index)}% desconto)
+                            </span>
+                          )}
+                          </div>
+                          
                           {petsData.length > 1 && (
                             <button
                               type="button"
