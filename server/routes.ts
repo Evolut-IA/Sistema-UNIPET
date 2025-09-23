@@ -1382,6 +1382,91 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       console.log("✅ [PAYMENT-RULES] Regras de pagamento validadas com sucesso");
+
+      // ============================================
+      // CALCULATE CORRECT PRICE FROM DATABASE
+      // ============================================
+      
+      // Buscar plano no banco para obter preço correto
+      const selectedPlan = await storage.getPlan(planData.planId);
+      if (!selectedPlan) {
+        console.error("❌ [PRICE-CALCULATION] Plano não encontrado:", planData.planId);
+        return res.status(400).json({
+          error: "Plano não encontrado",
+          details: `Plano ${planData.planId} não existe no sistema`
+        });
+      }
+
+      // Contar pets (assumindo 1 pet se não especificado)
+      const petCount = paymentData.pets?.length || 1;
+      
+      // Calcular preço correto usando basePrice do banco de dados
+      const basePriceDecimal = parseFloat(selectedPlan.basePrice || '0');
+      const correctAmountInCents = Math.round(basePriceDecimal * petCount * 100);
+      
+      console.log("💰 [PRICE-CALCULATION] Preço calculado no servidor:", {
+        planName: selectedPlan.name,
+        basePrice: basePriceDecimal,
+        petCount: petCount,
+        correctAmountInCents: correctAmountInCents,
+        receivedAmountFromClient: planData.amount,
+        priceMatch: correctAmountInCents === planData.amount
+      });
+
+      // ============================================
+      // SAVE CLIENT AND PET DATA BEFORE PAYMENT
+      // ============================================
+      
+      console.log("💾 [PRE-PAYMENT] Salvando cliente e pet antes do pagamento...");
+
+      // Atualizar dados completos do cliente (com endereço)
+      const updatedClientData = {
+        full_name: paymentData.customer.name,
+        email: paymentData.customer.email,
+        cpf: paymentData.customer.cpf?.replace(/\D/g, ''),
+        phone: paymentData.customer.phone || validatedClient.phone,
+        cep: addressData.zipCode || addressData.cep,
+        address: addressData.address,
+        number: addressData.number,
+        complement: addressData.complement,
+        district: addressData.district,
+        city: addressData.city,
+        state: addressData.state
+      };
+
+      try {
+        // Atualizar cliente com dados completos
+        await storage.updateClient(validatedClient.id, updatedClientData);
+        console.log("✅ [PRE-PAYMENT] Cliente atualizado com endereço completo");
+
+        // Salvar pet(s) se fornecido(s)
+        if (paymentData.pets && paymentData.pets.length > 0) {
+          for (const petData of paymentData.pets) {
+            const petId = `pet-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+            const newPet = {
+              id: petId,
+              clientId: validatedClient.id,
+              name: petData.name,
+              species: petData.species || 'Cão',
+              breed: petData.breed || 'SRD',
+              age: petData.age ? petData.age.toString() : '1',
+              sex: petData.sex || 'Macho',
+              castrated: petData.castrated || false,
+              isActive: true,
+              planId: planData.planId
+            };
+            
+            await storage.createPet(newPet);
+            console.log("✅ [PRE-PAYMENT] Pet salvo:", { name: petData.name, species: petData.species });
+          }
+        }
+      } catch (saveError) {
+        console.error("❌ [PRE-PAYMENT] Erro ao salvar dados:", saveError);
+        return res.status(500).json({
+          error: "Erro ao salvar dados do cliente/pet",
+          details: "Tente novamente em alguns instantes"
+        });
+      }
       
       // Import Cielo service
       const { CieloService } = await import("./services/cielo-service.js");
@@ -1394,7 +1479,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         paymentMethod,
         clientId: validatedClient.id,
         clientEmail: validatedClient.email,
-        paymentAmount: planData.amount
+        paymentAmount: correctAmountInCents,
+        originalAmount: planData.amount
       });
       
       try {
@@ -1430,7 +1516,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               },
               payment: {
                 type: 'CreditCard' as const,
-                amount: planData.amount,
+                amount: correctAmountInCents,
                 installments: paymentData.payment.installments || 1,
                 capture: true,
                 creditCard: {
@@ -1456,7 +1542,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               },
               Payment: {
                 Type: 'Pix' as const,
-                Amount: planData.amount,
+                Amount: correctAmountInCents,
                 Provider: 'Cielo' as const
               }
             };
@@ -1598,7 +1684,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             const renewalData = {
               status: 'active' as const,
               startDate: newStartDate,
-              monthlyAmount: (planData.amount / 100).toString(), // Convert centavos to reais
+              monthlyAmount: (correctAmountInCents / 100).toString(), // Use server-calculated price
               paymentMethod: paymentMethod,
               cieloPaymentId: paymentResult.payment?.paymentId,
               // Payment proof data
@@ -1645,7 +1731,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               contractNumber: contractNumber, // Forçar no início
               status: 'active' as const,
               startDate: new Date(),
-              monthlyAmount: (planData.amount / 100).toString(), // Converter centavos para reais
+              monthlyAmount: (correctAmountInCents / 100).toString(), // Use server-calculated price
               paymentMethod: paymentMethod,
               cieloPaymentId: paymentResult.payment?.paymentId,
               // Payment proof data (for credit card and PIX)
@@ -1685,7 +1771,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                   const receiptData = {
                     contractId: contract.id,
                     cieloPaymentId: paymentResult.payment?.paymentId,
-                    clientName: targetClient.full_name,
+                    clientName: paymentData.customer.name || targetClient.fullName || targetClient.full_name,
                     clientEmail: targetClient.email,
                     petName: pet?.name || undefined,
                     planName: plan?.name || undefined
