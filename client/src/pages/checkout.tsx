@@ -280,10 +280,10 @@ export default function Checkout() {
                 </div>
 
                 {/* Navigation Buttons for Step 1 (now inside white container) */}
-                <div className="flex justify-between mt-8 pt-6 border-t">
+                <div className="flex flex-col md:flex-row md:justify-between gap-3 md:gap-0 mt-8 pt-6 border-t">
                   <button
                     onClick={handlePrevStep}
-                    className="flex items-center px-6 py-3 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="flex items-center justify-center w-full md:w-auto px-6 py-3 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                   >
                     <ArrowLeft className="w-4 h-4 mr-2" />
                     Voltar
@@ -292,7 +292,7 @@ export default function Checkout() {
                   <button
                     onClick={handleNextStep}
                     disabled={!selectedPlan}
-                    className="flex items-center px-6 py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex items-center justify-center w-full md:w-auto px-6 py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     style={{
                       background: 'var(--btn-ver-planos-bg)',
                       color: 'var(--btn-ver-planos-text)',
@@ -532,10 +532,10 @@ export default function Checkout() {
             )}
 
             {/* Navigation Buttons for Steps 2 and 3 */}
-            <div className="flex justify-between mt-8 pt-6 border-t">
+            <div className="flex flex-col md:flex-row md:justify-between gap-3 md:gap-0 mt-8 pt-6 border-t">
               <button
                 onClick={handlePrevStep}
-                className="flex items-center px-6 py-3 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex items-center justify-center w-full md:w-auto px-6 py-3 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Voltar
@@ -547,7 +547,7 @@ export default function Checkout() {
                   isLoading || 
                   (currentStep === 2 && !isPetsDataValid())
                 }
-                className="flex items-center px-6 py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center justify-center w-full md:w-auto px-6 py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{
                   background: 'var(--btn-ver-planos-bg)',
                   color: 'var(--btn-ver-planos-text)',
