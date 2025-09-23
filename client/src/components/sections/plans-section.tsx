@@ -168,7 +168,7 @@ export default function PlansSection({
       id="planos" 
       className={`${showBackground ? 'bg-gradient-to-br from-[var(--bg-teal)] to-[var(--bg-teal-dark)]' : ''}`}
     >
-      <div className={`container mx-auto ${removePadding ? '' : 'px-4'}`}>
+      <div className="container mx-auto">
         {showTitle && (
           <AnimatedSection animation="slideUp" delay={50}>
             <div className="text-center mb-12">
