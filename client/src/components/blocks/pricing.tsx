@@ -12,11 +12,11 @@ interface PricingPlan {
   price: number;
   period: string;
   features: string[];
-  description?: string;
+  description?: string | undefined;
   buttonText: string;
-  href?: string;
+  href?: string | undefined;
   isPopular: boolean;
-  planType?: string;
+  planType?: string | undefined;
   image?: string;
 }
 

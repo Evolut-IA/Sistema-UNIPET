@@ -1,4 +1,15 @@
-import { type Plan } from "@shared/schema";
+// Interface local para compatibilidade
+interface Plan {
+  id: string;
+  name: string;
+  price: number;
+  description: string;
+  features: string[];
+  buttonText?: string;
+  planType?: string;
+  image?: string;
+  displayOrder?: number;
+}
 import { useLocation } from "wouter";
 
 import { useParallelData } from "@/hooks/use-parallel-data";
@@ -143,9 +154,9 @@ export default function PlansSection({
       price: plan.price,
       period: "mês",
       features: plan.features,
-      description: plan.description || undefined,
+      description: plan.description || "",
       buttonText: plan.buttonText || `Contratar Plano ${plan.name}`,
-      href: undefined,
+      href: undefined as string | undefined,
       isPopular: index === 1, // Geralmente o segundo plano é o mais popular
       planType: plan.planType,
       image: image
@@ -177,7 +188,8 @@ export default function PlansSection({
             plans={pricingPlans}
             onPlanSelect={(plan) => {
               const planIndex = PLAN_URL_MAPPINGS[plan.id];
-              navigate(planIndex ? `/checkout/${planIndex}` : `/checkout?plan=${plan.id}`);
+              // Redirecionar diretamente para /checkout com o ID do plano para ir direto para etapa "Dados do Pet"
+              navigate(`/checkout/${plan.id}`);
             }}
             onPlanDetails={scrollToPlanDetails}
           />

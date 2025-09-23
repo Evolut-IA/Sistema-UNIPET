@@ -1,7 +1,18 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check } from "lucide-react";
-import { Plan } from "@shared/schema";
+// Interface local para compatibilidade
+interface Plan {
+  id: string;
+  name: string;
+  price: number;
+  description: string;
+  features: string[];
+  buttonText?: string;
+  planType?: string;
+  image?: string;
+  displayOrder?: number;
+}
 import { useParallelData } from "@/hooks/use-parallel-data";
 import { autoScrollToAnchor } from "@/lib/scroll-utils";
 import PlansSection from "@/components/sections/plans-section";
