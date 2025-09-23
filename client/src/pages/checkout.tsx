@@ -455,9 +455,36 @@ export default function Checkout() {
 
       const clientData = await clientResponse.json();
 
+      // Segundo passo: completar registro com CPF e endereço
+      const completeRegistrationResponse = await fetch('/api/checkout/complete-registration', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          clientId: clientData.clientId,
+          cpf: customerData.cpf.replace(/\D/g, ''), // Remove formatação do CPF
+          addressData: {
+            address: customerData.address || '',
+            number: '123', // Número padrão
+            complement: '',
+            district: '',
+            city: customerData.city || '',
+            state: customerData.state || '',
+            cep: customerData.zipCode || ''
+          }
+        }),
+      });
+
+      if (!completeRegistrationResponse.ok) {
+        throw new Error('Erro ao completar registro do cliente');
+      }
+
+      const completeRegistrationData = await completeRegistrationResponse.json();
+
       // Processar pagamento
       const paymentRequestData = {
-        clientId: clientData.clientId,
+        clientId: completeRegistrationData.clientId || clientData.clientId,
         addressData: {
           address: customerData.address,
           number: '123', // Número padrão
