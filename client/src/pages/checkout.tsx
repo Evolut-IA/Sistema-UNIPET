@@ -395,7 +395,10 @@ export default function Checkout() {
 
               <button
                 onClick={handleNextStep}
-                disabled={isLoading}
+                disabled={
+                  isLoading || 
+                  (currentStep === 2 && (!petData.name || !petData.species || !petData.age))
+                }
                 className="flex items-center px-6 py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{
                   background: 'var(--btn-ver-planos-bg)',
