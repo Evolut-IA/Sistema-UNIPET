@@ -568,7 +568,7 @@ export default function Checkout() {
                 <h2 className="text-xl xs:text-2xl font-bold text-center mb-4 xs:mb-6">
                   Escolha seu Plano
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 perspective-1000">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 perspective-1000 max-w-7xl mx-auto">
                   {plans.map((plan, index) => (
                     <motion.div
                       key={plan.id}
