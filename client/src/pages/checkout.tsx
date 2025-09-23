@@ -117,6 +117,9 @@ export default function Checkout() {
     
     if (cleanCEP.length !== 8) return;
     
+    setIsLoadingCEP(true);
+    setCepError('');
+    
     try {
       const response = await fetch(`https://viacep.com.br/ws/${cleanCEP}/json/`);
       const data = await response.json();
@@ -132,9 +135,15 @@ export default function Checkout() {
           number: prev.number,
           complement: prev.complement
         }));
+        setCepError('');
+      } else {
+        setCepError('CEP não encontrado. Por favor, verifique e tente novamente.');
       }
     } catch (error) {
       console.error('Erro ao buscar CEP:', error);
+      setCepError('Erro ao buscar CEP. Por favor, preencha o endereço manualmente.');
+    } finally {
+      setIsLoadingCEP(false);
     }
   };
 
@@ -183,6 +192,8 @@ export default function Checkout() {
   const [editingPets, setEditingPets] = useState<boolean[]>([false]); // Controla quais pets estão em modo de edição
   const [pixData, setPixData] = useState<{ qrCode: string; copyPasteCode: string; orderId: string; paymentId: string } | null>(null);
   const [isPaymentConfirmed, setIsPaymentConfirmed] = useState(false);
+  const [isLoadingCEP, setIsLoadingCEP] = useState(false);
+  const [cepError, setCepError] = useState('');
 
   // Função para validar se o último pet permite adicionar um novo
   const canAddNewPet = () => {
@@ -1128,23 +1139,38 @@ export default function Checkout() {
                     <label className="block text-sm font-medium mb-2">
                       CEP
                     </label>
-                    <input
-                      type="text"
-                      value={customerData.zipCode}
-                      onChange={async (e) => {
-                        const formattedCEP = formatCEP(e.target.value);
-                        setCustomerData({...customerData, zipCode: formattedCEP});
-                        
-                        // Busca endereço quando CEP tem 8 dígitos
-                        const cleanCEP = formattedCEP.replace(/\D/g, '');
-                        if (cleanCEP.length === 8) {
-                          await fetchAddressByCEP(formattedCEP);
-                        }
-                      }}
-                      className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
-                      placeholder="00000-000"
-                      maxLength={9}
-                    />
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={customerData.zipCode}
+                        onChange={async (e) => {
+                          const formattedCEP = formatCEP(e.target.value);
+                          setCustomerData({...customerData, zipCode: formattedCEP});
+                          setCepError(''); // Limpa erro anterior
+                          
+                          // Busca endereço quando CEP tem 8 dígitos
+                          const cleanCEP = formattedCEP.replace(/\D/g, '');
+                          if (cleanCEP.length === 8) {
+                            await fetchAddressByCEP(formattedCEP);
+                          }
+                        }}
+                        className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500 ${
+                          cepError ? 'border-red-500' : ''
+                        }`}
+                        placeholder="00000-000"
+                        maxLength={9}
+                      />
+                      {/* Indicador de carregamento */}
+                      {isLoadingCEP && (
+                        <div className="absolute right-3 top-3">
+                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-teal-500"></div>
+                        </div>
+                      )}
+                    </div>
+                    {/* Mensagem de erro do CEP */}
+                    {cepError && (
+                      <p className="mt-1 text-sm text-red-600">{cepError}</p>
+                    )}
                   </div>
                   
                   {/* Só mostra os outros campos se o CEP foi digitado */}
