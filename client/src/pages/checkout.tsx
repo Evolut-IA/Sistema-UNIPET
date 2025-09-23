@@ -183,7 +183,7 @@ export default function Checkout() {
   // Função para identificar se o plano tem desconto por múltiplos pets
   const isPlanEligibleForDiscount = (planName: string) => {
     const name = planName.toLowerCase();
-    return name === 'básico' || name === 'plano emergência';
+    return name === 'basic' || name === 'infinity';
   };
 
   // Função para calcular desconto por pet
@@ -318,7 +318,7 @@ export default function Checkout() {
                       <div className="flex justify-between items-center mb-4">
                         <h3 className="text-lg font-semibold">
                           Pet {index + 1}
-                          {selectedPlan && isPlanEligibleForDiscount(selectedPlan.name) && (
+                          {selectedPlan && isPlanEligibleForDiscount(selectedPlan.name) && calculatePetDiscount(index) > 0 && (
                             <span className="text-sm text-green-600 ml-2">
                               ({calculatePetDiscount(index)}% desconto)
                             </span>
