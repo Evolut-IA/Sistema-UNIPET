@@ -562,7 +562,7 @@ export default function Checkout() {
                             )}
                             {isCollapsed && pet.name && (
                               <span className="text-sm text-gray-600 ml-2 font-normal">
-                                - {pet.name}
+                                - {pet.name}{pet.species && ` - ${pet.species}`}
                               </span>
                             )}
                           </h3>
