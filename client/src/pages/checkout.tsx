@@ -323,7 +323,7 @@ export default function Checkout() {
                       type="button"
                       onClick={addPet}
                       disabled={!canAddNewPet()}
-                      className="flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="hidden md:flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       style={{
                         background: 'var(--btn-cotacao-gratuita-bg)',
                         color: 'var(--btn-cotacao-gratuita-text)',
@@ -446,6 +446,26 @@ export default function Checkout() {
                     );
                   })}
                 </div>
+                
+                {/* Botão Adicionar Pet - Versão Mobile (embaixo dos pets) */}
+                {petsData.length < 5 && (
+                  <div className="flex md:hidden justify-center mt-4">
+                    <button
+                      type="button"
+                      onClick={addPet}
+                      disabled={!canAddNewPet()}
+                      className="flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      style={{
+                        background: 'var(--btn-cotacao-gratuita-bg)',
+                        color: 'var(--btn-cotacao-gratuita-text)',
+                        border: 'var(--btn-cotacao-gratuita-border)'
+                      }}
+                    >
+                      <Plus className="w-4 h-4 mr-1" />
+                      Adicionar Pet
+                    </button>
+                  </div>
+                )}
               </motion.div>
             )}
 
