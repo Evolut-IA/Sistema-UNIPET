@@ -190,7 +190,7 @@ export default function Checkout() {
               <h2 className="text-2xl font-bold text-center mb-6 text-white">
                 Escolha seu Plano
               </h2>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
                 {plans.map((plan) => (
                   <div
                     key={plan.id}
@@ -206,14 +206,6 @@ export default function Checkout() {
                       {formatPrice(plan.price)}
                     </p>
                     <p className="text-gray-600 mb-4 text-sm">{plan.description}</p>
-                    <ul className="space-y-2">
-                      {plan.features.slice(0, 4).map((feature, index) => (
-                        <li key={index} className="flex items-start text-sm">
-                          <CheckCircle className="w-4 h-4 text-teal-600 mr-2 mt-0.5 flex-shrink-0" />
-                          <span className="text-gray-700">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
                   </div>
                 ))}
               </div>
