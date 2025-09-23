@@ -71,8 +71,8 @@ export default function ChatAI() {
         if (settingsResponse.ok) {
           const chatSettings = await settingsResponse.json();
           console.log('🔍 [CHAT] Loaded chat settings:', chatSettings);
-          console.log('🔍 [CHAT] Bot icon:', chatSettings.botIcon ? 'Present (' + chatSettings.botIcon.substring(0, 50) + '...)' : 'Not set');
-          console.log('🔍 [CHAT] Support icon:', chatSettings.supportIcon ? 'Present (' + chatSettings.supportIcon.substring(0, 50) + '...)' : 'Not set');
+          console.log('🔍 [CHAT] Bot icon:', chatSettings.botIcon ? (typeof chatSettings.botIcon === 'string' ? 'Present (' + chatSettings.botIcon.substring(0, 50) + '...)' : 'Present (Binary Data)') : 'Not set');
+          console.log('🔍 [CHAT] Support icon:', chatSettings.supportIcon ? (typeof chatSettings.supportIcon === 'string' ? 'Present (' + chatSettings.supportIcon.substring(0, 50) + '...)' : 'Present (Binary Data)') : 'Not set');
           setSettings(prev => ({ ...prev, ...chatSettings }));
           // Pequeno delay para garantir que não apareça antes das configurações serem aplicadas
           setTimeout(() => {
