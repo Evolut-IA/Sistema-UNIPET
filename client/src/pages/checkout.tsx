@@ -1533,22 +1533,22 @@ export default function Checkout() {
                   {/* Seção do PIX - aparece após processamento */}
                   {pixData && paymentData.method === 'pix' && (
                     <div 
-                      className="p-6 rounded-lg"
+                      className="p-4 md:p-6 rounded-lg"
                       style={{
                         backgroundColor: 'rgba(39, 118, 119, 0.1)',
                         border: '1px solid #277677'
                       }}
                     >
                       
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      <div className="space-y-6 md:grid md:grid-cols-2 md:gap-6 md:space-y-0">
                         {/* QR Code */}
                         <div className="text-center">
                           <h4 className="font-medium mb-3 text-gray-700">Escaneie o QR Code</h4>
-                          <div className="bg-white p-4 rounded-lg border shadow-sm inline-block">
+                          <div className="bg-white p-3 md:p-4 rounded-lg border shadow-sm inline-block">
                             <img 
                               src={`data:image/png;base64,${pixData.qrCode}`}
                               alt="QR Code PIX" 
-                              className="w-48 h-48 mx-auto"
+                              className="w-32 h-32 md:w-48 md:h-48 mx-auto"
                             />
                           </div>
                         </div>
@@ -1556,9 +1556,9 @@ export default function Checkout() {
                         {/* Código Copia e Cola */}
                         <div>
                           <h4 className="font-medium mb-3 text-gray-700">Ou copie o código PIX</h4>
-                          <div className="bg-white p-4 rounded-lg border">
+                          <div className="bg-white p-3 md:p-4 rounded-lg border">
                             <div className="text-sm text-gray-600 mb-2">Código PIX:</div>
-                            <div className="bg-gray-50 p-3 rounded text-xs font-mono break-all border">
+                            <div className="bg-gray-50 p-2 md:p-3 rounded text-xs font-mono break-all border max-h-24 md:max-h-none overflow-y-auto">
                               {pixData.copyPasteCode}
                             </div>
                             <button
