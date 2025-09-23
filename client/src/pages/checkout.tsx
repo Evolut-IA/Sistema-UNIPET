@@ -145,6 +145,12 @@ export default function Checkout() {
     return customerData.name && customerData.email && customerData.cpf && customerData.phone;
   };
   
+  // Validação para dados de endereço (Step 3)
+  const isAddressDataValid = () => {
+    return customerData.cpf && customerData.zipCode && customerData.address && 
+           customerData.neighborhood && customerData.state && customerData.city;
+  };
+  
   // Validação para pagamento
   const isPaymentDataValid = () => {
     if (paymentData.method === 'credit_card' && paymentData.creditCard) {
@@ -1192,9 +1198,9 @@ export default function Checkout() {
                 onClick={handleNextStep}
                 disabled={
                   isLoading || 
-                  (currentStep === 2 && !isPetsDataValid()) ||
-                  (currentStep === 3 && !isCustomerDataValid()) ||
-                  (currentStep === 4 && !isPaymentDataValid())
+                  (currentStep === 1 && !isPetsDataValid()) ||
+                  (currentStep === 2 && !isCustomerDataValid()) ||
+                  (currentStep === 3 && (!isAddressDataValid() || !isPaymentDataValid() || !acceptedTerms))
                 }
                 className="flex items-center justify-center w-full md:w-auto px-6 py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{
