@@ -137,12 +137,12 @@ export default function Checkout() {
 
   // Validação para pets - todos os campos obrigatórios devem estar preenchidos
   const isPetsDataValid = () => {
-    return petsData.every(pet => pet.name && pet.species && pet.age);
+    return petsData.length > 0 && petsData.every(pet => pet.name && pet.species && pet.breed && pet.age > 0) && selectedPlan;
   };
   
   // Validação para dados do cliente
   const isCustomerDataValid = () => {
-    return customerData.name && customerData.email && customerData.cpf && customerData.phone;
+    return customerData.name && customerData.email && customerData.phone;
   };
   
   // Validação para dados de endereço (Step 3)
@@ -182,13 +182,13 @@ export default function Checkout() {
     fetchPlans();
   }, []);
 
-  // Set selected plan based on route parameter
+  // Set selected plan based on route parameter (but stay on Step 1 for pet data)
   useEffect(() => {
     if (params?.planId && plans.length > 0) {
       const plan = plans.find(p => p.id === params.planId);
       if (plan) {
         setSelectedPlan(plan);
-        setCurrentStep(2); // Skip plan selection if coming from direct link
+        // Stay on Step 1 to collect pet data - only skip plan selection within Step 1
       }
     }
   }, [params?.planId, plans]);
@@ -210,6 +210,17 @@ export default function Checkout() {
   };
 
   const handleNextStep = () => {
+    // Validar antes de avançar o step
+    if (currentStep === 1 && !isPetsDataValid()) {
+      return; // Não avança se pets não são válidos
+    }
+    if (currentStep === 2 && !isCustomerDataValid()) {
+      return; // Não avança se dados do cliente não são válidos
+    }
+    if (currentStep === 3 && (!isAddressDataValid() || !isPaymentDataValid() || !acceptedTerms)) {
+      return; // Não avança se endereço, pagamento ou termos não são válidos
+    }
+    
     if (currentStep < 3) {
       setCurrentStep(currentStep + 1);
     } else {
@@ -529,7 +540,7 @@ export default function Checkout() {
                               <label className="block text-sm font-medium mb-2">Nome do Pet *</label>
                               <input
                                 type="text"
-                                value=""
+                                value={petsData[0]?.name || ''}
                                 onChange={(e) => {
                                   // Criar o primeiro pet se não existir
                                   if (petsData.length === 0) {
@@ -550,20 +561,23 @@ export default function Checkout() {
                             </div>
                             <div>
                               <label className="block text-sm font-medium mb-2">Espécie *</label>
-                              <Select onValueChange={(value) => {
-                                // Criar o primeiro pet se não existir
-                                if (petsData.length === 0) {
-                                  setPetsData([{
-                                    name: '',
-                                    species: value,
-                                    breed: '',
-                                    age: 0,
-                                    weight: 0
-                                  }]);
-                                } else {
-                                  updatePet(0, 'species', value);
-                                }
-                              }}>
+                              <Select 
+                                value={petsData[0]?.species || ''}
+                                onValueChange={(value) => {
+                                  // Criar o primeiro pet se não existir
+                                  if (petsData.length === 0) {
+                                    setPetsData([{
+                                      name: '',
+                                      species: value,
+                                      breed: '',
+                                      age: 0,
+                                      weight: 0
+                                    }]);
+                                  } else {
+                                    updatePet(0, 'species', value);
+                                  }
+                                }}
+                              >
                                 <SelectTrigger className="w-full p-3 border border-gray-300 rounded-lg">
                                   <SelectValue placeholder="Selecione a espécie" />
                                 </SelectTrigger>
@@ -582,7 +596,7 @@ export default function Checkout() {
                               <label className="block text-sm font-medium mb-2">Raça *</label>
                               <input
                                 type="text"
-                                value=""
+                                value={petsData[0]?.breed || ''}
                                 onChange={(e) => {
                                   // Criar o primeiro pet se não existir
                                   if (petsData.length === 0) {
@@ -605,7 +619,7 @@ export default function Checkout() {
                               <label className="block text-sm font-medium mb-2">Idade (anos) *</label>
                               <input
                                 type="number"
-                                value=""
+                                value={petsData[0]?.age || ''}
                                 onChange={(e) => {
                                   // Criar o primeiro pet se não existir
                                   if (petsData.length === 0) {
@@ -762,7 +776,7 @@ export default function Checkout() {
                       </button>
                       <button
                         onClick={handleNextStep}
-                        disabled={petsData.length === 0}
+                        disabled={!isPetsDataValid()}
                         className="px-6 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
                       >
                         Próximo
