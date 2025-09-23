@@ -1444,8 +1444,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       try {
-        // Debug: log do que estamos enviando para o update
-        console.log("🔍 [PRE-PAYMENT-DEBUG] Dados para update:", JSON.stringify(updatedClientData, null, 2));
+        // Atualizar cliente com dados validados
         
         // Atualizar cliente com dados completos
         await storage.updateClient(validatedClient.id, updatedClientData);
@@ -1499,7 +1498,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         switch (paymentMethod) {
           case 'credit_card':
             // Debug: verificar estrutura completa dos dados recebidos
-            console.log("🔍 [CHECKOUT-DEBUG] Estrutura completa paymentData:", JSON.stringify(paymentData, null, 2));
+            // ⚠️ SECURITY: Log de dados sensíveis removido para compliance PCI-DSS/LGPD
+            // console.log("🔍 [CHECKOUT-DEBUG] Estrutura completa paymentData:", JSON.stringify(paymentData, null, 2));
             console.log("🔍 [CHECKOUT-DEBUG] payment existe?", !!paymentData.payment);
             console.log("🔍 [CHECKOUT-DEBUG] payment keys:", paymentData.payment ? Object.keys(paymentData.payment) : 'undefined');
             
