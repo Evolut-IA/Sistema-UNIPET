@@ -156,9 +156,6 @@ export default function Checkout() {
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-white mb-2">
-              Checkout - UNIPET PLAN
-            </h1>
             <div className="flex justify-center items-center space-x-4">
               {[1, 2, 3].map((step) => (
                 <div key={step} className="flex items-center">
