@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
-import { ArrowLeft, Heart, MapPin, Stethoscope, Edit, Save, X, Camera, Upload, FileText } from "lucide-react";
+import { ArrowLeft, Heart, MapPin, Stethoscope, Edit, Save, X, Camera, Upload, FileText, Trash2 } from "lucide-react";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 
@@ -57,6 +57,7 @@ export default function CustomerPets() {
   const [guides, setGuides] = useState<Guide[]>([]);
   const [loadingGuides, setLoadingGuides] = useState(false);
   const [guidesError, setGuidesError] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
 
   useEffect(() => {
     const checkAuthAndLoadPets = async () => {
@@ -144,6 +145,37 @@ export default function CustomerPets() {
       setError('Erro ao salvar alterações');
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const deletePet = async (petId: string, petName: string) => {
+    const confirmed = window.confirm(`Tem certeza que deseja excluir o pet "${petName}"? Esta ação não pode ser desfeita.`);
+    
+    if (!confirmed) return;
+    
+    setIsDeleting(petId);
+    try {
+      const response = await fetch(`/api/clients/pets/${petId}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+
+      if (response.ok) {
+        setPets(prev => prev.filter(pet => pet.id !== petId));
+        
+        // If the deleted pet was being edited, cancel editing
+        if (editingPet === petId) {
+          cancelEditing();
+        }
+      } else {
+        const errorData = await response.json();
+        setError(errorData.error || 'Erro ao excluir pet');
+      }
+    } catch (error) {
+      console.error('Error deleting pet:', error);
+      setError('Erro ao excluir pet');
+    } finally {
+      setIsDeleting(null);
     }
   };
 
@@ -545,12 +577,10 @@ export default function CustomerPets() {
                                 style={{ borderColor: 'var(--border-gray)' }}
                               />
                             </div>
-                            <p>Cadastrado em: {formatDate(pet.createdAt)}</p>
                           </>
                         ) : (
                           <>
                             <p>{formatPetInfo('Microchip', pet.microchip)}</p>
-                            <p>Cadastrado em: {formatDate(pet.createdAt)}</p>
                           </>
                         )}
                       </div>
@@ -560,7 +590,7 @@ export default function CustomerPets() {
                     <div className="space-y-3">
                       <h4 className="font-semibold flex items-center space-x-2" style={{ color: 'var(--text-dark-primary)' }}>
                         <Stethoscope className="w-4 h-4" style={{ color: 'var(--text-teal)' }} />
-                        <span>Saúde</span>
+                        <span>Informações de Saúde</span>
                       </h4>
                       <div className="space-y-2 text-sm" style={{ color: 'var(--text-dark-secondary)' }}>
                         {editingPet === pet.id ? (
@@ -569,8 +599,8 @@ export default function CustomerPets() {
                               <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-dark-primary)' }}>Último Check-up</label>
                               <input
                                 type="date"
-                                value={editFormData.lastCheckup ? new Date(editFormData.lastCheckup).toISOString().split('T')[0] : ''}
-                                onChange={(e) => updateFormField('lastCheckup', e.target.value ? new Date(e.target.value).toISOString() : '')}
+                                value={editFormData.lastCheckup || ''}
+                                onChange={(e) => updateFormField('lastCheckup', e.target.value)}
                                 className="w-full px-2 py-1 text-sm border rounded"
                                 style={{ borderColor: 'var(--border-gray)' }}
                               />
@@ -697,19 +727,9 @@ export default function CustomerPets() {
 
                   {/* Action Buttons */}
                   <div className="flex items-center space-x-2 pt-4">
-                    {/* Guides Button */}
-                    <button
-                      onClick={() => openGuides(pet.id)}
-                      className="flex items-center space-x-1 px-3 py-2 rounded-lg"
-                      style={{ background: 'var(--bg-beige)', color: 'var(--text-dark-secondary)' }}
-                    >
-                      <FileText className="w-4 h-4" />
-                      <span>Guias</span>
-                    </button>
-
-                    {/* Edit Buttons */}
                     {editingPet === pet.id ? (
                       <>
+                        {/* When editing: Only show Atualizar and Cancelar buttons */}
                         <button
                           onClick={() => saveChanges(pet.id)}
                           disabled={isSaving}
@@ -725,7 +745,7 @@ export default function CustomerPets() {
                           ) : (
                             <Save className="w-4 h-4" />
                           )}
-                          <span>{isSaving ? 'Salvando...' : 'Salvar'}</span>
+                          <span>{isSaving ? 'Salvando...' : 'Atualizar'}</span>
                         </button>
                         <button
                           onClick={cancelEditing}
@@ -738,14 +758,42 @@ export default function CustomerPets() {
                         </button>
                       </>
                     ) : (
-                      <button
-                        onClick={() => startEditing(pet)}
-                        className="flex items-center space-x-1 px-3 py-2 rounded-lg"
-                        style={{ background: 'var(--bg-beige)', color: 'var(--text-dark-secondary)' }}
-                      >
-                        <Edit className="w-4 h-4" />
-                        <span>Editar</span>
-                      </button>
+                      <>
+                        {/* When not editing: Show Editar, Guias, and Apagar buttons */}
+                        <button
+                          onClick={() => startEditing(pet)}
+                          className="flex items-center space-x-1 px-3 py-2 rounded-lg"
+                          style={{ background: 'var(--bg-beige)', color: 'var(--text-dark-secondary)' }}
+                        >
+                          <Edit className="w-4 h-4" />
+                          <span>Editar</span>
+                        </button>
+                        <button
+                          onClick={() => openGuides(pet.id)}
+                          className="flex items-center space-x-1 px-3 py-2 rounded-lg"
+                          style={{ background: 'var(--bg-beige)', color: 'var(--text-dark-secondary)' }}
+                        >
+                          <FileText className="w-4 h-4" />
+                          <span>Guias</span>
+                        </button>
+                        <button
+                          onClick={() => deletePet(pet.id, pet.name)}
+                          disabled={isDeleting === pet.id}
+                          className="flex items-center space-x-1 px-3 py-2 rounded-lg transition-colors"
+                          style={{ 
+                            backgroundColor: '#dc2626',
+                            color: 'white',
+                            opacity: isDeleting === pet.id ? 0.6 : 1
+                          }}
+                        >
+                          {isDeleting === pet.id ? (
+                            <div className="w-4 h-4 border border-white border-t-transparent rounded-full animate-spin"></div>
+                          ) : (
+                            <Trash2 className="w-4 h-4" />
+                          )}
+                          <span>{isDeleting === pet.id ? 'Excluindo...' : 'Apagar'}</span>
+                        </button>
+                      </>
                     )}
                   </div>
 
