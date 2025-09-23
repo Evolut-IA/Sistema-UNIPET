@@ -156,6 +156,30 @@ export default function Checkout() {
     setPetsData(updatedPets);
   };
 
+  // Função para iniciar modo de edição
+  const startEditingPet = (index: number) => {
+    const newEditingState = [...editingPets];
+    newEditingState[index] = true;
+    setEditingPets(newEditingState);
+    
+    // Expandir o pet quando entrar em modo de edição
+    const newCollapsedState = [...collapsedPets];
+    newCollapsedState[index] = false;
+    setCollapsedPets(newCollapsedState);
+  };
+
+  // Função para finalizar modo de edição e colapsar
+  const finishEditingPet = (index: number) => {
+    const newEditingState = [...editingPets];
+    newEditingState[index] = false;
+    setEditingPets(newEditingState);
+    
+    // Colapsar o pet após finalizar edição
+    const newCollapsedState = [...collapsedPets];
+    newCollapsedState[index] = true;
+    setCollapsedPets(newCollapsedState);
+  };
+
   // Validação para pets - todos os campos obrigatórios devem estar preenchidos
   const isPetsDataValid = () => {
     return petsData.every(pet => pet.name && pet.species && pet.age);
@@ -556,94 +580,115 @@ export default function Checkout() {
                             {isCollapsed && (
                               <button
                                 type="button"
-                                onClick={() => togglePetCollapse(index)}
+                                onClick={() => startEditingPet(index)}
                                 className="flex items-center justify-center w-8 h-8 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                                 title="Editar"
                               >
                                 <Edit className="w-4 h-4" />
                               </button>
                             )}
-                            <button
-                              type="button"
-                              onClick={() => removePet(index)}
-                              className="flex items-center justify-center w-8 h-8 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                              title="Remover"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
+                            {!editingPets[index] && (
+                              <button
+                                type="button"
+                                onClick={() => removePet(index)}
+                                className="flex items-center justify-center w-8 h-8 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                                title="Remover"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            )}
                           </div>
                         </div>
 
                         {!isCollapsed && (
-                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-                            <div>
-                              <label className="block text-sm font-medium mb-2">
-                                Nome do Pet
-                              </label>
-                              <input
-                                type="text"
-                                value={pet.name}
-                                onChange={(e) => updatePet(index, 'name', e.target.value)}
-                                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
-                                placeholder="Nome do seu pet"
-                              />
+                          <div>
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+                              <div>
+                                <label className="block text-sm font-medium mb-2">
+                                  Nome do Pet
+                                </label>
+                                <input
+                                  type="text"
+                                  value={pet.name}
+                                  onChange={(e) => updatePet(index, 'name', e.target.value)}
+                                  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
+                                  placeholder="Nome do seu pet"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium mb-2">
+                                  Espécie
+                                </label>
+                                <Select value={pet.species} onValueChange={(value) => updatePet(index, 'species', value)}>
+                                  <SelectTrigger 
+                                    className="w-full p-3 rounded-lg border text-sm"
+                                    style={{
+                                      borderColor: 'var(--border-gray)',
+                                      background: 'white'
+                                    }}
+                                  >
+                                    <SelectValue placeholder="Selecione a espécie" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="Cão">Cão</SelectItem>
+                                    <SelectSeparator />
+                                    <SelectItem value="Gato">Gato</SelectItem>
+                                    <SelectSeparator />
+                                    <SelectItem value="Aves">Aves</SelectItem>
+                                    <SelectSeparator />
+                                    <SelectItem value="Tartarugas ou jabutis">Tartarugas ou jabutis</SelectItem>
+                                    <SelectSeparator />
+                                    <SelectItem value="Coelhos ou hamsters">Coelhos ou hamsters</SelectItem>
+                                    <SelectSeparator />
+                                    <SelectItem value="Porquinho da índia">Porquinho da índia</SelectItem>
+                                    <SelectSeparator />
+                                    <SelectItem value="Outros">Outros</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium mb-2">
+                                  Raça
+                                </label>
+                                <input
+                                  type="text"
+                                  value={pet.breed}
+                                  onChange={(e) => updatePet(index, 'breed', e.target.value)}
+                                  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
+                                  placeholder="Raça do pet (opcional)"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium mb-2">
+                                  Idade (anos)
+                                </label>
+                                <input
+                                  type="number"
+                                  value={pet.age}
+                                  onChange={(e) => updatePet(index, 'age', parseInt(e.target.value) || 0)}
+                                  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
+                                  placeholder="Idade"
+                                />
+                              </div>
                             </div>
-                            <div>
-                              <label className="block text-sm font-medium mb-2">
-                                Espécie
-                              </label>
-                              <Select value={pet.species} onValueChange={(value) => updatePet(index, 'species', value)}>
-                                <SelectTrigger 
-                                  className="w-full p-3 rounded-lg border text-sm"
+                            
+                            {/* Botão Atualizar (aparece apenas durante edição) */}
+                            {editingPets[index] && (
+                              <div className="flex justify-end mt-4">
+                                <button
+                                  type="button"
+                                  onClick={() => finishEditingPet(index)}
+                                  className="px-4 py-2 rounded-lg transition-colors"
                                   style={{
-                                    borderColor: 'var(--border-gray)',
-                                    background: 'white'
+                                    background: 'var(--btn-ver-planos-bg)',
+                                    color: 'var(--btn-ver-planos-text)',
+                                    border: 'none'
                                   }}
                                 >
-                                  <SelectValue placeholder="Selecione a espécie" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="Cão">Cão</SelectItem>
-                                  <SelectSeparator />
-                                  <SelectItem value="Gato">Gato</SelectItem>
-                                  <SelectSeparator />
-                                  <SelectItem value="Aves">Aves</SelectItem>
-                                  <SelectSeparator />
-                                  <SelectItem value="Tartarugas ou jabutis">Tartarugas ou jabutis</SelectItem>
-                                  <SelectSeparator />
-                                  <SelectItem value="Coelhos ou hamsters">Coelhos ou hamsters</SelectItem>
-                                  <SelectSeparator />
-                                  <SelectItem value="Porquinho da índia">Porquinho da índia</SelectItem>
-                                  <SelectSeparator />
-                                  <SelectItem value="Outros">Outros</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            <div>
-                              <label className="block text-sm font-medium mb-2">
-                                Raça
-                              </label>
-                              <input
-                                type="text"
-                                value={pet.breed}
-                                onChange={(e) => updatePet(index, 'breed', e.target.value)}
-                                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
-                                placeholder="Raça do pet (opcional)"
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-sm font-medium mb-2">
-                                Idade (anos)
-                              </label>
-                              <input
-                                type="number"
-                                value={pet.age}
-                                onChange={(e) => updatePet(index, 'age', parseInt(e.target.value) || 0)}
-                                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
-                                placeholder="Idade"
-                              />
-                              
-                            </div>
+                                  Atualizar
+                                </button>
+                              </div>
+                            )}
                           </div>
                         )}
 
@@ -652,21 +697,23 @@ export default function Checkout() {
                           {isCollapsed && (
                             <button
                               type="button"
-                              onClick={() => togglePetCollapse(index)}
+                              onClick={() => startEditingPet(index)}
                               className="flex items-center justify-center flex-1 px-3 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                               title="Editar"
                             >
                               <Edit className="w-4 h-4" />
                             </button>
                           )}
-                          <button
-                            type="button"
-                            onClick={() => removePet(index)}
-                            className="flex items-center justify-center flex-1 px-3 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                            title="Remover"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                          {!editingPets[index] && (
+                            <button
+                              type="button"
+                              onClick={() => removePet(index)}
+                              className="flex items-center justify-center flex-1 px-3 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                              title="Remover"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          )}
                         </div>
                       </div>
                     );
