@@ -55,13 +55,7 @@ export default function Checkout() {
   
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
-  const [petsData, setPetsData] = useState<PetData[]>([{
-    name: '',
-    species: '',
-    breed: '',
-    age: 0,
-    weight: 0
-  }]);
+  const [petsData, setPetsData] = useState<PetData[]>([]);
   const [customerData, setCustomerData] = useState<CustomerData>({
     name: '',
     email: '',
@@ -507,7 +501,10 @@ export default function Checkout() {
                               </p>
                               <p className="text-gray-600 text-sm">Plano: {selectedPlan.name}</p>
                             </div>
-                            <button className="text-teal-600 hover:text-teal-800 text-sm">
+                            <button 
+                              onClick={() => togglePetCollapse(index)}
+                              className="text-teal-600 hover:text-teal-800 text-sm"
+                            >
                               Editar
                             </button>
                           </div>
@@ -523,15 +520,43 @@ export default function Checkout() {
                               <label className="block text-sm font-medium mb-2">Nome do Pet *</label>
                               <input
                                 type="text"
+                                value=""
+                                onChange={(e) => {
+                                  // Criar o primeiro pet se não existir
+                                  if (petsData.length === 0) {
+                                    setPetsData([{
+                                      name: e.target.value,
+                                      species: '',
+                                      breed: '',
+                                      age: 0,
+                                      weight: 0
+                                    }]);
+                                  } else {
+                                    updatePet(0, 'name', e.target.value);
+                                  }
+                                }}
                                 placeholder="Digite o nome do seu pet"
                                 className="w-full p-3 border border-gray-300 rounded-lg"
                               />
                             </div>
                             <div>
                               <label className="block text-sm font-medium mb-2">Espécie *</label>
-                              <Select>
+                              <Select onValueChange={(value) => {
+                                // Criar o primeiro pet se não existir
+                                if (petsData.length === 0) {
+                                  setPetsData([{
+                                    name: '',
+                                    species: value,
+                                    breed: '',
+                                    age: 0,
+                                    weight: 0
+                                  }]);
+                                } else {
+                                  updatePet(0, 'species', value);
+                                }
+                              }}>
                                 <SelectTrigger className="w-full p-3 border border-gray-300 rounded-lg">
-                                  <SelectValue placeholder="Cachorro" />
+                                  <SelectValue placeholder="Selecione a espécie" />
                                 </SelectTrigger>
                                 <SelectContent>
                                   <SelectItem value="dog">Cachorro</SelectItem>
@@ -548,6 +573,21 @@ export default function Checkout() {
                               <label className="block text-sm font-medium mb-2">Raça *</label>
                               <input
                                 type="text"
+                                value=""
+                                onChange={(e) => {
+                                  // Criar o primeiro pet se não existir
+                                  if (petsData.length === 0) {
+                                    setPetsData([{
+                                      name: '',
+                                      species: '',
+                                      breed: e.target.value,
+                                      age: 0,
+                                      weight: 0
+                                    }]);
+                                  } else {
+                                    updatePet(0, 'breed', e.target.value);
+                                  }
+                                }}
                                 placeholder="Digite a raça do seu pet"
                                 className="w-full p-3 border border-gray-300 rounded-lg"
                               />
@@ -556,6 +596,21 @@ export default function Checkout() {
                               <label className="block text-sm font-medium mb-2">Idade (anos) *</label>
                               <input
                                 type="number"
+                                value=""
+                                onChange={(e) => {
+                                  // Criar o primeiro pet se não existir
+                                  if (petsData.length === 0) {
+                                    setPetsData([{
+                                      name: '',
+                                      species: '',
+                                      breed: '',
+                                      age: parseInt(e.target.value) || 0,
+                                      weight: 0
+                                    }]);
+                                  } else {
+                                    updatePet(0, 'age', parseInt(e.target.value) || 0);
+                                  }
+                                }}
                                 placeholder="1"
                                 min="0"
                                 max="25"
@@ -564,20 +619,125 @@ export default function Checkout() {
                             </div>
                           </div>
                           <div className="flex justify-end gap-3 mt-4">
-                            <button className="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">
+                            <button 
+                              onClick={() => {
+                                // Limpa os dados do primeiro pet
+                                setPetsData([]);
+                              }}
+                              className="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
+                            >
                               Cancelar
                             </button>
-                            <button className="px-6 py-2 bg-gray-400 text-white rounded-lg">
+                            <button 
+                              onClick={() => {
+                                // Valida se os campos obrigatórios estão preenchidos
+                                const currentPet = petsData[0];
+                                if (currentPet?.name && currentPet?.species && currentPet?.age > 0) {
+                                  // Pet válido, formulário será escondido automaticamente
+                                }
+                              }}
+                              disabled={!petsData[0]?.name || !petsData[0]?.species || !petsData[0]?.age}
+                              className="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:bg-gray-400 disabled:text-gray-500 disabled:cursor-not-allowed"
+                            >
+                              Salvar Pet
+                            </button>
+                          </div>
+                        </div>
+                      ) : petsData.some(pet => !pet.name) ? (
+                        <div className="border border-gray-200 rounded-lg p-4">
+                          <h4 className="font-semibold mb-4">
+                            {petsData.length === 0 ? 'Primeiro Pet' : 'Dados do Pet'}
+                          </h4>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-sm font-medium mb-2">Nome do Pet *</label>
+                              <input
+                                type="text"
+                                value={petsData[petsData.length - 1]?.name || ''}
+                                onChange={(e) => updatePet(petsData.length - 1, 'name', e.target.value)}
+                                placeholder="Digite o nome do seu pet"
+                                className="w-full p-3 border border-gray-300 rounded-lg"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium mb-2">Espécie *</label>
+                              <Select onValueChange={(value) => updatePet(petsData.length - 1, 'species', value)}>
+                                <SelectTrigger className="w-full p-3 border border-gray-300 rounded-lg">
+                                  <SelectValue placeholder={petsData[petsData.length - 1]?.species || "Selecione a espécie"} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="dog">Cachorro</SelectItem>
+                                  <SelectItem value="cat">Gato</SelectItem>
+                                  <SelectItem value="bird">Aves</SelectItem>
+                                  <SelectItem value="turtle">Tartarugas ou jabutis</SelectItem>
+                                  <SelectItem value="rabbit">Coelhos ou hamsters</SelectItem>
+                                  <SelectItem value="guinea_pig">Porquinho da índia</SelectItem>
+                                  <SelectItem value="other">Outros</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium mb-2">Raça *</label>
+                              <input
+                                type="text"
+                                value={petsData[petsData.length - 1]?.breed || ''}
+                                onChange={(e) => updatePet(petsData.length - 1, 'breed', e.target.value)}
+                                placeholder="Digite a raça do seu pet"
+                                className="w-full p-3 border border-gray-300 rounded-lg"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium mb-2">Idade (anos) *</label>
+                              <input
+                                type="number"
+                                value={petsData[petsData.length - 1]?.age || ''}
+                                onChange={(e) => updatePet(petsData.length - 1, 'age', parseInt(e.target.value) || 0)}
+                                placeholder="1"
+                                min="0"
+                                max="25"
+                                className="w-full p-3 border border-gray-300 rounded-lg"
+                              />
+                            </div>
+                          </div>
+                          <div className="flex justify-end gap-3 mt-4">
+                            <button 
+                              onClick={() => {
+                                // Se é o primeiro pet, limpa os dados
+                                if (petsData.length === 1) {
+                                  updatePet(0, 'name', '');
+                                  updatePet(0, 'species', '');
+                                  updatePet(0, 'breed', '');
+                                  updatePet(0, 'age', 0);
+                                } else {
+                                  // Remove o último pet adicionado
+                                  removePet(petsData.length - 1);
+                                }
+                              }}
+                              className="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
+                            >
+                              Cancelar
+                            </button>
+                            <button 
+                              onClick={() => {
+                                // Valida se os campos obrigatórios estão preenchidos
+                                const currentPet = petsData[petsData.length - 1];
+                                if (currentPet?.name && currentPet?.species && currentPet?.age > 0) {
+                                  // Pet válido, apenas fecha o formulário inline
+                                  // Não precisa fazer nada pois já está salvo no estado
+                                }
+                              }}
+                              disabled={!petsData[petsData.length - 1]?.name || !petsData[petsData.length - 1]?.species || !petsData[petsData.length - 1]?.age}
+                              className="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:bg-gray-400 disabled:text-gray-500 disabled:cursor-not-allowed"
+                            >
                               Salvar Pet
                             </button>
                           </div>
                         </div>
                       ) : petsData.length < 5 ? (
                         <button
-                          onClick={() => {
-                            // Implementar modal ou formulário inline para adicionar pet
-                          }}
-                          className="w-full border-2 border-dashed border-gray-300 rounded-lg p-6 text-gray-500 hover:border-teal-300 hover:text-teal-600 transition-colors"
+                          onClick={addPet}
+                          disabled={!canAddNewPet()}
+                          className="w-full border-2 border-dashed border-gray-300 rounded-lg p-6 text-gray-500 hover:border-teal-300 hover:text-teal-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           + Adicionar outro pet
                         </button>
