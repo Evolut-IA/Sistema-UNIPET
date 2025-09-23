@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useRoute } from 'wouter';
 import { motion } from 'framer-motion';
-import { CheckCircle, CreditCard, ArrowLeft } from 'lucide-react';
+import { CheckCircle, ArrowLeft, ArrowRight } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -391,7 +391,7 @@ export default function Checkout() {
                 ) : (
                   <>
                     {currentStep === 3 ? 'Finalizar' : 'Próximo'}
-                    <CreditCard className="w-4 h-4 ml-2" />
+                    <ArrowRight className="w-4 h-4 ml-2" />
                   </>
                 )}
               </button>
@@ -416,7 +416,7 @@ export default function Checkout() {
                 className="flex items-center px-6 py-3 bg-white text-teal-600 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Próximo
-                <CreditCard className="w-4 h-4 ml-2" />
+                <ArrowRight className="w-4 h-4 ml-2" />
               </button>
             </div>
           )}
