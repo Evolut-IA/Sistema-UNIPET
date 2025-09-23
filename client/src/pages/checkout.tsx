@@ -341,8 +341,8 @@ export default function Checkout() {
                     const isCollapsed = collapsedPets[index];
                     
                     return (
-                      <div key={index} className="border border-gray-200 rounded-lg p-6 relative">
-                        <div className="flex justify-between items-center mb-4">
+                      <div key={index} className={`border border-gray-200 rounded-lg relative ${isCollapsed ? 'py-3 px-4' : 'p-6'}`}>
+                        <div className={`flex justify-between items-center ${isCollapsed ? 'mb-0' : 'mb-4'}`}>
                           <h3 
                             className="text-lg font-semibold cursor-pointer flex items-center"
                             onClick={() => togglePetCollapse(index)}
