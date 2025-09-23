@@ -159,14 +159,14 @@ export default function PlansSection({
       href: undefined as string | undefined,
       isPopular: index === 1, // Geralmente o segundo plano é o mais popular
       planType: plan.planType,
-      image: image
+      image: image || '/default-plan.svg'
     };
   });
 
   return (
     <section 
       id="planos" 
-      className={`${removePadding ? '' : 'py-20'} ${showBackground ? 'bg-gradient-to-br from-[var(--bg-teal)] to-[var(--bg-teal-dark)]' : ''}`}
+      className={`${showBackground ? 'bg-gradient-to-br from-[var(--bg-teal)] to-[var(--bg-teal-dark)]' : ''}`}
     >
       <div className={`container mx-auto ${removePadding ? '' : 'px-4'}`}>
         {showTitle && (
@@ -187,7 +187,7 @@ export default function PlansSection({
           <Pricing 
             plans={pricingPlans}
             onPlanSelect={(plan) => {
-              const planIndex = PLAN_URL_MAPPINGS[plan.id];
+
               // Redirecionar diretamente para /checkout com o ID do plano para ir direto para etapa "Dados do Pet"
               navigate(`/checkout/${plan.id}`);
             }}
