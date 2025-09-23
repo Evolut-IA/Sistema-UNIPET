@@ -19,6 +19,7 @@ interface Plan {
   id: string;
   name: string;
   price: number;
+  basePrice: string;
   description: string;
   features: string[];
   planType?: string;
@@ -547,12 +548,13 @@ export default function Checkout() {
     return planType === "with_waiting_period" ? "Sem coparticipação" : "Com coparticipação";
   };
 
-  // Calcular valor total com descontos por pet (price já está em centavos)
+  // Calcular valor total com descontos por pet usando basePrice correto
   const calculateTotal = () => {
     if (!selectedPlan) return 0;
     
     let totalCents = 0;
-    const basePriceCents = selectedPlan.price; // Já está em centavos
+    // Converter basePrice (string em reais) para centavos
+    const basePriceCents = Math.round(parseFloat(selectedPlan.basePrice || '0') * 100);
     
     // Calcular preço por pet com desconto individual
     petsData.forEach((_, index) => {
