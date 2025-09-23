@@ -1263,12 +1263,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         client = allClients.find(c => c.cpf === customerCpf);
         if (client) {
           console.log(`✅ [SIMPLE] Cliente encontrado por CPF: ${client.id}`);
-          console.log(`🔍 [DEBUG] Cliente encontrado:`, {
-            id: client.id,
-            full_name: client.full_name,
-            email: client.email,
-            cpf: client.cpf
-          });
         }
       }
       
@@ -1378,7 +1372,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const creditCardRequest = {
           merchantOrderId: `ORDER_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`,
           customer: {
-            name: client.full_name || customerName || 'Cliente',
+            name: paymentData.customer.name || paymentData.payment.holder || 'Cliente',
             email: client.email,
             cpf: client.cpf,
             address: {
@@ -1403,14 +1397,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
             }
           }
         };
-        
-        console.log(`🔍 [DEBUG] Dados sendo enviados para o Cielo:`, {
-          merchantOrderId: creditCardRequest.merchantOrderId,
-          customerName: creditCardRequest.customer.name,
-          customerEmail: creditCardRequest.customer.email,
-          amount: creditCardRequest.payment.amount,
-          hasCardData: !!creditCardRequest.payment.creditCard
-        });
         
         paymentResult = await cieloService.createCreditCardPayment(creditCardRequest);
         
