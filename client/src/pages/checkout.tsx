@@ -488,21 +488,6 @@ export default function Checkout() {
                 </div>
 
                 {/* Navigation Buttons for Step 1 (now inside white container) */}
-                <div className="flex justify-center mt-8 pt-6 border-t">
-                  <button
-                    onClick={handleNextStep}
-                    disabled={!selectedPlan}
-                    className="flex items-center justify-center w-full xs:w-auto px-6 py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    style={{
-                      background: 'var(--btn-ver-planos-bg)',
-                      color: 'var(--btn-ver-planos-text)',
-                      border: 'none'
-                    }}
-                  >
-                    Próximo
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </button>
-                </div>
               </motion.div>
             </div>
           ) : (
