@@ -318,8 +318,8 @@ export default function Checkout() {
 
       if (response.ok) {
         const result = await response.json();
-        if (paymentData.method === 'pix' && result.pixData) {
-          navigate(`/checkout-success?order=${result.orderId}&method=pix&pixQrCode=${encodeURIComponent(result.pixData.qrCode || '')}&pixCopyPaste=${encodeURIComponent(result.pixData.copyPaste || '')}`);
+        if (paymentData.method === 'pix' && result.pixQrCode) {
+          navigate(`/checkout-success?order=${result.orderId}&method=pix&pixQrCode=${encodeURIComponent(result.pixQrCode || '')}&pixCopyPaste=${encodeURIComponent(result.pixCode || '')}`);
         } else {
           navigate(`/checkout-success?order=${result.orderId}&method=${paymentData.method}`);
         }
