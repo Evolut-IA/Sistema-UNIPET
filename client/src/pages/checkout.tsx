@@ -1319,7 +1319,7 @@ export default function Checkout() {
                     <label className="block text-lg font-medium mb-4">
                       Método de Pagamento
                     </label>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div 
                         className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
                           paymentData.method === 'credit_card' 
