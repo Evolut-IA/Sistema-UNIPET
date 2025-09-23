@@ -26,7 +26,7 @@ import { sanitizeText } from "./utils/text-sanitizer.js";
 import { setupAuth, requireAuth, requireAdmin } from "./auth.js";
 import bcrypt from "bcryptjs";
 import { supabaseStorage } from "./supabase-storage.js";
-import { type CreditCardPaymentRequest } from "./services/cielo-service.js";
+import { CieloService, type CreditCardPaymentRequest } from "./services/cielo-service.js";
 import { PaymentStatusService } from "./services/payment-status-service.js";
 import { 
   checkoutProcessSchema, 
@@ -1226,6 +1226,265 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("❌ [CHECKOUT-STEP3] Erro ao completar registro:", error);
       
       res.status(500).json({
+        error: "Erro interno do servidor",
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      });
+    }
+  });
+
+  // NEW SIMPLE CHECKOUT ENDPOINT - Find or Create Client + Process Payment
+  app.post("/api/checkout/simple-process", async (req, res) => {
+    try {
+      console.log("🛒 [SIMPLE-CHECKOUT] Iniciando checkout simplificado");
+      
+      const { paymentData, planData, paymentMethod, addressData } = req.body;
+      
+      if (!paymentData || !planData || !paymentMethod) {
+        return res.status(400).json({ 
+          error: "Dados incompletos - paymentData, planData e paymentMethod são obrigatórios" 
+        });
+      }
+
+      // ============================================
+      // STEP 1: FIND OR CREATE CLIENT (SIMPLE LOGIC)
+      // ============================================
+      
+      const customerCpf = paymentData.customer?.cpf?.replace(/\D/g, '');
+      const customerEmail = paymentData.customer?.email?.toLowerCase().trim();
+      const customerName = paymentData.customer?.name || 'Cliente';
+      
+      console.log("🔍 [SIMPLE] Buscando cliente:", { cpf: customerCpf, email: customerEmail, name: customerName });
+      
+      let client;
+      
+      // Try to find existing client by CPF first (priority)
+      if (customerCpf) {
+        const allClients = await storage.getAllClients();
+        client = allClients.find(c => c.cpf === customerCpf);
+        if (client) {
+          console.log(`✅ [SIMPLE] Cliente encontrado por CPF: ${client.id}`);
+          console.log(`🔍 [DEBUG] Cliente encontrado:`, {
+            id: client.id,
+            full_name: client.full_name,
+            email: client.email,
+            cpf: client.cpf
+          });
+        }
+      }
+      
+      // If not found by CPF, try by email
+      if (!client && customerEmail) {
+        client = await storage.getClientByEmail(customerEmail);
+        if (client) {
+          console.log(`✅ [SIMPLE] Cliente encontrado por Email: ${client.id}`);
+        }
+      }
+      
+      // If client doesn't exist, create new one
+      if (!client) {
+        console.log(`🆕 [SIMPLE] Criando novo cliente`);
+        
+        const newClientData = {
+          id: `client-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`,
+          full_name: customerName,
+          email: customerEmail,
+          phone: addressData?.phone || null,
+          cpf: customerCpf || null,
+          password: null,
+          address: addressData?.address || null,
+          number: addressData?.number || null,
+          complement: addressData?.complement || null,
+          district: addressData?.district || null,
+          city: addressData?.city || null,
+          state: addressData?.state || null,
+          cep: addressData?.zipCode?.replace(/\D/g, '') || null
+        };
+        
+        try {
+          client = await storage.createClient(newClientData);
+          console.log(`✅ [SIMPLE] Cliente criado: ${client.id}`);
+        } catch (createError: any) {
+          // If duplicate, try to find existing again
+          if (createError.message?.includes('duplicate') || createError.message?.includes('unique')) {
+            const allClients = await storage.getAllClients();
+            client = allClients.find(c => c.cpf === customerCpf || c.email === customerEmail);
+            if (client) {
+              console.log(`🔄 [SIMPLE] Usando cliente existente após erro de duplicação: ${client.id}`);
+            } else {
+              throw createError;
+            }
+          } else {
+            throw createError;
+          }
+        }
+      }
+
+      // ============================================
+      // STEP 2: CREATE PET FOR THE CLIENT
+      // ============================================
+      
+      if (paymentData.pets && Array.isArray(paymentData.pets) && paymentData.pets.length > 0) {
+        for (const petData of paymentData.pets) {
+          const newPetData = {
+            id: `pet-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`,
+            clientId: client.id,
+            name: petData.name || 'Pet',
+            species: petData.species || 'Cão',
+            breed: petData.breed || 'SRD',
+            age: petData.age?.toString() || '1',
+            sex: petData.sex || 'Macho',
+            castrated: petData.castrated || false,
+            weight: petData.weight?.toString() || '1',
+            vaccineData: JSON.stringify([]),
+            planId: planData.planId,
+            isActive: true
+          };
+          
+          try {
+            const pet = await storage.createPet(newPetData);
+            console.log(`✅ [SIMPLE] Pet criado: ${pet.name} (${pet.id})`);
+          } catch (petError) {
+            console.error(`⚠️ [SIMPLE] Erro ao criar pet (continuando):`, petError);
+          }
+        }
+      }
+
+      // ============================================
+      // STEP 3: PROCESS PAYMENT
+      // ============================================
+      
+      // Get plan details for pricing
+      const selectedPlan = await storage.getPlan(planData.planId);
+      if (!selectedPlan) {
+        return res.status(400).json({
+          error: "Plano não encontrado",
+          planId: planData.planId
+        });
+      }
+
+      const correctAmountInCents = Math.round(selectedPlan.price * 100);
+      
+      console.log(`💰 [SIMPLE] Processando pagamento:`, {
+        planName: selectedPlan.name,
+        amountCents: correctAmountInCents,
+        paymentMethod
+      });
+
+      // Process payment via Cielo
+      let paymentResult;
+      
+      if (paymentMethod === 'credit_card') {
+        const cieloService = new CieloService();
+        const creditCardRequest = {
+          merchantOrderId: `ORDER_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`,
+          customer: {
+            name: client.full_name || customerName || 'Cliente',
+            email: client.email,
+            cpf: client.cpf,
+            address: {
+              street: client.address || '',
+              number: client.number || '',
+              complement: client.complement || '',
+              zipCode: client.cep || '',
+              city: client.city || '',
+              state: client.state || '',
+              country: 'BRA'
+            }
+          },
+          payment: {
+            type: 'CreditCard',
+            amount: correctAmountInCents,
+            installments: paymentData.payment?.installments || 1,
+            creditCard: {
+              cardNumber: paymentData.payment.cardNumber,
+              holder: paymentData.payment.holder,
+              expirationDate: paymentData.payment.expirationDate,
+              securityCode: paymentData.payment.securityCode
+            }
+          }
+        };
+        
+        console.log(`🔍 [DEBUG] Dados sendo enviados para o Cielo:`, {
+          merchantOrderId: creditCardRequest.merchantOrderId,
+          customerName: creditCardRequest.customer.name,
+          customerEmail: creditCardRequest.customer.email,
+          amount: creditCardRequest.payment.amount,
+          hasCardData: !!creditCardRequest.payment.creditCard
+        });
+        
+        paymentResult = await cieloService.createCreditCardPayment(creditCardRequest);
+        
+        console.log(`💳 [SIMPLE] Resultado do pagamento:`, {
+          paymentId: paymentResult.paymentId,
+          status: paymentResult.status,
+          approved: paymentResult.status === 2
+        });
+        
+        if (paymentResult.status === 2) {
+          // Payment approved - create contract
+          const contractData = {
+            clientId: client.id,
+            planId: planData.planId,
+            petId: null, // Multiple pets supported
+            status: 'active',
+            startDate: new Date(),
+            monthlyAmount: selectedPlan.price,
+            paymentMethod: 'credit_card',
+            cieloPaymentId: paymentResult.paymentId,
+            proofOfSale: paymentResult.proofOfSale,
+            authorizationCode: paymentResult.authorizationCode,
+            tid: paymentResult.tid,
+            returnCode: paymentResult.returnCode,
+            returnMessage: paymentResult.returnMessage
+          };
+          
+          try {
+            const contract = await storage.createContract(contractData);
+            console.log(`✅ [SIMPLE] Contrato criado: ${contract.id}`);
+          } catch (contractError) {
+            console.error(`⚠️ [SIMPLE] Erro ao criar contrato:`, contractError);
+          }
+          
+          return res.status(200).json({
+            success: true,
+            message: "Pagamento aprovado com sucesso!",
+            payment: {
+              paymentId: paymentResult.paymentId,
+              status: paymentResult.status,
+              method: paymentMethod
+            },
+            client: {
+              id: client.id,
+              name: client.full_name,
+              email: client.email
+            }
+          });
+        } else {
+          // Payment not approved
+          return res.status(400).json({
+            error: "Pagamento não autorizado",
+            details: paymentResult.returnMessage || "Transação recusada",
+            paymentMethod,
+            status: paymentResult.status,
+            returnCode: paymentResult.returnCode
+          });
+        }
+      } else if (paymentMethod === 'pix') {
+        // PIX payment logic would go here
+        return res.status(501).json({
+          error: "PIX não implementado no endpoint simplificado ainda"
+        });
+      } else {
+        return res.status(400).json({
+          error: "Método de pagamento não suportado",
+          paymentMethod
+        });
+      }
+      
+    } catch (error: any) {
+      console.error("❌ [SIMPLE-CHECKOUT] Erro:", error);
+      
+      return res.status(500).json({
         error: "Erro interno do servidor",
         details: process.env.NODE_ENV === 'development' ? error.message : undefined
       });
