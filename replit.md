@@ -3,6 +3,12 @@
 ## Overview
 UNIPET PLAN is a comprehensive pet health plan management system designed to streamline pet insurance plan management, customer relationships, and healthcare network unit administration. It features a customer-facing website for plan selection and quote requests, alongside an admin dashboard for content and business management. The system is built with a full-stack TypeScript solution, utilizing a React frontend, Express.js backend, and PostgreSQL database with Drizzle ORM. The project emphasizes security, performance, scalability, and aims to simplify pet healthcare administration.
 
+## Recent Changes
+- **September 23, 2025**: Structural improvements to Plans page
+  - Removed container div from `/planos` page to place PlansSection directly in main element
+  - Removed internal container div from PlansSection component to place title, subtitle, and pricing grid directly in section
+  - This eliminates unnecessary nesting and provides cleaner DOM structure for better spacing control
+
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 

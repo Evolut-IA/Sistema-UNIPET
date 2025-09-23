@@ -168,8 +168,7 @@ export default function PlansSection({
       id="planos" 
       className={`${showBackground ? 'bg-gradient-to-br from-[var(--bg-teal)] to-[var(--bg-teal-dark)]' : ''}`}
     >
-      <div className="container mx-auto">
-        {showTitle && (
+      {showTitle && (
           <AnimatedSection animation="slideUp" delay={50}>
             <div className="text-center mb-12">
               <h1 className="text-[28px] md:text-[36px] font-bold text-[var(--text-light)] mb-4">
@@ -194,7 +193,6 @@ export default function PlansSection({
             onPlanDetails={scrollToPlanDetails}
           />
         </AnimatedSection>
-      </div>
     </section>
   );
 }

@@ -151,11 +151,8 @@ export default function Plans() {
 
   return (
     <main className="pt-32 pb-0 bg-primary">
-      <div className="section-container p-0">
-        
-        {/* Plans Section */}
-        <PlansSection />
-      </div>
+      {/* Plans Section */}
+      <PlansSection />
       
       {/* Detailed Plan Sections */}
       {/* PLANO BASIC */}
