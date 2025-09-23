@@ -674,7 +674,7 @@ export default function Checkout() {
                         "rounded-2xl border-[1px] bg-[var(--bg-cream-light)] text-center flex flex-col relative transform-style-preserve-3d backface-hidden transition-all duration-300 cursor-pointer",
                         index === 1
                           ? "border-[var(--text-gold)] border-2"
-                          : "border-[var(--border-teal-light)] hover:border-[var(--text-gold)] hover:shadow-lg",
+                          : "border-[var(--border-teal-light)]",
                         // Apply 3D effects only on desktop and when there are exactly 3 plans visible
                         isDesktop && plans.length >= 3 && [
                           index === 0 && "pricing-card-left",
