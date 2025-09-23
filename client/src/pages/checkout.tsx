@@ -38,6 +38,17 @@ interface CustomerData {
   zipCode: string;
 }
 
+interface PaymentData {
+  method: 'credit_card' | 'pix';
+  creditCard?: {
+    cardNumber: string;
+    holder: string;
+    expirationDate: string;
+    securityCode: string;
+    installments: number;
+  };
+}
+
 export default function Checkout() {
   const [, navigate] = useLocation();
   const [, params] = useRoute('/checkout/:planId?');
@@ -60,6 +71,17 @@ export default function Checkout() {
     city: '',
     state: '',
     zipCode: ''
+  });
+  
+  const [paymentData, setPaymentData] = useState<PaymentData>({
+    method: 'credit_card',
+    creditCard: {
+      cardNumber: '',
+      holder: '',
+      expirationDate: '',
+      securityCode: '',
+      installments: 1
+    }
   });
   
   const [isLoading, setIsLoading] = useState(false);
@@ -117,6 +139,37 @@ export default function Checkout() {
   const isPetsDataValid = () => {
     return petsData.every(pet => pet.name && pet.species && pet.age);
   };
+  
+  // Validação para dados do cliente
+  const isCustomerDataValid = () => {
+    return customerData.name && customerData.email && customerData.cpf && customerData.phone;
+  };
+  
+  // Validação para pagamento
+  const isPaymentDataValid = () => {
+    if (paymentData.method === 'credit_card' && paymentData.creditCard) {
+      const isCardDataValid = paymentData.creditCard.cardNumber && 
+                              paymentData.creditCard.holder && 
+                              paymentData.creditCard.expirationDate && 
+                              paymentData.creditCard.securityCode;
+      
+      // Validar regras de parcelas baseadas no plano
+      const installments = paymentData.creditCard.installments || 1;
+      const isBasicOrInfinity = selectedPlan && ['BASIC', 'INFINITY'].some(type => selectedPlan.name.toUpperCase().includes(type));
+      
+      let isInstallmentsValid = false;
+      if (isBasicOrInfinity) {
+        // Planos Basic/Infinity: apenas 1x
+        isInstallmentsValid = installments === 1;
+      } else {
+        // Outros planos: 1x a 12x
+        isInstallmentsValid = installments >= 1 && installments <= 12;
+      }
+      
+      return isCardDataValid && isInstallmentsValid;
+    }
+    return paymentData.method === 'pix';
+  };
 
   // Fetch plans on component mount
   useEffect(() => {
@@ -152,7 +205,7 @@ export default function Checkout() {
   };
 
   const handleNextStep = () => {
-    if (currentStep < 3) {
+    if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
     } else {
       handleSubmit();
@@ -170,22 +223,105 @@ export default function Checkout() {
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/checkout', {
+      // Validar regras de parcelas antes de enviar
+      if (paymentData.method === 'credit_card' && paymentData.creditCard) {
+        const installments = paymentData.creditCard.installments || 1;
+        const isBasicOrInfinity = selectedPlan && ['BASIC', 'INFINITY'].some(type => selectedPlan.name.toUpperCase().includes(type));
+        
+        if (isBasicOrInfinity && installments !== 1) {
+          alert('Planos Basic e Infinity permitem apenas pagamento à vista (1x).');
+          setIsLoading(false);
+          return;
+        }
+        
+        if (!isBasicOrInfinity && (installments < 1 || installments > 12)) {
+          alert('Este plano permite parcelamento de 1x a 12x.');
+          setIsLoading(false);
+          return;
+        }
+      }
+      // Primeiro salvar dados do cliente
+      const clientResponse = await fetch('/api/checkout/save-customer-data', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          planId: selectedPlan?.id,
-          petData: petsData, // Enviando array de pets
-          customerData,
-          paymentMethod: 'credit_card'
+          customer: {
+            name: customerData.name,
+            email: customerData.email,
+            cpf: customerData.cpf,
+            phone: customerData.phone
+          },
+          address: {
+            address: customerData.address,
+            city: customerData.city,
+            state: customerData.state,
+            zipCode: customerData.zipCode
+          },
+          pets: petsData.map(pet => ({
+            name: pet.name,
+            species: pet.species,
+            breed: pet.breed,
+            age: pet.age,
+            weight: pet.weight
+          })),
+          planId: selectedPlan?.id
         }),
+      });
+
+      if (!clientResponse.ok) {
+        throw new Error('Erro ao salvar dados do cliente');
+      }
+
+      const clientData = await clientResponse.json();
+
+      // Processar pagamento
+      const paymentRequestData = {
+        clientId: clientData.clientId,
+        addressData: {
+          address: customerData.address,
+          city: customerData.city,
+          state: customerData.state,
+          zipCode: customerData.zipCode
+        },
+        paymentData: {
+          customer: {
+            name: customerData.name,
+            email: customerData.email,
+            cpf: customerData.cpf
+          },
+          payment: paymentData.method === 'credit_card' ? {
+            cardNumber: paymentData.creditCard?.cardNumber,
+            holder: paymentData.creditCard?.holder,
+            expirationDate: paymentData.creditCard?.expirationDate,
+            securityCode: paymentData.creditCard?.securityCode,
+            installments: paymentData.creditCard?.installments || 1
+          } : undefined
+        },
+        planData: {
+          planId: selectedPlan?.id,
+          amount: calculateTotal(),
+          billingPeriod: 'monthly' // Pode ser alterado conforme necessário
+        },
+        paymentMethod: paymentData.method
+      };
+
+      const response = await fetch('/api/checkout/process', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(paymentRequestData),
       });
 
       if (response.ok) {
         const result = await response.json();
-        navigate(`/checkout-success?order=${result.orderId}`);
+        if (paymentData.method === 'pix' && result.pixData) {
+          navigate(`/checkout-success?order=${result.orderId}&method=pix&pixQrCode=${encodeURIComponent(result.pixData.qrCode || '')}&pixCopyPaste=${encodeURIComponent(result.pixData.copyPaste || '')}`);
+        } else {
+          navigate(`/checkout-success?order=${result.orderId}&method=${paymentData.method}`);
+        }
       } else {
         console.error('Checkout failed');
       }
@@ -201,6 +337,31 @@ export default function Checkout() {
       style: 'currency',
       currency: 'BRL'
     }).format(price / 100);
+  };
+
+  // Calcular valor total com descontos por pet (price já está em centavos)
+  const calculateTotal = () => {
+    if (!selectedPlan) return 0;
+    
+    let totalCents = 0;
+    const basePriceCents = selectedPlan.price; // Já está em centavos
+    
+    // Calcular preço por pet com desconto individual
+    petsData.forEach((_, index) => {
+      let petPriceCents = basePriceCents;
+      
+      // Aplicar desconto apenas para planos Basic/Infinity e pets a partir do 2º
+      if (['BASIC', 'INFINITY'].some(type => selectedPlan.name.toUpperCase().includes(type)) && index > 0) {
+        const discountPercentage = index === 1 ? 5 :  // 2º pet: 5%
+                                 index === 2 ? 10 : // 3º pet: 10%
+                                 15;                 // 4º+ pets: 15%
+        petPriceCents = Math.round(basePriceCents * (1 - discountPercentage / 100));
+      }
+      
+      totalCents += petPriceCents;
+    });
+    
+    return totalCents;
   };
 
   // Função para identificar se o plano tem desconto por múltiplos pets
@@ -225,7 +386,7 @@ export default function Checkout() {
           {/* Header */}
           <div className="text-center mb-8">
             <div className="flex justify-center items-center space-x-4">
-              {[1, 2, 3].map((step) => (
+              {[1, 2, 3, 4].map((step) => (
                 <div key={step} className="flex items-center">
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
@@ -236,7 +397,7 @@ export default function Checkout() {
                   >
                     {currentStep > step ? <CheckCircle className="w-4 h-4" /> : step}
                   </div>
-                  {step < 3 && (
+                  {step < 4 && (
                     <div
                       className={`w-12 h-1 mx-2 ${
                         currentStep > step ? 'bg-white' : 'bg-teal-700'
@@ -545,7 +706,216 @@ export default function Checkout() {
               </motion.div>
             )}
 
-            {/* Navigation Buttons for Steps 2 and 3 */}
+            {currentStep === 4 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="space-y-6"
+              >
+                <h2 className="text-2xl font-bold text-center mb-6">
+                  Pagamento
+                </h2>
+                
+                <div className="space-y-6">
+                  {/* Seleção de método de pagamento */}
+                  <div>
+                    <label className="block text-lg font-medium mb-4">
+                      Método de Pagamento
+                    </label>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div 
+                        className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                          paymentData.method === 'credit_card' 
+                            ? 'border-teal-600 bg-teal-50' 
+                            : 'border-gray-200 hover:border-teal-300'
+                        }`}
+                        onClick={() => setPaymentData({...paymentData, method: 'credit_card'})}
+                      >
+                        <div className="flex items-center space-x-3">
+                          <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                            paymentData.method === 'credit_card' 
+                              ? 'border-teal-600 bg-teal-600' 
+                              : 'border-gray-300'
+                          }`}>
+                            {paymentData.method === 'credit_card' && <div className="w-3 h-3 bg-white rounded-full"></div>}
+                          </div>
+                          <div>
+                            <h3 className="font-medium">Cartão de Crédito</h3>
+                            <p className="text-sm text-gray-600">Visa, Mastercard, Elo</p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div 
+                        className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                          paymentData.method === 'pix' 
+                            ? 'border-teal-600 bg-teal-50' 
+                            : 'border-gray-200 hover:border-teal-300'
+                        }`}
+                        onClick={() => setPaymentData({...paymentData, method: 'pix'})}
+                      >
+                        <div className="flex items-center space-x-3">
+                          <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                            paymentData.method === 'pix' 
+                              ? 'border-teal-600 bg-teal-600' 
+                              : 'border-gray-300'
+                          }`}>
+                            {paymentData.method === 'pix' && <div className="w-3 h-3 bg-white rounded-full"></div>}
+                          </div>
+                          <div>
+                            <h3 className="font-medium">PIX</h3>
+                            <p className="text-sm text-gray-600">Pagamento instantâneo</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Formulário de cartão de crédito */}
+                  {paymentData.method === 'credit_card' && (
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-medium">Dados do Cartão</h3>
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="md:col-span-2">
+                          <label className="block text-sm font-medium mb-2">
+                            Número do Cartão
+                          </label>
+                          <input
+                            type="text"
+                            value={paymentData.creditCard?.cardNumber || ''}
+                            onChange={(e) => setPaymentData({
+                              ...paymentData,
+                              creditCard: {
+                                ...paymentData.creditCard!,
+                                cardNumber: e.target.value
+                              }
+                            })}
+                            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
+                            placeholder="0000 0000 0000 0000"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium mb-2">
+                            Nome no Cartão
+                          </label>
+                          <input
+                            type="text"
+                            value={paymentData.creditCard?.holder || ''}
+                            onChange={(e) => setPaymentData({
+                              ...paymentData,
+                              creditCard: {
+                                ...paymentData.creditCard!,
+                                holder: e.target.value
+                              }
+                            })}
+                            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
+                            placeholder="Nome conforme cartão"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium mb-2">
+                            Validade
+                          </label>
+                          <input
+                            type="text"
+                            value={paymentData.creditCard?.expirationDate || ''}
+                            onChange={(e) => setPaymentData({
+                              ...paymentData,
+                              creditCard: {
+                                ...paymentData.creditCard!,
+                                expirationDate: e.target.value
+                              }
+                            })}
+                            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
+                            placeholder="MM/AAAA"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium mb-2">
+                            CVV
+                          </label>
+                          <input
+                            type="text"
+                            value={paymentData.creditCard?.securityCode || ''}
+                            onChange={(e) => setPaymentData({
+                              ...paymentData,
+                              creditCard: {
+                                ...paymentData.creditCard!,
+                                securityCode: e.target.value
+                              }
+                            })}
+                            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
+                            placeholder="000"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium mb-2">
+                            Parcelas
+                          </label>
+                          <select
+                            value={paymentData.creditCard?.installments || 1}
+                            onChange={(e) => setPaymentData({
+                              ...paymentData,
+                              creditCard: {
+                                ...paymentData.creditCard!,
+                                installments: parseInt(e.target.value)
+                              }
+                            })}
+                            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
+                            disabled={selectedPlan && ['BASIC', 'INFINITY'].some(type => selectedPlan.name.toUpperCase().includes(type))}
+                          >
+                            {selectedPlan && ['BASIC', 'INFINITY'].some(type => selectedPlan.name.toUpperCase().includes(type)) ? (
+                              <option value={1}>1x à vista (único disponível)</option>
+                            ) : (
+                              [...Array(12)].map((_, i) => {
+                                const totalCents = calculateTotal();
+                                const installmentValue = totalCents / (i + 1) / 100;
+                                return (
+                                  <option key={i + 1} value={i + 1}>
+                                    {i + 1}x {i === 0 ? 'à vista' : `de R$ ${installmentValue.toFixed(2)}`}
+                                  </option>
+                                );
+                              })
+                            )}
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Informações do PIX */}
+                  {paymentData.method === 'pix' && (
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                      <h3 className="text-lg font-medium mb-2">Pagamento via PIX</h3>
+                      <p className="text-sm text-gray-600">
+                        Após confirmar o pedido, você receberá um QR Code para pagamento instantâneo via PIX.
+                      </p>
+                    </div>
+                  )}
+                  
+                  {/* Resumo do pedido */}
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h3 className="text-lg font-medium mb-3">Resumo do Pedido</h3>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span>Plano:</span>
+                        <span className="font-medium">{selectedPlan?.name}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Quantidade de Pets:</span>
+                        <span className="font-medium">{petsData.length}</span>
+                      </div>
+                      <div className="flex justify-between text-lg font-bold pt-2 border-t">
+                        <span>Total:</span>
+                        <span>R$ {formatPrice(calculateTotal())}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Navigation Buttons for Steps 2, 3 and 4 */}
             <div className="flex flex-col md:flex-row md:justify-between gap-3 md:gap-0 mt-8 pt-6 border-t">
               <button
                 onClick={handlePrevStep}
@@ -559,7 +929,9 @@ export default function Checkout() {
                 onClick={handleNextStep}
                 disabled={
                   isLoading || 
-                  (currentStep === 2 && !isPetsDataValid())
+                  (currentStep === 2 && !isPetsDataValid()) ||
+                  (currentStep === 3 && !isCustomerDataValid()) ||
+                  (currentStep === 4 && !isPaymentDataValid())
                 }
                 className="flex items-center justify-center w-full md:w-auto px-6 py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{
@@ -575,7 +947,7 @@ export default function Checkout() {
                   </>
                 ) : (
                   <>
-                    {currentStep === 3 ? 'Finalizar' : 'Próximo'}
+                    {currentStep === 4 ? 'Finalizar' : 'Próximo'}
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </>
                 )}
