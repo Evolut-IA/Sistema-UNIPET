@@ -39,6 +39,9 @@ interface CustomerData {
   cpf: string;
   phone: string;
   address: string;
+  number: string;
+  complement: string;
+  district: string;
   city: string;
   state: string;
   zipCode: string;
@@ -116,6 +119,9 @@ export default function Checkout() {
     cpf: '',
     phone: '',
     address: '',
+    number: '',
+    complement: '',
+    district: '',
     city: '',
     state: '',
     zipCode: ''
@@ -466,9 +472,9 @@ export default function Checkout() {
           cpf: customerData.cpf.replace(/\D/g, ''), // Remove formatação do CPF
           addressData: {
             address: customerData.address || '',
-            number: '123', // Número padrão
-            complement: '',
-            district: '',
+            number: customerData.number || 'S/N',
+            complement: customerData.complement || '',
+            district: customerData.district || '',
             city: customerData.city || '',
             state: customerData.state || '',
             cep: customerData.zipCode || ''
@@ -487,8 +493,9 @@ export default function Checkout() {
         clientId: completeRegistrationData.clientId || clientData.clientId,
         addressData: {
           address: customerData.address,
-          number: '123', // Número padrão
-          complement: '',
+          number: customerData.number || 'S/N',
+          complement: customerData.complement || '',
+          district: customerData.district || '',
           city: customerData.city,
           state: customerData.state,
           zipCode: customerData.zipCode
@@ -1071,6 +1078,97 @@ export default function Checkout() {
                       className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
                       placeholder="(11) 99999-9999"
                       maxLength={15}
+                    />
+                  </div>
+                </div>
+                
+                {/* Campos de Endereço */}
+                <h3 className="text-lg font-medium mt-6 mb-4">Endereço</h3>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+                  <div className="col-span-1 lg:col-span-2">
+                    <label className="block text-sm font-medium mb-2">
+                      CEP
+                    </label>
+                    <input
+                      type="text"
+                      value={customerData.zipCode}
+                      onChange={(e) => setCustomerData({...customerData, zipCode: e.target.value})}
+                      className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
+                      placeholder="00000-000"
+                      maxLength={9}
+                    />
+                  </div>
+                  <div className="col-span-1 lg:col-span-2">
+                    <label className="block text-sm font-medium mb-2">
+                      Endereço
+                    </label>
+                    <input
+                      type="text"
+                      value={customerData.address}
+                      onChange={(e) => setCustomerData({...customerData, address: e.target.value})}
+                      className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
+                      placeholder="Rua, Avenida, etc."
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Número
+                    </label>
+                    <input
+                      type="text"
+                      value={customerData.number}
+                      onChange={(e) => setCustomerData({...customerData, number: e.target.value})}
+                      className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
+                      placeholder="Número"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Complemento (opcional)
+                    </label>
+                    <input
+                      type="text"
+                      value={customerData.complement}
+                      onChange={(e) => setCustomerData({...customerData, complement: e.target.value})}
+                      className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
+                      placeholder="Apto, Sala, etc."
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Bairro
+                    </label>
+                    <input
+                      type="text"
+                      value={customerData.district}
+                      onChange={(e) => setCustomerData({...customerData, district: e.target.value})}
+                      className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
+                      placeholder="Bairro"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Cidade
+                    </label>
+                    <input
+                      type="text"
+                      value={customerData.city}
+                      onChange={(e) => setCustomerData({...customerData, city: e.target.value})}
+                      className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
+                      placeholder="Cidade"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Estado
+                    </label>
+                    <input
+                      type="text"
+                      value={customerData.state}
+                      onChange={(e) => setCustomerData({...customerData, state: e.target.value})}
+                      className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
+                      placeholder="UF"
+                      maxLength={2}
                     />
                   </div>
                 </div>
