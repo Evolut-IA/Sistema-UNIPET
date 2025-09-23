@@ -247,26 +247,25 @@ export default function Checkout() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          customer: {
-            name: customerData.name,
+          clientData: {
+            full_name: customerData.name,
             email: customerData.email,
-            cpf: customerData.cpf,
-            phone: customerData.phone
-          },
-          address: {
+            phone: customerData.phone,
+            password: '123456', // Senha padrão temporária
             address: customerData.address,
             city: customerData.city,
             state: customerData.state,
             zipCode: customerData.zipCode
           },
-          pets: petsData.map(pet => ({
+          petsData: petsData.map(pet => ({
             name: pet.name,
             species: pet.species,
             breed: pet.breed,
-            age: pet.age,
-            weight: pet.weight
-          })),
-          planId: selectedPlan?.id
+            age: pet.age.toString(),
+            weight: pet.weight.toString(),
+            sex: 'Macho', // Valor padrão
+            planId: selectedPlan?.id
+          }))
         }),
       });
 
@@ -281,6 +280,8 @@ export default function Checkout() {
         clientId: clientData.clientId,
         addressData: {
           address: customerData.address,
+          number: '123', // Número padrão
+          complement: '',
           city: customerData.city,
           state: customerData.state,
           zipCode: customerData.zipCode
