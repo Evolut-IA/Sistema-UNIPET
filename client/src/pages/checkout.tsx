@@ -194,6 +194,7 @@ export default function Checkout() {
   const [isPaymentConfirmed, setIsPaymentConfirmed] = useState(false);
   const [isLoadingCEP, setIsLoadingCEP] = useState(false);
   const [cepError, setCepError] = useState('');
+  const [paymentError, setPaymentError] = useState<{ show: boolean; title: string; message: string; }>({ show: false, title: '', message: '' });
 
   // Função para validar se o último pet permite adicionar um novo
   const canAddNewPet = () => {
@@ -598,10 +599,48 @@ export default function Checkout() {
           navigate(`/checkout-success?order=${result.payment?.orderId}&method=${paymentData.method}`);
         }
       } else {
-        console.error('Checkout failed');
+        // Capturar erro detalhado do backend
+        try {
+          const errorData = await response.json();
+          const errorMessage = errorData.error || 'Ocorreu um erro no processamento do pagamento';
+          const errorDetails = errorData.details || '';
+          
+          // Mapear códigos de erro para mensagens mais user-friendly
+          let userMessage = errorMessage;
+          let title = 'Pagamento Não Autorizado';
+          
+          if (errorMessage.includes('não autorizado')) {
+            title = 'Cartão Recusado';
+            userMessage = 'Seu cartão foi recusado pela operadora. Verifique os dados do cartão ou tente outro cartão.';
+          } else if (errorMessage.includes('CPF')) {
+            title = 'CPF Inválido';
+            userMessage = 'O CPF informado não é válido. Verifique os números e tente novamente.';
+          } else if (errorMessage.includes('cartão') || errorMessage.includes('card')) {
+            title = 'Dados do Cartão';
+            userMessage = 'Verifique os dados do seu cartão (número, validade, CVV) e tente novamente.';
+          }
+          
+          setPaymentError({
+            show: true,
+            title,
+            message: userMessage
+          });
+        } catch {
+          // Se não conseguir fazer parse da resposta, usar erro genérico
+          setPaymentError({
+            show: true,
+            title: 'Erro no Pagamento',
+            message: 'Ocorreu um erro no processamento do pagamento. Verifique os dados e tente novamente.'
+          });
+        }
       }
     } catch (error) {
       console.error('Error during checkout:', error);
+      setPaymentError({
+        show: true,
+        title: 'Erro de Conexão',
+        message: 'Não foi possível conectar com o servidor. Verifique sua conexão e tente novamente.'
+      });
     } finally {
       setIsLoading(false);
     }
@@ -1589,6 +1628,49 @@ export default function Checkout() {
         </div>
       </div>
       
+      {/* Popup de Erro de Pagamento */}
+      {paymentError.show && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-xl">
+            <div className="flex items-center mb-4">
+              <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mr-4">
+                <svg className="w-6 h-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 19.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">{paymentError.title}</h3>
+              </div>
+            </div>
+            
+            <p className="text-gray-600 mb-6 leading-relaxed">
+              {paymentError.message}
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button
+                onClick={() => setPaymentError({ show: false, title: '', message: '' })}
+                className="flex-1 px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Fechar
+              </button>
+              <button
+                onClick={() => {
+                  setPaymentError({ show: false, title: '', message: '' });
+                  // Voltar para o step de pagamento para correção
+                  setCurrentStep(4);
+                }}
+                className="flex-1 px-4 py-2 text-white rounded-lg transition-colors"
+                style={{
+                  background: 'var(--btn-ver-planos-bg)',
+                }}
+              >
+                Corrigir Dados
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       
       <Footer />
     </>
