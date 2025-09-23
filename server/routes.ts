@@ -1420,21 +1420,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log("💾 [PRE-PAYMENT] Salvando cliente e pet antes do pagamento...");
 
       // Atualizar dados completos do cliente (com endereço)
+      // Note: usar fullName (camelCase) conforme schema
+      // Filtrar campos undefined para evitar erro no Drizzle
       const updatedClientData = {
-        full_name: paymentData.customer.name,
-        email: paymentData.customer.email,
-        cpf: paymentData.customer.cpf?.replace(/\D/g, ''),
+        fullName: paymentData.customer.name || validatedClient.fullName,
+        email: paymentData.customer.email || validatedClient.email,
+        cpf: paymentData.customer.cpf?.replace(/\D/g, '') || validatedClient.cpf,
         phone: paymentData.customer.phone || validatedClient.phone,
-        cep: addressData.zipCode || addressData.cep,
-        address: addressData.address,
-        number: addressData.number,
-        complement: addressData.complement,
-        district: addressData.district,
-        city: addressData.city,
-        state: addressData.state
+        cep: addressData.zipCode || addressData.cep || null,
+        address: addressData.address || null,
+        number: addressData.number || null,
+        complement: addressData.complement || null,
+        district: addressData.district || null,
+        city: addressData.city || null,
+        state: addressData.state || null
       };
+      
+      // Remove undefined values to prevent Drizzle errors
+      Object.keys(updatedClientData).forEach(key => {
+        if (updatedClientData[key] === undefined) {
+          delete updatedClientData[key];
+        }
+      });
 
       try {
+        // Debug: log do que estamos enviando para o update
+        console.log("🔍 [PRE-PAYMENT-DEBUG] Dados para update:", JSON.stringify(updatedClientData, null, 2));
+        
         // Atualizar cliente com dados completos
         await storage.updateClient(validatedClient.id, updatedClientData);
         console.log("✅ [PRE-PAYMENT] Cliente atualizado com endereço completo");

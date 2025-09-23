@@ -1,0 +1,35 @@
+🔍 [CHAT] Loaded chat settings: 
+Object {id: "77d0d663-ecc3-48a8-8100-c6c6a39cd50b", welcomeMessage: "🐾 Olá! Sou o assistente virtual da UniPet Plan! Estou aqui para ajudar você com informações sobre…", placeholderText: "Digite sua dúvida...", chatTitle: "Assistente Virtual", buttonIcon: "MessageCircle", …}
+🔍 [CHAT] Bot icon: Present (Binary Data)
+🔍 [CHAT] Support icon: Not set
+🔍 [useNetworkPageData] Network units loaded: 
+Object {count: 1, unitsWithImages: 1, firstUnit: {…}}
+✅ [useSiteSettings] Successfully fetched site settings: 
+Object {id: "19c61b78-d8a3-4b26-a289-7b71e87856f4", whatsapp: "558632327374", email: "contato@unipetplan.com.br", phone: "558632327374", instagramUrl: "https://www.instagram.com/unipetplan/", …}
+🔍 AboutSection component - Settings: 
+Object {hasImage: true, imageLoaded: "loaded"}
+🔍 [useNetworkPageData] Network units loaded: 
+Object {count: 1, unitsWithImages: 1, firstUnit: {…}}
+🔍 About page - Settings: 
+Object {aboutImage: "loaded"}
+🔍 AboutSection component - Settings: 
+Object {hasImage: true, imageLoaded: "loaded"}
+🔍 [CHAT] Loaded chat settings: 
+Object {id: "77d0d663-ecc3-48a8-8100-c6c6a39cd50b", welcomeMessage: "🐾 Olá! Sou o assistente virtual da UniPet Plan! Estou aqui para ajudar você com informações sobre…", placeholderText: "Digite sua dúvida...", chatTitle: "Assistente Virtual", buttonIcon: "MessageCircle", …}
+🔍 [CHAT] Bot icon: Present (Binary Data)
+🔍 [CHAT] Support icon: Not set
+🔍 [CHAT] Loaded chat settings: 
+Object {id: "77d0d663-ecc3-48a8-8100-c6c6a39cd50b", welcomeMessage: "🐾 Olá! Sou o assistente virtual da UniPet Plan! Estou aqui para ajudar você com informações sobre…", placeholderText: "Digite sua dúvida...", chatTitle: "Assistente Virtual", buttonIcon: "MessageCircle", …}
+🔍 [CHAT] Bot icon: Present (Binary Data)
+🔍 [CHAT] Support icon: Not set
+🔍 AboutSection component - Settings: 
+Object {hasImage: true, imageLoaded: "loaded"}
+🔍 [CHAT] Loaded chat settings: 
+Object {id: "77d0d663-ecc3-48a8-8100-c6c6a39cd50b", welcomeMessage: "🐾 Olá! Sou o assistente virtual da UniPet Plan! Estou aqui para ajudar você com informações sobre…", placeholderText: "Digite sua dúvida...", chatTitle: "Assistente Virtual", buttonIcon: "MessageCircle", …}
+🔍 [CHAT] Bot icon: Present (Binary Data)
+🔍 [CHAT] Support icon: Not set
+Checkout failed
+at t.value (https://62d64416-442f-4c4a-b510-122733fb63ad-00-1tmfxba7e5kg2.kirk.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://62d64416-442f-4c4a-b510-122733fb63ad-00-1tmfxba7e5kg2.kirk.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://62d64416-442f-4c4a-b510-122733fb63ad-00-1tmfxba7e5kg2.kirk.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://62d64416-442f-4c4a-b510-122733fb63ad-00-1tmfxba7e5kg2.kirk.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
