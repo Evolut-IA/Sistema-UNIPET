@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useRoute } from 'wouter';
 import { motion } from 'framer-motion';
-import { CheckCircle, ArrowLeft, ArrowRight, Plus, Trash2, Edit } from 'lucide-react';
+import { CheckCircle, ArrowLeft, ArrowRight, Plus, Trash2, Edit, Check, Star } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { useMediaQuery } from "@/hooks/use-media-query";
 import {
   Select,
   SelectContent,
@@ -19,6 +21,7 @@ interface Plan {
   price: number;
   description: string;
   features: string[];
+  planType?: string;
 }
 
 interface PetData {
@@ -54,6 +57,7 @@ interface PaymentData {
 export default function Checkout() {
   const [, navigate] = useLocation();
   const [, params] = useRoute('/checkout/:planId?');
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
   // Funções de máscara
   const formatCPF = (value: string) => {
@@ -446,6 +450,15 @@ export default function Checkout() {
     }).format(price / 100);
   };
 
+  const formatPriceForPricing = (priceInCents: number): string => {
+    return (priceInCents / 100).toFixed(2).replace('.', ',');
+  };
+
+  // Função para obter texto de coparticipação
+  const getCoParticipationText = (planType?: string): string => {
+    return planType === "with_waiting_period" ? "Sem coparticipação" : "Com coparticipação";
+  };
+
   // Calcular valor total com descontos por pet (price já está em centavos)
   const calculateTotal = () => {
     if (!selectedPlan) return 0;
@@ -555,23 +568,108 @@ export default function Checkout() {
                 <h2 className="text-xl xs:text-2xl font-bold text-center mb-4 xs:mb-6">
                   Escolha seu Plano
                 </h2>
-                <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 max-w-6xl mx-auto">
-                  {plans.map((plan) => (
-                    <div
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 perspective-1000">
+                  {plans.map((plan, index) => (
+                    <motion.div
                       key={plan.id}
-                      className={`bg-white border-2 rounded-lg p-6 cursor-pointer transition-all shadow-lg ${
+                      initial={{ opacity: 0 }}
+                      whileInView={{
+                        opacity: 1,
+                      }}
+                      viewport={{ once: true }}
+                      transition={{
+                        duration: 0.5,
+                        ease: "easeOut",
+                        delay: index * 0.1,
+                      }}
+                      className={cn(
+                        "rounded-2xl border-[1px] bg-[var(--bg-cream-light)] text-center flex flex-col relative transform-style-preserve-3d backface-hidden transition-all duration-300 cursor-pointer",
                         selectedPlan?.id === plan.id
-                          ? 'border-teal-600 ring-2 ring-teal-300'
-                          : 'border-gray-200 hover:border-teal-300 hover:shadow-xl'
-                      }`}
+                          ? 'border-[var(--text-gold)] border-2 ring-2 ring-[var(--text-gold)]/30'
+                          : index === 1
+                          ? "border-[var(--text-gold)] border-2"
+                          : "border-[var(--border-teal-light)] hover:border-[var(--text-gold)] hover:shadow-lg",
+                        // Apply 3D effects only on desktop and when there are exactly 3 plans visible
+                        isDesktop && plans.length >= 3 && [
+                          index === 0 && "pricing-card-left",
+                          index === 1 && "pricing-card-popular", 
+                          index === 2 && "pricing-card-right"
+                        ]
+                      )}
                       onClick={() => handlePlanSelect(plan)}
                     >
-                      <h3 className="text-xl font-bold mb-2 text-gray-900">{plan.name}</h3>
-                      <p className="text-2xl font-bold text-teal-600 mb-4">
-                        {formatPrice(plan.price)}
-                      </p>
-                      <p className="text-gray-600 mb-4 text-sm">{plan.description}</p>
-                    </div>
+                      {index === 1 && (
+                        <div className="absolute top-0 right-0 bg-[var(--text-gold)] py-0.5 px-2 rounded-bl-xl rounded-tr-xl flex items-center">
+                          <Star className="text-[var(--text-light)] h-4 w-4 fill-current" />
+                          <span className="text-[var(--text-light)] ml-1 font-sans font-semibold">
+                            Popular
+                          </span>
+                        </div>
+                      )}
+
+                      <div className="flex flex-col h-full p-6">
+                        {/* Conteúdo superior */}
+                        <div className="flex-1">
+                          {/* Nome do plano */}
+                          <div className="flex items-center justify-center mb-6">
+                            <p className="text-base font-semibold text-[var(--text-dark-primary)]">
+                              {plan.name}
+                            </p>
+                          </div>
+
+                          {/* Preço */}
+                          <div className="mb-4 flex items-center justify-center">
+                            <span className="text-3xl font-bold tracking-tight text-[var(--text-teal)]">
+                              R$ {formatPriceForPricing(plan.price)}/mês
+                            </span>
+                          </div>
+
+                          <p className="text-xs leading-5 text-[var(--text-dark-primary)] mb-4">
+                            faturamento mensal
+                          </p>
+
+                          {/* Lista de recursos */}
+                          <ul className="mt-5 gap-2 flex flex-col mb-8 text-left">
+                            {plan.features.map((feature, idx) => (
+                              <li key={idx} className="flex items-start gap-2">
+                                <Check className="h-4 w-4 text-[var(--text-teal)] mt-0.5 flex-shrink-0" />
+                                <span className="text-sm text-[var(--text-dark-primary)]">{feature}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+
+                        {/* Conteúdo inferior fixo */}
+                        <div className="mt-auto">
+                          <hr className="w-full my-4 border-[var(--border-teal-light)]" />
+
+                          {/* Badge de selecionado */}
+                          <div className="mb-4 text-center">
+                            {selectedPlan?.id === plan.id ? (
+                              <span 
+                                className="inline-block px-3 py-1 text-xs font-semibold rounded-full" 
+                                style={{
+                                  background: 'var(--text-gold)', 
+                                  color: 'var(--text-light)'
+                                }}
+                              >
+                                Plano Selecionado
+                              </span>
+                            ) : (
+                              <span 
+                                className="inline-block px-3 py-1 text-xs font-semibold rounded-full" 
+                                style={{
+                                  background: 'var(--bg-teal)', 
+                                  color: 'var(--text-light)'
+                                }}
+                              >
+                                {getCoParticipationText(plan.planType)}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
                   ))}
                 </div>
 
