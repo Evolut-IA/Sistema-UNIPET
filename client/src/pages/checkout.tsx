@@ -363,7 +363,7 @@ export default function Checkout() {
                             <button
                               type="button"
                               onClick={() => removePet(index)}
-                              className="flex items-center px-3 py-1 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                              className="hidden md:flex items-center px-3 py-1 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                             >
                               <Trash2 className="w-4 h-4 mr-1" />
                               Remover
@@ -439,6 +439,18 @@ export default function Checkout() {
                                 className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
                                 placeholder="Idade"
                               />
+                              
+                              {/* Botão Remover - Versão Mobile (embaixo do campo Idade) */}
+                              {petsData.length > 1 && (
+                                <button
+                                  type="button"
+                                  onClick={() => removePet(index)}
+                                  className="md:hidden flex items-center justify-center w-full mt-3 px-3 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                                >
+                                  <Trash2 className="w-4 h-4 mr-1" />
+                                  Remover
+                                </button>
+                              )}
                             </div>
                           </div>
                         )}
