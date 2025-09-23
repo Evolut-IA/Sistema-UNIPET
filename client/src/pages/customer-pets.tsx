@@ -776,23 +776,6 @@ export default function CustomerPets() {
                           <FileText className="w-4 h-4" />
                           <span>Guias</span>
                         </button>
-                        <button
-                          onClick={() => deletePet(pet.id, pet.name)}
-                          disabled={isDeleting === pet.id}
-                          className="flex items-center space-x-1 px-3 py-2 rounded-lg transition-colors"
-                          style={{ 
-                            backgroundColor: '#dc2626',
-                            color: 'white',
-                            opacity: isDeleting === pet.id ? 0.6 : 1
-                          }}
-                        >
-                          {isDeleting === pet.id ? (
-                            <div className="w-4 h-4 border border-white border-t-transparent rounded-full animate-spin"></div>
-                          ) : (
-                            <Trash2 className="w-4 h-4" />
-                          )}
-                          <span>{isDeleting === pet.id ? 'Excluindo...' : 'Apagar'}</span>
-                        </button>
                       </>
                     )}
                   </div>
