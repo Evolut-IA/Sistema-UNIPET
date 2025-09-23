@@ -509,6 +509,16 @@ export default function Checkout() {
             orderId: result.payment.orderId,
             paymentId: result.payment.paymentId
           });
+        } else if (paymentData.method === 'credit_card' && result.payment?.status === 2) {
+          // Para cartão aprovado (status 2), mostrar popup de sucesso e redirecionar
+          setShowSuccessPopup(true);
+          console.log('🎉 [CHECKOUT] Pagamento com cartão aprovado, mostrando popup de sucesso!');
+          console.log('🔍 [CHECKOUT] Dados do pagamento aprovado:', result.payment);
+          
+          // Redirecionar após 3 segundos
+          setTimeout(() => {
+            navigate('/customer/login');
+          }, 3000);
         } else {
           navigate(`/checkout-success?order=${result.payment?.orderId}&method=${paymentData.method}`);
         }
@@ -1408,7 +1418,7 @@ export default function Checkout() {
                 🎉 Parabéns pela compra!
               </h2>
               <p className="text-gray-600 mb-4">
-                Seu pagamento PIX foi confirmado com sucesso!
+                Seu pagamento foi confirmado com sucesso!
               </p>
               <div className="bg-teal-50 border border-teal-200 rounded-lg p-4 mb-4">
                 <p className="text-sm text-teal-800">
