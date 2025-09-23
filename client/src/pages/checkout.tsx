@@ -10,6 +10,8 @@ import {
   SelectValue,
   SelectSeparator
 } from '@/components/ui/select';
+import Header from "@/components/layout/header";
+import Footer from "@/components/layout/footer";
 
 interface Plan {
   id: string;
@@ -423,9 +425,11 @@ export default function Checkout() {
 
 
   return (
-    <div className="min-h-screen" style={{backgroundColor: '#277677'}}>
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
+    <>
+      <Header />
+      <div className="min-h-screen pt-16" style={{backgroundColor: '#277677'}}>
+        <div className="container mx-auto px-4 py-8">
+          <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="text-center mb-6 xs:mb-8">
             <div className="flex justify-center items-center space-x-1 xs:space-x-2 lg:space-x-4">
@@ -1028,7 +1032,7 @@ export default function Checkout() {
               </motion.div>
             )}
 
-            {/* Navigation Buttons for Steps 2, 3 and 4 */}
+            {/* Navigation Buttons for Steps 2-4 */}
             <div className="flex flex-col xs:flex-row xs:justify-between gap-3 xs:gap-0 mt-8 pt-6 border-t">
               <button
                 onClick={handlePrevStep}
@@ -1068,8 +1072,10 @@ export default function Checkout() {
             </div>
             </div>
           )}
+          </div>
         </div>
       </div>
-    </div>
+      <Footer />
+    </>
   );
 }
