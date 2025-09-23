@@ -280,15 +280,7 @@ export default function Checkout() {
                 </div>
 
                 {/* Navigation Buttons for Step 1 (now inside white container) */}
-                <div className="flex flex-col md:flex-row md:justify-between gap-3 md:gap-0 mt-8 pt-6 border-t">
-                  <button
-                    onClick={handlePrevStep}
-                    className="flex items-center justify-center w-full md:w-auto px-6 py-3 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                  >
-                    <ArrowLeft className="w-4 h-4 mr-2" />
-                    Voltar
-                  </button>
-
+                <div className="flex justify-center mt-8 pt-6 border-t">
                   <button
                     onClick={handleNextStep}
                     disabled={!selectedPlan}
