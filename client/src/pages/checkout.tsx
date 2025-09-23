@@ -881,7 +881,7 @@ export default function Checkout() {
                               }
                             })}
                             className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
-                            disabled={selectedPlan && ['BASIC', 'INFINITY'].some(type => selectedPlan.name.toUpperCase().includes(type))}
+                            disabled={!!selectedPlan && ['BASIC', 'INFINITY'].some(type => selectedPlan.name.toUpperCase().includes(type))}
                           >
                             {selectedPlan && ['BASIC', 'INFINITY'].some(type => selectedPlan.name.toUpperCase().includes(type)) ? (
                               <option value={1}>1x à vista (único disponível)</option>
