@@ -922,9 +922,6 @@ export default function Checkout() {
                   {/* Seção do PIX - aparece após processamento */}
                   {pixData && paymentData.method === 'pix' && (
                     <div className="bg-green-50 border border-green-200 p-6 rounded-lg">
-                      <h3 className="text-lg font-bold text-green-800 mb-4 text-center">
-                        🎉 Pedido Confirmado! Realize o Pagamento PIX
-                      </h3>
                       
                       <div className="grid md:grid-cols-2 gap-6">
                         {/* QR Code */}
