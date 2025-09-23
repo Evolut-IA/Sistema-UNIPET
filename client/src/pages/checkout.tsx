@@ -306,7 +306,7 @@ export default function Checkout() {
                           <button
                             type="button"
                             onClick={() => removePet(index)}
-                            className="flex items-center px-3 py-1 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            className="flex items-center px-3 py-1 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                           >
                             <Trash2 className="w-4 h-4 mr-1" />
                             Remover
