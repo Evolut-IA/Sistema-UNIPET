@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, memo } from "react";
 import Hero from "@/components/sections/hero";
 import PlansSection from "@/components/sections/plans-section";
 import Features from "@/components/sections/features";

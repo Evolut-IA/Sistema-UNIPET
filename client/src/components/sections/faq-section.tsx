@@ -51,7 +51,7 @@ export default function FaqSection({ showTitle = true, maxItems, showViewMoreBut
                     className="border border-[var(--border-teal)]/20 rounded-lg bg-[var(--bg-cream-lighter)]"
                   >
                     <AccordionTrigger 
-                      className="text-left py-4 hover:no-underline text-[var(--text-teal)] font-semibold"
+                      className="text-left py-4 hover:no-underline text-[var(--text-teal)] font-semibold text-sm"
                       data-testid={`faq-question-${faq.id}`}
                     >
                       <span className="px-6 flex-1">{faq.question}</span>
