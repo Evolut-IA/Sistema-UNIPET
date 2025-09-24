@@ -93,7 +93,7 @@ export default function Hero() {
                     color: 'var(--btn-ver-planos-text)',
                     border: 'none',
                     cursor: 'pointer',
-                    transition: 'none',
+
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center'
@@ -112,7 +112,7 @@ export default function Hero() {
                     color: 'var(--btn-solicitar-cotacao-text)',
                     border: '1px solid var(--btn-solicitar-cotacao-border)',
                     cursor: 'pointer',
-                    transition: 'none',
+
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center'
