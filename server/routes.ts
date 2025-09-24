@@ -1017,7 +1017,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         // Update existing client with partial data (without overwriting existing fields)
         const updateData: any = {
-          fullName: parsedClientData.full_name,
+          fullName: parsedClientData.fullName,
           phone: parsedClientData.phone || existingClient.phone,
         };
         
@@ -1067,7 +1067,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create client with UUID - CPF null for Step 2
       const clientToSave = {
         ...parsedClientData,
-        fullName: parsedClientData.full_name,
+        fullName: parsedClientData.fullName,
         password: hashedPassword,
         cpf: null, // CPF null temporariamente (será adicionado no Step 3)
         id: `client-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
@@ -1441,7 +1441,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             },
             client: {
               id: client.id,
-              name: client.full_name,
+              name: client.fullName,
               email: client.email
             }
           });
@@ -1526,7 +1526,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           clientIdSent: clientId,
           clientIdExistente: clientByEmail.id,
           email: paymentData.customer?.email,
-          nomeExistente: clientByEmail.full_name
+          nomeExistente: clientByEmail.fullName
         });
         
         validatedClient = clientByEmail;
@@ -1546,7 +1546,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log("✅ [CHECKOUT-VALIDATION] Cliente validado com sucesso:", {
         clientId: validatedClient.id,
         email: validatedClient.email,
-        name: validatedClient.full_name
+        name: validatedClient.fullName
       });
       
       // Track if we need to create a client after payment approval (não mais necessário pois já validamos)
@@ -1854,7 +1854,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
             // Prepare client data for creation
             const newClientData = {
               id: clientId, // Use the provided clientId
-              full_name: paymentData.customer.name,
               fullName: paymentData.customer.name,
               email: paymentData.customer.email,
               phone: paymentData.customer.phone || '',
@@ -1876,7 +1875,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             console.log("✅ [CHECKOUT-AUTO-CLIENT] Cliente criado automaticamente com sucesso", {
               clientId: targetClient.id,
               email: targetClient.email,
-              name: targetClient.full_name
+              name: targetClient.fullName
             });
           } else if (!needsClientCreation) {
             // CRITICAL FIX: Get current client data to preserve CPF
@@ -2028,7 +2027,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                   const receiptData = {
                     contractId: contract.id,
                     cieloPaymentId: paymentResult.payment?.paymentId,
-                    clientName: paymentData.customer.name || targetClient.fullName || targetClient.full_name,
+                    clientName: paymentData.customer.name || targetClient.fullName,
                     clientEmail: targetClient.email,
                     petName: pet?.name || undefined,
                     planName: plan?.name || undefined
@@ -2167,7 +2166,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create client with UUID
       const clientData = {
         ...parsed,
-        fullName: parsed.full_name,
+        fullName: parsed.fullName,
         password: hashedPassword,
         id: `client-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
       };
@@ -2232,7 +2231,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Store client in session
       req.session.client = {
         id: client.id,
-        full_name: client.full_name,
+        fullName: client.fullName,
         email: client.email
       };
       
@@ -2581,7 +2580,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const clientData = req.session.client;
       res.json({ 
-        message: `Bem-vindo à área do cliente, ${clientData.full_name}!`,
+        message: `Bem-vindo à área do cliente, ${clientData.fullName}!`,
         client: clientData
       });
     } catch (error) {
@@ -2709,7 +2708,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           billingPeriod: contract.billingPeriod || 'monthly',
           client: {
             id: client.id,
-            name: client.full_name,
+            name: client.fullName,
             email: client.email,
             cpf: client.cpf,
             phone: client.phone,
@@ -3200,7 +3199,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Prepare update data (only allow certain fields to be updated)
       const updateData: any = {};
-      if (full_name !== undefined) updateData.full_name = full_name;
+      if (full_name !== undefined) updateData.fullName = full_name;
       if (email !== undefined) updateData.email = email;
       if (phone !== undefined) updateData.phone = phone;
       if (address !== undefined) updateData.address = address;
@@ -3221,7 +3220,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Update session data
       req.session.client = {
         id: updatedClient.id,
-        full_name: updatedClient.full_name,
+        fullName: updatedClient.fullName,
         email: updatedClient.email
       };
 
