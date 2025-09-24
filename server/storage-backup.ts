@@ -515,8 +515,7 @@ export class InMemoryStorage implements IStorage {
   async createClient(client: InsertClient): Promise<Client> {
     const newClient: Client = {
       id: `client-${Date.now()}`,
-      full_name: client.full_name,
-      fullName: client.full_name,
+      fullName: client.fullName,
       email: client.email,
       phone: client.phone,
       password: client.password ?? null,
