@@ -2395,7 +2395,71 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Pet image upload removed - images now served from Supabase Storage only
+  // Pet image upload to Supabase Storage
+  app.post("/api/clients/pets/:petId/image", requireClient, async (req, res) => {
+    try {
+      const clientId = req.session.client?.id;
+      const petId = req.params.petId;
+      const { image } = req.body;
+      
+      if (!clientId) {
+        return res.status(401).json({ error: "Cliente não autenticado" });
+      }
+
+      if (!image) {
+        return res.status(400).json({ error: "Imagem não fornecida" });
+      }
+
+      // Verificar se o pet pertence ao cliente
+      const existingPet = await storage.getPet(petId);
+      if (!existingPet) {
+        return res.status(404).json({ error: "Pet não encontrado" });
+      }
+      
+      if (existingPet.clientId !== clientId) {
+        return res.status(403).json({ error: "Acesso negado" });
+      }
+
+      // Converter base64 para buffer
+      const base64Data = image.replace(/^data:image\/[a-z]+;base64,/, '');
+      const imageBuffer = Buffer.from(base64Data, 'base64');
+      
+      // Detectar tipo MIME (assumir JPEG se não detectado)
+      let mimeType = 'image/jpeg';
+      if (image.startsWith('data:image/png')) {
+        mimeType = 'image/png';
+      }
+
+      // Upload para Supabase Storage usando o SupabaseStorageService
+      const uploadResult = await supabaseStorage.uploadPetImage(
+        petId, 
+        imageBuffer, 
+        mimeType,
+        { maxWidth: 800, maxHeight: 600, quality: 85 }
+      );
+
+      if (!uploadResult.success) {
+        return res.status(500).json({ 
+          error: uploadResult.error || "Erro ao fazer upload da imagem" 
+        });
+      }
+
+      // Atualizar o pet com a nova URL da imagem
+      const updatedPet = await storage.updatePet(petId, { 
+        imageUrl: uploadResult.publicUrl 
+      });
+      
+      res.json({ 
+        pet: updatedPet,
+        message: "Imagem do pet atualizada com sucesso",
+        imageUrl: uploadResult.publicUrl
+      });
+      
+    } catch (error) {
+      console.error("❌ Error uploading pet image:", error);
+      res.status(500).json({ error: "Erro interno do servidor" });
+    }
+  });
 
   // Get Pet's Guides
   app.get("/api/clients/pets/:petId/guides", requireClient, async (req, res) => {
