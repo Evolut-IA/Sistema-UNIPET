@@ -2462,6 +2462,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get Pet's Guides
+  // Delete Pet
+  app.delete("/api/clients/pets/:petId", requireClient, async (req, res) => {
+    try {
+      const clientId = req.session.client?.id;
+      const petId = req.params.petId;
+      if (!clientId) return res.status(401).json({ error: "Cliente não autenticado" });
+      const pet = await storage.getPet(petId);
+      if (!pet) return res.status(404).json({ error: "Pet não encontrado" });
+      if (pet.clientId !== clientId) return res.status(403).json({ error: "Acesso negado" });
+      await storage.deletePet(petId);
+      return res.json({ success: true, message: "Pet excluído com sucesso" });
+    } catch (error) {
+      console.error("❌ Error deleting pet:", error);
+      return res.status(500).json({ error: "Erro ao excluir pet" });
+    }
+  });
+
+  // Get Pet's Guides
   app.get("/api/clients/pets/:petId/guides", requireClient, async (req, res) => {
     try {
       const clientId = req.session.client?.id;
