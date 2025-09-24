@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
-import { CheckCircle, ArrowLeft, CreditCard, FileText, Copy, Smartphone } from "lucide-react";
+import { CheckCircle, ArrowLeft, CreditCard, FileText, Smartphone, Copy } from "lucide-react";
+import { CopyButton } from "@/components/ui/copy-button";
 
 interface PaymentDetails {
   orderId: string;

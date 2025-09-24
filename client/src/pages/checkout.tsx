@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { CheckCircle, ArrowLeft, ArrowRight, Plus, Trash2, Edit, Check, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { CopyButton } from '@/components/ui/copy-button';
 import {
   Select,
   SelectContent,
@@ -1610,18 +1611,13 @@ export default function Checkout() {
                             <div className="bg-gray-50 p-2 md:p-3 rounded text-xs font-mono break-all border max-h-24 md:max-h-none overflow-y-auto">
                               {pixData.copyPasteCode}
                             </div>
-                            <button
-                              onClick={() => {
-                                navigator.clipboard.writeText(pixData.copyPasteCode);
-                              }}
-                              className="mt-3 w-full text-white py-2 px-4 rounded-lg transition-colors"
+                            <CopyButton
+                              textToCopy={pixData.copyPasteCode}
+                              className="mt-3 w-full text-white py-2 px-4 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2"
                               style={{
-                                background: 'var(--btn-cotacao-gratuita-bg)',
-                                border: 'none'
+                                background: 'var(--btn-cotacao-gratuita-bg)'
                               }}
-                            >
-                              Copiar Código PIX
-                            </button>
+                            />
                           </div>
                         </div>
                       </div>
