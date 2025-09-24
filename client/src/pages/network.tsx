@@ -156,12 +156,11 @@ export default function Network() {
                       placeholder="Buscar..."
                       value={searchText}
                       onChange={(e) => setSearchText(e.target.value)}
-                      className="w-full pl-10 rounded-lg border text-sm"
+                      className="w-full pl-10 p-3 rounded-lg border text-sm"
                       style={{
                         borderColor: 'var(--border-gray)',
                         backgroundColor: '#FFFFFF',
-                        padding: '12px 40px 12px 40px',
-                        height: '45px'
+                        paddingLeft: '2.5rem'
                       }}
                       data-testid="input-search-units"
                     />
