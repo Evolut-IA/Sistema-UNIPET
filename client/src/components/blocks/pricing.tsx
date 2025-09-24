@@ -130,6 +130,7 @@ export function Pricing({
                       "group relative w-full gap-2 overflow-hidden text-lg font-semibold tracking-tighter mb-4",
                       "transform-gpu transition-all duration-300 ease-out",
                       "rounded-lg py-3 px-6",
+                      "hover:-translate-y-1 hover:shadow-lg",
                       plan.isPopular
                         ? "text-[var(--btn-cotacao-gratuita-text)]"
                         : "text-[var(--btn-ver-planos-text)]"
