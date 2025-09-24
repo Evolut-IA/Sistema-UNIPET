@@ -637,8 +637,24 @@ export class PaymentReceiptService {
         status: receiptData.status
       };
 
-      // Generate PDF buffer directly
-      const pdfBuffer = await this.generatePDF(pdfData);
+      // Generate PDF buffer directly using a mock payment structure
+      const mockCieloPayment = {
+        amount: receiptData.paymentAmount * 100, // Convert back to cents
+        installments: 1,
+        type: receiptData.paymentMethod,
+        currency: 'BRL',
+        country: 'BRA',
+        provider: 'Simulado',
+        proofOfSale: receiptData.proofOfSale || 'N/A',
+        authorizationCode: receiptData.authorizationCode || 'N/A',
+        tid: receiptData.tid || 'N/A',
+        status: 2, // Captured
+        returnCode: '4',
+        returnMessage: 'Operação realizada com sucesso',
+        receivedDate: receiptData.paymentDate
+      };
+      
+      const pdfBuffer = await this.generatePDF(pdfData, mockCieloPayment, receiptData.receiptNumber);
 
       console.log(`✅ [RECEIPT-SERVICE] PDF regenerado com sucesso: ${receiptData.receiptNumber}`);
 

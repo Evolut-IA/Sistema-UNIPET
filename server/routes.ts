@@ -3991,7 +3991,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           // ✅ FALLBACK: Tentar regenerar o PDF se não existir no storage
           try {
-            const PaymentReceiptService = (await import('./services/payment-receipt-service')).PaymentReceiptService;
+            const PaymentReceiptService = (await import('./services/payment-receipt-service.js')).PaymentReceiptService;
             const paymentReceiptService = new PaymentReceiptService();
             
             console.log(`🔄 [RECEIPT-DOWNLOAD] Regenerando PDF para comprovante: ${receiptId}`);
