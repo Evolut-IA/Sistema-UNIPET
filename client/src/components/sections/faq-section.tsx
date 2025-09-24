@@ -40,27 +40,27 @@ export default function FaqSection({ showTitle = true, maxItems, showViewMoreBut
           </div>
         )}
 
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <Card className="bg-[var(--bg-cream-light)] border-none shadow-lg rounded-xl">
-            <CardContent className="p-0">
-              <Accordion type="single" collapsible className="">
+            <CardContent className="p-4 sm:p-6 px-6 sm:px-8">
+              <Accordion type="single" collapsible className="space-y-4">
                 {displayItems.map((faq) => (
                   <AccordionItem 
                     key={faq.id} 
                     value={`item-${faq.id}`}
-                    className="border-0 rounded-none bg-[var(--bg-cream-lighter)]"
+                    className="border border-[var(--border-teal)]/20 rounded-lg bg-[var(--bg-cream-lighter)]"
                   >
                     <AccordionTrigger 
-                      className="text-left py-3 hover:no-underline text-[var(--text-teal)] font-semibold text-sm w-full"
+                      className="text-left py-4 hover:no-underline text-[var(--text-teal)] font-semibold text-sm"
                       data-testid={`faq-question-${faq.id}`}
                     >
-                      <span className="px-0 flex-1">{faq.question}</span>
+                      <span className="px-6 flex-1">{faq.question}</span>
                     </AccordionTrigger>
                     <AccordionContent 
                       className="text-[var(--text-dark-primary)] leading-relaxed"
                       data-testid={`faq-answer-${faq.id}`}
                     >
-                      <div className="px-0 pb-0">
+                      <div className="px-6 pb-4">
                         <FormattedText 
                           text={faq.answer} 
                           className="whitespace-pre-wrap leading-relaxed"
