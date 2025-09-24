@@ -87,7 +87,7 @@ export default function Hero() {
               <AnimatedSection animation="slideUp" delay={400}>
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <button
-                  className="text-base sm:text-lg font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-md h-12 sm:h-14 min-w-0 sm:min-w-[150px]"
+                  className="text-base sm:text-lg font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-md h-12 sm:h-14 min-w-0 sm:min-w-[150px] transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-teal-500/25"
                   style={{
                     background: 'var(--btn-ver-planos-bg)',
                     color: 'var(--btn-ver-planos-text)',
