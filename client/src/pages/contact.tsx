@@ -336,125 +336,125 @@ export default function Contact() {
             {/* Contact Information */}
             <AnimatedSection animation="slideLeft" delay={400}>
               <div className="pl-0 lg:pl-2 space-y-6 mt-5 lg:mt-0">
-                <Card className="rounded-xl w-full border-0" style={{backgroundColor: '#277677', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2)'}}>
-                <CardContent className="p-6 sm:p-8 text-left">
-                  <div className="mb-6">
-                    <div className="text-xl sm:text-2xl font-bold text-[var(--text-light)] mb-3">
-                      Outras Formas de Contato
-                    </div>
-                    <div className="w-12 h-0.5 bg-[var(--bg-gold)]"></div>
-                  </div>
-                  <div className="space-y-5 text-sm sm:text-base">
-                    {shouldShow.phone && (
-                      <div className="flex items-center gap-4">
-                        <div className="w-8 h-8 rounded-full bg-[var(--bg-gold)] flex items-center justify-center flex-shrink-0">
-                          <Phone className="h-4 w-4 text-[var(--text-light)]" />
-                        </div>
-                        <div className="flex-1">
-                          <div className="font-medium text-[var(--text-light)] text-sm">Telefone</div>
-                          <div className="text-[var(--text-light)] opacity-80">{settings.phone}</div>
-                        </div>
-                      </div>
-                    )}
-
-                    {shouldShow.email && (
-                      <div className="flex items-center gap-4">
-                        <div className="w-8 h-8 rounded-full bg-[var(--bg-gold)] flex items-center justify-center flex-shrink-0">
-                          <Mail className="h-4 w-4 text-[var(--text-light)]" />
-                        </div>
-                        <div className="flex-1">
-                          <div className="font-medium text-[var(--text-light)] text-sm">E-mail</div>
-                          <div className="text-[var(--text-light)] opacity-80">{settings.email}</div>
-                        </div>
-                      </div>
-                    )}
-
-                    {shouldShow.whatsapp && (
-                      <div className="flex items-center gap-4">
-                        <div className="w-8 h-8 rounded-full bg-[var(--bg-gold)] flex items-center justify-center flex-shrink-0">
-                          <FaWhatsapp className="h-4 w-4 text-[var(--text-light)]" />
-                        </div>
-                        <div className="flex-1">
-                          <div className="font-medium text-[var(--text-light)] text-sm">WhatsApp</div>
-                          <a 
-                            href={getWhatsAppLink()}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[var(--text-light)] opacity-80 transition-colors cursor-pointer"
-                          >
-                            {settings.whatsapp}
-                          </a>
-                        </div>
-                      </div>
-                    )}
-
-                    {shouldShow.address && (
-                      <div className="flex items-center gap-4">
-                        <div className="w-8 h-8 rounded-full bg-[var(--bg-gold)] flex items-center justify-center flex-shrink-0">
-                          <svg className="h-4 w-4 text-[var(--text-light)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg>
-                        </div>
-                        <div className="flex-1">
-                          <div className="font-medium text-[var(--text-light)] text-sm">Endereço</div>
-                          <div className="text-[var(--text-light)] opacity-80">{settings.address}</div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Social Media */}
-              {(shouldShow.facebookUrl || shouldShow.instagramUrl || shouldShow.linkedinUrl || shouldShow.youtubeUrl) && (
-                <Card className="rounded-xl w-full border-0" style={{backgroundColor: '#277677', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2)'}}>
-                  <CardContent className="p-6 sm:p-8 text-left">
+                <div className="shadow-lg rounded-xl w-full" style={{backgroundColor: '#277677'}}>
+                  <div className="p-6 sm:p-8 text-left">
                     <div className="mb-6">
-                      <div className="text-xl sm:text-2xl font-bold text-[var(--text-light)] mb-3">Siga-nos</div>
+                      <div className="text-xl sm:text-2xl font-bold text-[var(--text-light)] mb-3">
+                        Outras Formas de Contato
+                      </div>
                       <div className="w-12 h-0.5 bg-[var(--bg-gold)]"></div>
                     </div>
-                    <div className="flex space-x-4">
-                      {shouldShow.facebookUrl && (
-                        <a href={settings.facebookUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-cream-light)] text-[var(--text-teal)] transition-all duration-300 hover:scale-95">
-                          <Facebook className="h-4 w-4" />
-                        </a>
+                    <div className="space-y-5 text-sm sm:text-base">
+                      {shouldShow.phone && (
+                        <div className="flex items-center gap-4">
+                          <div className="w-8 h-8 rounded-full bg-[var(--bg-gold)] flex items-center justify-center flex-shrink-0">
+                            <Phone className="h-4 w-4 text-[var(--text-light)]" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="font-medium text-[var(--text-light)] text-sm">Telefone</div>
+                            <div className="text-[var(--text-light)] opacity-80">{settings.phone}</div>
+                          </div>
+                        </div>
                       )}
-                      {shouldShow.instagramUrl && (
-                        <a href={settings.instagramUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-cream-light)] text-[var(--text-teal)] transition-all duration-300 hover:scale-95">
-                          <Instagram className="h-4 w-4" />
-                        </a>
-                      )}
-                      {shouldShow.linkedinUrl && (
-                        <a href={settings.linkedinUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-cream-light)] text-[var(--text-teal)] transition-all duration-300 hover:scale-95">
-                          <Linkedin className="h-4 w-4" />
-                        </a>
-                      )}
-                      {shouldShow.youtubeUrl && (
-                        <a href={settings.youtubeUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-cream-light)] text-[var(--text-teal)] transition-all duration-300 hover:scale-95">
-                          <Youtube className="h-4 w-4" />
-                        </a>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
 
-              {/* Service Hours */}
-              {shouldShow.businessHours && (
-                <Card className="rounded-xl w-full border-0" style={{backgroundColor: '#277677', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2)'}}>
-                  <CardContent className="p-6 sm:p-8 text-center">
-                                      <div className="flex items-center justify-center mb-4">
-                    <div className="text-xl sm:text-2xl font-bold text-[var(--text-light)]">
-                      Horário de Atendimento
+                      {shouldShow.email && (
+                        <div className="flex items-center gap-4">
+                          <div className="w-8 h-8 rounded-full bg-[var(--bg-gold)] flex items-center justify-center flex-shrink-0">
+                            <Mail className="h-4 w-4 text-[var(--text-light)]" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="font-medium text-[var(--text-light)] text-sm">E-mail</div>
+                            <div className="text-[var(--text-light)] opacity-80">{settings.email}</div>
+                          </div>
+                        </div>
+                      )}
+
+                      {shouldShow.whatsapp && (
+                        <div className="flex items-center gap-4">
+                          <div className="w-8 h-8 rounded-full bg-[var(--bg-gold)] flex items-center justify-center flex-shrink-0">
+                            <FaWhatsapp className="h-4 w-4 text-[var(--text-light)]" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="font-medium text-[var(--text-light)] text-sm">WhatsApp</div>
+                            <a 
+                              href={getWhatsAppLink()}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[var(--text-light)] opacity-80 transition-colors cursor-pointer"
+                            >
+                              {settings.whatsapp}
+                            </a>
+                          </div>
+                        </div>
+                      )}
+
+                      {shouldShow.address && (
+                        <div className="flex items-center gap-4">
+                          <div className="w-8 h-8 rounded-full bg-[var(--bg-gold)] flex items-center justify-center flex-shrink-0">
+                            <svg className="h-4 w-4 text-[var(--text-light)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                          </div>
+                          <div className="flex-1">
+                            <div className="font-medium text-[var(--text-light)] text-sm">Endereço</div>
+                            <div className="text-[var(--text-light)] opacity-80">{settings.address}</div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
-                    <div className="text-[var(--text-light)] text-sm sm:text-base leading-relaxed">
-                      {settings.businessHours}
+                </div>
+
+                {/* Social Media */}
+                {(shouldShow.facebookUrl || shouldShow.instagramUrl || shouldShow.linkedinUrl || shouldShow.youtubeUrl) && (
+                  <div className="shadow-lg rounded-xl w-full" style={{backgroundColor: '#277677'}}>
+                    <div className="p-6 sm:p-8 text-left">
+                      <div className="mb-6">
+                        <div className="text-xl sm:text-2xl font-bold text-[var(--text-light)] mb-3">Siga-nos</div>
+                        <div className="w-12 h-0.5 bg-[var(--bg-gold)]"></div>
+                      </div>
+                      <div className="flex space-x-4">
+                        {shouldShow.facebookUrl && (
+                          <a href={settings.facebookUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-cream-light)] text-[var(--text-teal)] transition-all duration-300 hover:scale-95">
+                            <Facebook className="h-4 w-4" />
+                          </a>
+                        )}
+                        {shouldShow.instagramUrl && (
+                          <a href={settings.instagramUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-cream-light)] text-[var(--text-teal)] transition-all duration-300 hover:scale-95">
+                            <Instagram className="h-4 w-4" />
+                          </a>
+                        )}
+                        {shouldShow.linkedinUrl && (
+                          <a href={settings.linkedinUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-cream-light)] text-[var(--text-teal)] transition-all duration-300 hover:scale-95">
+                            <Linkedin className="h-4 w-4" />
+                          </a>
+                        )}
+                        {shouldShow.youtubeUrl && (
+                          <a href={settings.youtubeUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-cream-light)] text-[var(--text-teal)] transition-all duration-300 hover:scale-95">
+                            <Youtube className="h-4 w-4" />
+                          </a>
+                        )}
+                      </div>
                     </div>
-                  </CardContent>
-                </Card>
-              )}
+                  </div>
+                )}
+
+                {/* Service Hours */}
+                {shouldShow.businessHours && (
+                  <div className="shadow-lg rounded-xl w-full" style={{backgroundColor: '#277677'}}>
+                    <div className="p-6 sm:p-8 text-center">
+                      <div className="flex items-center justify-center mb-4">
+                        <div className="text-xl sm:text-2xl font-bold text-[var(--text-light)]">
+                          Horário de Atendimento
+                        </div>
+                      </div>
+                      <div className="text-[var(--text-light)] text-sm sm:text-base leading-relaxed">
+                        {settings.businessHours}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </AnimatedSection>
           </div>
