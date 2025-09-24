@@ -159,7 +159,7 @@ export default function Network() {
                       className="w-full pl-10 rounded-lg border text-sm"
                       style={{
                         borderColor: 'var(--border-gray)',
-                        background: 'var(--bg-cream-lighter)',
+                        background: 'white',
                         padding: '12px 40px 12px 40px',
                         height: '45px'
                       }}
