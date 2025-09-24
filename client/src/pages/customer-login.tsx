@@ -175,7 +175,7 @@ export default function CustomerLoginPage() {
                   ) : (
                     <>
                       <Lock className="w-5 h-5" />
-                      <span>Fazer Login</span>
+                      <span className="transition-transform duration-300 hover:scale-95">Fazer Login</span>
                     </>
                   )}
                 </button>

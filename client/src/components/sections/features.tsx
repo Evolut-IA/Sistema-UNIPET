@@ -151,7 +151,9 @@ export default function Features() {
                   setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
                 }}
               >
-                Encontrar Unidade Próxima
+                <span className="transition-transform duration-300 hover:scale-95">
+                  Encontrar Unidade Próxima
+                </span>
               </Button>
             </AnimatedSection>
           </div>

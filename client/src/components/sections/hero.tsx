@@ -119,7 +119,9 @@ export default function Hero() {
                   }}
                   onClick={() => window.open('https://wa.me/558632327374', '_blank')}
                 >
-                  Solicitar Cotação
+                  <span className="transition-transform duration-300 hover:scale-95">
+                    Solicitar Cotação
+                  </span>
                 </button>
                 </div>
               </AnimatedSection>

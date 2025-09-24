@@ -164,10 +164,10 @@ export default function AdminLoginPage() {
                     <span>Entrando...</span>
                   </>
                 ) : (
-                  <>
+                  <span className="flex items-center space-x-2 transition-transform duration-300 hover:scale-95">
                     <Lock className="w-5 h-5" />
                     <span>Acessar Painel</span>
-                  </>
+                  </span>
                 )}
               </button>
 

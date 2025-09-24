@@ -1082,8 +1082,10 @@ export default function Checkout() {
                         border: 'var(--btn-cotacao-gratuita-border)'
                       }}
                     >
-                      <Plus className="w-4 h-4 mr-1" />
-                      Adicionar Pet
+                      <span className="flex items-center transition-transform duration-300 hover:scale-95">
+                        <Plus className="w-4 h-4 mr-1" />
+                        Adicionar Pet
+                      </span>
                     </button>
                   </div>
                 )}
@@ -1590,8 +1592,10 @@ export default function Checkout() {
                 onClick={handlePrevStep}
                 className="flex items-center justify-center w-full xs:w-auto px-6 py-3 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
               >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Voltar
+                <span className="flex items-center transition-transform duration-300 hover:scale-95">
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Voltar
+                </span>
               </button>
 
               <button
@@ -1616,8 +1620,10 @@ export default function Checkout() {
                   </>
                 ) : (
                   <>
-                    {currentStep === 4 ? 'Finalizar' : 'Próximo'}
-                    <ArrowRight className="w-4 h-4 ml-2" />
+                    <span className="flex items-center transition-transform duration-300 hover:scale-95">
+                      {currentStep === 4 ? 'Finalizar' : 'Próximo'}
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </span>
                   </>
                 )}
               </button>
