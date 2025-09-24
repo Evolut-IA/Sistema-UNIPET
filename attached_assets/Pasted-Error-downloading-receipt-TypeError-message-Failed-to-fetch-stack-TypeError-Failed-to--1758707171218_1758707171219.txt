@@ -1,0 +1,19 @@
+Error downloading receipt: 
+TypeError {}
+message: "Failed to fetch"
+stack: "TypeError: Failed to fetch↵ at window.fetch (https://baec03e0-10a6-415a-9a74-d1b582aa8711-00-vkglvpdwhych.kirk.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:218642)↵ at Object.apply (https://baec03e0-10a6-415a-9a74-d1b582aa8711-00-vkglvpdwhych.kirk.replit.dev/__replco/static/devtools/injected.js:278:39)↵ at handleDownloadReceipt (https://baec03e0-10a6-415a-9a74-d1b582aa8711-00-vkglvpdwhych.kirk.replit.dev/src/pages/customer-financial.tsx:193:30)↵ at onClick (https://baec03e0-10a6-415a-9a74-d1b582aa8711-00-vkglvpdwhych.kirk.replit.dev/src/pages/customer-financial.tsx:1381:36)↵ at HTMLUnknownElement.callCallback2 (https://baec03e0-10a6-415a-9a74-d1b582aa8711-00-vkglvpdwhych.kirk.replit.dev/node_modules/.vite/deps/chunk-276SZO74.js?v=80d9d980:3674:22)↵ at Object.invokeGuardedCallbackDev (https://baec03e0-10a6-415a-9a74-d1b582aa8711-00-vkglvpdwhych.kirk.replit.dev/node_modules/.vite/deps/chunk-276SZO74.js?v=80d9d980:3699:24)↵ at invokeGuardedCallback (https://baec03e0-10a6-415a-9a74-d1b582aa8711-00-vkglvpdwhych.kirk.replit.dev/node_modules/.vite/deps/chunk-276SZO74.js?v=80d9d980:3733:39)↵ at invokeGuardedCallbackAndCatchFirstError (https://baec03e0-10a6-415a-9a74-d1b582aa8711-00-vkglvpdwhych.kirk.replit.dev/node_modules/.vite/deps/chunk-276SZO74.js?v=80d9d980:3736:33)↵ at executeDispatch (https://baec03e0-10a6-415a-9a74-d1b582aa8711-00-vkglvpdwhych.kirk.replit.dev/node_modules/.vite/deps/chunk-276SZO74.js?v=80d9d980:7014:11)↵ at processDispatchQueueItemsInOrder (https://baec03e0-10a6-415a-9a74-d1b582aa8711-00-vkglvpdwhych.kirk.replit.dev/node_modules/.vite/deps/chunk-276SZO74.js?v=80d9d980:7034:15)"
+get stack: ƒ ()
+set stack: ƒ ()
+[[Prototype]]: Object
+
+Failed to fetch
+at window.fetch (https://baec03e0-10a6-415a-9a74-d1b582aa8711-00-vkglvpdwhych.kirk.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:218642)
+at Object.apply (https://baec03e0-10a6-415a-9a74-d1b582aa8711-00-vkglvpdwhych.kirk.replit.dev/__replco/static/devtools/injected.js:278:39)
+at handleDownloadReceipt (https://baec03e0-10a6-415a-9a74-d1b582aa8711-00-vkglvpdwhych.kirk.replit.dev/src/pages/customer-financial.tsx:193:30)
+at onClick (https://baec03e0-10a6-415a-9a74-d1b582aa8711-00-vkglvpdwhych.kirk.replit.dev/src/pages/customer-financial.tsx:1381:36)
+at HTMLUnknownElement.callCallback2 (https://baec03e0-10a6-415a-9a74-d1b582aa8711-00-vkglvpdwhych.kirk.replit.dev/node_modules/.vite/deps/chunk-276SZO74.js?v=80d9d980:3674:22)
+at Object.invokeGuardedCallbackDev (https://baec03e0-10a6-415a-9a74-d1b582aa8711-00-vkglvpdwhych.kirk.replit.dev/node_modules/.vite/deps/chunk-276SZO74.js?v=80d9d980:3699:24)
+at invokeGuardedCallback (https://baec03e0-10a6-415a-9a74-d1b582aa8711-00-vkglvpdwhych.kirk.replit.dev/node_modules/.vite/deps/chunk-276SZO74.js?v=80d9d980:3733:39)
+at invokeGuardedCallbackAndCatchFirstError (https://baec03e0-10a6-415a-9a74-d1b582aa8711-00-vkglvpdwhych.kirk.replit.dev/node_modules/.vite/deps/chunk-276SZO74.js?v=80d9d980:3736:33)
+at executeDispatch (https://baec03e0-10a6-415a-9a74-d1b582aa8711-00-vkglvpdwhych.kirk.replit.dev/node_modules/.vite/deps/chunk-276SZO74.js?v=80d9d980:7014:11)
+at processDispatchQueueItemsInOrder (https://baec03e0-10a6-415a-9a74-d1b582aa8711-00-vkglvpdwhych.kirk.replit.dev/node_modules/.vite/deps/chunk-276SZO74.js?v=80d9d980:7034:15)

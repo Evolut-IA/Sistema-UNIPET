@@ -441,7 +441,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const allClients = await storage.getAllClients();
       const query = req.params.query.toLowerCase();
       const clients = allClients.filter(client => 
-        (client.full_name || '').toLowerCase().includes(query) || 
+        (client.fullName || '').toLowerCase().includes(query) || 
         client.email.toLowerCase().includes(query) || 
         client.phone.includes(query)
       );
@@ -1280,7 +1280,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         const newClientData = {
           id: `client-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`,
-          full_name: customerName,
+          fullName: customerName,
           email: customerEmail,
           phone: addressData?.phone || null,
           cpf: customerCpf || null,
