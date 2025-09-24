@@ -236,8 +236,11 @@ export default function CustomerSurveys() {
                   onChange={(e) => updateCreateForm('feedback', e.target.value)}
                   placeholder="Conte-nos sobre sua experiência com nossos serviços..."
                   rows={3}
-                  className="w-full px-3 py-2 border rounded-lg"
-                  style={{ borderColor: 'var(--border-gray)' }}
+                  className="w-full p-3 border rounded-lg"
+                  style={{ 
+                    borderColor: 'var(--border-gray)',
+                    backgroundColor: '#FFFFFF'
+                  }}
                 />
               </div>
 
@@ -250,8 +253,11 @@ export default function CustomerSurveys() {
                   onChange={(e) => updateCreateForm('suggestions', e.target.value)}
                   placeholder="Como podemos melhorar nossos serviços? Deixe suas sugestões..."
                   rows={3}
-                  className="w-full px-3 py-2 border rounded-lg"
-                  style={{ borderColor: 'var(--border-gray)' }}
+                  className="w-full p-3 border rounded-lg"
+                  style={{ 
+                    borderColor: 'var(--border-gray)',
+                    backgroundColor: '#FFFFFF'
+                  }}
                 />
               </div>
 
