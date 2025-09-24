@@ -1356,12 +1356,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      const correctAmountInCents = Math.round(selectedPlan.price * 100);
+      // ============================================
+      // CALCULATE CORRECT PRICE WITH MULTI-PET DISCOUNTS
+      // ============================================
       
-      console.log(`💰 [SIMPLE] Processando pagamento:`, {
+      // Contar pets do payload
+      const petCount = paymentData.pets?.length || 1;
+      
+      // Calcular preço correto usando basePrice do banco de dados e aplicando descontos
+      const basePriceDecimal = parseFloat(selectedPlan.basePrice || '0');
+      const basePriceCents = Math.round(basePriceDecimal * 100);
+      
+      // Aplicar desconto apenas para planos Basic/Infinity e pets a partir do 2º
+      let totalCents = 0;
+      for (let i = 0; i < petCount; i++) {
+        let petPriceCents = basePriceCents;
+        
+        if (['BASIC', 'INFINITY'].some(type => selectedPlan.name.toUpperCase().includes(type)) && i > 0) {
+          const discountPercentage = i === 1 ? 5 :  // 2º pet: 5%
+                                   i === 2 ? 10 : // 3º pet: 10%
+                                   15;             // 4º+ pets: 15%
+          petPriceCents = Math.round(basePriceCents * (1 - discountPercentage / 100));
+        }
+        
+        totalCents += petPriceCents;
+      }
+      
+      const correctAmountInCents = totalCents;
+      
+      console.log("💰 [PRICE-CALCULATION] Preço calculado no servidor:", {
         planName: selectedPlan.name,
-        amountCents: correctAmountInCents,
-        paymentMethod
+        basePrice: basePriceDecimal,
+        petCount: petCount,
+        totalWithDiscounts: (correctAmountInCents / 100).toFixed(2),
+        correctAmountInCents: correctAmountInCents,
+        isDiscountEligible: ['BASIC', 'INFINITY'].some(type => selectedPlan.name.toUpperCase().includes(type))
       });
 
       // Process payment via Cielo

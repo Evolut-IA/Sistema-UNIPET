@@ -546,9 +546,8 @@ export default function Checkout() {
 
       const completeRegistrationData = await completeRegistrationResponse.json();
 
-      // Processar pagamento
+      // Processar pagamento usando endpoint atualizado com suporte a múltiplos pets
       const paymentRequestData = {
-        clientId: completeRegistrationData.clientId || clientData.clientId,
         addressData: {
           address: customerData.address,
           number: customerData.number || 'S/N',
@@ -564,6 +563,7 @@ export default function Checkout() {
             email: customerData.email,
             cpf: customerData.cpf
           },
+          pets: petsData.filter(pet => pet.name.trim() !== ''), // ✅ Enviar dados dos pets
           payment: paymentData.method === 'credit_card' ? {
             cardNumber: paymentData.creditCard?.cardNumber,
             holder: paymentData.creditCard?.holder,
@@ -580,7 +580,7 @@ export default function Checkout() {
         paymentMethod: paymentData.method
       };
 
-      const response = await fetch('/api/checkout/process', {
+      const response = await fetch('/api/checkout/simple-process', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
