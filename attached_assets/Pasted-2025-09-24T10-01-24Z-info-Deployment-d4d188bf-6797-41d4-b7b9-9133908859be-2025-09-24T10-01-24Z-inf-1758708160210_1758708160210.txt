@@ -1,0 +1,70 @@
+2025-09-24T10:01:24Z info: Deployment: d4d188bf-6797-41d4-b7b9-9133908859be
+2025-09-24T10:01:24Z info: Build: b81c83bd-3825-46c0-93b2-782d26b39242
+2025-09-24T10:01:24Z info: Connecting to builder
+2025-09-24T10:01:26Z info: Builder connected
+2025-09-24T10:01:27Z info: Installing packages
+--> npm install
+
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: 'cross-env@10.0.0',
+npm warn EBADENGINE   required: { node: '>=20' },
+npm warn EBADENGINE   current: { node: 'v18.20.8', npm: '10.8.2' }
+npm warn EBADENGINE }
+
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: 'cross-env@10.0.0',
+npm warn EBADENGINE   required: { node: '>=20' },
+npm warn EBADENGINE   current: { node: 'v18.20.8', npm: '10.8.2' }
+npm warn EBADENGINE }
+
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: 'cross-env@10.0.0',
+npm warn EBADENGINE   required: { node: '>=20' },
+npm warn EBADENGINE   current: { node: 'v18.20.8', npm: '10.8.2' }
+npm warn EBADENGINE }
+
+131 packages are looking for funding
+
+  run `npm fund` for details
+
+
+6 vulnerabilities (5 moderate, 1 high)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 11.6.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.6.0
+npm notice To update run: npm install -g npm@11.6.0
+npm notice
+
+2025-09-24T10:01:36Z info: Starting Build
+
+> planodesaudepet@1.0.0 build
+> npm run build:server && npm run build:client
+
+
+
+> planodesaudepet@1.0.0 build:server
+> tsc --project tsconfig.server.json
+
+
+server/routes.ts(1401,68): error TS2345: Argument of type '{ merchantOrderId: string; customer: { name: any; email: any; cpf: any; address: { street: any; number: any; complement: any; zipCode: any; city: any; state: any; country: string; }; }; payment: { type: string; amount: number; installments: any; creditCard: { ...; }; }; }' is not assignable to parameter of type 'CreditCardPaymentRequest'.
+  The types of 'payment.type' are incompatible between these types.
+    Type 'string' is not assignable to type '"CreditCard"'.
+server/routes.ts(1428,59): error TS2345: Argument of type '{ clientId: any; planId: any; petId: any; status: string; startDate: Date; monthlyAmount: number; paymentMethod: string; cieloPaymentId: any; proofOfSale: any; authorizationCode: any; tid: any; returnCode: any; returnMessage: any; }' is not assignable to parameter of type '{ clientId: string; planId: string; petId: string; contractNumber: string; monthlyAmount: string; paymentMethod: string; id?: string; createdAt?: Date; updatedAt?: Date; status?: "active" | "inactive" | "suspended" | "cancelled"; ... 13 more ...; pixCode?: string; }'.
+  Property 'contractNumber' is missing in type '{ clientId: any; planId: any; petId: any; status: string; startDate: Date; monthlyAmount: number; paymentMethod: string; cieloPaymentId: any; proofOfSale: any; authorizationCode: any; tid: any; returnCode: any; returnMessage: any; }' but required in type '{ clientId: string; planId: string; petId: string; contractNumber: string; monthlyAmount: string; paymentMethod: string; id?: string; createdAt?: Date; updatedAt?: Date; status?: "active" | "inactive" | "suspended" | "cancelled"; ... 13 more ...; pixCode?: string; }'.
+server/routes.ts(1529,40): error TS2551: Property 'full_name' does not exist on type '{ number: string; id: string; password: string; email: string; createdAt: Date; updatedAt: Date; phone: string; city: string; image: string; address: string; imageUrl: string; fullName: string; ... 4 more ...; state: string; }'. Did you mean 'fullName'?
+server/routes.ts(1549,31): error TS2551: Property 'full_name' does not exist on type '{ number: string; id: string; password: string; email: string; createdAt: Date; updatedAt: Date; phone: string; city: string; image: string; address: string; imageUrl: string; fullName: string; ... 4 more ...; state: string; }'. Did you mean 'fullName'?
+server/routes.ts(1879,34): error TS2551: Property 'full_name' does not exist on type '{ number: string; id: string; password: string; email: string; createdAt: Date; updatedAt: Date; phone: string; city: string; image: string; address: string; imageUrl: string; fullName: string; ... 4 more ...; state: string; }'. Did you mean 'fullName'?
+server/routes.ts(2031,100): error TS2551: Property 'full_name' does not exist on type '{ number: string; id: string; password: string; email: string; createdAt: Date; updatedAt: Date; phone: string; city: string; image: string; address: string; imageUrl: string; fullName: string; ... 4 more ...; state: string; }'. Did you mean 'fullName'?
+server/routes.ts(2235,27): error TS2551: Property 'full_name' does not exist on type '{ number: string; id: string; password: string; email: string; createdAt: Date; updatedAt: Date; phone: string; city: string; image: string; address: string; imageUrl: string; fullName: string; ... 4 more ...; state: string; }'. Did you mean 'fullName'?
+server/routes.ts(2712,26): error TS2551: Property 'full_name' does not exist on type '{ number: string; id: string; password: string; email: string; createdAt: Date; updatedAt: Date; phone: string; city: string; image: string; address: string; imageUrl: string; fullName: string; ... 4 more ...; state: string; }'. Did you mean 'fullName'?
+server/routes.ts(3224,34): error TS2551: Property 'full_name' does not exist on type '{ number: string; id: string; password: string; email: string; createdAt: Date; updatedAt: Date; phone: string; city: string; image: string; address: string; imageUrl: string; fullName: string; ... 4 more ...; state: string; }'. Did you mean 'fullName'?
+server/stora
