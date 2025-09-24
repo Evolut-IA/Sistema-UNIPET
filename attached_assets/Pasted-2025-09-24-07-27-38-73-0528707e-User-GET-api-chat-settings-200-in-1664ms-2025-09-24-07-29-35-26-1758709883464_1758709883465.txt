@@ -1,0 +1,96 @@
+2025-09-24 07:27:38.73
+0528707e
+User
+GET /api/chat/settings 200 in 1664ms
+2025-09-24 07:29:35.26
+0528707e
+User
+GET /api/site-settings 304 in 315ms
+2025-09-24 07:29:35.28
+0528707e
+User
+GET /api/network-units 200 in 335ms
+2025-09-24 07:29:52.89
+0528707e
+User
+POST /api/clients/login 200 in 867ms
+2025-09-24 07:29:53.25
+0528707e
+User
+GET /api/clients/me 200 in 164ms
+2025-09-24 07:29:55.24
+0528707e
+User
+GET /api/clients/me 304 in 163ms
+2025-09-24 07:30:03.81
+0528707e
+User
+GET /api/clients/contracts 200 in 8388ms
+2025-09-24 07:30:11.69
+0528707e
+User
+GET /api/clients/payment-history 200 in 7733ms
+2025-09-24 07:30:11.85
+0528707e
+User
+📄 [CUSTOMER-RECEIPTS] Cliente solicitando comprovantes: contatogabrielmarquez@gmail.com
+2025-09-24 07:30:12.02
+0528707e
+User
+✅ [CUSTOMER-RECEIPTS] 2 comprovantes encontrados para contatogabrielmarquez@gmail.com
+2025-09-24 07:30:12.02
+0528707e
+User
+GET /api/customer/payment-receipts 200 in 171ms
+2025-09-24 07:30:15.44
+0528707e
+User
+📥 [RECEIPT-DOWNLOAD] Cliente contatogabrielmarquez@gmail.com solicitando download do comprovante: e64ec585-d8a1-45ea-931d-2f4467369ebf
+2025-09-24 07:30:15.77
+0528707e
+User
+🔐 [RECEIPT-DOWNLOAD] Gerando signed URL para PDF privado: comprovante_UNIPET20250923T143303B64Z.pdf
+2025-09-24 07:30:15.77
+0528707e
+User
+🔐 [SUPABASE] Gerando signed URL temporária para: receipts-private/comprovante_UNIPET20250923T143303B64Z.pdf
+2025-09-24 07:30:15.77
+0528707e
+User
+⏱️ [SUPABASE] Expiração em: 300 segundos
+2025-09-24 07:30:16.57
+0528707e
+User
+❌ Erro ao gerar signed URL: StorageApiError: Object not found
+2025-09-24 07:30:16.57
+0528707e
+User
+at (/home/runner/workspace/node_modules/@supabase/storage-js/src/lib/fetch.ts:33:16)
+2025-09-24 07:30:16.57
+0528707e
+User
+at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-09-24 07:30:16.57
+0528707e
+User
+__isStorageError: true,
+2025-09-24 07:30:16.57
+0528707e
+User
+status: 400,
+2025-09-24 07:30:16.57
+0528707e
+User
+statusCode: '404'
+2025-09-24 07:30:16.57
+0528707e
+User
+}
+2025-09-24 07:30:16.57
+0528707e
+User
+❌ [RECEIPT-DOWNLOAD] Erro ao gerar signed URL: Erro ao gerar URL segura: Object not found
+2025-09-24 07:30:16.57
+0528707e
+User
+GET /api/customer/payment-receipts/e64ec585-d8a1-45ea-931d-2f4467369ebf/downloa…
