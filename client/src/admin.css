@@ -88,39 +88,39 @@ body.admin-area,
 ======================================== */
 
 /* PREVENIR MUDANÇA DE COR DO BACKGROUND AO COLAR TEXTO */
-input, textarea, select {
+input, select {
   background-color: rgb(var(--input)) !important;
   color: rgb(var(--input-foreground, var(--foreground))) !important;
 }
 
 /* Controlar cor do placeholder */
-input::placeholder, textarea::placeholder, select::placeholder {
+input::placeholder, select::placeholder {
   color: rgb(var(--placeholder, var(--muted-foreground))) !important;
 }
 
-input::-webkit-input-placeholder, textarea::-webkit-input-placeholder, select::-webkit-input-placeholder {
+input::-webkit-input-placeholder, select::-webkit-input-placeholder {
   color: rgb(var(--placeholder, var(--muted-foreground))) !important;
 }
 
-input::-moz-placeholder, textarea::-moz-placeholder, select::-moz-placeholder {
+input::-moz-placeholder, select::-moz-placeholder {
   color: rgb(var(--placeholder, var(--muted-foreground))) !important;
 }
 
-input:-ms-input-placeholder, textarea:-ms-input-placeholder, select:-ms-input-placeholder {
+input:-ms-input-placeholder, select:-ms-input-placeholder {
   color: rgb(var(--placeholder, var(--muted-foreground))) !important;
 }
 
-input:-moz-placeholder, textarea:-moz-placeholder, select:-moz-placeholder {
+input:-moz-placeholder, select:-moz-placeholder {
   color: rgb(var(--placeholder, var(--muted-foreground))) !important;
 }
 
 /* Prevenir mudanças de cor em todos os estados de input */
-input:focus, textarea:focus, select:focus {
+input:focus, select:focus {
   background-color: rgb(var(--input)) !important;
   color: rgb(var(--input-foreground, var(--foreground))) !important;
 }
 
-input:active, textarea:active, select:active {
+input:active, select:active {
   background-color: rgb(var(--input)) !important;
   color: rgb(var(--input-foreground, var(--foreground))) !important;
 }
@@ -366,7 +366,7 @@ span, p, h1, h2, h3, h4, h5, h6, img, svg {
    ESTADO DE FOCO UNIVERSAL
 ======================================== */
 
-button:focus, input:focus, textarea:focus, select:focus, a:focus, [role="button"]:focus, [tabindex]:focus,
+button:focus, input:focus, select:focus, a:focus, [role="button"]:focus, [tabindex]:focus,
 div:focus, span:focus, p:focus, h1:focus, h2:focus, h3:focus, h4:focus, h5:focus, h6:focus,
 img:focus, svg:focus {
   outline: none !important;
@@ -376,6 +376,41 @@ img:focus, svg:focus {
 *:focus-visible {
   outline: none !important;
   box-shadow: none !important;
+}
+
+/* ========================================
+   FORÇA FUNDO BRANCO PARA TEXTAREAS
+======================================== */
+
+/* Garantir que textareas sempre tenham fundo branco em todos os estados */
+textarea, 
+textarea:focus, 
+textarea:active, 
+textarea:hover {
+  background-color: #FFFFFF !important;
+  background: #FFFFFF !important;
+  color: rgb(var(--input-foreground, var(--foreground))) !important;
+}
+
+/* Garantir cor consistente para placeholders em textareas */
+textarea::placeholder {
+  color: rgb(var(--placeholder, var(--muted-foreground))) !important;
+}
+
+textarea::-webkit-input-placeholder {
+  color: rgb(var(--placeholder, var(--muted-foreground))) !important;
+}
+
+textarea::-moz-placeholder {
+  color: rgb(var(--placeholder, var(--muted-foreground))) !important;
+}
+
+textarea:-ms-input-placeholder {
+  color: rgb(var(--placeholder, var(--muted-foreground))) !important;
+}
+
+textarea:-moz-placeholder {
+  color: rgb(var(--placeholder, var(--muted-foreground))) !important;
 }
 
 /* ========================================
