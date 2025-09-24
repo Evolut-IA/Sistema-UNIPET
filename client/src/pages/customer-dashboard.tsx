@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
-import { LogOut, Clipboard, RotateCcw, Star, DollarSign, Settings, Shield } from "lucide-react";
+import { LogOut, Clipboard, Star, Settings, Shield } from "lucide-react";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { useWhatsAppRedirect } from "@/hooks/use-whatsapp-redirect";
@@ -200,32 +200,6 @@ export default function CustomerDashboard() {
               </button>
             </div>
 
-
-            {/* Mudança de Plano Card */}
-            <div className="bg-white rounded-xl shadow-lg p-6 shadow-xl transition-shadow duration-300">
-              <div className="flex items-center space-x-4 mb-4">
-                <div className="w-12 h-12 rounded-lg flex items-center justify-center"
-                  style={{ background: 'var(--bg-cream-light)' }}>
-                  <RotateCcw className="w-6 h-6" style={{ color: 'var(--text-teal)' }} />
-                </div>
-                <div>
-                  <h3 className="font-semibold" style={{ color: 'var(--text-dark-primary)' }}>
-                    Solicitar Mudança de Plano
-                  </h3>
-                  <p className="text-sm" style={{ color: 'var(--text-dark-secondary)' }}>
-                    Altere seu plano atual
-                  </p>
-                </div>
-              </div>
-              <button 
-                onClick={() => redirectToWhatsApp('Olá! Gostaria de solicitar uma mudança de plano.')}
-                className="w-full py-2 px-4 rounded-lg text-sm font-medium transition-colors"
-                style={{ background: 'var(--btn-ver-planos-bg)', color: 'var(--btn-ver-planos-text)' }}>
-                Solicitar Mudança
-              </button>
-            </div>
-
-
             {/* Pesquisas de Satisfação Card */}
             <div className="bg-white rounded-xl shadow-lg p-6 shadow-xl transition-shadow duration-300">
               <div className="flex items-center space-x-4 mb-4">
@@ -247,30 +221,6 @@ export default function CustomerDashboard() {
                 className="w-full py-2 px-4 rounded-lg text-sm font-medium transition-colors"
                 style={{ background: 'var(--btn-ver-planos-bg)', color: 'var(--btn-ver-planos-text)' }}>
                 Enviar Feedback
-              </button>
-            </div>
-
-            {/* Valores de Coparticipação Card */}
-            <div className="bg-white rounded-xl shadow-lg p-6 shadow-xl transition-shadow duration-300">
-              <div className="flex items-center space-x-4 mb-4">
-                <div className="w-12 h-12 rounded-lg flex items-center justify-center"
-                  style={{ background: 'var(--bg-cream-light)' }}>
-                  <DollarSign className="w-6 h-6" style={{ color: 'var(--text-teal)' }} />
-                </div>
-                <div>
-                  <h3 className="font-semibold" style={{ color: 'var(--text-dark-primary)' }}>
-                    Procedimentos
-                  </h3>
-                  <p className="text-sm" style={{ color: 'var(--text-dark-secondary)' }}>
-                    Consulte os procedimentos
-                  </p>
-                </div>
-              </div>
-              <button 
-                onClick={() => navigate('/customer/coparticipation')}
-                className="w-full py-2 px-4 rounded-lg text-sm font-medium transition-colors"
-                style={{ background: 'var(--btn-ver-planos-bg)', color: 'var(--btn-ver-planos-text)' }}>
-                Consultar Procedimentos
               </button>
             </div>
 
