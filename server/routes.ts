@@ -2291,6 +2291,68 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Client profile image upload to Supabase Storage
+  app.post("/api/clients/profile/image", requireClient, async (req, res) => {
+    try {
+      const clientId = req.session.client?.id;
+      const { image } = req.body;
+      
+      if (!clientId) {
+        return res.status(401).json({ error: "Cliente não autenticado" });
+      }
+
+      if (!image) {
+        return res.status(400).json({ error: "Imagem não fornecida" });
+      }
+
+      // Converter base64 para buffer
+      const base64Data = image.replace(/^data:image\/[a-z]+;base64,/, '');
+      const imageBuffer = Buffer.from(base64Data, 'base64');
+      
+      // Detectar tipo MIME (assumir JPEG se não detectado)
+      let mimeType = 'image/jpeg';
+      if (image.startsWith('data:image/png')) {
+        mimeType = 'image/png';
+      }
+
+      // Upload para Supabase Storage usando o SupabaseStorageService
+      const uploadResult = await supabaseStorage.uploadClientImage(
+        clientId, 
+        imageBuffer, 
+        mimeType,
+        { maxWidth: 800, maxHeight: 600, quality: 85 }
+      );
+
+      if (!uploadResult.success) {
+        return res.status(500).json({ 
+          error: uploadResult.error || "Erro ao fazer upload da imagem" 
+        });
+      }
+
+      // Atualizar o cliente com a nova URL da imagem
+      const updatedClient = await storage.updateClient(clientId, { 
+        imageUrl: uploadResult.publicUrl 
+      });
+
+      if (!updatedClient) {
+        return res.status(404).json({ error: "Cliente não encontrado" });
+      }
+      
+      // Remove password field from response
+      const { password: _, ...clientWithoutPassword } = updatedClient;
+      
+      res.json({ 
+        client: clientWithoutPassword,
+        message: "Imagem do perfil atualizada com sucesso",
+        imageUrl: uploadResult.publicUrl
+      });
+      
+    } catch (error) {
+      console.error("❌ Error uploading client profile image:", error);
+      res.status(500).json({ error: "Erro interno do servidor" });
+    }
+  });
+
   // Get Client's Pets
   app.get("/api/clients/pets", requireClient, async (req, res) => {
     try {
