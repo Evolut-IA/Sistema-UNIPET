@@ -3398,50 +3398,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // 5. Check Co-participation Values by Service
-  // REMOVED: app.get("/api/customer/coparticipation") route
-    try {
-      const clientId = req.session.client?.id;
-      const contracts = await storage.getContractsByClientId(clientId);
-      
-      if (!contracts || contracts.length === 0) {
-        return res.status(404).json({ error: "Nenhum contrato encontrado" });
-      }
 
-      const activeContract = contracts.find(c => c.status === 'active') || contracts[0];
-      const planProcedures = await storage.getPlanProcedures(activeContract.planId);
-      
-      const coparticipationServices = await Promise.all(
-        planProcedures
-          .filter(pp => (pp.coverageOverride || 100) < 100) // Only services with co-participation
-          .map(async (pp) => {
-            const procedure = await storage.getProcedure(pp.procedureId);
-            const coparticipationAmount = 0; // Default value since coparticipationValue doesn't exist
-            
-            return {
-              procedure_id: procedure.id,
-              procedure_name: procedure.name,
-              procedureType: procedure.category,
-              base_cost: 0, // Default value since coparticipationValue doesn't exist
-              coverage_percentage: pp.coverageOverride || 100,
-              coparticipation_percentage: 100 - (pp.coverageOverride || 100),
-              coparticipation_amount: "0.00", // Default value
-              requires_authorization: false
-            };
-          })
-      );
-      
-      res.json({
-        coparticipation_services: coparticipationServices,
-        contract_coparticipation: activeContract.hasCoparticipation ? 100 : 0,
-        message: "Valores de coparticipação recuperados com sucesso"
-      });
-      
-    } catch (error) {
-      console.error("❌ Error fetching coparticipation:", error);
-      res.status(500).json({ error: "Erro interno do servidor" });
-    }
-  });
+
 
   // 6. Check Out-of-Coverage Costs
   app.get("/api/customer/out-of-coverage", requireClient, async (req, res) => {
