@@ -4,6 +4,19 @@
 UNIPET PLAN is a comprehensive pet health plan management system designed to streamline pet insurance plan management, customer relationships, and healthcare network unit administration. It features a customer-facing website for plan selection and quote requests, alongside an admin dashboard for content and business management. The system is built with a full-stack TypeScript solution, utilizing a React frontend, Express.js backend, and PostgreSQL database with Drizzle ORM. The project emphasizes security, performance, scalability, and aims to simplify pet healthcare administration.
 
 ## Recent Changes
+- **September 24, 2025**: Social Media Icons Hover Animation
+  - Added smooth scale animation (hover:scale-95) on social media icons
+  - Applied transition-all duration-300 for clean and smooth effect
+  - Updated icons in footer, contact page, and contact section components
+  - Animation matches the style of "Ver todas as dúvidas" button for consistency
+
+- **September 24, 2025**: Login Fields Styling Update
+  - Applied search field styling to customer login page (Email and CPF fields)
+  - Applied same styling to admin login page (Login and Senha fields)
+  - Added icons inside input fields with proper positioning
+  - Set white background (#FFFFFF) and gray border (#e5e7eb)
+  - Adjusted border-radius to 8px and padding for icon accommodation
+
 - **September 23, 2025**: Automatic CEP Address Lookup Implementation
   - Added automatic address lookup via ViaCEP API when Brazilian postal code (CEP) is entered
   - Implemented conditional field display - initially shows only CEP field

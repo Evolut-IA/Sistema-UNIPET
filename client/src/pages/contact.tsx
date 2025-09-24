@@ -408,22 +408,22 @@ export default function Contact() {
                     </div>
                     <div className="flex space-x-4">
                       {shouldShow.facebookUrl && (
-                        <a href={settings.facebookUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-cream-light)] text-[var(--text-teal)] transition-colors duration-200">
+                        <a href={settings.facebookUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-cream-light)] text-[var(--text-teal)] transition-all duration-300 hover:scale-95">
                           <Facebook className="h-4 w-4" />
                         </a>
                       )}
                       {shouldShow.instagramUrl && (
-                        <a href={settings.instagramUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-cream-light)] text-[var(--text-teal)] transition-colors duration-200">
+                        <a href={settings.instagramUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-cream-light)] text-[var(--text-teal)] transition-all duration-300 hover:scale-95">
                           <Instagram className="h-4 w-4" />
                         </a>
                       )}
                       {shouldShow.linkedinUrl && (
-                        <a href={settings.linkedinUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-cream-light)] text-[var(--text-teal)] transition-colors duration-200">
+                        <a href={settings.linkedinUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-cream-light)] text-[var(--text-teal)] transition-all duration-300 hover:scale-95">
                           <Linkedin className="h-4 w-4" />
                         </a>
                       )}
                       {shouldShow.youtubeUrl && (
-                        <a href={settings.youtubeUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-cream-light)] text-[var(--text-teal)] transition-colors duration-200">
+                        <a href={settings.youtubeUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-cream-light)] text-[var(--text-teal)] transition-all duration-300 hover:scale-95">
                           <Youtube className="h-4 w-4" />
                         </a>
                       )}

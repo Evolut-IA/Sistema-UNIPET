@@ -44,22 +44,22 @@ export default function Footer() {
             </p>
             <div className="flex space-x-4">
               {shouldShow.facebookUrl && (
-                <a href={settings.facebookUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200 bg-primary text-primary-foreground">
+                <a href={settings.facebookUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-95 bg-primary text-primary-foreground">
                   <Facebook className="h-4 w-4" />
                 </a>
               )}
               {shouldShow.instagramUrl && (
-                <a href={settings.instagramUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200 bg-primary text-primary-foreground">
+                <a href={settings.instagramUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-95 bg-primary text-primary-foreground">
                   <Instagram className="h-4 w-4" />
                 </a>
               )}
               {shouldShow.linkedinUrl && (
-                <a href={settings.linkedinUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200 bg-primary text-primary-foreground">
+                <a href={settings.linkedinUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-95 bg-primary text-primary-foreground">
                   <Linkedin className="h-4 w-4" />
                 </a>
               )}
               {shouldShow.youtubeUrl && (
-                <a href={settings.youtubeUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200 bg-primary text-primary-foreground">
+                <a href={settings.youtubeUrl || undefined} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-95 bg-primary text-primary-foreground">
                   <Youtube className="h-4 w-4" />
                 </a>
               )}
