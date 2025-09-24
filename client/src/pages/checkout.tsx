@@ -1075,14 +1075,14 @@ export default function Checkout() {
                       type="button"
                       onClick={addPet}
                       disabled={!canAddNewPet()}
-                      className="flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full xs:w-auto justify-center"
+                      className="flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full xs:w-auto justify-center transition-transform duration-300 hover:scale-95"
                       style={{
                         background: 'var(--btn-cotacao-gratuita-bg)',
                         color: 'var(--btn-cotacao-gratuita-text)',
                         border: 'var(--btn-cotacao-gratuita-border)'
                       }}
                     >
-                      <span className="flex items-center transition-transform duration-300 hover:scale-95">
+                      <span className="flex items-center">
                         <Plus className="w-4 h-4 mr-1" />
                         Adicionar Pet
                       </span>
@@ -1590,9 +1590,9 @@ export default function Checkout() {
             <div className="flex flex-col xs:flex-row xs:justify-between gap-3 xs:gap-0 mt-8 pt-6 border-t">
               <button
                 onClick={handlePrevStep}
-                className="flex items-center justify-center w-full xs:w-auto px-6 py-3 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex items-center justify-center w-full xs:w-auto px-6 py-3 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors transition-transform duration-300 hover:scale-95"
               >
-                <span className="flex items-center transition-transform duration-300 hover:scale-95">
+                <span className="flex items-center">
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Voltar
                 </span>
@@ -1606,7 +1606,7 @@ export default function Checkout() {
                   (currentStep === 3 && !isCustomerDataValid()) ||
                   (currentStep === 4 && !isPaymentDataValid())
                 }
-                className="flex items-center justify-center w-full xs:w-auto px-6 py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center justify-center w-full xs:w-auto px-6 py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed transition-transform duration-300 hover:scale-95"
                 style={{
                   background: 'var(--btn-ver-planos-bg)',
                   color: 'var(--btn-ver-planos-text)',
@@ -1620,7 +1620,7 @@ export default function Checkout() {
                   </>
                 ) : (
                   <>
-                    <span className="flex items-center transition-transform duration-300 hover:scale-95">
+                    <span className="flex items-center">
                       {currentStep === 4 ? 'Finalizar' : 'Próximo'}
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </span>

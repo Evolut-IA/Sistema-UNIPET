@@ -309,16 +309,14 @@ export default function Contact() {
 
                       <Button 
                         type="submit" 
-                        className="w-full unipet-button-primary text-base sm:text-lg py-3 sm:py-4 text-[var(--text-light)] mobile-touch-target"
+                        className="w-full unipet-button-primary text-base sm:text-lg py-3 sm:py-4 text-[var(--text-light)] mobile-touch-target transition-transform duration-300 hover:scale-95"
                         style={{
                           background: 'var(--btn-cotacao-gratuita-bg)',
                           border: 'none'
                         }}
                         disabled={isSubmitting}
                       >
-                        <span className="transition-transform duration-300 hover:scale-95">
-                          {isSubmitting ? "Enviando..." : "Solicitar Cotação Gratuita"}
-                        </span>
+                        {isSubmitting ? "Enviando..." : "Solicitar Cotação Gratuita"}
                       </Button>
                     </form>
                   </Form>
