@@ -1081,8 +1081,8 @@ export default function Checkout() {
                   })}
                 </div>
                 
-                {/* Botão Adicionar Pet - Embaixo da div dos pets */}
-                {petsData.length < 5 && (
+                {/* Botão Adicionar Pet - Embaixo da div dos pets - só aparece se o primeiro pet estiver colapsado */}
+                {petsData.length < 5 && collapsedPets[0] && (
                   <div className="flex justify-center mt-6">
                     <button
                       type="button"
