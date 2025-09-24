@@ -18,6 +18,11 @@ interface PaymentReceiptData {
   clientEmail: string;
   petName?: string;
   planName?: string;
+  pets?: Array<{
+    name: string;
+    planName: string;
+    value: number;
+  }>;
 }
 
 export interface GenerateReceiptResult {
@@ -264,14 +269,13 @@ export class PaymentReceiptService {
                   width: 120,
                   marginBottom: 10
                 }] : []),
-                { text: 'UNIPET PLAN', style: 'companyName' },
                 { text: 'Plano de Saúde para Pets', style: 'companySubtitle' },
                 { text: 'AVENIDA DOM SEVERINO, 1372, FATIMA', style: 'companyAddress' },
                 { text: 'Teresina/PI', style: 'companyAddress' },
-                { text: 'CEP: 64000-000', style: 'companyAddress' },
+                { text: 'CEP: 64049-370', style: 'companyAddress' },
                 { text: 'Brasil', style: 'companyAddress' },
                 { text: 'contato@unipetplan.com.br', style: 'companyContact' },
-                { text: 'CNPJ: 00.000.000/0001-00', style: 'companyContact' }
+                { text: 'CNPJ: 61.863.611/0001-58', style: 'companyContact' }
               ]
             },
             // Right side - Bill to section
@@ -296,7 +300,7 @@ export class PaymentReceiptService {
               width: '50%',
               stack: [
                 { text: 'Comprovante', style: 'receiptTitle' },
-                { text: `Comprovante número ${receiptNumber}`, style: 'receiptNumber' },
+                { text: `Comprovante número: ${receiptNumber}`, style: 'receiptNumber' },
                 { text: `Data de emissão: ${currentDate}`, style: 'receiptDate' },
                 { text: `Data do pagamento: ${paymentDate}`, style: 'receiptDate' }
               ]
@@ -325,19 +329,35 @@ export class PaymentReceiptService {
                 { text: 'Valor Unitário', style: 'tableHeader', alignment: 'right' },
                 { text: 'Valor', style: 'tableHeader', alignment: 'right' }
               ],
-              // Service item
-              [
-                {
-                  stack: [
-                    { text: receiptData.planName || 'Plano de Saúde Pet', style: 'serviceDescription', bold: true },
-                    { text: `Pagamento referente ao plano contratado`, style: 'serviceDetails' },
-                    { text: `Pet: ${receiptData.petName || 'N/A'}`, style: 'serviceDetails' }
-                  ]
-                },
-                { text: '1', style: 'tableCell', alignment: 'center' },
-                { text: amount, style: 'tableCell', alignment: 'right' },
-                { text: amount, style: 'tableCell', alignment: 'right' }
-              ]
+              // Service items - múltiplos pets se disponível
+              ...(receiptData.pets && receiptData.pets.length > 0 ? 
+                receiptData.pets.map((pet, index) => [
+                  {
+                    stack: [
+                      { text: pet.planName || receiptData.planName || 'Plano de Saúde Pet', style: 'serviceDescription', bold: true },
+                      { text: `Pagamento referente ao plano contratado`, style: 'serviceDetails' },
+                      { text: `Pet: ${pet.name}`, style: 'serviceDetails' },
+                      ...(index > 0 ? [{ text: `Desconto aplicado: ${index === 1 ? '5%' : index === 2 ? '10%' : '15%'}`, style: 'serviceDetails', color: '#16a34a' }] : [])
+                    ]
+                  },
+                  { text: '1', style: 'tableCell', alignment: 'center' },
+                  { text: (pet.value / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }), style: 'tableCell', alignment: 'right' },
+                  { text: (pet.value / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }), style: 'tableCell', alignment: 'right' }
+                ]) :
+                // Fallback para pets únicos (compatibilidade)
+                [[
+                  {
+                    stack: [
+                      { text: receiptData.planName || 'Plano de Saúde Pet', style: 'serviceDescription', bold: true },
+                      { text: `Pagamento referente ao plano contratado`, style: 'serviceDetails' },
+                      { text: `Pet: ${receiptData.petName || 'N/A'}`, style: 'serviceDetails' }
+                    ]
+                  },
+                  { text: '1', style: 'tableCell', alignment: 'center' },
+                  { text: amount, style: 'tableCell', alignment: 'right' },
+                  { text: amount, style: 'tableCell', alignment: 'right' }
+                ]]
+              )
             ]
           },
           layout: {
@@ -399,7 +419,7 @@ export class PaymentReceiptService {
                   { text: '• Este comprovante foi gerado automaticamente com dados oficiais da API Cielo', style: 'footerText' },
                   { text: '• Mantenha este comprovante como prova de pagamento do seu plano de saúde pet', style: 'footerText' },
                   { text: '• Para dúvidas ou suporte, entre em contato: contato@unipetplan.com.br', style: 'footerText' },
-                  { text: `• Documento gerado em ${currentDate} - Sistema UniPet Plan`, style: 'footerText' }
+                  { text: `• Documento gerado em ${currentDate} - Sistema UNIPET PLAN`, style: 'footerText' }
                 ],
                 fillColor: '#f8f9fa',
                 border: [true, true, true, true],
