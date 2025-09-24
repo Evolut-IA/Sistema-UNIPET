@@ -822,7 +822,7 @@ export default function Checkout() {
                           {/* Preço */}
                           <div className="mb-4 flex items-center justify-center">
                             <span className="text-3xl font-bold tracking-tight text-[var(--text-teal)]">
-                              R$ {formatPriceForPricing(plan.price)}/mês
+                              R$ {parseFloat(String(plan.basePrice || 0)).toFixed(2).replace('.', ',')}/mês
                             </span>
                           </div>
 
