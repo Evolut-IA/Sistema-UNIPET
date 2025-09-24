@@ -106,7 +106,7 @@ export default function Hero() {
                   Ver Planos
                 </button>
                 <button
-                  className="text-base sm:text-lg font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-md h-12 sm:h-14 min-w-0 sm:min-w-[180px] transition-transform duration-300 hover:scale-95"
+                  className="text-base sm:text-lg font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-md h-12 sm:h-14 min-w-0 sm:min-w-[180px] transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-teal-500/25"
                   style={{
                     background: 'var(--btn-solicitar-cotacao-bg)',
                     color: 'var(--btn-solicitar-cotacao-text)',
