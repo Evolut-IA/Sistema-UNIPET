@@ -106,7 +106,7 @@ export default function Hero() {
                   Ver Planos
                 </button>
                 <button
-                  className="text-base sm:text-lg font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-md h-12 sm:h-14 min-w-0 sm:min-w-[180px]"
+                  className="text-base sm:text-lg font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-md h-12 sm:h-14 min-w-0 sm:min-w-[180px] transition-transform duration-300 hover:scale-95"
                   style={{
                     background: 'var(--btn-solicitar-cotacao-bg)',
                     color: 'var(--btn-solicitar-cotacao-text)',
@@ -119,9 +119,7 @@ export default function Hero() {
                   }}
                   onClick={() => window.open('https://wa.me/558632327374', '_blank')}
                 >
-                  <span className="transition-transform duration-300 hover:scale-95">
-                    Solicitar Cotação
-                  </span>
+                  Solicitar Cotação
                 </button>
                 </div>
               </AnimatedSection>
