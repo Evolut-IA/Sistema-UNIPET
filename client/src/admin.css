@@ -390,6 +390,7 @@ textarea:hover {
   background-color: #FFFFFF !important;
   background: #FFFFFF !important;
   color: rgb(var(--input-foreground, var(--foreground))) !important;
+  resize: none !important;
 }
 
 /* Garantir cor consistente para placeholders em textareas */
