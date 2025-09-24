@@ -4,6 +4,12 @@
 UNIPET PLAN is a comprehensive pet health plan management system designed to streamline pet insurance plan management, customer relationships, and healthcare network unit administration. It features a customer-facing website for plan selection and quote requests, alongside an admin dashboard for content and business management. The system is built with a full-stack TypeScript solution, utilizing a React frontend, Express.js backend, and PostgreSQL database with Drizzle ORM. The project emphasizes security, performance, scalability, and aims to simplify pet healthcare administration.
 
 ## Recent Changes
+- **September 24, 2025**: Checkout Plan Billing and Installment Rules Fix
+  - Updated database: COMFORT and PLATINUM plans now have 'annual' billing frequency (BASIC and INFINITY remain 'monthly')
+  - Fixed checkout step 1 to display correct billing frequency ('faturamento anual' for COMFORT/PLATINUM, 'faturamento mensal' for BASIC/INFINITY)
+  - Verified installment rules in checkout step 4: BASIC/INFINITY allow only 1x payment, COMFORT/PLATINUM allow 1x to 12x installments
+  - Updated Plan interface in checkout.tsx to include billingFrequency field for proper data handling
+
 - **September 24, 2025**: Consistent Select Component Styling
   - Applied uniform styling to all dropdown/select components across the application
   - Updated Parcelas field in checkout page (step 4 payment) with shadcn Select component
