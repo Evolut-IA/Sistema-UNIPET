@@ -203,11 +203,13 @@ export default function Contact() {
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  <SelectItem value="cao">Cão</SelectItem>
+                                  <SelectItem value="Cão">Cão</SelectItem>
                                   <SelectSeparator />
-                                  <SelectItem value="gato">Gato</SelectItem>
+                                  <SelectItem value="Gato">Gato</SelectItem>
                                   <SelectSeparator />
-                                  <SelectItem value="outros">Outros</SelectItem>
+                                  <SelectItem value="Aves">Aves</SelectItem>
+                                  <SelectSeparator />
+                                  <SelectItem value="Tartarugas ou jabutis">Tartarugas ou jabutis</SelectItem>
                                 </SelectContent>
                               </Select>
                               <FormMessage />
