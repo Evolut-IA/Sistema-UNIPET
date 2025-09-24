@@ -284,7 +284,12 @@ export default function RenewalCheckout() {
               </h2>
               
               <div className="mb-6">
-                <img src={pixQrCode} alt="QR Code PIX" className="mx-auto max-w-64 max-h-64" />
+                <img 
+                  src={pixQrCode} 
+                  alt="QR Code PIX" 
+                  className="mx-auto w-72 h-72 object-contain"
+                  style={{ imageRendering: 'crisp-edges' }}
+                />
               </div>
               
               <div className="space-y-4">

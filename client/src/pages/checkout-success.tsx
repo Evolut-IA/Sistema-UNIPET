@@ -248,11 +248,12 @@ export default function CheckoutSuccessPage() {
                 {(pixData?.qrCode || orderData?.paymentDetails?.pixQrCode) && (
                   <div className="mb-6">
                     <h4 className="font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>QR Code</h4>
-                    <div className="flex justify-center p-4 bg-white rounded-lg border">
+                    <div className="flex justify-center p-8 bg-white rounded-lg border">
                       <img 
                         src={`data:image/png;base64,${pixData?.qrCode || orderData?.paymentDetails?.pixQrCode}`}
                         alt="QR Code PIX" 
-                        className="w-48 h-48"
+                        className="w-72 h-72 object-contain"
+                        style={{ imageRendering: 'crisp-edges' }}
                       />
                     </div>
                     <p className="text-sm mt-2 text-center" style={{color: 'var(--text-dark-secondary)'}}>

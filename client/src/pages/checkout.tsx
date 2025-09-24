@@ -1592,11 +1592,12 @@ export default function Checkout() {
                         {/* QR Code */}
                         <div className="text-center">
                           <h4 className="font-medium mb-3 text-gray-700">Escaneie o QR Code</h4>
-                          <div className="bg-white p-3 md:p-4 rounded-lg border shadow-sm inline-block">
+                          <div className="bg-white p-6 md:p-8 rounded-lg border shadow-sm inline-block">
                             <img 
                               src={`data:image/png;base64,${pixData.qrCode}`}
                               alt="QR Code PIX" 
-                              className="w-32 h-32 md:w-48 md:h-48 mx-auto"
+                              className="w-56 h-56 md:w-72 md:h-72 mx-auto object-contain"
+                              style={{ imageRendering: 'crisp-edges' }}
                             />
                           </div>
                         </div>
