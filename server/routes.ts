@@ -1412,6 +1412,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             clientId: client.id,
             planId: planData.planId,
             petId: null, // Multiple pets supported
+            contractNumber: `UNIPET-${Date.now()}-${client.id.substring(0, 4).toUpperCase()}`,
             status: 'active',
             startDate: new Date(),
             monthlyAmount: selectedPlan.price,
