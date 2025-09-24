@@ -195,6 +195,8 @@ export default function Checkout() {
   const [isLoadingCEP, setIsLoadingCEP] = useState(false);
   const [cepError, setCepError] = useState('');
   const [paymentError, setPaymentError] = useState<{ show: boolean; title: string; message: string; }>({ show: false, title: '', message: '' });
+  const [acceptedPrivacyTerms, setAcceptedPrivacyTerms] = useState(false);
+  const [acceptedTermsConditions, setAcceptedTermsConditions] = useState(false);
 
   // Função para validar se o último pet permite adicionar um novo
   const canAddNewPet = () => {
@@ -291,11 +293,14 @@ export default function Checkout() {
   
   // Validação para dados do cliente
   const isCustomerDataValid = () => {
-    return customerData.name && customerData.email && customerData.cpf && customerData.phone;
+    return customerData.name && customerData.email && customerData.cpf && customerData.phone && acceptedPrivacyTerms;
   };
   
   // Validação para pagamento
   const isPaymentDataValid = () => {
+    // Verificar se aceitou os termos e condições
+    if (!acceptedTermsConditions) return false;
+    
     if (paymentData.method === 'credit_card' && paymentData.creditCard) {
       const isCardDataValid = paymentData.creditCard.cardNumber && 
                               paymentData.creditCard.holder && 
@@ -1297,6 +1302,47 @@ export default function Checkout() {
                     </>
                   )}
                 </div>
+                
+                {/* Checkbox de Termos de Privacidade */}
+                <div className="flex items-start mt-6">
+                  <label className="flex items-start cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={acceptedPrivacyTerms}
+                      onChange={(e) => setAcceptedPrivacyTerms(e.target.checked)}
+                      className="sr-only"
+                    />
+                    <div
+                      className="relative w-5 h-5 rounded border-2 mr-3 flex-shrink-0 mt-0.5 transition-all duration-200"
+                      style={{
+                        borderColor: '#060606',
+                        backgroundColor: acceptedPrivacyTerms ? '#277677' : '#FFFFFF'
+                      }}
+                    >
+                      {acceptedPrivacyTerms && (
+                        <svg
+                          className="absolute inset-0 w-full h-full p-0.5"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                        >
+                          <path
+                            d="M5 13l4 4L19 7"
+                            stroke="white"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      )}
+                    </div>
+                    <span className="text-sm text-gray-700">
+                      Li e aceito os{' '}
+                      <a href="/termos-de-privacidade" target="_blank" className="underline text-teal-600 hover:text-teal-700">
+                        Termos de Privacidade
+                      </a>
+                    </span>
+                  </label>
+                </div>
               </motion.div>
             )}
 
@@ -1582,6 +1628,47 @@ export default function Checkout() {
                       
                     </div>
                   )}
+                  
+                  {/* Checkbox de Termos e Condições */}
+                  <div className="flex items-start mt-6">
+                    <label className="flex items-start cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={acceptedTermsConditions}
+                        onChange={(e) => setAcceptedTermsConditions(e.target.checked)}
+                        className="sr-only"
+                      />
+                      <div
+                        className="relative w-5 h-5 rounded border-2 mr-3 flex-shrink-0 mt-0.5 transition-all duration-200"
+                        style={{
+                          borderColor: '#060606',
+                          backgroundColor: acceptedTermsConditions ? '#277677' : '#FFFFFF'
+                        }}
+                      >
+                        {acceptedTermsConditions && (
+                          <svg
+                            className="absolute inset-0 w-full h-full p-0.5"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                          >
+                            <path
+                              d="M5 13l4 4L19 7"
+                              stroke="white"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        )}
+                      </div>
+                      <span className="text-sm text-gray-700">
+                        Li e aceito os{' '}
+                        <a href="/termos-e-condicoes" target="_blank" className="underline text-teal-600 hover:text-teal-700">
+                          Termos e Condições
+                        </a>
+                      </span>
+                    </label>
+                  </div>
                 </div>
               </motion.div>
             )}
