@@ -787,3 +787,41 @@ input[type="checkbox"][class*="w-5"][class*="h-5"]:checked {
   background-color: #FFFFFF !important;
   background: #FFFFFF !important;
 }
+
+/* ===== ESTILO UNIFORME PARA TODOS OS INPUTS E TEXTAREAS DO SITE ===== */
+/* Aplica fundo branco e estilo consistente em todos os campos de texto */
+input[type="text"],
+input[type="email"], 
+input[type="password"],
+input[type="number"],
+input[type="tel"],
+input[type="url"],
+input[type="search"],
+textarea {
+  background-color: #FFFFFF !important;
+  background: #FFFFFF !important;
+  border-color: var(--border-gray) !important;
+}
+
+/* Força estilo uniforme mesmo em formulários com classes específicas */
+.contact-form-field input,
+.contact-form-field textarea,
+.mobile-form-input,
+.admin-form input,
+.admin-form textarea {
+  background-color: #FFFFFF !important;
+  background: #FFFFFF !important;
+  border-color: var(--border-gray) !important;
+  padding: 12px !important;
+  border-radius: 8px !important;
+}
+
+/* Garantir que inputs dentro de qualquer div mantenham o estilo */
+div input,
+div textarea,
+form input,
+form textarea {
+  background-color: #FFFFFF !important;
+  background: #FFFFFF !important;
+  border-color: var(--border-gray) !important;
+}
