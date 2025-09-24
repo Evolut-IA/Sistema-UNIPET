@@ -1,35 +1,29 @@
 import FaqSection from "@/components/sections/faq-section";
-import { AnimatedSection } from "@/components/ui/animated-section";
+import { Suspense } from 'react';
+
+// Componente de fallback para carregamento
+const LoadingFallback = () => (
+  <div className="py-20 flex items-center justify-center">
+    <div className="text-lg text-[var(--text-light)]">Carregando...</div>
+  </div>
+);
 
 export default function FAQ() {
   return (
-    <main className="page-section bg-[var(--bg-teal)] min-h-screen">
-      <div className="section-container">
-        <div className="page-header">
-          <AnimatedSection animation="slideUp" delay={100}>
-            <h1 className="page-title text-[var(--text-light)]">
-              Tire suas <span className="text-[var(--text-gold)]">dúvidas</span>
-            </h1>
-          </AnimatedSection>
-          <AnimatedSection animation="slideUp" delay={200}>
-            <p className="page-subtitle text-[var(--text-light)]">
-              Selecionamos as perguntas mais comuns de nossos clientes
-            </p>
-          </AnimatedSection>
-        </div>
-        
-        {/* FAQ Section */}
-        <AnimatedSection animation="slideUp" delay={300}>
-          <FaqSection 
-            showTitle={false} 
-            customColors={{
-              background: 'var(--bg-teal)',
-              titleColor: 'var(--text-light)',
-              subtitleColor: 'var(--text-light)'
-            }}
-          />
-        </AnimatedSection>
-      </div>
+    <main className="pt-16">
+      {/* FAQ Section - idêntica à página inicial mas sem limite de items */}
+      <Suspense fallback={<LoadingFallback />}>
+        <FaqSection 
+          showTitle={true}
+          showViewMoreButton={false}
+          className="py-20"
+          customColors={{
+            background: 'var(--bg-teal)',
+            titleColor: 'var(--text-light)',
+            subtitleColor: 'var(--text-light)'
+          }}
+        />
+      </Suspense>
     </main>
   );
 }
