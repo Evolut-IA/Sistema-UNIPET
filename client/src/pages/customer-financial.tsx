@@ -292,7 +292,7 @@ export default function CustomerFinancial() {
         alert(`Erro ao baixar comprovante: ${errorData.error || 'Erro desconhecido'}`);
       }
     } catch (error) {
-      console.error('Error downloading receipt:', error);
+      console.error('Erro ao baixar comprovante:', error);
       alert('Erro ao tentar baixar o comprovante. Tente novamente.');
     }
   };

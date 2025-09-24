@@ -278,7 +278,7 @@ export class PaymentReceiptService {
             {
               width: '50%',
               stack: [
-                { text: 'Bill to', style: 'billToTitle', marginBottom: 10 },
+                { text: 'Dados do Cliente', style: 'billToTitle', marginBottom: 10 },
                 { text: receiptData.clientName, style: 'billToText', bold: true },
                 { text: receiptData.clientEmail, style: 'billToText' },
                 ...(receiptData.petName ? [{ text: `Pet: ${receiptData.petName}`, style: 'billToText' }] : []),
