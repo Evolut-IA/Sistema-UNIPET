@@ -622,19 +622,13 @@ export class PaymentReceiptService {
       console.log(`🔄 [RECEIPT-SERVICE] Regenerando PDF a partir dos dados do comprovante: ${receiptData.receiptNumber}`);
 
       // Create PDF data structure from database receipt
-      const pdfData = {
-        receiptNumber: receiptData.receiptNumber,
-        paymentDate: receiptData.paymentDate,
-        paymentAmount: receiptData.paymentAmount,
-        paymentMethod: this.getPaymentMethodLabel(receiptData.paymentMethod),
+      const pdfData: PaymentReceiptData = {
+        cieloPaymentId: receiptData.cieloPaymentId || 'regenerated',
         clientName: receiptData.clientName,
         clientEmail: receiptData.clientEmail,
         petName: receiptData.petName || 'Pet não informado',
         planName: receiptData.planName || 'Plano não informado',
-        proofOfSale: receiptData.proofOfSale || 'N/A',
-        authorizationCode: receiptData.authorizationCode || 'N/A',
-        tid: receiptData.tid || 'N/A',
-        status: receiptData.status
+        contractId: receiptData.contractId || undefined
       };
 
       // Generate PDF buffer directly using a mock payment structure
@@ -651,7 +645,10 @@ export class PaymentReceiptService {
         status: 2, // Captured
         returnCode: '4',
         returnMessage: 'Operação realizada com sucesso',
-        receivedDate: receiptData.paymentDate
+        receivedDate: receiptData.paymentDate,
+        capture: true,
+        authenticate: false,
+        paymentId: receiptData.cieloPaymentId || 'regenerated'
       };
       
       const pdfBuffer = await this.generatePDF(pdfData, mockCieloPayment, receiptData.receiptNumber);
