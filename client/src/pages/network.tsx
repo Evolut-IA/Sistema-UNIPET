@@ -150,7 +150,7 @@ export default function Network() {
               <div className="max-w-4xl mx-auto bg-[var(--bg-cream-lighter)] rounded-xl shadow-lg pt-10 pb-6 px-6 mb-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
                   {/* Search Input */}
-                  <div className="contact-form-field relative">
+                  <div className="network-search-field relative">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[var(--text-dark-secondary)]" />
                     <Input
                       placeholder="Buscar..."
@@ -159,7 +159,7 @@ export default function Network() {
                       className="w-full pl-10 rounded-lg border text-sm"
                       style={{
                         borderColor: 'var(--border-gray)',
-                        background: 'white',
+                        backgroundColor: '#FFFFFF',
                         padding: '12px 40px 12px 40px',
                         height: '45px'
                       }}
@@ -168,7 +168,7 @@ export default function Network() {
                   </div>
 
                   {/* City Filter */}
-                  <div className="contact-form-field">
+                  <div className="network-filter-field">
                     <Select value={selectedCity} onValueChange={setSelectedCity}>
                       <SelectTrigger 
                         className="w-full p-3 rounded-lg border text-sm"
@@ -194,7 +194,7 @@ export default function Network() {
                   </div>
 
                   {/* Service Filter */}
-                  <div className="contact-form-field">
+                  <div className="network-filter-field">
                     <Select value={selectedService} onValueChange={setSelectedService}>
                       <SelectTrigger 
                         className="w-full p-3 rounded-lg border text-sm"

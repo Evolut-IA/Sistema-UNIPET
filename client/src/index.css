@@ -73,6 +73,8 @@
   
   
   /* Remove contorno de elementos com classe accordion */
+  .accordion-trigger:focus,
+  .accordion-trigger:focus-visible {
     outline-width: 0 !important;
     outline-color: transparent !important;
     outline-style: none !important;
@@ -655,6 +657,7 @@ svg {
   /* 3D transforms removed for minimal effect */
 }
 
+} /* Fechamento do @layer base */
 
 /* === CLASSES PADRONIZADAS PARA TÍTULOS E LAYOUT === */
 
@@ -770,4 +773,17 @@ input[type="checkbox"][class*="w-5"][class*="h-5"]:checked {
 
 .loading-dot:nth-child(3) {
   animation-delay: 0.4s;
+}
+
+/* Network page search field - força background branco */
+.network-search-field input {
+  background-color: #FFFFFF !important;
+  background: #FFFFFF !important;
+}
+
+/* Remove qualquer background conflitante dos campos de filtro da rede */
+.network-filter-field select,
+.network-filter-field button {
+  background-color: #FFFFFF !important;
+  background: #FFFFFF !important;
 }
