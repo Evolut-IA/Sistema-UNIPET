@@ -1519,32 +1519,42 @@ export default function Checkout() {
                           <label className="block text-sm font-medium mb-2">
                             Parcelas
                           </label>
-                          <select
-                            value={paymentData.creditCard?.installments || 1}
-                            onChange={(e) => setPaymentData({
+                          <Select 
+                            value={String(paymentData.creditCard?.installments || 1)} 
+                            onValueChange={(value) => setPaymentData({
                               ...paymentData,
                               creditCard: {
                                 ...paymentData.creditCard!,
-                                installments: parseInt(e.target.value)
+                                installments: parseInt(value)
                               }
                             })}
-                            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
                             disabled={!!selectedPlan && ['BASIC', 'INFINITY'].some(type => selectedPlan.name.toUpperCase().includes(type))}
                           >
-                            {selectedPlan && ['BASIC', 'INFINITY'].some(type => selectedPlan.name.toUpperCase().includes(type)) ? (
-                              <option value={1}>1x à vista (único disponível)</option>
-                            ) : (
-                              [...Array(12)].map((_, i) => {
-                                const totalCents = calculateTotal();
-                                const installmentValue = totalCents / (i + 1) / 100;
-                                return (
-                                  <option key={i + 1} value={i + 1}>
-                                    {i + 1}x {i === 0 ? 'à vista' : `de R$ ${installmentValue.toFixed(2)}`}
-                                  </option>
-                                );
-                              })
-                            )}
-                          </select>
+                            <SelectTrigger 
+                              className="w-full p-3 rounded-lg border text-sm"
+                              style={{
+                                borderColor: 'var(--border-gray)',
+                                background: 'white'
+                              }}
+                            >
+                              <SelectValue placeholder="Selecionar parcelas" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {selectedPlan && ['BASIC', 'INFINITY'].some(type => selectedPlan.name.toUpperCase().includes(type)) ? (
+                                <SelectItem value="1">1x à vista (único disponível)</SelectItem>
+                              ) : (
+                                [...Array(12)].map((_, i) => {
+                                  const totalCents = calculateTotal();
+                                  const installmentValue = totalCents / (i + 1) / 100;
+                                  return (
+                                    <SelectItem key={i + 1} value={String(i + 1)}>
+                                      {i + 1}x {i === 0 ? 'à vista' : `de R$ ${installmentValue.toFixed(2)}`}
+                                    </SelectItem>
+                                  );
+                                })
+                              )}
+                            </SelectContent>
+                          </Select>
                         </div>
                       </div>
                     </div>

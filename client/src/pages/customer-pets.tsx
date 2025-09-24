@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { ArrowLeft, Heart, MapPin, Stethoscope, Edit, Save, X, Camera, Upload, FileText, Trash2 } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 
@@ -509,15 +510,24 @@ export default function CustomerPets() {
                             </div>
                             <div>
                               <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-dark-primary)' }}>Castrado</label>
-                              <select
-                                value={editFormData.castrated ? 'true' : 'false'}
-                                onChange={(e) => updateFormField('castrated', e.target.value === 'true')}
-                                className="w-full px-2 py-1 text-sm border rounded"
-                                style={{ borderColor: 'var(--border-gray)' }}
+                              <Select 
+                                value={editFormData.castrated ? 'true' : 'false'} 
+                                onValueChange={(value) => updateFormField('castrated', value === 'true')}
                               >
-                                <option value="false">Não</option>
-                                <option value="true">Sim</option>
-                              </select>
+                                <SelectTrigger 
+                                  className="w-full p-3 rounded-lg border text-sm"
+                                  style={{
+                                    borderColor: 'var(--border-gray)',
+                                    background: 'white'
+                                  }}
+                                >
+                                  <SelectValue placeholder="Selecionar" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="false">Não</SelectItem>
+                                  <SelectItem value="true">Sim</SelectItem>
+                                </SelectContent>
+                              </Select>
                             </div>
                             <div>
                               <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-dark-primary)' }}>Cor</label>

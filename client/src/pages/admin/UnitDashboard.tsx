@@ -1476,7 +1476,13 @@ export default function UnitDashboard() {
                       <div className="min-w-[200px]">
                         <Label htmlFor="type-filter" className="text-sm font-medium">Filtrar por Tipo</Label>
                         <Select value={coverageTypeFilter} onValueChange={setCoverageTypeFilter}>
-                          <SelectTrigger className="mt-1">
+                          <SelectTrigger 
+                            className="w-full p-3 rounded-lg border text-sm mt-1"
+                            style={{
+                              borderColor: 'var(--border-gray)',
+                              background: 'white'
+                            }}
+                          >
                             <SelectValue placeholder="Todos os tipos" />
                           </SelectTrigger>
                           <SelectContent>
@@ -1494,7 +1500,13 @@ export default function UnitDashboard() {
                       <div className="min-w-[200px]">
                         <Label htmlFor="status-filter" className="text-sm font-medium">Filtrar por Cobertura</Label>
                         <Select value={coverageStatusFilter} onValueChange={setCoverageStatusFilter}>
-                          <SelectTrigger className="mt-1">
+                          <SelectTrigger 
+                            className="w-full p-3 rounded-lg border text-sm mt-1"
+                            style={{
+                              borderColor: 'var(--border-gray)',
+                              background: 'white'
+                            }}
+                          >
                             <SelectValue placeholder="Todas as coberturas" />
                           </SelectTrigger>
                           <SelectContent>
