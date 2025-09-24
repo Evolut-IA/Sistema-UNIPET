@@ -1304,8 +1304,8 @@ export default function Checkout() {
                 </div>
                 
                 {/* Checkbox de Termos de Privacidade */}
-                <div className="flex items-start mt-6">
-                  <label className="flex items-start cursor-pointer">
+                <div className="flex items-center mt-6">
+                  <label className="flex items-center cursor-pointer">
                     <input
                       type="checkbox"
                       checked={acceptedPrivacyTerms}
@@ -1313,9 +1313,9 @@ export default function Checkout() {
                       className="sr-only"
                     />
                     <div
-                      className="relative w-5 h-5 rounded border-2 mr-3 flex-shrink-0 mt-0.5 transition-all duration-200"
+                      className="relative w-5 h-5 rounded border mr-3 flex-shrink-0 transition-all duration-200"
                       style={{
-                        borderColor: '#060606',
+                        borderColor: 'rgb(209 213 219)',
                         backgroundColor: acceptedPrivacyTerms ? '#277677' : '#FFFFFF'
                       }}
                     >
