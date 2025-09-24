@@ -182,6 +182,12 @@ export default function ContactSection() {
                                 <SelectItem value="Aves">Aves</SelectItem>
                                 <SelectSeparator />
                                 <SelectItem value="Tartarugas ou jabutis">Tartarugas ou jabutis</SelectItem>
+                                <SelectSeparator />
+                                <SelectItem value="Coelhos ou hamsters">Coelhos ou hamsters</SelectItem>
+                                <SelectSeparator />
+                                <SelectItem value="Porquinho da índia">Porquinho da índia</SelectItem>
+                                <SelectSeparator />
+                                <SelectItem value="Outros">Outros</SelectItem>
                               </SelectContent>
                             </Select>
                             <FormMessage />
