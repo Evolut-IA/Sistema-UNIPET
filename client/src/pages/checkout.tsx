@@ -24,6 +24,7 @@ interface Plan {
   description: string;
   features: string[];
   planType?: string;
+  billingFrequency?: string;
 }
 
 interface PetData {
@@ -833,7 +834,7 @@ export default function Checkout() {
                           </div>
 
                           <p className="text-xs leading-5 text-[var(--text-dark-primary)] mb-4">
-                            faturamento mensal
+                            {plan.billingFrequency === 'annual' ? 'faturamento anual' : 'faturamento mensal'}
                           </p>
 
                           {/* Lista de recursos */}
