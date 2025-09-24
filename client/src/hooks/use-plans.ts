@@ -31,5 +31,7 @@ export function formatPrice(priceInCents: number): string {
  * Função para criar o texto de exibição do plano (nome + preço)
  */
 export function getPlanDisplayText(plan: Plan): string {
-  return `${plan.name} - R$${formatPrice(plan.price)}/mês`;
+  // Usar basePrice que já está em reais como string
+  const priceStr = parseFloat(plan.basePrice || '0').toFixed(2).replace('.', ',');
+  return `${plan.name} - R$${priceStr}/mês`;
 }
