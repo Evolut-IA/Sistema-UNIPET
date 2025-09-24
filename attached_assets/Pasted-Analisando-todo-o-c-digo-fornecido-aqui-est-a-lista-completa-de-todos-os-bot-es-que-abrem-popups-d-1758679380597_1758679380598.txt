@@ -1,0 +1,80 @@
+Analisando todo o código fornecido, aqui está a lista completa de todos os botões que abrem popups/dropdowns no site:
+
+Páginas Principais:
+1. Home (home.tsx)
+Nenhum popup/dropdown específico encontrado
+2. About (about.tsx)
+Nenhum popup/dropdown específico encontrado
+3. Contact (contact.tsx)
+Nenhum popup/dropdown específico encontrado
+4. FAQ (faq.tsx)
+Botões de FAQ: Cada item do FAQ é um botão que expande/colapsa o conteúdo (accordion)
+5. Plans (plans.tsx)
+Botões "Escolher Plano": Redirecionam para checkout (não são popups)
+6. Network (network.tsx)
+Dropdown "Todas as cidades": Conforme mostrado na imagem anexada
+<Select value={selectedCity} onValueChange={setSelectedCity}>
+  <SelectTrigger className="w-full">
+    <SelectValue placeholder="Todas as cidades" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="all">Todas as cidades</SelectItem>
+    {/* outras cidades */}
+  </SelectContent>
+</Select>
+7. Checkout (checkout.tsx)
+Select de Estado: Dropdown para seleção de estados
+Select de Cidade: Dropdown para seleção de cidades
+Select de Plano: Dropdown para seleção de planos
+Select de Método de Pagamento: Dropdown para cartão/PIX
+8. Customer Dashboard (customer-dashboard.tsx)
+Provavelmente contém dropdowns de perfil/menu (não especificado no código fornecido)
+Área Administrativa:
+9. Admin Login (admin-login.tsx)
+Nenhum popup/dropdown específico
+10. Administration (Administration.tsx)
+Select de Função do Usuário:
+<Select onValueChange={field.onChange} value={field.value}>
+  <SelectTrigger data-testid="select-user-role">
+    <SelectValue />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="view">Visualizar</SelectItem>
+    <SelectItem value="add">Adicionar</SelectItem>
+    <SelectItem value="edit">Editar</SelectItem>
+    <SelectItem value="delete">Excluir</SelectItem>
+  </SelectContent>
+</Select>
+11. Dashboard (Dashboard.tsx)
+Dropdown de Ações: Para cada linha da tabela (provavelmente)
+12. Outras páginas admin:
+Clients.tsx: Dropdowns de filtros e ações
+Plans.tsx: Dropdowns de ações e configurações
+Settings.tsx: Vários selects para configurações
+Network.tsx: Dropdowns de ações e filtros
+Componentes UI com Popups/Dropdowns:
+13. Header (header.tsx)
+Menu Mobile: Provavelmente um dropdown/sheet para navegação mobile
+Menu Desktop: Possíveis dropdowns de navegação
+14. Chat AI (chat-ai.tsx)
+Botão do Chat: Abre popup/drawer do chat
+15. Pricing (pricing.tsx)
+Botões de Seleção de Plano: Podem abrir modais de confirmação
+Componentes UI Específicos:
+16. Dropdown Menu (dropdown-menu.tsx)
+Usado em várias partes do sistema administrativo
+17. Select (select.tsx)
+Usado em formulários por todo o site
+18. Dialog (dialog.tsx)
+Modais em várias partes do sistema
+19. Sheet (sheet.tsx)
+Painéis laterais em várias partes
+20. Popover (popover.tsx)
+Popups contextuais
+21. AlertDialog (alert-dialog.tsx)
+Diálogos de confirmação
+Demonstrações Responsivas:
+22. Responsive Popup Demo (responsive-popup-demo.tsx)
+Botão "Abrir Dialog": Abre dialog responsivo
+Botão "Abrir Sheet": Abre sheet responsivo
+Botão "Abrir Popover": Abre popover responsivo
