@@ -612,4 +612,47 @@ export class PaymentReceiptService {
       return false;
     }
   }
+
+  /**
+   * ✅ FALLBACK: Regenerate PDF directly from database receipt data
+   * This method is used when the original PDF is missing from storage
+   */
+  async regeneratePDFFromReceipt(receiptData: any): Promise<{ success: boolean; pdfBuffer?: Buffer; error?: string }> {
+    try {
+      console.log(`🔄 [RECEIPT-SERVICE] Regenerando PDF a partir dos dados do comprovante: ${receiptData.receiptNumber}`);
+
+      // Create PDF data structure from database receipt
+      const pdfData = {
+        receiptNumber: receiptData.receiptNumber,
+        paymentDate: receiptData.paymentDate,
+        paymentAmount: receiptData.paymentAmount,
+        paymentMethod: this.getPaymentMethodLabel(receiptData.paymentMethod),
+        clientName: receiptData.clientName,
+        clientEmail: receiptData.clientEmail,
+        petName: receiptData.petName || 'Pet não informado',
+        planName: receiptData.planName || 'Plano não informado',
+        proofOfSale: receiptData.proofOfSale || 'N/A',
+        authorizationCode: receiptData.authorizationCode || 'N/A',
+        tid: receiptData.tid || 'N/A',
+        status: receiptData.status
+      };
+
+      // Generate PDF buffer directly
+      const pdfBuffer = await this.generatePDF(pdfData);
+
+      console.log(`✅ [RECEIPT-SERVICE] PDF regenerado com sucesso: ${receiptData.receiptNumber}`);
+
+      return {
+        success: true,
+        pdfBuffer
+      };
+
+    } catch (error) {
+      console.error(`❌ [RECEIPT-SERVICE] Erro ao regenerar PDF:`, error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Erro desconhecido'
+      };
+    }
+  }
 }

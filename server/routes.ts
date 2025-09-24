@@ -3987,8 +3987,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const signedUrlResult = await supabaseStorage.generateSignedUrl(receipt.pdfObjectKey, 300);
         
         if (!signedUrlResult.success) {
-          console.error(`❌ [RECEIPT-DOWNLOAD] Erro ao gerar signed URL: ${signedUrlResult.error}`);
-          return res.status(500).json({ error: "Erro ao gerar link seguro de download" });
+          console.warn(`⚠️ [RECEIPT-DOWNLOAD] PDF não encontrado no storage, tentando regenerar: ${signedUrlResult.error}`);
+          
+          // ✅ FALLBACK: Tentar regenerar o PDF se não existir no storage
+          try {
+            const PaymentReceiptService = (await import('./services/payment-receipt-service')).PaymentReceiptService;
+            const paymentReceiptService = new PaymentReceiptService();
+            
+            console.log(`🔄 [RECEIPT-DOWNLOAD] Regenerando PDF para comprovante: ${receiptId}`);
+            
+            const regenerateResult = await paymentReceiptService.regeneratePDFFromReceipt(receipt);
+            
+            if (regenerateResult.success && regenerateResult.pdfBuffer) {
+              console.log(`✅ [RECEIPT-DOWNLOAD] PDF regenerado com sucesso, enviando diretamente...`);
+              
+              // Set headers for PDF download
+              res.setHeader('Content-Type', 'application/pdf');
+              res.setHeader('Content-Disposition', `attachment; filename="${receipt.pdfFileName}"`);
+              res.setHeader('Content-Length', regenerateResult.pdfBuffer.length.toString());
+              
+              // Send PDF buffer directly
+              return res.send(regenerateResult.pdfBuffer);
+            } else {
+              console.error(`❌ [RECEIPT-DOWNLOAD] Falha ao regenerar PDF: ${regenerateResult.error}`);
+              return res.status(500).json({ error: "PDF não encontrado e não foi possível regenrá-lo. Entre em contato com o suporte." });
+            }
+            
+          } catch (regenerateError) {
+            console.error(`❌ [RECEIPT-DOWNLOAD] Erro durante regeneração do PDF:`, regenerateError);
+            return res.status(500).json({ error: "Erro ao tentar regenerar PDF. Entre em contato com o suporte." });
+          }
         }
 
         console.log(`✅ [RECEIPT-DOWNLOAD] Signed URL gerada com sucesso (válida por 5 min)`);
