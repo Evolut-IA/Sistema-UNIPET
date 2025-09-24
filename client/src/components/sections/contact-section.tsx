@@ -288,7 +288,9 @@ export default function ContactSection() {
                         }}
                         disabled={isSubmitting}
                       >
-                        {isSubmitting ? "Enviando..." : "Solicitar Cotação Gratuita"}
+                        <span className="transition-transform duration-300 hover:scale-95">
+                          {isSubmitting ? "Enviando..." : "Solicitar Cotação Gratuita"}
+                        </span>
                       </Button>
                   </form>
                 </Form>

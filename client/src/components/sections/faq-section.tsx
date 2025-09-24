@@ -90,10 +90,8 @@ export default function FaqSection({ showTitle = true, maxItems, showViewMoreBut
                 width: 'auto'
               }}
             >
-              <Link href="/faq">
-                <span className="transition-transform duration-300 hover:scale-95">
-                  Ver todas as dúvidas
-                </span>
+              <Link href="/faq" className="transition-transform duration-300 hover:scale-95">
+                Ver todas as dúvidas
               </Link>
             </Button>
           </div>
