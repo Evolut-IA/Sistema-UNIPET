@@ -1,0 +1,62 @@
+APLIQUE ESSE ESTILO EM LITERALMENTE TODOS OS CAMPOS DE ESCREVER QUE TEM NO SITE.
+
+Analisando o código fornecido, aqui estão todos os campos de texto/escrita identificados no site e seus respectivos arquivos:
+
+Campos de Input/Textarea por Página:
+Página Rede Credenciada (/rede)
+Arquivo: client/src/pages/network.tsx
+
+Campo "Buscar..." - Input de busca (linha com placeholder "Buscar...")
+Página de Contato
+Arquivo: client/src/pages/contact.tsx
+
+Campo de input genérico (identificado pela classe "mobile-form-input")
+Página Admin - Formulário de Unidade da Rede
+Arquivo: client/src/pages/admin/NetworkForm.tsx
+
+Campo "Nome da Unidade" - Input (data-testid="input-unit-name")
+Campo "Endereço" - Input (data-testid="input-address")
+Campo "Telefone" - InputMasked (data-testid="input-phone")
+Campo "WhatsApp" - InputMasked (data-testid="input-whatsapp")
+Campo "Link do Google Maps" - Input (data-testid="input-maps-url")
+Página Admin - Rede Credenciada
+Arquivo: client/src/pages/admin/Network.tsx
+
+Campo "Buscar por nome ou endereço..." - Input de busca (data-testid="input-search-units")
+Página Admin - Formulário de Pet
+Arquivo: client/src/pages/admin/PetForm.tsx
+
+Campo "Raça" - Input (data-testid="input-breed")
+Campo "Idade" - Input (data-testid="input-age")
+Campo "Alergias Conhecidas" - Textarea (data-testid="textarea-allergies")
+Campo "Medicamentos Atuais" - Textarea (data-testid="textarea-current-medications")
+Campo "Condições Hereditárias" - Textarea (data-testid="textarea-hereditary-conditions")
+Campo "Tratamentos Antipulgas/Parasitas" - Textarea (data-testid="textarea-parasite-treatments")
+Página Admin - Formulário de Cliente
+Arquivo: client/src/pages/admin/ClientForm.tsx
+
+Campo "Estado" - Input (data-testid="input-state")
+Campo "Cidade" - Input (data-testid="input-city")
+Página de Pesquisas de Satisfação
+Arquivo: client/src/pages/customer-surveys.tsx
+
+Campo "Comentário (opcional)" - Textarea
+Campo "Sugestões (opcional)" - Textarea
+Componentes de UI Reutilizáveis:
+Input Component
+Arquivos:
+
+client/src/components/ui/input.tsx
+client/src/components/admin/ui/input.tsx
+Textarea Component
+Arquivos:
+
+client/src/components/ui/textarea.tsx
+client/src/components/admin/ui/textarea.tsx
+Select Component
+Arquivos:
+
+client/src/components/ui/select.tsx
+client/src/components/admin/ui/select.tsx
+Configurações de Placeholder:
+Arquivo: client/src/admin.css e client/cores.css

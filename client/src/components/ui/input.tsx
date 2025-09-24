@@ -3,14 +3,19 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 
 const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
-  ({ className, type, ...props }, ref) => {
+  ({ className, type, style, ...props }, ref) => {
     return (
       <input
         type={type}
         className={cn(
-          "flex h-12 w-full rounded-md border border-input bg-background px-3 py-3 text-base file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-placeholder-foreground disabled:cursor-not-allowed disabled:opacity-50 md:text-sm active:bg-background active:text-foreground",
+          "flex w-full rounded-lg border text-base file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-placeholder-foreground disabled:cursor-not-allowed disabled:opacity-50 md:text-sm p-3",
           className
         )}
+        style={{
+          borderColor: 'var(--border-gray)',
+          backgroundColor: '#FFFFFF',
+          ...style
+        }}
         ref={ref}
         {...props}
       />
