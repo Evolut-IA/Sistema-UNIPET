@@ -3884,7 +3884,75 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Also get local contract information
       const { storage } = await import('./storage.js');
-      const contract = await storage.getContractByCieloPaymentId(paymentId);
+      let contract = await storage.getContractByCieloPaymentId(paymentId);
+      
+      // ✅ NOVA LÓGICA: Criar contrato automaticamente se PIX foi aprovado mas não há contrato
+      if (!contract && queryResult.payment?.status === 2) {
+        console.log('🔧 [PIX-AUTO-CONTRACT] PIX aprovado sem contrato - tentando criar automaticamente', {
+          correlationId,
+          paymentId,
+          pixStatus: queryResult.payment.status
+        });
+        
+        try {
+          // Buscar dados de checkout da sessão atual se disponível
+          const sessionUserId = req.session.userId || req.session.client?.id;
+          if (sessionUserId) {
+            // Tentar recuperar dados de checkout baseado na sessão atual
+            const clients = await storage.getClientById(sessionUserId);
+            
+            if (clients) {
+              // Criar contrato com dados mínimos necessários
+              // Usar plano padrão se não encontrar específico
+              const allPlans = await storage.getAllPlans();
+              const defaultPlan = allPlans.find(p => p.name.includes('BASIC')) || allPlans[0];
+              
+              if (defaultPlan) {
+                const contractData = {
+                  clientId: clients.id,
+                  planId: defaultPlan.id,
+                  petId: 'pix-auto-pet', // Placeholder - cliente pode corrigir depois
+                  contractNumber: `PIX-AUTO-${Date.now()}-${clients.id.substring(0, 4).toUpperCase()}`,
+                  status: 'active' as const,
+                  startDate: new Date(),
+                  monthlyAmount: defaultPlan.basePrice || defaultPlan.price?.toString() || '0',
+                  paymentMethod: 'pix',
+                  cieloPaymentId: paymentId,
+                  proofOfSale: queryResult.payment.proofOfSale || '',
+                  authorizationCode: queryResult.payment.authorizationCode || '',
+                  tid: queryResult.payment.tid || '',
+                  receivedDate: queryResult.payment.receivedDate ? new Date(queryResult.payment.receivedDate) : new Date(),
+                  returnCode: queryResult.payment.returnCode || '0',
+                  returnMessage: queryResult.payment.returnMessage || 'PIX Aprovado',
+                  pixQrCode: queryResult.payment.qrCodeBase64Image || null,
+                  pixCode: queryResult.payment.qrCodeString || null
+                };
+                
+                console.log('🔧 [PIX-AUTO-CONTRACT] Criando contrato automaticamente:', {
+                  correlationId,
+                  contractNumber: contractData.contractNumber,
+                  clientId: contractData.clientId,
+                  planId: contractData.planId
+                });
+                
+                contract = await storage.createContract(contractData);
+                
+                console.log('✅ [PIX-AUTO-CONTRACT] Contrato criado automaticamente:', {
+                  correlationId,
+                  contractId: contract.id,
+                  contractNumber: contract.contractNumber
+                });
+              }
+            }
+          }
+        } catch (error) {
+          console.error('❌ [PIX-AUTO-CONTRACT] Erro ao criar contrato automaticamente:', {
+            correlationId,
+            error: error instanceof Error ? error.message : 'Erro desconhecido'
+          });
+          // Continuar mesmo se não conseguir criar o contrato
+        }
+      }
       
       // Calculate payment status using PaymentStatusService if contract exists
       let contractStatus = null;
