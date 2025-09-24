@@ -1,0 +1,260 @@
+🛒 [SIMPLE-CHECKOUT] Iniciando checkout simplificado
+🔍 [SIMPLE] Buscando cliente: {
+  cpf: '54498358848',
+  email: 'contatogabrielmarquez@gmail.com',
+  name: 'Gabriel Marquez Teste'
+}
+Query: select "id", "full_name", "email", "phone", "cpf", "cep", "address", "number", "complement", "district", "state", "city", "password", "image", "image_url", "created_at", "updated_at" from "clients"
+✅ [SIMPLE] Cliente encontrado por CPF: client-1758711923186-ly7p2eh9z
+Query: insert into "pets" ("id", "client_id", "name", "species", "breed", "birth_date", "age", "sex", "castrated", "color", "weight", "microchip", "previous_diseases", "surgeries", "allergies", "current_medications", "hereditary_conditions", "vaccine_data", "last_checkup", "parasite_treatments", "plan_id", "image", "image_url", "is_active", "created_at", "updated_at") values ($1, $2, $3, $4, $5, default, $6, $7, $8, default, $9, default, default, default, default, default, default, $10, default, default, $11, default, default, $12, default, default) returning "id", "client_id", "name", "species", "breed", "birth_date", "age", "sex", "castrated", "color", "weight", "microchip", "previous_diseases", "surgeries", "allergies", "current_medications", "hereditary_conditions", "vaccine_data", "last_checkup", "parasite_treatments", "plan_id", "image", "image_url", "is_active", "created_at", "updated_at" -- params: ["pet-1758713820336-mgrwjub9", "client-1758711923186-ly7p2eh9z", "Baunilha", "Gato", "Siamês", "2", "Macho", false, "3.5", "\"[]\"", "ec994283-76de-4605-afa3-0670a8a0a475", true]
+✅ [SIMPLE] Pet criado: Baunilha (pet-1758713820336-mgrwjub9)
+Query: insert into "pets" ("id", "client_id", "name", "species", "breed", "birth_date", "age", "sex", "castrated", "color", "weight", "microchip", "previous_diseases", "surgeries", "allergies", "current_medications", "hereditary_conditions", "vaccine_data", "last_checkup", "parasite_treatments", "plan_id", "image", "image_url", "is_active", "created_at", "updated_at") values ($1, $2, $3, $4, $5, default, $6, $7, $8, default, $9, default, default, default, default, default, default, $10, default, default, $11, default, default, $12, default, default) returning "id", "client_id", "name", "species", "breed", "birth_date", "age", "sex", "castrated", "color", "weight", "microchip", "previous_diseases", "surgeries", "allergies", "current_medications", "hereditary_conditions", "vaccine_data", "last_checkup", "parasite_treatments", "plan_id", "image", "image_url", "is_active", "created_at", "updated_at" -- params: ["pet-1758713820523-hqs5cs3s", "client-1758711923186-ly7p2eh9z", "Ryuk", "Gato", "Persa", "1", "Macho", false, "2.8", "\"[]\"", "ec994283-76de-4605-afa3-0670a8a0a475", true]
+✅ [SIMPLE] Pet criado: Ryuk (pet-1758713820523-hqs5cs3s)
+Query: insert into "pets" ("id", "client_id", "name", "species", "breed", "birth_date", "age", "sex", "castrated", "color", "weight", "microchip", "previous_diseases", "surgeries", "allergies", "current_medications", "hereditary_conditions", "vaccine_data", "last_checkup", "parasite_treatments", "plan_id", "image", "image_url", "is_active", "created_at", "updated_at") values ($1, $2, $3, $4, $5, default, $6, $7, $8, default, $9, default, default, default, default, default, default, $10, default, default, $11, default, default, $12, default, default) returning "id", "client_id", "name", "species", "breed", "birth_date", "age", "sex", "castrated", "color", "weight", "microchip", "previous_diseases", "surgeries", "allergies", "current_medications", "hereditary_conditions", "vaccine_data", "last_checkup", "parasite_treatments", "plan_id", "image", "image_url", "is_active", "created_at", "updated_at" -- params: ["pet-1758713820708-j6r4kr88", "client-1758711923186-ly7p2eh9z", "Bob Marley", "Cachorro", "Golden", "3", "Macho", false, "8.5", "\"[]\"", "ec994283-76de-4605-afa3-0670a8a0a475", true]
+✅ [SIMPLE] Pet criado: Bob Marley (pet-1758713820708-j6r4kr88)
+Query: select "id", "name", "price", "description", "features", "image", "button_text", "plan_type", "is_active", "display_order", "created_at", "billing_frequency", "base_price", "installment_price", "installment_count", "per_pet_billing", "pet_discounts", "payment_description", "available_payment_methods", "available_billing_options", "annual_price", "annual_installment_price", "annual_installment_count" from "plans" where "plans"."id" = $1 -- params: ["ec994283-76de-4605-afa3-0670a8a0a475"]
+💰 [PRICE-CALCULATION] Preço calculado no servidor: {
+  planName: 'BASIC',
+  basePrice: 1,
+  petCount: 3,
+  totalWithDiscounts: '2.85',
+  correctAmountInCents: 285,
+  isDiscountEligible: true
+}
+POST /api/checkout/simple-process 501 in 946ms :: {"error":"PIX não implementad…
+Query: select "id", "welcome_message", "placeholder_text", "chat_title", "button_icon", "bot_icon", "user_icon", "bot_icon_url", "user_icon_url", "chat_position", "chat_size", "is_enabled", "created_at", "updated_at" from "chat_settings" limit $1 -- params: [1]
+Query: select "id", "name", "price", "description", "features", "image", "button_text", "plan_type", "is_active", "display_order", "created_at", "billing_frequency", "base_price", "installment_price", "installment_count", "per_pet_billing", "pet_discounts", "payment_description", "available_payment_methods", "available_billing_options", "annual_price", "annual_installment_price", "annual_installment_count" from "plans" where "plans"."is_active" = $1 order by "plans"."display_order" asc -- params: [true]
+Query: select "id", "whatsapp", "email", "phone", "instagram_url", "facebook_url", "linkedin_url", "youtube_url", "cnpj", "business_hours", "our_story", "created_at", "updated_at", "privacy_policy", "terms_of_use", "address", "main_image", "network_image", "about_image", "main_image_url", "network_image_url", "about_image_url", "cores" from "site_settings" limit $1 -- params: [1]
+Query: select "id", "question", "answer", "display_order", "is_active", "created_at" from "faq_items" where "faq_items"."is_active" = $1 order by "faq_items"."display_order" asc -- params: [true]
+✅ [CHAT] Chat settings retrieved: {
+  hasBotIcon: true,
+  hasUserIcon: true,
+  botIconUrl: <Buffer 89 50 4e 47 0d 0a 1a 0a 00 00 00 0d 49 48 44 52 00 00 00 40 00 00 00 2c 08 03 00 00 00 e2 81 4e cd 00 00 03 00 50 4c 54 45 fd fd fd f5 f4 f5 50 93 31 ... 3453 more bytes>,
+  userIconUrl: <Buffer 89 50 4e 47 0d 0a 1a 0a 00 00 00 0d 49 48 44 52 00 00 00 40 00 00 00 2c 08 03 00 00 00 e2 81 4e cd 00 00 03 00 50 4c 54 45 fd fd fd f5 f4 f5 50 93 31 ... 3453 more bytes>
+}
+GET /api/chat/settings 304 in 374ms :: {"id":"77d0d663-ecc3-48a8-8100-c6c6a39cd…
+GET /api/plans 304 in 964ms :: [{"id":"ec994283-76de-4605-afa3-0670a8a0a475","n…
+GET /api/faq 304 in 981ms :: [{"id":"5cb21830-8d80-4ad0-9ef3-7117393dfb53","que…
+GET /api/site-settings 304 in 1128ms :: {"id":"19c61b78-d8a3-4b26-a289-7b71e878…
+Query: select "id", "name", "price", "description", "features", "image", "button_text", "plan_type", "is_active", "display_order", "created_at", "billing_frequency", "base_price", "installment_price", "installment_count", "per_pet_billing", "pet_discounts", "payment_description", "available_payment_methods", "available_billing_options", "annual_price", "annual_installment_price", "annual_installment_count" from "plans" where "plans"."is_active" = $1 order by "plans"."display_order" asc -- params: [true]
+GET /api/plans 304 in 200ms :: [{"id":"ec994283-76de-4605-afa3-0670a8a0a475","n…
+Query: select "id", "welcome_message", "placeholder_text", "chat_title", "button_icon", "bot_icon", "user_icon", "bot_icon_url", "user_icon_url", "chat_position", "chat_size", "is_enabled", "created_at", "updated_at" from "chat_settings" limit $1 -- params: [1]
+✅ [CHAT] Chat settings retrieved: {
+  hasBotIcon: true,
+  hasUserIcon: true,
+  botIconUrl: <Buffer 89 50 4e 47 0d 0a 1a 0a 00 00 00 0d 49 48 44 52 00 00 00 40 00 00 00 2c 08 03 00 00 00 e2 81 4e cd 00 00 03 00 50 4c 54 45 fd fd fd f5 f4 f5 50 93 31 ... 3453 more bytes>,
+  userIconUrl: <Buffer 89 50 4e 47 0d 0a 1a 0a 00 00 00 0d 49 48 44 52 00 00 00 40 00 00 00 2c 08 03 00 00 00 e2 81 4e cd 00 00 03 00 50 4c 54 45 fd fd fd f5 f4 f5 50 93 31 ... 3453 more bytes>
+}
+GET /api/chat/settings 304 in 364ms :: {"id":"77d0d663-ecc3-48a8-8100-c6c6a39cd…
+Query: select "id", "full_name", "email", "phone", "cpf", "cep", "address", "number", "complement", "district", "state", "city", "password", "image", "image_url", "created_at", "updated_at" from "clients" where "clients"."email" = $1 limit $2 -- params: ["contatogabrielmarquez@gmail.com", 1]
+POST /api/clients/login 200 in 623ms :: {"message":"Login realizado com sucesso…
+📥 [RECEIPT-DOWNLOAD] Cliente contatogabrielmarquez@gmail.com solicitando download do comprovante: 901282bd-32ed-45c7-a1c8-d9465e557e7e
+Query: select "id", "contract_id", "cielo_payment_id", "receipt_number", "payment_amount", "payment_date", "payment_method", "status", "pdf_file_name", "pdf_object_key", "proof_of_sale", "authorization_code", "tid", "return_code", "return_message", "client_name", "client_email", "pet_name", "plan_name", "created_at", "updated_at" from "payment_receipts" where "payment_receipts"."id" = $1 -- params: ["901282bd-32ed-45c7-a1c8-d9465e557e7e"]
+Query: update "payment_receipts" set "status" = $1, "updated_at" = $2 where "payment_receipts"."id" = $3 returning "id", "contract_id", "cielo_payment_id", "receipt_number", "payment_amount", "payment_date", "payment_method", "status", "pdf_file_name", "pdf_object_key", "proof_of_sale", "authorization_code", "tid", "return_code", "return_message", "client_name", "client_email", "pet_name", "plan_name", "created_at", "updated_at" -- params: ["downloaded", "2025-09-24T11:43:40.772Z", "901282bd-32ed-45c7-a1c8-d9465e557e7e"]
+🔐 [RECEIPT-DOWNLOAD] Gerando signed URL para PDF privado: comprovante_UNIPET20250924T11053223V8.pdf
+🔐 [SUPABASE] Gerando signed URL temporária para: receipts-private/comprovante_UNIPET20250924T11053223V8.pdf
+⏱️ [SUPABASE] Expiração em: 300 segundos
+✅ Signed URL gerada com sucesso
+🔒 Válida por: 5 minutos
+✅ [RECEIPT-DOWNLOAD] Signed URL gerada com sucesso (válida por 5 min)
+✅ [RECEIPT-SERVICE] Logo UNIPET carregado com sucesso
+🔄 [RECEIPT-DOWNLOAD] Regenerando PDF para download direto (evitar CORS): 901282bd-32ed-45c7-a1c8-d9465e557e7e
+🔄 [RECEIPT-SERVICE] Regenerando PDF a partir dos dados do comprovante: UNIPET20250924T11053223V8
+✅ [RECEIPT-SERVICE] PDF regenerado com sucesso: UNIPET20250924T11053223V8
+✅ [RECEIPT-DOWNLOAD] PDF regenerado, enviando diretamente...
+GET /api/customer/payment-receipts/901282bd-32ed-45c7-a1c8-d9465e557e7e/downloa…
+Query: select "id", "name", "price", "description", "features", "image", "button_text", "plan_type", "is_active", "display_order", "created_at", "billing_frequency", "base_price", "installment_price", "installment_count", "per_pet_billing", "pet_discounts", "payment_description", "available_payment_methods", "available_billing_options", "annual_price", "annual_installment_price", "annual_installment_count" from "plans" where "plans"."is_active" = $1 order by "plans"."display_order" asc -- params: [true]
+GET /api/plans 304 in 186ms :: [{"id":"ec994283-76de-4605-afa3-0670a8a0a475","n…
+Query: select "id", "name", "price", "description", "features", "image", "button_text", "plan_type", "is_active", "display_order", "created_at", "billing_frequency", "base_price", "installment_price", "installment_count", "per_pet_billing", "pet_discounts", "payment_description", "available_payment_methods", "available_billing_options", "annual_price", "annual_installment_price", "annual_installment_count" from "plans" where "plans"."is_active" = $1 order by "plans"."display_order" asc -- params: [true]
+GET /api/plans 304 in 187ms :: [{"id":"ec994283-76de-4605-afa3-0670a8a0a475","n…
+🛒 [CHECKOUT-STEP2] Iniciando salvamento dos dados do cliente e pets
+🔍 [CHECKOUT-STEP2] Dados recebidos (sem CPF): {
+  email: 'contatogabrielmarquez@gmail.com',
+  hasPassword: true,
+  petsCount: 5
+}
+Query: select "id", "full_name", "email", "phone", "cpf", "cep", "address", "number", "complement", "district", "state", "city", "password", "image", "image_url", "created_at", "updated_at" from "clients" where "clients"."email" = $1 limit $2 -- params: ["contatogabrielmarquez@gmail.com", 1]
+🆕 [CHECKOUT-STEP2] Criando novo cliente sem CPF (será adicionado no Step 3)
+🏗️ [CHECKOUT-STEP2] Criando cliente: contatogabrielmarquez@gmail.com
+Query: insert into "clients" ("id", "full_name", "email", "phone", "cpf", "cep", "address", "number", "complement", "district", "state", "city", "password", "image", "image_url", "created_at", "updated_at") values ($1, $2, $3, $4, $5, default, $6, default, default, default, $7, $8, $9, default, default, default, default) returning "id", "full_name", "email", "phone", "cpf", "cep", "address", "number", "complement", "district", "state", "city", "password", "image", "image_url", "created_at", "updated_at" -- params: ["client-1758714579034-f72l19py6", "Gabriel Alves Marques dos Santos", "contatogabrielmarquez@gmail.com", "(12) 97404-1539", null, "Rua Manoel Marcelino de Mattos", "SP", "São Sebastião", "$2a$12$l1niKU.pA54/L/blAQyE5egEqjD0dnLZ8sUPtcRqix1ltuGjXUnPq"]
+🐕 [CHECKOUT-STEP2] Criando pet: Bob Marley
+Query: insert into "pets" ("id", "client_id", "name", "species", "breed", "birth_date", "age", "sex", "castrated", "color", "weight", "microchip", "previous_diseases", "surgeries", "allergies", "current_medications", "hereditary_conditions", "vaccine_data", "last_checkup", "parasite_treatments", "plan_id", "image", "image_url", "is_active", "created_at", "updated_at") values (default, $1, $2, $3, $4, default, $5, $6, $7, default, $8, default, default, default, default, default, default, $9, default, default, $10, default, default, default, default, default) returning "id", "client_id", "name", "species", "breed", "birth_date", "age", "sex", "castrated", "color", "weight", "microchip", "previous_diseases", "surgeries", "allergies", "current_medications", "hereditary_conditions", "vaccine_data", "last_checkup", "parasite_treatments", "plan_id", "image", "image_url", "is_active", "created_at", "updated_at" -- params: ["client-1758714579034-f72l19py6", "Bob Marley", "Cão", "Pastor Alemão", "4", "Macho", false, "1", "[]", "ec994283-76de-4605-afa3-0670a8a0a475"]
+🐕 [CHECKOUT-STEP2] Criando pet: Baunilha
+Query: insert into "pets" ("id", "client_id", "name", "species", "breed", "birth_date", "age", "sex", "castrated", "color", "weight", "microchip", "previous_diseases", "surgeries", "allergies", "current_medications", "hereditary_conditions", "vaccine_data", "last_checkup", "parasite_treatments", "plan_id", "image", "image_url", "is_active", "created_at", "updated_at") values (default, $1, $2, $3, $4, default, $5, $6, $7, default, $8, default, default, default, default, default, default, $9, default, default, $10, default, default, default, default, default) returning "id", "client_id", "name", "species", "breed", "birth_date", "age", "sex", "castrated", "color", "weight", "microchip", "previous_diseases", "surgeries", "allergies", "current_medications", "hereditary_conditions", "vaccine_data", "last_checkup", "parasite_treatments", "plan_id", "image", "image_url", "is_active", "created_at", "updated_at" -- params: ["client-1758714579034-f72l19py6", "Baunilha", "Cão", "Pug", "2", "Macho", false, "1", "[]", "ec994283-76de-4605-afa3-0670a8a0a475"]
+🐕 [CHECKOUT-STEP2] Criando pet: Tortuga uga
+Query: insert into "pets" ("id", "client_id", "name", "species", "breed", "birth_date", "age", "sex", "castrated", "color", "weight", "microchip", "previous_diseases", "surgeries", "allergies", "current_medications", "hereditary_conditions", "vaccine_data", "last_checkup", "parasite_treatments", "plan_id", "image", "image_url", "is_active", "created_at", "updated_at") values (default, $1, $2, $3, $4, default, $5, $6, $7, default, $8, default, default, default, default, default, default, $9, default, default, $10, default, default, default, default, default) returning "id", "client_id", "name", "species", "breed", "birth_date", "age", "sex", "castrated", "color", "weight", "microchip", "previous_diseases", "surgeries", "allergies", "current_medications", "hereditary_conditions", "vaccine_data", "last_checkup", "parasite_treatments", "plan_id", "image", "image_url", "is_active", "created_at", "updated_at" -- params: ["client-1758714579034-f72l19py6", "Tortuga uga", "Tartarugas ou jabutis", "cascudo", "143", "Macho", false, "1", "[]", "ec994283-76de-4605-afa3-0670a8a0a475"]
+🐕 [CHECKOUT-STEP2] Criando pet: Ratao
+Query: insert into "pets" ("id", "client_id", "name", "species", "breed", "birth_date", "age", "sex", "castrated", "color", "weight", "microchip", "previous_diseases", "surgeries", "allergies", "current_medications", "hereditary_conditions", "vaccine_data", "last_checkup", "parasite_treatments", "plan_id", "image", "image_url", "is_active", "created_at", "updated_at") values (default, $1, $2, $3, $4, default, $5, $6, $7, default, $8, default, default, default, default, default, default, $9, default, default, $10, default, default, default, default, default) returning "id", "client_id", "name", "species", "breed", "birth_date", "age", "sex", "castrated", "color", "weight", "microchip", "previous_diseases", "surgeries", "allergies", "current_medications", "hereditary_conditions", "vaccine_data", "last_checkup", "parasite_treatments", "plan_id", "image", "image_url", "is_active", "created_at", "updated_at" -- params: ["client-1758714579034-f72l19py6", "Ratao", "Coelhos ou hamsters", "ratoeira", "4", "Macho", false, "1", "[]", "ec994283-76de-4605-afa3-0670a8a0a475"]
+🐕 [CHECKOUT-STEP2] Criando pet: porco doido
+Query: insert into "pets" ("id", "client_id", "name", "species", "breed", "birth_date", "age", "sex", "castrated", "color", "weight", "microchip", "previous_diseases", "surgeries", "allergies", "current_medications", "hereditary_conditions", "vaccine_data", "last_checkup", "parasite_treatments", "plan_id", "image", "image_url", "is_active", "created_at", "updated_at") values (default, $1, $2, $3, $4, default, $5, $6, $7, default, $8, default, default, default, default, default, default, $9, default, default, $10, default, default, default, default, default) returning "id", "client_id", "name", "species", "breed", "birth_date", "age", "sex", "castrated", "color", "weight", "microchip", "previous_diseases", "surgeries", "allergies", "current_medications", "hereditary_conditions", "vaccine_data", "last_checkup", "parasite_treatments", "plan_id", "image", "image_url", "is_active", "created_at", "updated_at" -- params: ["client-1758714579034-f72l19py6", "porco doido", "Porquinho da índia", "porquin", "12", "Macho", false, "1", "[]", "ec994283-76de-4605-afa3-0670a8a0a475"]
+✅ [CHECKOUT-STEP2] Dados salvos com sucesso { clientId: 'client-1758714579034-f72l19py6', petsCount: 5 }
+POST /api/checkout/save-customer-data 201 in 1695ms :: {"success":true,"message…
+📝 [CHECKOUT-STEP3] Completando registro do cliente com CPF e endereço
+Query: select "id", "full_name", "email", "phone", "cpf", "cep", "address", "number", "complement", "district", "state", "city", "password", "image", "image_url", "created_at", "updated_at" from "clients"
+🔄 [CHECKOUT-STEP3] Atualizando cliente com dados completos: {
+  clientId: 'client-1758714579034-f72l19py6',
+  cpf: '54498358848',
+  hasAddress: true,
+  isExistingClient: false
+}
+Query: update "clients" set "cpf" = $1, "cep" = $2, "address" = $3, "number" = $4, "complement" = $5, "district" = $6, "state" = $7, "city" = $8, "updated_at" = $9 where "clients"."id" = $10 returning "id", "full_name", "email", "phone", "cpf", "cep", "address", "number", "complement", "district", "state", "city", "password", "image", "image_url", "created_at", "updated_at" -- params: ["54498358848", null, "Rua Manoel Marcelino de Mattos", "21", null, "Boiçucanga", "SP", "São Sebastião", "2025-09-24T11:49:40.516Z", "client-1758714579034-f72l19py6"]
+✅ [CHECKOUT-STEP3] Registro completado com sucesso
+POST /api/checkout/complete-registration 200 in 367ms :: {"success":true,"messa…
+🛒 [SIMPLE-CHECKOUT] Iniciando checkout simplificado
+🔍 [SIMPLE] Buscando cliente: {
+  cpf: '54498358848',
+  email: 'contatogabrielmarquez@gmail.com',
+  name: 'Gabriel Alves Marques dos Santos'
+}
+Query: select "id", "full_name", "email", "phone", "cpf", "cep", "address", "number", "complement", "district", "state", "city", "password", "image", "image_url", "created_at", "updated_at" from "clients"
+✅ [SIMPLE] Cliente encontrado por CPF: client-1758714579034-f72l19py6
+Query: insert into "pets" ("id", "client_id", "name", "species", "breed", "birth_date", "age", "sex", "castrated", "color", "weight", "microchip", "previous_diseases", "surgeries", "allergies", "current_medications", "hereditary_conditions", "vaccine_data", "last_checkup", "parasite_treatments", "plan_id", "image", "image_url", "is_active", "created_at", "updated_at") values ($1, $2, $3, $4, $5, default, $6, $7, $8, default, $9, default, default, default, default, default, default, $10, default, default, $11, default, default, $12, default, default) returning "id", "client_id", "name", "species", "breed", "birth_date", "age", "sex", "castrated", "color", "weight", "microchip", "previous_diseases", "surgeries", "allergies", "current_medications", "hereditary_conditions", "vaccine_data", "last_checkup", "parasite_treatments", "plan_id", "image", "image_url", "is_active", "created_at", "updated_at" -- params: ["pet-1758714581070-yqlodihg", "client-1758714579034-f72l19py6", "Bob Marley", "Cão", "Pastor Alemão", "4", "Macho", false, "0", "\"[]\"", "ec994283-76de-4605-afa3-0670a8a0a475", true]
+✅ [SIMPLE] Pet criado: Bob Marley (pet-1758714581070-yqlodihg)
+Query: insert into "pets" ("id", "client_id", "name", "species", "breed", "birth_date", "age", "sex", "castrated", "color", "weight", "microchip", "previous_diseases", "surgeries", "allergies", "current_medications", "hereditary_conditions", "vaccine_data", "last_checkup", "parasite_treatments", "plan_id", "image", "image_url", "is_active", "created_at", "updated_at") values ($1, $2, $3, $4, $5, default, $6, $7, $8, default, $9, default, default, default, default, default, default, $10, default, default, $11, default, default, $12, default, default) returning "id", "client_id", "name", "species", "breed", "birth_date", "age", "sex", "castrated", "color", "weight", "microchip", "previous_diseases", "surgeries", "allergies", "current_medications", "hereditary_conditions", "vaccine_data", "last_checkup", "parasite_treatments", "plan_id", "image", "image_url", "is_active", "created_at", "updated_at" -- params: ["pet-1758714581254-8i1nabdk", "client-1758714579034-f72l19py6", "Baunilha", "Cão", "Pug", "2", "Macho", false, "0", "\"[]\"", "ec994283-76de-4605-afa3-0670a8a0a475", true]
+✅ [SIMPLE] Pet criado: Baunilha (pet-1758714581254-8i1nabdk)
+Query: insert into "pets" ("id", "client_id", "name", "species", "breed", "birth_date", "age", "sex", "castrated", "color", "weight", "microchip", "previous_diseases", "surgeries", "allergies", "current_medications", "hereditary_conditions", "vaccine_data", "last_checkup", "parasite_treatments", "plan_id", "image", "image_url", "is_active", "created_at", "updated_at") values ($1, $2, $3, $4, $5, default, $6, $7, $8, default, $9, default, default, default, default, default, default, $10, default, default, $11, default, default, $12, default, default) returning "id", "client_id", "name", "species", "breed", "birth_date", "age", "sex", "castrated", "color", "weight", "microchip", "previous_diseases", "surgeries", "allergies", "current_medications", "hereditary_conditions", "vaccine_data", "last_checkup", "parasite_treatments", "plan_id", "image", "image_url", "is_active", "created_at", "updated_at" -- params: ["pet-1758714581437-wkioc7g0", "client-1758714579034-f72l19py6", "Tortuga uga", "Tartarugas ou jabutis", "cascudo", "143", "Macho", false, "0", "\"[]\"", "ec994283-76de-4605-afa3-0670a8a0a475", true]
+✅ [SIMPLE] Pet criado: Tortuga uga (pet-1758714581437-wkioc7g0)
+Query: insert into "pets" ("id", "client_id", "name", "species", "breed", "birth_date", "age", "sex", "castrated", "color", "weight", "microchip", "previous_diseases", "surgeries", "allergies", "current_medications", "hereditary_conditions", "vaccine_data", "last_checkup", "parasite_treatments", "plan_id", "image", "image_url", "is_active", "created_at", "updated_at") values ($1, $2, $3, $4, $5, default, $6, $7, $8, default, $9, default, default, default, default, default, default, $10, default, default, $11, default, default, $12, default, default) returning "id", "client_id", "name", "species", "breed", "birth_date", "age", "sex", "castrated", "color", "weight", "microchip", "previous_diseases", "surgeries", "allergies", "current_medications", "hereditary_conditions", "vaccine_data", "last_checkup", "parasite_treatments", "plan_id", "image", "image_url", "is_active", "created_at", "updated_at" -- params: ["pet-1758714581620-ewk31h6u", "client-1758714579034-f72l19py6", "Ratao", "Coelhos ou hamsters", "ratoeira", "4", "Macho", false, "0", "\"[]\"", "ec994283-76de-4605-afa3-0670a8a0a475", true]
+✅ [SIMPLE] Pet criado: Ratao (pet-1758714581620-ewk31h6u)
+Query: insert into "pets" ("id", "client_id", "name", "species", "breed", "birth_date", "age", "sex", "castrated", "color", "weight", "microchip", "previous_diseases", "surgeries", "allergies", "current_medications", "hereditary_conditions", "vaccine_data", "last_checkup", "parasite_treatments", "plan_id", "image", "image_url", "is_active", "created_at", "updated_at") values ($1, $2, $3, $4, $5, default, $6, $7, $8, default, $9, default, default, default, default, default, default, $10, default, default, $11, default, default, $12, default, default) returning "id", "client_id", "name", "species", "breed", "birth_date", "age", "sex", "castrated", "color", "weight", "microchip", "previous_diseases", "surgeries", "allergies", "current_medications", "hereditary_conditions", "vaccine_data", "last_checkup", "parasite_treatments", "plan_id", "image", "image_url", "is_active", "created_at", "updated_at" -- params: ["pet-1758714581804-kidp4wyu", "client-1758714579034-f72l19py6", "porco doido", "Porquinho da índia", "porquin", "12", "Macho", false, "0", "\"[]\"", "ec994283-76de-4605-afa3-0670a8a0a475", true]
+✅ [SIMPLE] Pet criado: porco doido (pet-1758714581804-kidp4wyu)
+Query: select "id", "name", "price", "description", "features", "image", "button_text", "plan_type", "is_active", "display_order", "created_at", "billing_frequency", "base_price", "installment_price", "installment_count", "per_pet_billing", "pet_discounts", "payment_description", "available_payment_methods", "available_billing_options", "annual_price", "annual_installment_price", "annual_installment_count" from "plans" where "plans"."id" = $1 -- params: ["ec994283-76de-4605-afa3-0670a8a0a475"]
+💰 [PRICE-CALCULATION] Preço calculado no servidor: {
+  planName: 'BASIC',
+  basePrice: 1,
+  petCount: 5,
+  totalWithDiscounts: '4.55',
+  correctAmountInCents: 455,
+  isDiscountEligible: true
+}
+🔄 [Cielo] Processando pagamento com cartão de crédito {
+  correlationId: '275ad3f5-2343-4f31-b2cd-a4a1aab3e27b',
+  merchantId: '47ea3034...',
+  environment: 'production',
+  apiUrl: 'https://api.cieloecommerce.cielo.com.br'
+}
+🔍 [DEBUG] Data de expiração - ANTES da formatação: 08/2032
+🔍 [DEBUG] Data de expiração - DEPOIS da formatação: 08/2032
+🔍 [DEBUG] Formato esperado pela Cielo: MM/YYYY (exemplo: 12/2025)
+🔍 [DEBUG] Comprimento da data formatada: 7 caracteres
+🔍 [DEBUG] Data de expiração - DEPOIS da formatação: 08/2032
+🔄 [Cielo] Enviando formato oficial 2025 para cartão: {
+  MerchantOrderId: 'ORDER_1758714582170_nntjsk',
+  Payment: {
+    Type: 'CreditCard',
+    Amount: 455,
+    Installments: 1,
+    CreditCard: {
+      cardNumber: '****1657',
+      holder: 'GABRIEL ALVES MARQUES DOS SANTOS',
+      brand: 'Visa',
+      expirationDate: '08/2032'
+    }
+  }
+}
+📋 [Cielo] Resposta RAW completa do Credit Card: {
+  correlationId: '275ad3f5-2343-4f31-b2cd-a4a1aab3e27b',
+  responseStatus: 201,
+  fullResponse: '{\n' +
+    '  "MerchantOrderId": "ORDER_1758714582170_nntjsk",\n' +
+    '  "Customer": {\n' +
+    '    "Name": "Gabriel Alves Marques dos Santos",\n' +
+    '    "Identity": "",\n' +
+    '    "IdentityType": "CPF",\n' +
+    '    "Email": "contatogabrielmarquez@gmail.com",\n' +
+    '    "Address": {\n' +
+    '      "Street": "Rua Manoel Marcelino de Mattos",\n' +
+    '      "Number": "21",\n' +
+    '      "Complement": "",\n' +
+    '      "ZipCode": "00000000",\n' +
+    '      "City": "São Sebastião",\n' +
+    '      "State": "SP",\n' +
+    '      "Country": "BRA",\n' +
+    '      "AddressType": 0\n' +
+    '    }\n' +
+    '  },\n' +
+    '  "Payment": {\n' +
+    '    "ServiceTaxAmount": 0,\n' +
+    '    "Installments": 1,\n' +
+    '    "Interest": 0,\n' +
+    '    "Capture": true,\n' +
+    '    "Authenticate": false,\n' +
+    '    "Recurrent": false,\n' +
+    '    "CreditCard": {\n' +
+    '      "CardNumber": "417401******1657",\n' +
+    '      "Holder": "GABRIEL ALVES MARQUES DOS SANTOS",\n' +
+    '      "ExpirationDate": "08/2032",\n' +
+    '      "SaveCard": false,\n' +
+    '      "Brand": "Visa",\n' +
+    '      "PaymentAccountReference": "V0010013825267399267681179066"\n' +
+    '    },\n' +
+    '    "Tid": "28224704854P9DHUJ3RE",\n' +
+    '    "ProofOfSale": "003010",\n' +
+    '    "AuthorizationCode": "AQEUIM",\n' +
+    '    "SoftDescriptor": "UNIPETPLAN",\n' +
+    '    "Provider": "Cielo",\n' +
+    '    "Eci": "7",\n' +
+    '    "IsQrCode": false,\n' +
+    '    "IssuerTransactionId": "385267425825350",\n' +
+    '    "Amount": 455,\n' +
+    '    "ReceivedDate": "2025-09-24 08:49:42",\n' +
+    '    "CapturedAmount": 455,\n' +
+    '    "CapturedDate": "2025-09-24 08:49:42",\n' +
+    '    "Status": 2,\n' +
+    '    "IsSplitted": false,\n' +
+    '    "ReturnMessage": "Transacao capturada com sucesso",\n' +
+    '    "ReturnCode": "00",\n' +
+    '    "PaymentId": "2377b3d9-6030-49e7-9943-6abb1068fd2f",\n' +
+    '    "Type": "CreditCard",\n' +
+    '    "Currency": "BRL",\n' +
+    '    "Country": "BRA",\n' +
+    '    "Links": [\n' +
+    '      {\n' +
+    '        "Method": "GET",\n' +
+    '        "Rel": "self",\n' +
+    '        "Href": "https://apiquery.cieloecommerce.cielo.com.br/1/sales/2377b3d9-6030-49e7-9943-6abb1068fd2f"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "Method": "PUT",\n' +
+    '        "Rel": "void",\n' +
+    '        "Href": "https://api.cieloecommerce.cielo.com.br/1/sales/2377b3d9-6030-49e7-9943-6abb1068fd2f/void"\n' +
+    '      }\n' +
+    '    ]\n' +
+    '  }\n' +
+    '}'
+}
+📋 [Cielo] Resposta processada do Credit Card: {
+  correlationId: '275ad3f5-2343-4f31-b2cd-a4a1aab3e27b',
+  responseStatus: 201,
+  hasPayment: true,
+  hasPaymentCapital: true,
+  hasPaymentLower: false,
+  paymentFields: [
+    'ServiceTaxAmount',    'Installments',
+    'Interest',            'Capture',
+    'Authenticate',        'Recurrent',
+    'CreditCard',          'Tid',
+    'ProofOfSale',         'AuthorizationCode',
+    'SoftDescriptor',      'Provider',
+    'Eci',                 'IsQrCode',
+    'IssuerTransactionId', 'Amount',
+    'ReceivedDate',        'CapturedAmount',
+    'CapturedDate',        'Status',
+    'IsSplitted',          'ReturnMessage',
+    'ReturnCode',          'PaymentId',
+    'Type',                'Currency',
+    'Country',             'Links'
+  ],
+  paymentId: '2377b3d9-6030-49e7-9943-6abb1068fd2f',
+  status: 2,
+  returnCode: '00',
+  returnMessage: 'Transacao capturada com sucesso',
+  allResponseKeys: [ 'MerchantOrderId', 'Customer', 'Payment' ]
+}
+✅ [Cielo] Credit Card processado com sucesso {
+  correlationId: '275ad3f5-2343-4f31-b2cd-a4a1aab3e27b',
+  paymentId: '2377b3d9-6030-49e7-9943-6abb1068fd2f',
+  status: 2
+}
+💳 [SIMPLE] Resultado do pagamento: { paymentId: undefined, status: undefined, approved: false }
+POST /api/checkout/simple-process 400 in 3302ms :: {"error":"Pagamento não auto…
