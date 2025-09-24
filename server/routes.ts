@@ -1430,12 +1430,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         paymentResult = await cieloService.createCreditCardPayment(creditCardRequest);
         
         console.log(`💳 [SIMPLE] Resultado do pagamento:`, {
-          paymentId: paymentResult.paymentId,
-          status: paymentResult.status,
-          approved: paymentResult.status === 2
+          paymentId: paymentResult.payment?.paymentId,
+          status: paymentResult.payment?.status,
+          approved: paymentResult.payment?.status === 2
         });
         
-        if (paymentResult.status === 2) {
+        if (paymentResult.payment?.status === 2) {
           // Payment approved - create contract
           const contractData = {
             clientId: client.id,
@@ -1446,12 +1446,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
             startDate: new Date(),
             monthlyAmount: selectedPlan.price.toString(),
             paymentMethod: 'credit_card',
-            cieloPaymentId: paymentResult.paymentId,
-            proofOfSale: paymentResult.proofOfSale,
-            authorizationCode: paymentResult.authorizationCode,
-            tid: paymentResult.tid,
-            returnCode: paymentResult.returnCode,
-            returnMessage: paymentResult.returnMessage
+            cieloPaymentId: paymentResult.payment.paymentId,
+            proofOfSale: paymentResult.payment.proofOfSale,
+            authorizationCode: paymentResult.payment.authorizationCode,
+            tid: paymentResult.payment.tid,
+            returnCode: paymentResult.payment.returnCode,
+            returnMessage: paymentResult.payment.returnMessage
           };
           
           try {
@@ -1465,8 +1465,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             success: true,
             message: "Pagamento aprovado com sucesso!",
             payment: {
-              paymentId: paymentResult.paymentId,
-              status: paymentResult.status,
+              paymentId: paymentResult.payment.paymentId,
+              status: paymentResult.payment.status,
               method: paymentMethod
             },
             client: {
@@ -1479,10 +1479,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           // Payment not approved
           return res.status(400).json({
             error: "Pagamento não autorizado",
-            details: paymentResult.returnMessage || "Transação recusada",
+            details: paymentResult.payment?.returnMessage || "Transação recusada",
             paymentMethod,
-            status: paymentResult.status,
-            returnCode: paymentResult.returnCode
+            status: paymentResult.payment?.status,
+            returnCode: paymentResult.payment?.returnCode
           });
         }
       } else if (paymentMethod === 'pix') {
