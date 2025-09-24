@@ -160,7 +160,7 @@ export default function CustomerLoginPage() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full flex items-center justify-center space-x-2 py-3 px-4 rounded-lg font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full flex items-center justify-center space-x-2 py-3 px-4 rounded-lg font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed transition-transform duration-300 hover:scale-95"
                   style={{
                     background: 'var(--btn-ver-planos-bg)',
                     color: 'var(--btn-ver-planos-text)'
@@ -175,7 +175,7 @@ export default function CustomerLoginPage() {
                   ) : (
                     <>
                       <Lock className="w-5 h-5" />
-                      <span className="transition-transform duration-300 hover:scale-95">Fazer Login</span>
+                      <span>Fazer Login</span>
                     </>
                   )}
                 </button>
