@@ -66,8 +66,8 @@ export default function ContactSection() {
   };
 
   return (
-    <section className="py-20" style={{background: 'var(--bg-teal)'}}>
-      <div className="section-container">
+    <section className="py-20 overflow-visible" style={{background: 'var(--bg-teal)'}}>
+      <div className="section-container overflow-visible">
         <div className="text-center mb-12 sm:mb-16">
           <h2 className="font-bold mb-4 text-[28px] md:text-[36px]" style={{color: 'var(--text-light)'}}>
             Entre em <span style={{color: 'var(--text-gold)'}}>contato</span>
@@ -79,7 +79,7 @@ export default function ContactSection() {
         </div>
 
         <div className="flex justify-center">
-          <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-4 items-start max-w-6xl w-full p-0 m-0">
+          <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-4 items-start max-w-6xl w-full p-0 m-0" style={{overflow: 'visible'}}>
             {/* Contact Form */}
             <div className="pr-0 lg:pr-2">
             <Card className="unipet-card shadow-lg rounded-xl border-0">
@@ -305,9 +305,9 @@ export default function ContactSection() {
             </div>
 
             {/* Contact Information Container */}
-            <div className="space-y-6 pl-0 lg:pl-2 mt-5 lg:mt-0">
+            <div className="space-y-6 pl-0 lg:pl-2 mt-5 lg:mt-0" style={{overflow: 'visible'}}>
             {/* Contact Information */}
-            <div className="rounded-xl w-full" style={{backgroundColor: '#277677', boxShadow: '0 20px 40px 0px rgba(0, 0, 0, 0.8), 0 10px 20px 0px rgba(0, 0, 0, 0.6)'}}>
+            <div className="rounded-xl w-full contact-shadow" style={{backgroundColor: '#277677'}}>
               <div className="p-6 sm:p-8 text-left">
                 <div className="mb-6">
                   <div className="text-xl sm:text-2xl font-bold mb-3" style={{color: 'var(--text-light)'}}>
@@ -380,7 +380,7 @@ export default function ContactSection() {
 
             {/* Social Media */}
             {(shouldShow.facebookUrl || shouldShow.instagramUrl || shouldShow.linkedinUrl || shouldShow.youtubeUrl) && (
-              <div className="rounded-xl w-full" style={{backgroundColor: '#277677', boxShadow: '0 20px 40px 0px rgba(0, 0, 0, 0.8), 0 10px 20px 0px rgba(0, 0, 0, 0.6)'}}>
+              <div className="rounded-xl w-full contact-shadow" style={{backgroundColor: '#277677'}}>
                 <div className="p-6 sm:p-8 text-left">
                   <div className="mb-6">
                     <div className="text-xl sm:text-2xl font-bold mb-3" style={{color: 'var(--text-light)'}}>Siga-nos</div>
@@ -414,7 +414,7 @@ export default function ContactSection() {
 
             {/* Service Hours */}
             {shouldShow.businessHours && (
-              <div className="rounded-xl w-full" style={{backgroundColor: '#277677', boxShadow: '0 20px 40px 0px rgba(0, 0, 0, 0.8), 0 10px 20px 0px rgba(0, 0, 0, 0.6)'}}>
+              <div className="rounded-xl w-full contact-shadow" style={{backgroundColor: '#277677'}}>
                 <div className="p-6 sm:p-8 text-center">
                   <div className="flex items-center justify-center mb-4">
                     <div className="text-xl sm:text-2xl font-bold" style={{color: 'var(--text-light)'}}>

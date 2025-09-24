@@ -825,3 +825,9 @@ form textarea {
   background: #FFFFFF !important;
   border-color: var(--border-gray) !important;
 }
+.contact-shadow {
+  box-shadow: 0 20px 40px 0px rgba(0, 0, 0, 0.8), 0 10px 20px 0px rgba(0, 0, 0, 0.6);
+  position: relative;
+  z-index: 999;
+  filter: drop-shadow(0 20px 25px rgba(0, 0, 0, 0.8));
+}
