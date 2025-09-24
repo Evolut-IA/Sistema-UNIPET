@@ -4045,7 +4045,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
         res.setHeader('Content-Disposition', `attachment; filename="${receipt.pdfFileName}"`);
         
         // Redirect to the secure signed URL
-        res.redirect(signedUrlResult.signedUrl!);
+        // res.redirect(signedUrlResult.signedUrl!); // CORREÇÃO: Comentado para evitar problemas de CORS
+        
+        // ✅ CORREÇÃO: Regenerar PDF para download direto e evitar problemas de CORS
+        try {
+          const PaymentReceiptService = (await import('./services/payment-receipt-service.js')).PaymentReceiptService;
+          const paymentReceiptService = new PaymentReceiptService();
+          
+          console.log(`🔄 [RECEIPT-DOWNLOAD] Regenerando PDF para download direto (evitar CORS): ${receiptId}`);
+          
+          const regenerateResult = await paymentReceiptService.regeneratePDFFromReceipt(receipt);
+          
+          if (regenerateResult.success && regenerateResult.pdfBuffer) {
+            console.log(`✅ [RECEIPT-DOWNLOAD] PDF regenerado, enviando diretamente...`);
+            
+            // Update headers for direct PDF download
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', `attachment; filename="${receipt.pdfFileName}"`);
+            res.setHeader('Content-Length', regenerateResult.pdfBuffer.length.toString());
+            
+            // Send PDF buffer directly
+            return res.send(regenerateResult.pdfBuffer);
+          } else {
+            console.error(`❌ [RECEIPT-DOWNLOAD] Falha ao regenerar PDF: ${regenerateResult.error}`);
+            return res.status(500).json({ error: "Falha ao regenerar PDF para download." });
+          }
+          
+        } catch (regenerateError) {
+          console.error(`❌ [RECEIPT-DOWNLOAD] Erro na regeneração:`, regenerateError);
+          return res.status(500).json({ error: "Erro ao regenerar PDF. Tente novamente." });
+        }
       } else {
         console.error(`❌ [RECEIPT-DOWNLOAD] Object key do PDF não disponível para comprovante: ${receiptId}`);
         res.status(500).json({ error: "PDF não disponível para download" });
