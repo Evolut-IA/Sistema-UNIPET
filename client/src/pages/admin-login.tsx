@@ -83,25 +83,24 @@ export default function AdminLoginPage() {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               {/* Login Field */}
               <div className="space-y-2">
-                <label className="flex items-center space-x-2 text-sm font-medium text-foreground">
-                  <User className="w-4 h-4" />
-                  <span>Login</span>
+                <label className="text-sm font-medium text-foreground">
+                  Login
                 </label>
-                <input
-                  type="text"
-                  {...register("login")}
-                  className="w-full p-3 border rounded-lg transition-all duration-200"
-                  style={{
-                    borderColor: 'var(--border-gray)',
-                    outline: 'none',
-                    borderRadius: '12px',
-                    borderWidth: '2px',
-                    padding: '12px 16px',
-                    height: '48px'
-                  }}
-                  placeholder="Digite seu login"
-                  data-testid="input-admin-login"
-                />
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <input
+                    type="text"
+                    {...register("login")}
+                    className="w-full pl-10 p-3 rounded-lg border text-sm"
+                    style={{
+                      borderColor: 'var(--border-gray)',
+                      backgroundColor: '#FFFFFF',
+                      paddingLeft: '2.5rem'
+                    }}
+                    placeholder="Digite seu login"
+                    data-testid="input-admin-login"
+                  />
+                </div>
                 {errors.login && (
                   <p className="text-red-500 text-sm mt-1">{errors.login.message}</p>
                 )}
@@ -109,25 +108,24 @@ export default function AdminLoginPage() {
 
               {/* Password Field */}
               <div className="space-y-2">
-                <label className="flex items-center space-x-2 text-sm font-medium text-foreground">
-                  <Lock className="w-4 h-4" />
-                  <span>Senha</span>
+                <label className="text-sm font-medium text-foreground">
+                  Senha
                 </label>
-                <input
-                  type="password"
-                  {...register("password")}
-                  className="w-full p-3 border rounded-lg transition-all duration-200"
-                  style={{
-                    borderColor: 'var(--border-gray)',
-                    outline: 'none',
-                    borderRadius: '12px',
-                    borderWidth: '2px',
-                    padding: '12px 16px',
-                    height: '48px'
-                  }}
-                  placeholder="Digite sua senha"
-                  data-testid="input-admin-password"
-                />
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <input
+                    type="password"
+                    {...register("password")}
+                    className="w-full pl-10 p-3 rounded-lg border text-sm"
+                    style={{
+                      borderColor: 'var(--border-gray)',
+                      backgroundColor: '#FFFFFF',
+                      paddingLeft: '2.5rem'
+                    }}
+                    placeholder="Digite sua senha"
+                    data-testid="input-admin-password"
+                  />
+                </div>
                 {errors.password && (
                   <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
                 )}

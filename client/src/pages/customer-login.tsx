@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
-import { Lock, User } from "lucide-react";
+import { Lock, User, Mail } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { clientLoginSchema } from "@shared/schema";
@@ -96,49 +96,47 @@ export default function CustomerLoginPage() {
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 {/* Email Field */}
                 <div className="space-y-2">
-                  <label className="flex items-center space-x-2 text-sm font-medium" style={{color: 'var(--text-dark-primary)'}}>
-                    <User className="w-4 h-4" />
-                    <span>Email</span>
+                  <label className="text-sm font-medium" style={{color: 'var(--text-dark-primary)'}}>
+                    Email
                   </label>
-                  <input
-                    type="email"
-                    {...register("email")}
-                    className="w-full p-3 border rounded-lg transition-all duration-200"
-                    style={{
-                      borderColor: 'var(--border-gray)',
-                      outline: 'none',
-                      borderRadius: '12px',
-                      borderWidth: '2px',
-                      padding: '12px 16px',
-                      height: '48px'
-                    }}
-                    placeholder="Digite seu email"
-                  />
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4" style={{color: 'var(--text-dark-secondary)'}} />
+                    <input
+                      type="email"
+                      {...register("email")}
+                      className="w-full pl-10 p-3 rounded-lg border text-sm"
+                      style={{
+                        borderColor: 'var(--border-gray)',
+                        backgroundColor: '#FFFFFF',
+                        paddingLeft: '2.5rem'
+                      }}
+                      placeholder="Digite seu email"
+                    />
+                  </div>
                   {errors.email && (
                     <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
                   )}
                 </div>
 
-                {/* Password Field */}
+                {/* CPF Field */}
                 <div className="space-y-2">
-                  <label className="flex items-center space-x-2 text-sm font-medium" style={{color: 'var(--text-dark-primary)'}}>
-                    <Lock className="w-4 h-4" />
-                    <span>CPF</span>
+                  <label className="text-sm font-medium" style={{color: 'var(--text-dark-primary)'}}>
+                    CPF
                   </label>
-                  <input
-                    type="password"
-                    {...register("password")}
-                    className="w-full p-3 border rounded-lg transition-all duration-200"
-                    style={{
-                      borderColor: 'var(--border-gray)',
-                      outline: 'none',
-                      borderRadius: '12px',
-                      borderWidth: '2px',
-                      padding: '12px 16px',
-                      height: '48px'
-                    }}
-                    placeholder="Digite seu CPF"
-                  />
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4" style={{color: 'var(--text-dark-secondary)'}} />
+                    <input
+                      type="password"
+                      {...register("password")}
+                      className="w-full pl-10 p-3 rounded-lg border text-sm"
+                      style={{
+                        borderColor: 'var(--border-gray)',
+                        backgroundColor: '#FFFFFF',
+                        paddingLeft: '2.5rem'
+                      }}
+                      placeholder="Digite seu CPF"
+                    />
+                  </div>
                   {errors.password && (
                     <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
                   )}
