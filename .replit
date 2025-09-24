@@ -31,16 +31,13 @@ task = "shell.exec"
 args = "npm run dev"
 waitForPort = 3000
 
-[workflows.workflow.metadata]
-outputType = "console"
-
 [[workflows.workflow]]
 name = "Frontend"
 author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "cd client && npm run dev -- --port 5000 --host 0.0.0.0"
+args = "npm run dev:frontend"
 waitForPort = 5000
 
 [workflows.workflow.metadata]
@@ -59,12 +56,12 @@ localPort = 5000
 externalPort = 80
 
 [[ports]]
-localPort = 5001
-externalPort = 3002
-
-[[ports]]
 localPort = 44219
 externalPort = 3001
+
+[[ports]]
+localPort = 46841
+externalPort = 3002
 
 [deployment]
 deploymentTarget = "autoscale"
