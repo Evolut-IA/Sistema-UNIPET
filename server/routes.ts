@@ -3157,76 +3157,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Payment History for Client Area
-  app.get("/api/clients/payment-history", requireClient, async (req, res) => {
-    try {
-      const clientId = req.session.client?.id;
-      
-      if (!clientId) {
-        return res.status(401).json({ error: "Cliente não autenticado" });
-      }
-
-      // Get all contracts for the client
-      const contracts = await storage.getContractsByClientId(clientId);
-      
-      if (!contracts || contracts.length === 0) {
-        return res.json({ 
-          paymentHistory: [],
-          message: "Nenhum histórico de pagamento encontrado"
-        });
-      }
-
-      // Build payment history from contracts
-      const paymentHistory = [];
-      for (const contract of contracts) {
-        // Only include contracts with payment data (credit card and PIX only)
-        if (contract.cieloPaymentId && (contract.paymentMethod === 'credit_card' || contract.paymentMethod === 'pix')) {
-          // Get pet information
-          const pet = await storage.getPet(contract.petId);
-          const plan = await storage.getPlan(contract.planId);
-          
-          paymentHistory.push({
-            id: contract.id,
-            contractNumber: contract.contractNumber,
-            petName: pet?.name || 'Pet não encontrado',
-            planName: plan?.name || 'Plano não encontrado',
-            amount: parseFloat(contract.monthlyAmount),
-            paymentMethod: contract.paymentMethod,
-            status: contract.status,
-            // Payment proof data
-            paymentId: contract.cieloPaymentId,
-            proofOfSale: contract.proofOfSale, // NSU
-            authorizationCode: contract.authorizationCode,
-            tid: contract.tid,
-            receivedDate: contract.receivedDate,
-            returnCode: contract.returnCode,
-            returnMessage: contract.returnMessage,
-            // PIX specific data (if applicable)
-            ...(contract.paymentMethod === 'pix' && {
-              pixQrCode: contract.pixQrCode,
-              pixCode: contract.pixCode
-            })
-          });
-        }
-      }
-
-      // Sort by date (newest first)
-      paymentHistory.sort((a, b) => {
-        const dateA = new Date(a.receivedDate || a.createdAt);
-        const dateB = new Date(b.receivedDate || b.createdAt);
-        return dateB.getTime() - dateA.getTime();
-      });
-
-      res.json({
-        paymentHistory,
-        message: `${paymentHistory.length} pagamento(s) encontrado(s)`
-      });
-      
-    } catch (error) {
-      console.error("❌ Error fetching payment history:", error);
-      res.status(500).json({ error: "Erro interno do servidor" });
-    }
-  });
 
   // Update Client Profile
   app.put("/api/clients/profile", requireClient, async (req, res) => {
@@ -4123,7 +4053,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               res.setHeader('Content-Length', regenerateResult.pdfBuffer.length.toString());
               
               // Send PDF buffer directly
-              return res.send(regenerateResult.pdfBuffer);
+              return res.end(regenerateResult.pdfBuffer);
             } else {
               console.error(`❌ [RECEIPT-DOWNLOAD] Falha ao regenerar PDF: ${regenerateResult.error}`);
               return res.status(500).json({ error: "PDF não encontrado e não foi possível regenrá-lo. Entre em contato com o suporte." });
@@ -4162,7 +4092,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             res.setHeader('Content-Length', regenerateResult.pdfBuffer.length.toString());
             
             // Send PDF buffer directly
-            return res.send(regenerateResult.pdfBuffer);
+            return res.end(regenerateResult.pdfBuffer);
           } else {
             console.error(`❌ [RECEIPT-DOWNLOAD] Falha ao regenerar PDF: ${regenerateResult.error}`);
             return res.status(500).json({ error: "Falha ao regenerar PDF para download." });
@@ -4174,7 +4104,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       } else {
         console.error(`❌ [RECEIPT-DOWNLOAD] Object key do PDF não disponível para comprovante: ${receiptId}`);
-        res.status(500).json({ error: "PDF não disponível para download" });
+        // Try to regenerate PDF when object key is not available
+        try {
+          const PaymentReceiptService = (await import('./services/payment-receipt-service.js')).PaymentReceiptService;
+          const paymentReceiptService = new PaymentReceiptService();
+          console.log(`🔄 [RECEIPT-DOWNLOAD] Regenerando PDF para comprovante sem object key: ${receiptId}`);
+          const regenerateResult = await paymentReceiptService.regeneratePDFFromReceipt(receipt);
+          if (regenerateResult.success && regenerateResult.pdfBuffer) {
+            console.log(`✅ [RECEIPT-DOWNLOAD] PDF regenerado com sucesso`);
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', `attachment; filename="${receipt.pdfFileName}"`);
+            res.setHeader('Content-Length', regenerateResult.pdfBuffer.length.toString());
+            return res.end(regenerateResult.pdfBuffer);
+          } else {
+            console.error(`❌ [RECEIPT-DOWNLOAD] Falha ao regenerar PDF: ${regenerateResult.error}`);
+            return res.status(500).json({ error: "Falha ao regenerar PDF. Entre em contato com o suporte." });
+          }
+        } catch (regenerateError) {
+          console.error(`❌ [RECEIPT-DOWNLOAD] Erro na regeneração:`, regenerateError);
+          return res.status(500).json({ error: "Erro ao regenerar PDF" });
+        }
       }
 
     } catch (error) {
