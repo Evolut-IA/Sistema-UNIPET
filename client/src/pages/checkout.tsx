@@ -210,25 +210,21 @@ export default function Checkout() {
 
   // Funções para gerenciar múltiplos pets
   const addPet = () => {
-    if (canAddNewPet()) {
-      // Colapsar todos os pets anteriores e sair do modo de edição
-      const newCollapsedState = new Array(petsData.length).fill(true);
-      newCollapsedState.push(false); // Novo pet fica aberto
-      setCollapsedPets(newCollapsedState);
-      
-      const newEditingState = new Array(petsData.length).fill(false);
-      newEditingState.push(false); // Novo pet não está editando
-      setEditingPets(newEditingState);
-      
-      // Adicionar novo pet
-      setPetsData([...petsData, {
-        name: '',
-        species: '',
-        breed: '',
-        age: 0,
-        weight: 0
-      }]);
-    }
+    // Simplesmente adiciona uma nova div de pet (não precisa validar o último pet)
+    const newCollapsedState = [...collapsedPets, false]; // Novo pet fica aberto
+    setCollapsedPets(newCollapsedState);
+    
+    const newEditingState = [...editingPets, false]; // Novo pet não está editando
+    setEditingPets(newEditingState);
+    
+    // Adicionar novo pet
+    setPetsData([...petsData, {
+      name: '',
+      species: '',
+      breed: '',
+      age: 0,
+      weight: 0
+    }]);
   };
 
   const removePet = (index: number) => {
@@ -255,6 +251,18 @@ export default function Checkout() {
     const newCollapsedState = [...collapsedPets];
     newCollapsedState[index] = !newCollapsedState[index];
     setCollapsedPets(newCollapsedState);
+  };
+
+  // Função para salvar um pet (colapsar a div)
+  const savePet = (index: number) => {
+    const newCollapsedState = [...collapsedPets];
+    newCollapsedState[index] = true;
+    setCollapsedPets(newCollapsedState);
+  };
+
+  // Função para verificar se todos os pets estão colapsados
+  const areAllPetsCollapsed = () => {
+    return collapsedPets.every(collapsed => collapsed);
   };
 
 
@@ -1025,23 +1033,21 @@ export default function Checkout() {
                               </div>
                             </div>
                             
-                            {/* Botão Atualizar (aparece apenas durante edição) */}
-                            {editingPets[index] && (
-                              <div className="flex justify-end mt-4">
-                                <button
-                                  type="button"
-                                  onClick={() => finishEditingPet(index)}
-                                  className="px-4 py-2 rounded-lg transition-colors"
-                                  style={{
-                                    background: 'var(--btn-ver-planos-bg)',
-                                    color: 'var(--btn-ver-planos-text)',
-                                    border: 'none'
-                                  }}
-                                >
-                                  Atualizar
-                                </button>
-                              </div>
-                            )}
+                            {/* Botão Salvar (aparece quando o pet não está colapsado) */}
+                            <div className="flex justify-end mt-4">
+                              <button
+                                type="button"
+                                onClick={() => savePet(index)}
+                                className="px-4 py-2 rounded-lg transition-colors"
+                                style={{
+                                  background: 'var(--btn-ver-planos-bg)',
+                                  color: 'var(--btn-ver-planos-text)',
+                                  border: 'none'
+                                }}
+                              >
+                                Salvar
+                              </button>
+                            </div>
                           </div>
                         )}
 
@@ -1081,8 +1087,7 @@ export default function Checkout() {
                     <button
                       type="button"
                       onClick={addPet}
-                      disabled={!canAddNewPet()}
-                      className="flex items-center px-4 py-2 text-sm font-medium rounded-lg disabled:opacity-50 disabled:cursor-not-allowed w-full xs:w-auto justify-center transition-transform duration-300 hover:scale-95"
+                      className="flex items-center px-4 py-2 text-sm font-medium rounded-lg w-full xs:w-auto justify-center transition-transform duration-300 hover:scale-95"
                       style={{
                         background: 'var(--btn-cotacao-gratuita-bg)',
                         color: 'var(--btn-cotacao-gratuita-text)',
@@ -1697,7 +1702,7 @@ export default function Checkout() {
                 onClick={handleNextStep}
                 disabled={
                   isLoading || 
-                  (currentStep === 2 && !isPetsDataValid()) ||
+                  (currentStep === 2 && (!isPetsDataValid() || !areAllPetsCollapsed())) ||
                   (currentStep === 3 && !isCustomerDataValid()) ||
                   (currentStep === 4 && !isPaymentDataValid())
                 }
