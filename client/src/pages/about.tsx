@@ -16,15 +16,15 @@ export default function About() {
   const values = [
     {
       title: "Missão",
-      content: "Garantir que todos os pets tenham acesso a cuidados de saúde de qualidade, proporcionando tranquilidade às famílias brasileiras que amam seus animais de estimação."
+      content: <span style={{color: '#303030'}}>Garantir que todos os pets tenham acesso a cuidados de saúde de qualidade, proporcionando tranquilidade às famílias brasileiras que amam seus animais de estimação.</span>
     },
     {
       title: "Visão",
-      content: "Ser a principal referência em planos de saúde para pets no Brasil, reconhecida pela excelência no atendimento e compromisso com o bem-estar animal."
+      content: <span style={{color: '#303030'}}>Ser a principal referência em planos de saúde para pets no Brasil, reconhecida pela excelência no atendimento e compromisso com o bem-estar animal.</span>
     },
     {
       title: "Valores",
-      content: "Transparência, comprometimento com o bem-estar animal, atendimento humanizado, preços justos e acessibilidade para todas as famílias brasileiras."
+      content: <span style={{color: '#303030'}}>Transparência, comprometimento com o bem-estar animal, atendimento humanizado, preços justos e acessibilidade para todas as famílias brasileiras.</span>
     }
   ];
 
@@ -121,8 +121,8 @@ export default function About() {
                   <CardContent className="pt-6">
                     <h3 className="text-xl font-semibold text-primary mb-4">Atendimento Humanizado</h3>
                     <p className="text-primary-foreground">
-                      Tratamos cada pet como se fosse nosso, oferecendo cuidado personalizado
-                      e suporte emocional para as famílias em momentos difíceis.
+                      <span style={{color: '#303030'}}>Tratamos cada pet como se fosse nosso, oferecendo cuidado personalizado
+                      e suporte emocional para as famílias em momentos difíceis.</span>
                     </p>
                   </CardContent>
                 </Card>
@@ -132,8 +132,8 @@ export default function About() {
                   <CardContent className="pt-6">
                     <h3 className="text-xl font-semibold text-primary mb-4">Inovação Constante</h3>
                     <p className="text-primary-foreground">
-                      Investimos continuamente em tecnologia e processos para tornar
-                      o acesso aos cuidados veterinários mais fácil e eficiente.
+                      <span style={{color: '#303030'}}>Investimos continuamente em tecnologia e processos para tornar
+                      o acesso aos cuidados veterinários mais fácil e eficiente.</span>
                     </p>
                   </CardContent>
                 </Card>
