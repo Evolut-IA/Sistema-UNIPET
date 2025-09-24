@@ -1017,7 +1017,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         // Update existing client with partial data (without overwriting existing fields)
         const updateData: any = {
-          fullName: parsedClientData.fullName,
+          fullName: parsedClientData.full_name,
           phone: parsedClientData.phone || existingClient.phone,
         };
         
@@ -1067,7 +1067,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create client with UUID - CPF null for Step 2
       const clientToSave = {
         ...parsedClientData,
-        fullName: parsedClientData.fullName,
+        fullName: parsedClientData.full_name,
         password: hashedPassword,
         cpf: null, // CPF null temporariamente (será adicionado no Step 3)
         id: `client-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
@@ -1386,7 +1386,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             }
           },
           payment: {
-            type: 'CreditCard',
+            type: 'CreditCard' as const,
             amount: correctAmountInCents,
             installments: paymentData.payment?.installments || 1,
             creditCard: {
@@ -1411,11 +1411,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const contractData = {
             clientId: client.id,
             planId: planData.planId,
-            petId: null, // Multiple pets supported
+            petId: planData.pets?.[0]?.id || 'temp-pet', // Use first pet or temp placeholder
             contractNumber: `UNIPET-${Date.now()}-${client.id.substring(0, 4).toUpperCase()}`,
-            status: 'active',
+            status: 'active' as const,
             startDate: new Date(),
-            monthlyAmount: selectedPlan.price,
+            monthlyAmount: selectedPlan.price.toString(),
             paymentMethod: 'credit_card',
             cieloPaymentId: paymentResult.paymentId,
             proofOfSale: paymentResult.proofOfSale,
@@ -2167,7 +2167,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create client with UUID
       const clientData = {
         ...parsed,
-        fullName: parsed.fullName,
+        fullName: parsed.full_name,
         password: hashedPassword,
         id: `client-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
       };
