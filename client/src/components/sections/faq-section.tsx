@@ -40,7 +40,7 @@ export default function FaqSection({ showTitle = true, maxItems, showViewMoreBut
           </div>
         )}
 
-        <div className="max-w-6xl mx-auto">
+        <div className="w-full max-w-full px-4 sm:px-6 lg:px-8">
           <Card className="bg-[var(--bg-cream-light)] border-none shadow-lg rounded-xl">
             <CardContent className="p-4 sm:p-6 px-6 sm:px-8">
               <Accordion type="single" collapsible className="space-y-4">
