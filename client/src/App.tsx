@@ -20,7 +20,6 @@ import CustomerDashboard from "@/pages/customer-dashboard";
 import CustomerPets from "@/pages/customer-pets";
 import CustomerProfile from "@/pages/customer-profile";
 import CustomerSurveys from "@/pages/customer-surveys";
-import CustomerCoparticipation from "@/pages/customer-coparticipation";
 import CustomerFinancial from "@/pages/customer-financial";
 import TelemedicinePage from "@/pages/telemedicine";
 import AdminLoginPage from "@/pages/admin-login";
@@ -149,7 +148,6 @@ function Router() {
         <Route path="/customer/pets" component={CustomerPets} />
         <Route path="/customer/profile" component={CustomerProfile} />
         <Route path="/customer/surveys" component={CustomerSurveys} />
-        <Route path="/customer/coparticipation" component={CustomerCoparticipation} />
         <Route path="/customer/financial" component={CustomerFinancial} />
         <Route path="/customer/telemedicine" component={TelemedicinePage} />
         

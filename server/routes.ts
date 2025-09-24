@@ -3399,7 +3399,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // 5. Check Co-participation Values by Service
-  app.get("/api/customer/coparticipation", requireClient, async (req, res) => {
+  // REMOVED: app.get("/api/customer/coparticipation") route
     try {
       const clientId = req.session.client?.id;
       const contracts = await storage.getContractsByClientId(clientId);
