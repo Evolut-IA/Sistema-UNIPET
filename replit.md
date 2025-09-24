@@ -4,6 +4,14 @@
 UNIPET PLAN is a comprehensive pet health plan management system designed to streamline pet insurance plan management, customer relationships, and healthcare network unit administration. It features a customer-facing website for plan selection and quote requests, alongside an admin dashboard for content and business management. The system is built with a full-stack TypeScript solution, utilizing a React frontend, Express.js backend, and PostgreSQL database with Drizzle ORM. The project emphasizes security, performance, scalability, and aims to simplify pet healthcare administration.
 
 ## Recent Changes
+- **September 24, 2025**: Financial Information Page Complete Fix
+  - Removed duplicate /api/clients/payment-history endpoint (lines 3161-3229) that was causing conflicts
+  - Fixed PDF download functionality for payment receipts - regenerates PDF when needed
+  - Corrected PDF response headers to return binary data instead of JSON
+  - Added test client (test@unipetplan.com.br, password: test123) with contracts and payment receipts
+  - All financial page endpoints verified working: contracts, payment-history, payment-receipts, and PDF downloads
+  - PDF generation uses pdfmake with proper binary response handling
+
 - **September 24, 2025**: Checkout Plan Billing and Installment Rules Fix
   - Updated database: COMFORT and PLATINUM plans now have 'annual' billing frequency (BASIC and INFINITY remain 'monthly')
   - Fixed checkout step 1 to display correct billing frequency ('faturamento anual' for COMFORT/PLATINUM, 'faturamento mensal' for BASIC/INFINITY)
