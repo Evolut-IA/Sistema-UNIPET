@@ -336,7 +336,7 @@ export default function Contact() {
             {/* Contact Information */}
             <AnimatedSection animation="slideLeft" delay={400} className="overflow-visible">
               <div className="pl-0 lg:pl-2 space-y-6 mt-5 lg:mt-0" style={{overflow: 'visible'}}>
-                <div className="rounded-xl w-full" style={{backgroundColor: '#277677', boxShadow: '0 10px 25px 0px rgba(0, 0, 0, 0.15), 0 5px 10px 0px rgba(0, 0, 0, 0.1)', position: 'relative', zIndex: '10'}}>
+                <div className="rounded-xl w-full" style={{backgroundColor: '#277677', border: '2px solid rgba(255, 255, 255, 0.2)', position: 'relative'}}>
                   <div className="p-6 sm:p-8 text-left">
                     <div className="mb-6">
                       <div className="text-xl sm:text-2xl font-bold text-[var(--text-light)] mb-3">
@@ -408,7 +408,7 @@ export default function Contact() {
 
                 {/* Social Media */}
                 {(shouldShow.facebookUrl || shouldShow.instagramUrl || shouldShow.linkedinUrl || shouldShow.youtubeUrl) && (
-                  <div className="rounded-xl w-full" style={{backgroundColor: '#277677', boxShadow: '0 10px 25px 0px rgba(0, 0, 0, 0.15), 0 5px 10px 0px rgba(0, 0, 0, 0.1)', position: 'relative', zIndex: '10'}}>
+                  <div className="rounded-xl w-full" style={{backgroundColor: '#277677', border: '2px solid rgba(255, 255, 255, 0.2)', position: 'relative'}}>
                     <div className="p-6 sm:p-8 text-left">
                       <div className="mb-6">
                         <div className="text-xl sm:text-2xl font-bold text-[var(--text-light)] mb-3">Siga-nos</div>
@@ -442,7 +442,7 @@ export default function Contact() {
 
                 {/* Service Hours */}
                 {shouldShow.businessHours && (
-                  <div className="rounded-xl w-full" style={{backgroundColor: '#277677', boxShadow: '0 10px 25px 0px rgba(0, 0, 0, 0.15), 0 5px 10px 0px rgba(0, 0, 0, 0.1)', position: 'relative', zIndex: '10'}}>
+                  <div className="rounded-xl w-full" style={{backgroundColor: '#277677', border: '2px solid rgba(255, 255, 255, 0.2)', position: 'relative'}}>
                     <div className="p-6 sm:p-8 text-center">
                       <div className="flex items-center justify-center mb-4">
                         <div className="text-xl sm:text-2xl font-bold text-[var(--text-light)]">
