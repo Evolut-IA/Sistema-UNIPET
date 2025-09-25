@@ -4,6 +4,13 @@
 UNIPET PLAN is a comprehensive pet health plan management system designed to streamline pet insurance plan management, customer relationships, and healthcare network unit administration. It features a customer-facing website for plan selection and quote requests, alongside an admin dashboard for content and business management. The system is built with a full-stack TypeScript solution, utilizing a React frontend, Express.js backend, and PostgreSQL database with Drizzle ORM. The project emphasizes security, performance, scalability, and aims to simplify pet healthcare administration.
 
 ## Recent Changes
+- **September 25, 2025**: Fixed CEP (Postal Code) Not Being Saved During Checkout
+  - Corrected field name mismatch between frontend and backend
+  - Frontend was sending 'cep' field but backend was trying to read 'zipCode'
+  - Updated all backend endpoints to correctly read 'addressData.cep' instead of 'addressData.zipCode'
+  - CEP is now properly saved to the clients table during checkout process
+  - Fixed in multiple endpoints: complete-registration, simple-process, and payment processing
+
 - **September 25, 2025**: Fixed Pet Duplication During Checkout
   - Corrected issue where pets were being saved twice during checkout process (once in /api/checkout/save-customer-data and again in /api/checkout/simple-process)
   - Removed duplicate pet creation code from /api/checkout/simple-process endpoint
