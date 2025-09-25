@@ -405,6 +405,7 @@ export class InMemoryStorage implements IStorage {
       id: Math.random().toString(36).substr(2, 9),
       name: insertUnit.name,
       address: insertUnit.address,
+      cidade: insertUnit.cidade,
       phone: insertUnit.phone,
       services: insertUnit.services,
       imageUrl: insertUnit.imageUrl,
