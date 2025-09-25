@@ -12,7 +12,24 @@ import {
   ChevronRight
 } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
-import { NetworkUnit } from "@shared/schema";
+// Define NetworkUnit type based on the API response
+interface NetworkUnit {
+  id: string;
+  name: string;
+  address: string;
+  cidade: string;
+  phone: string;
+  services: string[];
+  imageUrl: string;
+  isActive: boolean;
+  createdAt: Date;
+  whatsapp?: string;
+  googleMapsUrl?: string;
+  imageData?: string;
+  urlSlug?: string;
+  login?: string;
+  senhaHash?: string;
+}
 import React, { useState, useMemo, useEffect } from "react";
 import { useNetworkPageData } from "@/hooks/use-parallel-data";
 import { AnimatedSection } from "@/components/ui/animated-section";
@@ -39,11 +56,7 @@ export default function Network() {
   // Get unique cities and services for filter options
   const uniqueCities = useMemo(() => {
     if (!networkUnits) return [] as string[];
-    const cities = networkUnits.map((unit: NetworkUnit) => {
-      // Extract city from address (assuming format like "Street, City, State")
-      const addressParts = unit.address.split(',');
-      return addressParts.length > 1 ? addressParts[1].trim() : addressParts[0].trim();
-    });
+    const cities = networkUnits.map((unit: NetworkUnit) => unit.cidade);
     return Array.from(new Set(cities)).sort();
   }, [networkUnits]);
 
@@ -63,9 +76,9 @@ export default function Network() {
         unit.name.toLowerCase().includes(searchText.toLowerCase()) ||
         unit.address.toLowerCase().includes(searchText.toLowerCase());
 
-      // City filter - improved logic
+      // City filter - using cidade column directly
       const matchesCity = selectedCity === "all" || 
-        unit.address.toLowerCase().includes(selectedCity.toLowerCase());
+        unit.cidade.toLowerCase() === selectedCity.toLowerCase();
 
       // Service filter
       const matchesService = selectedService === "all" ||

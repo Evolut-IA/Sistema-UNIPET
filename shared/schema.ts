@@ -475,6 +475,9 @@ const baseNetworkUnitSchema = z.object({
   urlSlug: z.string().optional(),
 });
 
+// TypeScript type for NetworkUnit
+export type NetworkUnit = typeof networkUnits.$inferSelect;
+
 export const insertNetworkUnitSchema = baseNetworkUnitSchema;
 
 export const updateNetworkUnitSchema = baseNetworkUnitSchema.partial();
