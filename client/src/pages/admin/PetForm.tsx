@@ -15,6 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/admin/queryClient";
 import { insertPetSchema } from "@shared/schema";
 import { ArrowLeft, Plus, Trash2 } from "lucide-react";
+import { useSpecies } from "@/hooks/use-species";
 
 export default function PetForm() {
   const [, setLocation] = useLocation();
@@ -38,6 +39,8 @@ export default function PetForm() {
   const { data: plans } = useQuery<any[]>({
     queryKey: ["/admin/api/plans/active"],
   });
+
+  const { data: species, isLoading: speciesLoading } = useSpecies();
 
   const form = useForm({
     resolver: zodResolver(insertPetSchema),
@@ -196,12 +199,18 @@ export default function PetForm() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {["Cão", "Gato", "Ave", "Roedor", "Réptil", "Outros"].flatMap((species, index, array) => [
-                            <SelectItem key={species} value={species} className="py-3 pl-10 pr-4 data-[state=selected]:bg-primary data-[state=selected]:text-primary-foreground">
-                              {species}
-                            </SelectItem>,
-                            ...(index < array.length - 1 ? [<Separator key={`separator-${species}`} />] : [])
-                          ])}
+                          {speciesLoading ? (
+                            <SelectItem value="loading" disabled className="py-3 pl-10 pr-4">
+                              Carregando espécies...
+                            </SelectItem>
+                          ) : (
+                            (species || []).flatMap((speciesItem: any, index: number, array: any[]) => [
+                              <SelectItem key={speciesItem.id} value={speciesItem.name} className="py-3 pl-10 pr-4 data-[state=selected]:bg-primary data-[state=selected]:text-primary-foreground">
+                                {speciesItem.name}
+                              </SelectItem>,
+                              ...(index < array.length - 1 ? [<Separator key={`separator-${speciesItem.id}`} />] : [])
+                            ])
+                          )}
                         </SelectContent>
                       </Select>
                       <FormMessage />

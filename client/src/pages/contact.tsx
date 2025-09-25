@@ -14,6 +14,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useSiteSettingsWithDefaults } from "@/hooks/use-site-settings";
 import { useWhatsAppRedirect } from "@/hooks/use-whatsapp-redirect";
 import { usePlans, getPlanDisplayText } from "@/hooks/use-plans";
+import { useSpecies } from "@/hooks/use-species";
 import { AnimatedSection } from "@/components/ui/animated-section";
 
 const contactFormSchema = z.object({
@@ -37,6 +38,7 @@ export default function Contact() {
   const { settings, shouldShow } = useSiteSettingsWithDefaults();
   const { getWhatsAppLink } = useWhatsAppRedirect();
   const { data: plans, isLoading: plansLoading, error: plansError } = usePlans();
+  const { data: species, isLoading: speciesLoading } = useSpecies();
 
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactFormSchema),
@@ -203,19 +205,18 @@ export default function Contact() {
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  <SelectItem value="Cão">Cão</SelectItem>
-                                  <SelectSeparator />
-                                  <SelectItem value="Gato">Gato</SelectItem>
-                                  <SelectSeparator />
-                                  <SelectItem value="Aves">Aves</SelectItem>
-                                  <SelectSeparator />
-                                  <SelectItem value="Tartarugas ou jabutis">Tartarugas ou jabutis</SelectItem>
-                                  <SelectSeparator />
-                                  <SelectItem value="Coelhos ou hamsters">Coelhos ou hamsters</SelectItem>
-                                  <SelectSeparator />
-                                  <SelectItem value="Porquinho da índia">Porquinho da índia</SelectItem>
-                                  <SelectSeparator />
-                                  <SelectItem value="Outros">Outros</SelectItem>
+                                  {speciesLoading ? (
+                                    <SelectItem value="loading" disabled>
+                                      Carregando espécies...
+                                    </SelectItem>
+                                  ) : (
+                                    (species || []).flatMap((speciesItem, index, array) => [
+                                      <SelectItem key={speciesItem.id} value={speciesItem.name}>
+                                        {speciesItem.name}
+                                      </SelectItem>,
+                                      ...(index < array.length - 1 ? [<SelectSeparator key={`separator-${speciesItem.id}`} />] : [])
+                                    ])
+                                  )}
                                 </SelectContent>
                               </Select>
                               <FormMessage />

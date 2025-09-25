@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/select';
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
+import { useSpecies } from "@/hooks/use-species";
 
 interface Plan {
   id: string;
@@ -59,6 +60,15 @@ interface PaymentData {
     securityCode: string;
     installments: number;
   };
+}
+
+interface Species {
+  id: string;
+  name: string;
+  displayOrder: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export default function Checkout() {
@@ -192,6 +202,7 @@ export default function Checkout() {
   
   const [isLoading, setIsLoading] = useState(false);
   const [plans, setPlans] = useState<Plan[]>([]);
+  const { data: species, isLoading: speciesLoading } = useSpecies();
   const [collapsedPets, setCollapsedPets] = useState<boolean[]>([false]); // Controla quais pets estão colapsados
   const [editingPets, setEditingPets] = useState<boolean[]>([false]); // Controla quais pets estão em modo de edição
   const [pixData, setPixData] = useState<{ qrCode: string; copyPasteCode: string; orderId: string; paymentId: string } | null>(null);
@@ -528,6 +539,7 @@ export default function Checkout() {
       console.error('Error fetching plans:', error);
     }
   };
+
 
   const handlePlanSelect = (plan: Plan) => {
     setSelectedPlan(plan);
@@ -1074,19 +1086,18 @@ export default function Checkout() {
                                     <SelectValue placeholder="Selecione a espécie" />
                                   </SelectTrigger>
                                   <SelectContent>
-                                    <SelectItem value="Cão">Cão</SelectItem>
-                                    <SelectSeparator />
-                                    <SelectItem value="Gato">Gato</SelectItem>
-                                    <SelectSeparator />
-                                    <SelectItem value="Aves">Aves</SelectItem>
-                                    <SelectSeparator />
-                                    <SelectItem value="Tartarugas ou jabutis">Tartarugas ou jabutis</SelectItem>
-                                    <SelectSeparator />
-                                    <SelectItem value="Coelhos ou hamsters">Coelhos ou hamsters</SelectItem>
-                                    <SelectSeparator />
-                                    <SelectItem value="Porquinho da índia">Porquinho da índia</SelectItem>
-                                    <SelectSeparator />
-                                    <SelectItem value="Outros">Outros</SelectItem>
+                                    {speciesLoading ? (
+                                      <SelectItem value="loading" disabled>
+                                        Carregando espécies...
+                                      </SelectItem>
+                                    ) : (
+                                      (species || []).flatMap((speciesItem, index, array) => [
+                                        <SelectItem key={speciesItem.id} value={speciesItem.name}>
+                                          {speciesItem.name}
+                                        </SelectItem>,
+                                        ...(index < array.length - 1 ? [<SelectSeparator key={`separator-${speciesItem.id}`} />] : [])
+                                      ])
+                                    )}
                                   </SelectContent>
                                 </Select>
                               </div>
