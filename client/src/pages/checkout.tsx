@@ -160,7 +160,7 @@ export default function Checkout() {
     name: '',
     species: '',
     breed: '',
-    age: 0,
+    age: '',
     weight: 0
   }]);
   const [customerData, setCustomerData] = useState<CustomerData>({
@@ -222,7 +222,7 @@ export default function Checkout() {
       name: '',
       species: '',
       breed: '',
-      age: 0,
+      age: '',
       weight: 0
     }]);
   };
@@ -238,7 +238,7 @@ export default function Checkout() {
         name: '',
         species: '',
         breed: '',
-        age: 0,
+        age: '',
         weight: 0
       }]);
       setCollapsedPets([false]); // Mantém expandido para preenchimento
