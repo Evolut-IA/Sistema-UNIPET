@@ -4,6 +4,14 @@
 UNIPET PLAN is a comprehensive pet health plan management system designed to streamline pet insurance plan management, customer relationships, and healthcare network unit administration. It features a customer-facing website for plan selection and quote requests, alongside an admin dashboard for content and business management. The system is built with a full-stack TypeScript solution, utilizing a React frontend, Express.js backend, and PostgreSQL database with Drizzle ORM. The project emphasizes security, performance, scalability, and aims to simplify pet healthcare administration.
 
 ## Recent Changes
+- **September 25, 2025**: Checkout Pet Saving Fixed - Pets Now Save Only After Payment
+  - Modified checkout flow to save pets only after payment confirmation
+  - Frontend no longer sends pet data in initial save-customer-data endpoint
+  - Pets are created in simple-process endpoint after credit card payment is approved
+  - Pets are created for PIX payments when QR code is generated
+  - Prevents orphaned pet records if payment fails or is cancelled
+  - Ensures data integrity by linking pets to confirmed payments only
+
 - **September 25, 2025**: Pet Sex Field Made Selectable
   - Added sex selection dropdown field in checkout form (Step 2 - Pet Information)
   - User can now select between "Macho" (Male) or "Fêmea" (Female) for each pet
