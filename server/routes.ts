@@ -1184,7 +1184,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Update client with CPF and address
       const updateData = {
         cpf: cleanCpf,
-        cep: addressData.zipCode?.replace(/\D/g, '') || null,
+        cep: addressData.cep?.replace(/\D/g, '') || null,
         address: addressData.address || null,
         number: addressData.number || null,
         complement: addressData.complement || null,
