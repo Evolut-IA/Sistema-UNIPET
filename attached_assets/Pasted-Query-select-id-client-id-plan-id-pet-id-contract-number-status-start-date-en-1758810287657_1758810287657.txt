@@ -1,0 +1,233 @@
+Query: select "id", "client_id", "plan_id", "pet_id", "contract_number", "status", "start_date", "end_date", "billing_period", "monthly_amount", "annual_amount", "payment_method", "cielo_payment_id", "has_coparticipation", "proof_of_sale", "authorization_code", "tid", "received_date", "return_code", "return_message", "pix_qr_code", "pix_code", "created_at", "updated_at" from "contracts" where "contracts"."cielo_payment_id" = $1 -- params: ["2a106e6c-944c-48eb-92f8-45dcd034cb42"]
+GET /api/payments/query/2a106e6c-944c-48eb-92f8-45dcd034cb42 200 in 667ms :: {"…
+🔍 [PAYMENT-QUERY] Consultando status de pagamento {
+  correlationId: '5wtf67',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42',
+  userId: undefined
+}
+🔍 [Cielo] Consultando pagamento {
+  correlationId: 'd1dc2a26-3a8d-4087-b243-865d8a8ab98c',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42'
+}
+🔗 [Cielo] URL de consulta: https://apiquery.cieloecommerce.cielo.com.br/1/sales/2a106e6c-944c-48eb-92f8-45dcd034cb42
+✅ [Cielo] Status interpretado corretamente: {
+  correlationId: 'd1dc2a26-3a8d-4087-b243-865d8a8ab98c',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42',
+  cieloStatus: 2,
+  mappedStatus: 'approved',
+  capturedAmount: 100,
+  capturedDate: '2025-09-25 11:23:33',
+  isApproved: true
+}
+Query: select "id", "client_id", "plan_id", "pet_id", "contract_number", "status", "start_date", "end_date", "billing_period", "monthly_amount", "annual_amount", "payment_method", "cielo_payment_id", "has_coparticipation", "proof_of_sale", "authorization_code", "tid", "received_date", "return_code", "return_message", "pix_qr_code", "pix_code", "created_at", "updated_at" from "contracts" where "contracts"."cielo_payment_id" = $1 -- params: ["2a106e6c-944c-48eb-92f8-45dcd034cb42"]
+GET /api/payments/query/2a106e6c-944c-48eb-92f8-45dcd034cb42 200 in 669ms :: {"…
+🔍 [PAYMENT-QUERY] Consultando status de pagamento {
+  correlationId: 'pyx7h7',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42',
+  userId: undefined
+}
+🔍 [Cielo] Consultando pagamento {
+  correlationId: '3bd14111-8a98-4583-8de5-0fd595fcec11',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42'
+}
+🔗 [Cielo] URL de consulta: https://apiquery.cieloecommerce.cielo.com.br/1/sales/2a106e6c-944c-48eb-92f8-45dcd034cb42
+✅ [Cielo] Status interpretado corretamente: {
+  correlationId: '3bd14111-8a98-4583-8de5-0fd595fcec11',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42',
+  cieloStatus: 2,
+  mappedStatus: 'approved',
+  capturedAmount: 100,
+  capturedDate: '2025-09-25 11:23:33',
+  isApproved: true
+}
+Query: select "id", "client_id", "plan_id", "pet_id", "contract_number", "status", "start_date", "end_date", "billing_period", "monthly_amount", "annual_amount", "payment_method", "cielo_payment_id", "has_coparticipation", "proof_of_sale", "authorization_code", "tid", "received_date", "return_code", "return_message", "pix_qr_code", "pix_code", "created_at", "updated_at" from "contracts" where "contracts"."cielo_payment_id" = $1 -- params: ["2a106e6c-944c-48eb-92f8-45dcd034cb42"]
+GET /api/payments/query/2a106e6c-944c-48eb-92f8-45dcd034cb42 200 in 671ms :: {"…
+🔍 [PAYMENT-QUERY] Consultando status de pagamento {
+  correlationId: 'jt48cl',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42',
+  userId: undefined
+}
+🔍 [Cielo] Consultando pagamento {
+  correlationId: '991bb42a-fa9d-4910-94d0-daef137f98a4',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42'
+}
+🔗 [Cielo] URL de consulta: https://apiquery.cieloecommerce.cielo.com.br/1/sales/2a106e6c-944c-48eb-92f8-45dcd034cb42
+✅ [Cielo] Status interpretado corretamente: {
+  correlationId: '991bb42a-fa9d-4910-94d0-daef137f98a4',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42',
+  cieloStatus: 2,
+  mappedStatus: 'approved',
+  capturedAmount: 100,
+  capturedDate: '2025-09-25 11:23:33',
+  isApproved: true
+}
+Query: select "id", "client_id", "plan_id", "pet_id", "contract_number", "status", "start_date", "end_date", "billing_period", "monthly_amount", "annual_amount", "payment_method", "cielo_payment_id", "has_coparticipation", "proof_of_sale", "authorization_code", "tid", "received_date", "return_code", "return_message", "pix_qr_code", "pix_code", "created_at", "updated_at" from "contracts" where "contracts"."cielo_payment_id" = $1 -- params: ["2a106e6c-944c-48eb-92f8-45dcd034cb42"]
+GET /api/payments/query/2a106e6c-944c-48eb-92f8-45dcd034cb42 200 in 688ms :: {"…
+🔍 [PAYMENT-QUERY] Consultando status de pagamento {
+  correlationId: 'ubcg8q',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42',
+  userId: undefined
+}
+🔍 [Cielo] Consultando pagamento {
+  correlationId: '5bc5babf-2f10-49f3-9565-5e427558065f',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42'
+}
+🔗 [Cielo] URL de consulta: https://apiquery.cieloecommerce.cielo.com.br/1/sales/2a106e6c-944c-48eb-92f8-45dcd034cb42
+✅ [Cielo] Status interpretado corretamente: {
+  correlationId: '5bc5babf-2f10-49f3-9565-5e427558065f',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42',
+  cieloStatus: 2,
+  mappedStatus: 'approved',
+  capturedAmount: 100,
+  capturedDate: '2025-09-25 11:23:33',
+  isApproved: true
+}
+Query: select "id", "client_id", "plan_id", "pet_id", "contract_number", "status", "start_date", "end_date", "billing_period", "monthly_amount", "annual_amount", "payment_method", "cielo_payment_id", "has_coparticipation", "proof_of_sale", "authorization_code", "tid", "received_date", "return_code", "return_message", "pix_qr_code", "pix_code", "created_at", "updated_at" from "contracts" where "contracts"."cielo_payment_id" = $1 -- params: ["2a106e6c-944c-48eb-92f8-45dcd034cb42"]
+GET /api/payments/query/2a106e6c-944c-48eb-92f8-45dcd034cb42 200 in 728ms :: {"…
+🔍 [PAYMENT-QUERY] Consultando status de pagamento {
+  correlationId: 'v161xf',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42',
+  userId: undefined
+}
+🔍 [Cielo] Consultando pagamento {
+  correlationId: 'e9227b60-432d-47f4-bafd-24b8b35bc294',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42'
+}
+🔗 [Cielo] URL de consulta: https://apiquery.cieloecommerce.cielo.com.br/1/sales/2a106e6c-944c-48eb-92f8-45dcd034cb42
+✅ [Cielo] Status interpretado corretamente: {
+  correlationId: 'e9227b60-432d-47f4-bafd-24b8b35bc294',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42',
+  cieloStatus: 2,
+  mappedStatus: 'approved',
+  capturedAmount: 100,
+  capturedDate: '2025-09-25 11:23:33',
+  isApproved: true
+}
+Query: select "id", "client_id", "plan_id", "pet_id", "contract_number", "status", "start_date", "end_date", "billing_period", "monthly_amount", "annual_amount", "payment_method", "cielo_payment_id", "has_coparticipation", "proof_of_sale", "authorization_code", "tid", "received_date", "return_code", "return_message", "pix_qr_code", "pix_code", "created_at", "updated_at" from "contracts" where "contracts"."cielo_payment_id" = $1 -- params: ["2a106e6c-944c-48eb-92f8-45dcd034cb42"]
+GET /api/payments/query/2a106e6c-944c-48eb-92f8-45dcd034cb42 200 in 662ms :: {"…
+🔍 [PAYMENT-QUERY] Consultando status de pagamento {
+  correlationId: 'e76qcr',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42',
+  userId: undefined
+}
+🔍 [Cielo] Consultando pagamento {
+  correlationId: 'd5f42f40-472e-4def-b0db-e9479ca48f1c',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42'
+}
+🔗 [Cielo] URL de consulta: https://apiquery.cieloecommerce.cielo.com.br/1/sales/2a106e6c-944c-48eb-92f8-45dcd034cb42
+✅ [Cielo] Status interpretado corretamente: {
+  correlationId: 'd5f42f40-472e-4def-b0db-e9479ca48f1c',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42',
+  cieloStatus: 2,
+  mappedStatus: 'approved',
+  capturedAmount: 100,
+  capturedDate: '2025-09-25 11:23:33',
+  isApproved: true
+}
+Query: select "id", "client_id", "plan_id", "pet_id", "contract_number", "status", "start_date", "end_date", "billing_period", "monthly_amount", "annual_amount", "payment_method", "cielo_payment_id", "has_coparticipation", "proof_of_sale", "authorization_code", "tid", "received_date", "return_code", "return_message", "pix_qr_code", "pix_code", "created_at", "updated_at" from "contracts" where "contracts"."cielo_payment_id" = $1 -- params: ["2a106e6c-944c-48eb-92f8-45dcd034cb42"]
+GET /api/payments/query/2a106e6c-944c-48eb-92f8-45dcd034cb42 200 in 695ms :: {"…
+🔍 [PAYMENT-QUERY] Consultando status de pagamento {
+  correlationId: 'xwvea',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42',
+  userId: undefined
+}
+🔍 [Cielo] Consultando pagamento {
+  correlationId: '342251f9-be1d-4fbd-b5ca-b67dfcc9d005',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42'
+}
+🔗 [Cielo] URL de consulta: https://apiquery.cieloecommerce.cielo.com.br/1/sales/2a106e6c-944c-48eb-92f8-45dcd034cb42
+✅ [Cielo] Status interpretado corretamente: {
+  correlationId: '342251f9-be1d-4fbd-b5ca-b67dfcc9d005',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42',
+  cieloStatus: 2,
+  mappedStatus: 'approved',
+  capturedAmount: 100,
+  capturedDate: '2025-09-25 11:23:33',
+  isApproved: true
+}
+Query: select "id", "client_id", "plan_id", "pet_id", "contract_number", "status", "start_date", "end_date", "billing_period", "monthly_amount", "annual_amount", "payment_method", "cielo_payment_id", "has_coparticipation", "proof_of_sale", "authorization_code", "tid", "received_date", "return_code", "return_message", "pix_qr_code", "pix_code", "created_at", "updated_at" from "contracts" where "contracts"."cielo_payment_id" = $1 -- params: ["2a106e6c-944c-48eb-92f8-45dcd034cb42"]
+GET /api/payments/query/2a106e6c-944c-48eb-92f8-45dcd034cb42 200 in 752ms :: {"…
+🔍 [PAYMENT-QUERY] Consultando status de pagamento {
+  correlationId: '5tv598',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42',
+  userId: undefined
+}
+🔍 [Cielo] Consultando pagamento {
+  correlationId: 'f9fcf21e-9def-4571-9a8f-995b1f7622ce',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42'
+}
+🔗 [Cielo] URL de consulta: https://apiquery.cieloecommerce.cielo.com.br/1/sales/2a106e6c-944c-48eb-92f8-45dcd034cb42
+✅ [Cielo] Status interpretado corretamente: {
+  correlationId: 'f9fcf21e-9def-4571-9a8f-995b1f7622ce',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42',
+  cieloStatus: 2,
+  mappedStatus: 'approved',
+  capturedAmount: 100,
+  capturedDate: '2025-09-25 11:23:33',
+  isApproved: true
+}
+Query: select "id", "client_id", "plan_id", "pet_id", "contract_number", "status", "start_date", "end_date", "billing_period", "monthly_amount", "annual_amount", "payment_method", "cielo_payment_id", "has_coparticipation", "proof_of_sale", "authorization_code", "tid", "received_date", "return_code", "return_message", "pix_qr_code", "pix_code", "created_at", "updated_at" from "contracts" where "contracts"."cielo_payment_id" = $1 -- params: ["2a106e6c-944c-48eb-92f8-45dcd034cb42"]
+GET /api/payments/query/2a106e6c-944c-48eb-92f8-45dcd034cb42 200 in 724ms :: {"…
+🔍 [PAYMENT-QUERY] Consultando status de pagamento {
+  correlationId: 'xcudn',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42',
+  userId: undefined
+}
+🔍 [Cielo] Consultando pagamento {
+  correlationId: 'bb9bbf98-fbbc-411c-b264-cbfa21fbb50b',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42'
+}
+🔗 [Cielo] URL de consulta: https://apiquery.cieloecommerce.cielo.com.br/1/sales/2a106e6c-944c-48eb-92f8-45dcd034cb42
+✅ [Cielo] Status interpretado corretamente: {
+  correlationId: 'bb9bbf98-fbbc-411c-b264-cbfa21fbb50b',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42',
+  cieloStatus: 2,
+  mappedStatus: 'approved',
+  capturedAmount: 100,
+  capturedDate: '2025-09-25 11:23:33',
+  isApproved: true
+}
+Query: select "id", "client_id", "plan_id", "pet_id", "contract_number", "status", "start_date", "end_date", "billing_period", "monthly_amount", "annual_amount", "payment_method", "cielo_payment_id", "has_coparticipation", "proof_of_sale", "authorization_code", "tid", "received_date", "return_code", "return_message", "pix_qr_code", "pix_code", "created_at", "updated_at" from "contracts" where "contracts"."cielo_payment_id" = $1 -- params: ["2a106e6c-944c-48eb-92f8-45dcd034cb42"]
+GET /api/payments/query/2a106e6c-944c-48eb-92f8-45dcd034cb42 200 in 671ms :: {"…
+🔍 [PAYMENT-QUERY] Consultando status de pagamento {
+  correlationId: 'nnsx9d',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42',
+  userId: undefined
+}
+🔍 [Cielo] Consultando pagamento {
+  correlationId: '304bde6a-60f4-4688-b006-57ab9dce3ba2',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42'
+}
+🔗 [Cielo] URL de consulta: https://apiquery.cieloecommerce.cielo.com.br/1/sales/2a106e6c-944c-48eb-92f8-45dcd034cb42
+✅ [Cielo] Status interpretado corretamente: {
+  correlationId: '304bde6a-60f4-4688-b006-57ab9dce3ba2',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42',
+  cieloStatus: 2,
+  mappedStatus: 'approved',
+  capturedAmount: 100,
+  capturedDate: '2025-09-25 11:23:33',
+  isApproved: true
+}
+Query: select "id", "client_id", "plan_id", "pet_id", "contract_number", "status", "start_date", "end_date", "billing_period", "monthly_amount", "annual_amount", "payment_method", "cielo_payment_id", "has_coparticipation", "proof_of_sale", "authorization_code", "tid", "received_date", "return_code", "return_message", "pix_qr_code", "pix_code", "created_at", "updated_at" from "contracts" where "contracts"."cielo_payment_id" = $1 -- params: ["2a106e6c-944c-48eb-92f8-45dcd034cb42"]
+GET /api/payments/query/2a106e6c-944c-48eb-92f8-45dcd034cb42 200 in 658ms :: {"…
+🔍 [PAYMENT-QUERY] Consultando status de pagamento {
+  correlationId: 'btku2o',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42',
+  userId: undefined
+}
+🔍 [Cielo] Consultando pagamento {
+  correlationId: 'f96ef84c-a030-4b88-8116-a93b60d3c6c0',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42'
+}
+🔗 [Cielo] URL de consulta: https://apiquery.cieloecommerce.cielo.com.br/1/sales/2a106e6c-944c-48eb-92f8-45dcd034cb42
+✅ [Cielo] Status interpretado corretamente: {
+  correlationId: 'f96ef84c-a030-4b88-8116-a93b60d3c6c0',
+  paymentId: '2a106e6c-944c-48eb-92f8-45dcd034cb42',
+  cieloStatus: 2,
+  mappedStatus: 'approved',
+  capturedAmount: 100,
+  capturedDate: '2025-09-25 11:23:33',
+  isApproved: true
+}
+Query: select "id", "client_id", "plan_id", "pet_id", "contract_number", "status", "start_date", "end_date", "billing_period", "monthly_amount", "annual_amount", "payment_method", "cielo_payment_id", "has_coparticipation", "proof_of_sale", "authorization_code", "tid", "received_date", "return_code", "return_message", "pix_qr_code", "pix_code", "created_at", "updated_at" from "contracts" where "contracts"."cielo_payment_id" = $1 -- params: ["2a106e6c-944c-48eb-92f8-45dcd034cb42"]
+GET /api/payments/query/

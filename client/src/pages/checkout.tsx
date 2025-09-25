@@ -378,26 +378,47 @@ export default function Checkout() {
       if (response.ok) {
         const result = await response.json();
         
+        // LOG DETALHADO: Vamos ver exatamente o que está sendo retornado
+        console.log('🔍 [FRONTEND] Resposta completa da API:', JSON.stringify(result, null, 2));
+        
         // Pode vir como cieloStatus (número) ou mappedStatus (string)
         const cieloStatus = result.data?.cieloStatus;
         const mappedStatus = result.data?.mappedStatus;
         
-        // Status 2 da Cielo significa "Paid/Captured" ou mappedStatus "approved"
+        console.log('🔍 [FRONTEND] Status extraídos:', { 
+          cieloStatus, 
+          mappedStatus, 
+          cieloStatusType: typeof cieloStatus,
+          mappedStatusType: typeof mappedStatus 
+        });
+        
+        // Status de aprovação - pode vir como número 2, string "2" ou string "approved"
         const isApproved = cieloStatus === 2 || 
                           cieloStatus === '2' || 
+                          cieloStatus === 'approved' ||  // ← ESTA LINHA FALTAVA!
                           mappedStatus === 'approved' ||
                           mappedStatus === 2;
         
-        // Log simplificado apenas quando muda de status
+        console.log('🔍 [FRONTEND] Verificações de aprovação:', {
+          'cieloStatus === 2': cieloStatus === 2,
+          'cieloStatus === "2"': cieloStatus === '2',
+          'mappedStatus === "approved"': mappedStatus === 'approved',
+          'mappedStatus === 2': mappedStatus === 2,
+          'resultado final': isApproved
+        });
+        
+        // Log quando aprovado
         if (isApproved) {
           console.log('✅ PIX aprovado! Status:', { cieloStatus, mappedStatus });
         }
         
         return isApproved;
+      } else {
+        console.log('❌ [FRONTEND] Resposta da API não foi OK:', response.status, response.statusText);
+        return false;
       }
-      return false;
     } catch (error) {
-      console.error('Erro ao verificar status PIX:', error);
+      console.error('❌ [FRONTEND] Erro ao verificar status PIX:', error);
       return false;
     }
   };
