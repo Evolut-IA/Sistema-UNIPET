@@ -377,9 +377,23 @@ export default function Checkout() {
       
       if (response.ok) {
         const result = await response.json();
-        // Status 2 da Cielo significa "Paid/Captured"
-        console.log('🔍 Status do PIX:', result.data?.cieloStatus);
-        return result.data?.cieloStatus === 2;
+        
+        // Pode vir como cieloStatus (número) ou mappedStatus (string)
+        const cieloStatus = result.data?.cieloStatus;
+        const mappedStatus = result.data?.mappedStatus;
+        
+        // Status 2 da Cielo significa "Paid/Captured" ou mappedStatus "approved"
+        const isApproved = cieloStatus === 2 || 
+                          cieloStatus === '2' || 
+                          mappedStatus === 'approved' ||
+                          mappedStatus === 2;
+        
+        // Log simplificado apenas quando muda de status
+        if (isApproved) {
+          console.log('✅ PIX aprovado! Status:', { cieloStatus, mappedStatus });
+        }
+        
+        return isApproved;
       }
       return false;
     } catch (error) {
@@ -391,26 +405,20 @@ export default function Checkout() {
   // Hook para polling do pagamento PIX
   useEffect(() => {
     if (!pixData?.paymentId || isPaymentConfirmed) {
-      console.log('🔍 Polling PIX condições:', { 
-        hasPaymentId: !!pixData?.paymentId, 
-        paymentId: pixData?.paymentId,
-        isPaymentConfirmed 
-      });
       return;
     }
 
     console.log('🚀 Iniciando polling PIX para pagamento:', pixData.paymentId);
     
     const pollInterval = setInterval(async () => {
-      console.log('🔄 Verificando status do PIX...');
       const isConfirmed = await checkPixPaymentStatus(pixData.paymentId);
       
       if (isConfirmed) {
-        console.log('✅ PIX APROVADO! Redirecionando...');
+        console.log('🎉 PIX APROVADO! Redirecionando para login com popup de sucesso...');
         clearInterval(pollInterval);
         setIsPaymentConfirmed(true);
         
-        // Redirecionar imediatamente para a página de login
+        // Redirecionar imediatamente para a página de login com popup de sucesso
         navigate('/customer/login?payment_success=true');
       }
     }, 3000); // Verificar a cada 3 segundos
