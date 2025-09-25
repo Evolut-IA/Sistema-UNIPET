@@ -1,0 +1,55 @@
+Com base na análise do projeto, identifiquei onde os valores dos planos BASIC, COMFORT, PLATINUM e INFINITY são informados e definidos. Aqui está um resumo completo:
+
+📍 Localização dos Preços dos Planos
+1. Definição no Banco de Dados
+Arquivo: shared/schema.ts (linhas 84-108)
+Tabela: plans
+Campos de preço:
+price: Valor em centavos (integer)
+basePrice: Preço base em formato decimal (ex: "20.00")
+annualPrice: Preço anual (decimal)
+installmentPrice: Valor da parcela (decimal)
+annualInstallmentPrice: Valor da parcela anual (decimal)
+2. Busca dos Dados do Banco
+Arquivo: server/storage.ts (linhas 920-947)
+Função: getPlans()
+Busca todos os planos ativos com todos os campos de preço
+Retorna dados ordenados por displayOrder
+3. API Endpoint
+Arquivo: server/routes.ts (linha 767)
+Endpoint: GET /api/plans
+Chama a função storage.getPlans()
+Retorna os dados dos planos para o frontend
+4. Frontend - Hook de Dados
+Arquivo: client/src/hooks/use-plans.ts (linhas 8-20)
+Hook: usePlans()
+Faz requisição para /api/plans
+Função formatPrice() (linha 26) converte centavos para R$
+5. Formatação e Exibição
+Arquivo: client/src/components/blocks/pricing.tsx (linha 103)
+Formata preços: R$ {parseFloat(String(plan.basePrice || 0)).toFixed(2).replace('.', ',')}/{plan.period}
+6. Páginas onde são Exibidos
+Página Inicial (client/src/pages/home.tsx)
+Componente <PlansSection /> (linha 52)
+Página /planos (client/src/pages/plans.tsx)
+Seção <PlansSection /> (linha 155)
+Seções detalhadas dos planos:
+BASIC: linha 165 (getPlanBySection('basic', plansData)?.name)
+COMFORT: linha 377 (getPlanBySection('comfort', plansData)?.name)
+PLATINUM: linha 605 (getPlanBySection('platinum', plansData)?.name)
+INFINITY: linha 1151 (getPlanBySection('infinity', plansData)?.name)
+7. Mapeamento de IDs
+Arquivo: client/src/components/sections/plans-section.tsx (linhas 23-26)
+IDs específicos:
+'87aee1ab-774f-45bb-b43f-a4ca46ab21e5': Plano Básico
+'8e5dba0c-1ae1-44f6-a341-5f0139c1ec16': Plano Intermediário
+'734da3d8-a66f-4b44-ae63-befc6a3307fd': Plano Premium
+'b48fabf4-1644-46e1-99c8-f8187de286ad': Plano Emergência
+🔄 Fluxo dos Dados
+Valores definidos na tabela plans do banco PostgreSQL
+Função getPlans() busca os dados com Drizzle ORM
+API /api/plans retorna os dados via HTTP
+Frontend consome via hook usePlans()
+Componente Pricing formata e exibe os valores
+Páginas Home e /planos renderizam os preços formatados
+Os valores específicos dos preços são armazenados no banco de dados e podem ser alterados através das funções de CRUD definidas no storage.ts.
