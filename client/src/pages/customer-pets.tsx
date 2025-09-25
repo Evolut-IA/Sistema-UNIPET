@@ -473,7 +473,7 @@ export default function CustomerPets() {
                                 type="text"
                                 value={editFormData.breed || 'Não informado'}
                                 readOnly
-                                className="w-full px-2 py-1 text-sm border rounded cursor-not-allowed"
+                                className="w-full p-3 rounded-lg border text-sm cursor-not-allowed"
                                 style={{ 
                                   borderColor: 'var(--border-gray)', 
                                   backgroundColor: 'var(--bg-cream-light)', 
@@ -489,8 +489,11 @@ export default function CustomerPets() {
                                 value={editFormData.age || ''}
                                 onChange={(e) => updateFormField('age', e.target.value)}
                                 placeholder="Não informado"
-                                className="w-full px-2 py-1 text-sm border rounded"
-                                style={{ borderColor: 'var(--border-gray)' }}
+                                className="w-full p-3 rounded-lg border text-sm"
+                                style={{ 
+                                  borderColor: 'var(--border-gray)',
+                                  backgroundColor: '#FFFFFF'
+                                }}
                               />
                             </div>
                             <div>
@@ -499,7 +502,7 @@ export default function CustomerPets() {
                                 type="text"
                                 value={editFormData.sex || 'Não informado'}
                                 readOnly
-                                className="w-full px-2 py-1 text-sm border rounded cursor-not-allowed"
+                                className="w-full p-3 rounded-lg border text-sm cursor-not-allowed"
                                 style={{ 
                                   borderColor: 'var(--border-gray)', 
                                   backgroundColor: 'var(--bg-cream-light)', 
@@ -536,8 +539,11 @@ export default function CustomerPets() {
                                 value={editFormData.color || ''}
                                 onChange={(e) => updateFormField('color', e.target.value)}
                                 placeholder="Não informado"
-                                className="w-full px-2 py-1 text-sm border rounded"
-                                style={{ borderColor: 'var(--border-gray)' }}
+                                className="w-full p-3 rounded-lg border text-sm"
+                                style={{ 
+                                  borderColor: 'var(--border-gray)',
+                                  backgroundColor: '#FFFFFF'
+                                }}
                               />
                             </div>
                             <div>
@@ -547,8 +553,11 @@ export default function CustomerPets() {
                                 value={editFormData.weight || ''}
                                 onChange={(e) => updateFormField('weight', e.target.value)}
                                 placeholder="Não informado"
-                                className="w-full px-2 py-1 text-sm border rounded"
-                                style={{ borderColor: 'var(--border-gray)' }}
+                                className="w-full p-3 rounded-lg border text-sm"
+                                style={{ 
+                                  borderColor: 'var(--border-gray)',
+                                  backgroundColor: '#FFFFFF'
+                                }}
                               />
                             </div>
                           </>
@@ -581,8 +590,11 @@ export default function CustomerPets() {
                                 value={editFormData.microchip || ''}
                                 onChange={(e) => updateFormField('microchip', e.target.value)}
                                 placeholder="Não informado"
-                                className="w-full px-2 py-1 text-sm border rounded"
-                                style={{ borderColor: 'var(--border-gray)' }}
+                                className="w-full p-3 rounded-lg border text-sm"
+                                style={{ 
+                                  borderColor: 'var(--border-gray)',
+                                  backgroundColor: '#FFFFFF'
+                                }}
                               />
                             </div>
                           </>
@@ -609,8 +621,11 @@ export default function CustomerPets() {
                                 type="date"
                                 value={editFormData.lastCheckup || ''}
                                 onChange={(e) => updateFormField('lastCheckup', e.target.value)}
-                                className="w-full px-2 py-1 text-sm border rounded"
-                                style={{ borderColor: 'var(--border-gray)' }}
+                                className="w-full p-3 rounded-lg border text-sm"
+                                style={{ 
+                                  borderColor: 'var(--border-gray)',
+                                  backgroundColor: '#FFFFFF'
+                                }}
                               />
                             </div>
                             <div>
@@ -620,8 +635,12 @@ export default function CustomerPets() {
                                 onChange={(e) => updateFormField('previousDiseases', e.target.value)}
                                 placeholder="Não informado"
                                 rows={3}
-                                className="w-full px-2 py-1 text-sm border rounded resize-none overflow-y-auto"
-                                style={{ borderColor: 'var(--border-gray)', height: '80px' }}
+                                className="w-full p-3 rounded-lg border text-sm resize-none overflow-y-auto"
+                                style={{ 
+                                  borderColor: 'var(--border-gray)',
+                                  backgroundColor: '#FFFFFF',
+                                  height: '80px'
+                                }}
                               />
                             </div>
                             <div>
@@ -631,8 +650,12 @@ export default function CustomerPets() {
                                 onChange={(e) => updateFormField('allergies', e.target.value)}
                                 placeholder="Não informado"
                                 rows={3}
-                                className="w-full px-2 py-1 text-sm border rounded resize-none overflow-y-auto"
-                                style={{ borderColor: 'var(--border-gray)', height: '80px' }}
+                                className="w-full p-3 rounded-lg border text-sm resize-none overflow-y-auto"
+                                style={{ 
+                                  borderColor: 'var(--border-gray)',
+                                  backgroundColor: '#FFFFFF',
+                                  height: '80px'
+                                }}
                               />
                             </div>
                           </>
@@ -663,8 +686,12 @@ export default function CustomerPets() {
                                 onChange={(e) => updateFormField('surgeries', e.target.value)}
                                 placeholder="Não informado"
                                 rows={3}
-                                className="w-full px-2 py-1 text-sm border rounded resize-none overflow-y-auto"
-                                style={{ borderColor: 'var(--border-gray)', height: '80px' }}
+                                className="w-full p-3 rounded-lg border text-sm resize-none overflow-y-auto"
+                                style={{ 
+                                  borderColor: 'var(--border-gray)',
+                                  backgroundColor: '#FFFFFF',
+                                  height: '80px'
+                                }}
                               />
                             </div>
                             <div>
@@ -674,8 +701,12 @@ export default function CustomerPets() {
                                 onChange={(e) => updateFormField('currentMedications', e.target.value)}
                                 placeholder="Não informado"
                                 rows={3}
-                                className="w-full px-2 py-1 text-sm border rounded resize-none overflow-y-auto"
-                                style={{ borderColor: 'var(--border-gray)', height: '80px' }}
+                                className="w-full p-3 rounded-lg border text-sm resize-none overflow-y-auto"
+                                style={{ 
+                                  borderColor: 'var(--border-gray)',
+                                  backgroundColor: '#FFFFFF',
+                                  height: '80px'
+                                }}
                               />
                             </div>
                             <div>
@@ -685,8 +716,12 @@ export default function CustomerPets() {
                                 onChange={(e) => updateFormField('hereditaryConditions', e.target.value)}
                                 placeholder="Não informado"
                                 rows={3}
-                                className="w-full px-2 py-1 text-sm border rounded resize-none overflow-y-auto"
-                                style={{ borderColor: 'var(--border-gray)', height: '80px' }}
+                                className="w-full p-3 rounded-lg border text-sm resize-none overflow-y-auto"
+                                style={{ 
+                                  borderColor: 'var(--border-gray)',
+                                  backgroundColor: '#FFFFFF',
+                                  height: '80px'
+                                }}
                               />
                             </div>
                             <div>
@@ -696,8 +731,12 @@ export default function CustomerPets() {
                                 onChange={(e) => updateFormField('parasiteTreatments', e.target.value)}
                                 placeholder="Não informado"
                                 rows={3}
-                                className="w-full px-2 py-1 text-sm border rounded resize-none overflow-y-auto"
-                                style={{ borderColor: 'var(--border-gray)', height: '80px' }}
+                                className="w-full p-3 rounded-lg border text-sm resize-none overflow-y-auto"
+                                style={{ 
+                                  borderColor: 'var(--border-gray)',
+                                  backgroundColor: '#FFFFFF',
+                                  height: '80px'
+                                }}
                               />
                             </div>
                           </>
