@@ -112,6 +112,7 @@ export const networkUnits = pgTable("network_units", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: text("name").notNull(),
   address: text("address").notNull(),
+  cidade: text("cidade").notNull(),
   phone: text("phone").notNull(),
   services: text("services").array().notNull(),
   imageUrl: text("image_url").notNull(),
@@ -459,6 +460,7 @@ export const insertPlanSchema = z.object({
 const baseNetworkUnitSchema = z.object({
   name: z.string().min(1, "Nome é obrigatório"),
   address: z.string().min(1, "Endereço é obrigatório"),
+  cidade: z.string().min(1, "Cidade é obrigatória"),
   phone: z.string().min(1, "Telefone é obrigatório"),
   services: z.array(z.string()).min(1, "Serviços são obrigatórios"),
   imageUrl: z.string().min(1, "Imagem é obrigatória"),
