@@ -1617,7 +1617,7 @@ export default function Checkout() {
                       </div>
                       <div className="flex justify-between text-lg font-bold pt-2 border-t">
                         <span>Total:</span>
-                        <span>R$ {formatPrice(calculateTotal())}</span>
+                        <span>{formatPrice(calculateTotal())}</span>
                       </div>
                     </div>
                   </div>
