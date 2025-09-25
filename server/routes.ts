@@ -1036,7 +1036,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             ...petData,
             clientId: existingClient.id,
             weight: petData.weight?.toString() || "0",
-            sex: petData.sex || "Macho",
+            sex: petData.sex || "",
             age: petData.age?.toString() || "1"
           };
           

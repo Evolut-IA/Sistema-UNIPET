@@ -608,7 +608,7 @@ export default function Checkout() {
             breed: pet.breed || '',
             age: String(pet.age || 1),
             weight: String(pet.weight || 1),
-            sex: 'Macho',
+            sex: pet.sex || '',
             planId: selectedPlan?.id
           }))
         }),
