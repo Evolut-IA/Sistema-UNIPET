@@ -231,7 +231,7 @@ export class InMemoryStorage implements IStorage {
       {
         id: "1",
         name: "Plano Básico",
-        price: 2000,
+
         description: "Cobertura básica para seu pet",
         features: ["Consultas", "Vacinas", "Exames básicos"],
         image: "/BASICicon.svg", // Adicionar imagem do plano
@@ -344,7 +344,7 @@ export class InMemoryStorage implements IStorage {
       isActive: plan.isActive ?? true,
       buttonText: plan.buttonText ?? "Contratar Plano",
       displayOrder: plan.displayOrder ?? 0,
-      price: plan.price ?? 0,
+
       planType: plan.planType ?? "with_waiting_period",
       billingFrequency: plan.billingFrequency || "monthly",
       basePrice: plan.basePrice || "0.00",
