@@ -31,7 +31,7 @@ interface PetData {
   name: string;
   species: string;
   breed: string;
-  age: number;
+  age: string | number;
   weight: number;
 }
 
