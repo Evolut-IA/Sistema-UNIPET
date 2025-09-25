@@ -647,7 +647,7 @@ export default function CustomerProfile() {
                 </button>
               </div>
             ) : (
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {pets.map((pet) => (
                   <div key={pet.id} className="border rounded-lg p-4" style={{ borderColor: 'var(--border-gray)' }}>
                     <div className="flex items-center space-x-4 mb-4">
