@@ -1532,19 +1532,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         // Check if PIX was generated successfully (status 12 = Pending)
         if (pixPaymentResult.payment?.status === 12) {
-          // DO NOT create pets yet for PIX - they will be created when payment is confirmed
-          // Store pets data in contract metadata to create later
-          let firstPetId = 'pending-pix-pet'; // Temporary ID for pending PIX
+          // Create pets for PIX payment (immediately, not waiting for confirmation)
+          let firstPetId = null;
           
-          // Store pet data in returnMessage as JSON for later processing
-          const petsMetadata = JSON.stringify({
-            petsToCreate: petsToCreate || [],
-            planId: planData.planId
-          });
+          // Create pets immediately for PIX
+          if (petsToCreate && petsToCreate.length > 0) {
+            for (const petData of petsToCreate) {
+              const newPetData = {
+                id: `pet-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`,
+                clientId: client.id,
+                name: petData.name || 'Pet',
+                species: petData.species || 'Cão',
+                breed: petData.breed || '',
+                age: petData.age?.toString() || '1',
+                sex: petData.sex || '',
+                castrated: petData.castrated || false,
+                weight: petData.weight?.toString() || '1',
+                vaccineData: JSON.stringify([]),
+                planId: selectedPlan.id,
+                isActive: true
+              };
+              
+              try {
+                const pet = await storage.createPet(newPetData);
+                if (!firstPetId) firstPetId = pet.id;
+                console.log(`✅ [SIMPLE-PIX] Pet criado: ${pet.name} (${pet.id})`);
+              } catch (petError) {
+                console.error(`⚠️ [SIMPLE-PIX] Erro ao criar pet (continuando):`, petError);
+              }
+            }
+          }
           
-          console.log(`📋 [SIMPLE-PIX] PIX pendente - pets serão criados após confirmação do pagamento`);
+          if (!firstPetId) {
+            firstPetId = `temp-${Date.now()}`;
+          }
           
-          // Create contract for PIX pending payment (without pets)
+          console.log(`📋 [SIMPLE-PIX] PIX gerado - pets criados com sucesso`);
+          
+          // Create contract for PIX pending payment
           const contractData = {
             clientId: client.id,
             petId: firstPetId,
@@ -1560,7 +1585,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             authorizationCode: pixPaymentResult.payment.authorizationCode || '',
             tid: pixPaymentResult.payment.tid || '',
             returnCode: pixPaymentResult.payment.returnCode,
-            returnMessage: petsMetadata, // Store pets data for later creation
+            returnMessage: pixPaymentResult.payment.returnMessage,
             pixQrCode: pixPaymentResult.payment.qrCodeBase64Image || null,
             pixCode: pixPaymentResult.payment.qrCodeString || null
           };
@@ -4011,56 +4036,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
             error: error instanceof Error ? error.message : 'Erro desconhecido'
           });
           // Continuar mesmo se não conseguir criar o contrato
-        }
-      }
-      
-      // Check if PIX was approved and pets need to be created
-      if (contract && queryResult.payment?.status === 2 && contract.petId === 'pending-pix-pet') {
-        console.log('🐾 [PIX-PETS] PIX aprovado - criando pets pendentes');
-        
-        try {
-          // Parse pet data from returnMessage
-          const petsData = contract.returnMessage ? JSON.parse(contract.returnMessage) : null;
-          
-          if (petsData?.petsToCreate && Array.isArray(petsData.petsToCreate) && petsData.petsToCreate.length > 0) {
-            const createdPets = [];
-            
-            for (const petData of petsData.petsToCreate) {
-              const newPetData = {
-                id: `pet-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`,
-                clientId: contract.clientId,
-                name: petData.name || 'Pet',
-                species: petData.species || 'Cão',
-                breed: petData.breed || '',
-                age: petData.age?.toString() || '1',
-                sex: petData.sex || '',
-                castrated: petData.castrated || false,
-                weight: petData.weight?.toString() || '1',
-                vaccineData: JSON.stringify([]),
-                planId: petsData.planId || contract.planId,
-                isActive: true
-              };
-              
-              try {
-                const pet = await storage.createPet(newPetData);
-                createdPets.push(pet);
-                console.log(`✅ [PIX-PETS] Pet criado após confirmação PIX: ${pet.name} (${pet.id})`);
-              } catch (petError) {
-                console.error(`⚠️ [PIX-PETS] Erro ao criar pet (continuando):`, petError);
-              }
-            }
-            
-            // Update contract with first pet ID
-            if (createdPets.length > 0) {
-              await storage.updateContract(contract.id, { 
-                petId: createdPets[0].id,
-                returnMessage: 'Pets criados após confirmação PIX'
-              });
-              console.log(`✅ [PIX-PETS] Contrato atualizado com pet ID: ${createdPets[0].id}`);
-            }
-          }
-        } catch (error) {
-          console.error('❌ [PIX-PETS] Erro ao processar criação de pets:', error);
         }
       }
       
