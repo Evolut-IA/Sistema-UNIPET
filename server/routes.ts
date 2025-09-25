@@ -1525,14 +1525,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         // Check if PIX was generated successfully (status 12 = Pending)
         if (pixPaymentResult.payment?.status === 12) {
+          // Get the first pet created for the contract
+          let firstPetId = 'default-pet';
+          if (paymentData.pets && paymentData.pets.length > 0) {
+            const clientPets = await storage.getPetsByClientId(client.id);
+            if (clientPets.length > 0) {
+              firstPetId = clientPets[0].id;
+            }
+          }
+          
           // Create contract for PIX pending payment
           const contractData = {
             clientId: client.id,
-            petId: newPet.id,
+            petId: firstPetId,
             planId: selectedPlan.id,
-            contractNumber: `UNIPET-${Date.now()}-${newPet.id.substring(0, 4).toUpperCase()}`,
+            contractNumber: `UNIPET-${Date.now()}-${firstPetId.substring(0, 4).toUpperCase()}`,
             billingPeriod: 'monthly' as const,
-            status: 'pending' as const, // PIX starts as pending until confirmed
+            status: 'active' as const, // Contract is created as active, payment status will be tracked separately
             startDate: new Date(),
             monthlyAmount: selectedPlan.price.toString(),
             paymentMethod: 'pix',
