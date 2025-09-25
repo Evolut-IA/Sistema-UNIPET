@@ -12,6 +12,7 @@ import {
   ChevronRight
 } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
+import { cn } from "@/lib/utils";
 // Define NetworkUnit type based on the API response
 interface NetworkUnit {
   id: string;
@@ -267,7 +268,7 @@ export default function Network() {
             <>
               <AnimatedList animation="slideUp" delay={300} staggerDelay={75}>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {currentUnits.map((unit: NetworkUnit) => (
+                  {currentUnits.map((unit: NetworkUnit, index: number) => (
                     <Card key={unit.id} className="shadow-lg rounded-xl border-none bg-[var(--bg-cream-lighter)] overflow-hidden flex flex-col h-full">
                       <div className="relative">
                         <img 
@@ -335,9 +336,18 @@ export default function Network() {
                           </div>
                         </div>
 
-                        <div className="flex gap-3 mt-auto">
+                        <AnimatedSection 
+                          animation="slideUp" 
+                          delay={400 + (index * 50)} 
+                          duration={400}
+                          className="flex gap-3 mt-auto"
+                        >
                           <Button 
-                            className={unit.googleMapsUrl ? "flex-1" : "w-full"}
+                            className={cn(
+                              unit.googleMapsUrl ? "flex-1" : "w-full",
+                              "transform-gpu transition-all duration-300 ease-out",
+                              "hover:-translate-y-1 hover:shadow-lg"
+                            )}
                             style={{
                               background: 'var(--btn-ver-planos-bg)',
                               color: 'var(--text-light)'
@@ -355,10 +365,12 @@ export default function Network() {
                           </Button>
                           {unit.googleMapsUrl && (
                             <Button 
-                              className="border"
+                              className={cn(
+                                "border",
+                                "transform-gpu transition-all duration-300 ease-out",
+                                "hover:-translate-y-1 hover:shadow-lg"
+                              )}
                               style={{ 
-                                transition: 'none',
-                                opacity: 1,
                                 background: 'var(--btn-solicitar-cotacao-bg)',
                                 borderColor: 'var(--bg-teal-light)',
                                 borderWidth: '1px'
@@ -371,7 +383,7 @@ export default function Network() {
                               <MapPin className="h-4 w-4" style={{ color: 'var(--icon-teal)' }} />
                             </Button>
                           )}
-                        </div>
+                        </AnimatedSection>
                       </CardContent>
                     </Card>
                   ))}
