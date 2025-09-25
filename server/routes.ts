@@ -1317,6 +1317,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // STEP 2: CREATE PET FOR THE CLIENT
       // ============================================
       
+      // CORREÇÃO: Pets já são criados no endpoint /api/checkout/save-customer-data
+      // Comentando para evitar duplicação
+      /*
       if (paymentData.pets && Array.isArray(paymentData.pets) && paymentData.pets.length > 0) {
         for (const petData of paymentData.pets) {
           const newPetData = {
@@ -1342,6 +1345,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         }
       }
+      */
 
       // ============================================
       // STEP 3: PROCESS PAYMENT
