@@ -395,7 +395,7 @@ export default function Checkout() {
         
         // Log quando aprovado
         if (isApproved) {
-          console.log('✅ PIX aprovado! Status:', { cieloStatus, mappedStatus });
+          console.log('✅ PIX aprovado! Status:', { mappedStatus });
         }
         
         return isApproved;
