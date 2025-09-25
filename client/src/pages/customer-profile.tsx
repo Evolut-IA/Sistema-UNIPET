@@ -398,7 +398,7 @@ export default function CustomerProfile() {
                           type="text"
                           value={editFormData.fullName || 'Não informado'}
                           readOnly
-                          className="w-full px-3 py-2 border rounded-lg cursor-not-allowed"
+                          className="w-full p-3 rounded-lg border text-sm"
                           style={{ 
                             borderColor: 'var(--border-gray)', 
                             backgroundColor: 'var(--bg-cream-light)', 
@@ -413,7 +413,7 @@ export default function CustomerProfile() {
                           type="email"
                           readOnly
                           value={editFormData.email || 'Não informado'}
-                          className="w-full px-3 py-2 border rounded-lg cursor-not-allowed"
+                          className="w-full p-3 rounded-lg border text-sm"
                           style={{ 
                             borderColor: 'var(--border-gray)', 
                             backgroundColor: 'var(--bg-cream-light)', 
@@ -429,8 +429,11 @@ export default function CustomerProfile() {
                           value={editFormData.phone || ''}
                           onChange={(e) => updateFormField('phone', e.target.value)}
                           placeholder="Não informado"
-                          className="w-full px-3 py-2 border rounded-lg cursor-not-allowed"
-                          style={{ borderColor: 'var(--border-gray)' }}
+                          className="w-full p-3 rounded-lg border text-sm"
+                          style={{ 
+                            borderColor: 'var(--border-gray)',
+                            backgroundColor: '#FFFFFF'
+                          }}
                         />
                       </div>
                       <div>
@@ -439,7 +442,7 @@ export default function CustomerProfile() {
                           type="text"
                           value={editFormData.cpf || 'Não informado'}
                           readOnly
-                          className="w-full px-3 py-2 border rounded-lg cursor-not-allowed"
+                          className="w-full p-3 rounded-lg border text-sm"
                           style={{ 
                             borderColor: 'var(--border-gray)', 
                             backgroundColor: 'var(--bg-cream-light)', 
@@ -473,8 +476,11 @@ export default function CustomerProfile() {
                           value={editFormData.cep || ''}
                           onChange={(e) => updateFormField('cep', e.target.value)}
                           placeholder="Não informado"
-                          className="w-full px-3 py-2 border rounded-lg cursor-not-allowed"
-                          style={{ borderColor: 'var(--border-gray)' }}
+                          className="w-full p-3 rounded-lg border text-sm"
+                          style={{ 
+                            borderColor: 'var(--border-gray)',
+                            backgroundColor: '#FFFFFF'
+                          }}
                         />
                       </div>
                       <div>
@@ -484,8 +490,11 @@ export default function CustomerProfile() {
                           value={editFormData.address || ''}
                           onChange={(e) => updateFormField('address', e.target.value)}
                           placeholder="Não informado"
-                          className="w-full px-3 py-2 border rounded-lg cursor-not-allowed"
-                          style={{ borderColor: 'var(--border-gray)' }}
+                          className="w-full p-3 rounded-lg border text-sm"
+                          style={{ 
+                            borderColor: 'var(--border-gray)',
+                            backgroundColor: '#FFFFFF'
+                          }}
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-2">
@@ -496,8 +505,11 @@ export default function CustomerProfile() {
                             value={editFormData.number || ''}
                             onChange={(e) => updateFormField('number', e.target.value)}
                             placeholder="Não informado"
-                            className="w-full px-3 py-2 border rounded-lg cursor-not-allowed"
-                            style={{ borderColor: 'var(--border-gray)' }}
+                            className="w-full p-3 rounded-lg border text-sm"
+                            style={{ 
+                            borderColor: 'var(--border-gray)',
+                            backgroundColor: '#FFFFFF'
+                          }}
                           />
                         </div>
                         <div>
@@ -507,8 +519,11 @@ export default function CustomerProfile() {
                             value={editFormData.complement || ''}
                             onChange={(e) => updateFormField('complement', e.target.value)}
                             placeholder="Não informado"
-                            className="w-full px-3 py-2 border rounded-lg cursor-not-allowed"
-                            style={{ borderColor: 'var(--border-gray)' }}
+                            className="w-full p-3 rounded-lg border text-sm"
+                            style={{ 
+                            borderColor: 'var(--border-gray)',
+                            backgroundColor: '#FFFFFF'
+                          }}
                           />
                         </div>
                       </div>
@@ -519,8 +534,11 @@ export default function CustomerProfile() {
                           value={editFormData.district || ''}
                           onChange={(e) => updateFormField('district', e.target.value)}
                           placeholder="Não informado"
-                          className="w-full px-3 py-2 border rounded-lg cursor-not-allowed"
-                          style={{ borderColor: 'var(--border-gray)' }}
+                          className="w-full p-3 rounded-lg border text-sm"
+                          style={{ 
+                            borderColor: 'var(--border-gray)',
+                            backgroundColor: '#FFFFFF'
+                          }}
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-2">
@@ -531,8 +549,11 @@ export default function CustomerProfile() {
                             value={editFormData.city || ''}
                             onChange={(e) => updateFormField('city', e.target.value)}
                             placeholder="Não informado"
-                            className="w-full px-3 py-2 border rounded-lg cursor-not-allowed"
-                            style={{ borderColor: 'var(--border-gray)' }}
+                            className="w-full p-3 rounded-lg border text-sm"
+                            style={{ 
+                            borderColor: 'var(--border-gray)',
+                            backgroundColor: '#FFFFFF'
+                          }}
                           />
                         </div>
                         <div>
@@ -542,8 +563,11 @@ export default function CustomerProfile() {
                             value={editFormData.state || ''}
                             onChange={(e) => updateFormField('state', e.target.value)}
                             placeholder="Não informado"
-                            className="w-full px-3 py-2 border rounded-lg cursor-not-allowed"
-                            style={{ borderColor: 'var(--border-gray)' }}
+                            className="w-full p-3 rounded-lg border text-sm"
+                            style={{ 
+                            borderColor: 'var(--border-gray)',
+                            backgroundColor: '#FFFFFF'
+                          }}
                           />
                         </div>
                       </div>
