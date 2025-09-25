@@ -146,27 +146,34 @@ export class PaymentReceiptService {
       // Step 3: Generate filename usando o receiptNumber consistente
       const fileName = `comprovante_${receiptNumber}.pdf`;
 
-      // Step 4: Upload PDF to Supabase Storage (BUCKET PRIVADO)
-      console.log('📤 [RECEIPT-SERVICE] Fazendo upload do PDF para Supabase Storage PRIVADO...');
-      const uploadResult = await supabaseStorage.uploadReceiptPDF(fileName, pdfBuffer);
+      // Step 4: Upload PDF to Supabase Storage (BUCKET PRIVADO) - com fallback
+      let uploadResult: any = { success: false, error: 'Storage não disponível' };
       
-      if (!uploadResult.success) {
-        console.error('❌ [RECEIPT-SERVICE] Erro no upload do PDF', {
+      try {
+        console.log('📤 [RECEIPT-SERVICE] Tentando upload do PDF para Supabase Storage...');
+        uploadResult = await supabaseStorage.uploadReceiptPDF(fileName, pdfBuffer);
+        
+        if (uploadResult.success) {
+          console.log('✅ [RECEIPT-SERVICE] PDF enviado para Supabase Storage PRIVADO', {
+            correlationId: logId,
+            objectKey: uploadResult.objectKey
+          });
+        }
+      } catch (uploadError) {
+        console.warn('⚠️ [RECEIPT-SERVICE] Supabase Storage não disponível, salvando apenas registro', {
           correlationId: logId,
-          error: uploadResult.error
+          error: uploadError instanceof Error ? uploadError.message : 'Erro desconhecido'
         });
-        return {
+        // Continuar sem o upload do PDF, apenas salvar o registro no banco
+        uploadResult = {
           success: false,
-          error: `Erro no upload do PDF: ${uploadResult.error}`
+          objectKey: null,
+          publicUrl: null,
+          error: 'Storage não configurado - comprovante salvo sem PDF'
         };
       }
 
-      console.log('✅ [RECEIPT-SERVICE] PDF enviado para Supabase Storage PRIVADO', {
-        correlationId: logId,
-        objectKey: uploadResult.objectKey
-      });
-
-      // Step 5: Save receipt record to database
+      // Step 5: Save receipt record to database (com fallback para quando não houver storage)
       const receiptRecord = {
         id: randomUUID(),
         contractId: receiptData.contractId || null,
@@ -177,8 +184,8 @@ export class PaymentReceiptService {
         paymentMethod: this.getPaymentMethodFromCielo(payment.type),
         status: 'generated' as const,
         pdfFileName: fileName,
-        pdfObjectKey: uploadResult.objectKey!, // ✅ SEGURANÇA: Armazenar object key
-        pdfUrl: uploadResult.publicUrl || uploadResult.objectKey!, // ✅ CORREÇÃO: Preencher pdf_url obrigatório
+        pdfObjectKey: uploadResult.objectKey || 'pending_storage', // Fallback quando storage não disponível
+        pdfUrl: uploadResult.publicUrl || uploadResult.objectKey || 'pending_storage', // Fallback para URL
         proofOfSale: payment.proofOfSale || null,
         authorizationCode: payment.authorizationCode || null,
         tid: payment.tid || null,
