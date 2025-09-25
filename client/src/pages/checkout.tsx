@@ -935,30 +935,28 @@ export default function Checkout() {
                           </div>
                           
                           {/* Botões para Desktop */}
-                          {petsData.length > 1 && (
-                            <div className="hidden lg:flex items-center gap-2">
-                              {isCollapsed && (
-                                <button
-                                  type="button"
-                                  onClick={() => startEditingPet(index)}
-                                  className="flex items-center justify-center w-8 h-8 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                                  title="Editar"
-                                >
-                                  <Edit className="w-4 h-4" />
-                                </button>
-                              )}
-                              {!editingPets[index] && (
-                                <button
-                                  type="button"
-                                  onClick={() => removePet(index)}
-                                  className="flex items-center justify-center w-8 h-8 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                                  title="Remover"
-                                >
-                                  <Trash2 className="w-4 h-4" />
-                                </button>
-                              )}
-                            </div>
-                          )}
+                          <div className="hidden lg:flex items-center gap-2">
+                            {isCollapsed && (
+                              <button
+                                type="button"
+                                onClick={() => startEditingPet(index)}
+                                className="flex items-center justify-center w-8 h-8 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                                title="Editar"
+                              >
+                                <Edit className="w-4 h-4" />
+                              </button>
+                            )}
+                            {!editingPets[index] && petsData.length > 1 && (
+                              <button
+                                type="button"
+                                onClick={() => removePet(index)}
+                                className="flex items-center justify-center w-8 h-8 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                                title="Remover"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            )}
+                          </div>
                         </div>
 
                         {!isCollapsed && (
@@ -1051,31 +1049,29 @@ export default function Checkout() {
                           </div>
                         )}
 
-                        {/* Botões Mobile (visíveis apenas quando há mais de 1 pet) */}
-                        {petsData.length > 1 && (
-                          <div className="lg:hidden flex gap-2 mt-3 pt-3 border-t border-gray-100">
-                            {isCollapsed && (
-                              <button
-                                type="button"
-                                onClick={() => startEditingPet(index)}
-                                className="flex items-center justify-center flex-1 px-3 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                                title="Editar"
-                              >
-                                <Edit className="w-4 h-4" />
-                              </button>
-                            )}
-                            {!editingPets[index] && (
-                              <button
-                                type="button"
-                                onClick={() => removePet(index)}
-                                className="flex items-center justify-center flex-1 px-3 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                                title="Remover"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
-                            )}
-                          </div>
-                        )}
+                        {/* Botões Mobile */}
+                        <div className="lg:hidden flex gap-2 mt-3 pt-3 border-t border-gray-100">
+                          {isCollapsed && (
+                            <button
+                              type="button"
+                              onClick={() => startEditingPet(index)}
+                              className="flex items-center justify-center flex-1 px-3 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                              title="Editar"
+                            >
+                              <Edit className="w-4 h-4" />
+                            </button>
+                          )}
+                          {!editingPets[index] && petsData.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => removePet(index)}
+                              className="flex items-center justify-center flex-1 px-3 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                              title="Remover"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
                       </div>
                     );
                   })}
