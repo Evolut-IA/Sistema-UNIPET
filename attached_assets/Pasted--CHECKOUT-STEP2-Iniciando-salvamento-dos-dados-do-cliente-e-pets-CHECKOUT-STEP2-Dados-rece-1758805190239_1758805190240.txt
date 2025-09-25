@@ -1,0 +1,45 @@
+🛒 [CHECKOUT-STEP2] Iniciando salvamento dos dados do cliente e pets
+🔍 [CHECKOUT-STEP2] Dados recebidos (sem CPF): {
+  email: 'contatogabrielmarquez@gmail.com',
+  hasPassword: true,
+  petsCount: 1
+}
+Query: select "id", "full_name", "email", "phone", "cpf", "cep", "address", "number", "complement", "district", "state", "city", "password", "image", "image_url", "created_at", "updated_at" from "clients" where "clients"."email" = $1 limit $2 -- params: ["contatogabrielmarquez@gmail.com", 1]
+🆕 [CHECKOUT-STEP2] Criando novo cliente sem CPF (será adicionado no Step 3)
+🏗️ [CHECKOUT-STEP2] Criando cliente: contatogabrielmarquez@gmail.com
+Query: insert into "clients" ("id", "full_name", "email", "phone", "cpf", "cep", "address", "number", "complement", "district", "state", "city", "password", "image", "image_url", "created_at", "updated_at") values ($1, $2, $3, $4, $5, default, $6, default, default, default, $7, $8, $9, default, default, default, default) returning "id", "full_name", "email", "phone", "cpf", "cep", "address", "number", "complement", "district", "state", "city", "password", "image", "image_url", "created_at", "updated_at" -- params: ["client-1758805133259-52ub31z5z", "Gabriel Alves Marques dos Santos", "contatogabrielmarquez@gmail.com", "(12) 97404-1539", null, "Rua Manoel Marcelino de Mattos", "SP", "São Sebastião", "$2a$12$loFivWdRVYYZy69qg59XD.T6DNCc7O1fBYKZqMUmz4R8O7ou4HGF."]
+🐕 [CHECKOUT-STEP2] Criando pet: Baunilha
+Query: insert into "pets" ("id", "client_id", "name", "species", "breed", "birth_date", "age", "sex", "castrated", "color", "weight", "microchip", "previous_diseases", "surgeries", "allergies", "current_medications", "hereditary_conditions", "vaccine_data", "last_checkup", "parasite_treatments", "plan_id", "image", "image_url", "is_active", "created_at", "updated_at") values (default, $1, $2, $3, $4, default, $5, $6, $7, default, $8, default, default, default, default, default, default, $9, default, default, $10, default, default, default, default, default) returning "id", "client_id", "name", "species", "breed", "birth_date", "age", "sex", "castrated", "color", "weight", "microchip", "previous_diseases", "surgeries", "allergies", "current_medications", "hereditary_conditions", "vaccine_data", "last_checkup", "parasite_treatments", "plan_id", "image", "image_url", "is_active", "created_at", "updated_at" -- params: ["client-1758805133259-52ub31z5z", "Baunilha", "Cão", "Pug", "2", "Macho", false, "1", "[]", "ec994283-76de-4605-afa3-0670a8a0a475"]
+✅ [CHECKOUT-STEP2] Dados salvos com sucesso { clientId: 'client-1758805133259-52ub31z5z', petsCount: 1 }
+POST /api/checkout/save-customer-data 201 in 956ms :: {"success":true,"message"…
+📝 [CHECKOUT-STEP3] Completando registro do cliente com CPF e endereço
+Query: select "id", "full_name", "email", "phone", "cpf", "cep", "address", "number", "complement", "district", "state", "city", "password", "image", "image_url", "created_at", "updated_at" from "clients"
+🔄 [CHECKOUT-STEP3] Atualizando cliente com dados completos: {
+  clientId: 'client-1758805133259-52ub31z5z',
+  cpf: '54498358848',
+  hasAddress: true,
+  isExistingClient: false
+}
+Query: update "clients" set "cpf" = $1, "cep" = $2, "address" = $3, "number" = $4, "complement" = $5, "district" = $6, "state" = $7, "city" = $8, "updated_at" = $9 where "clients"."id" = $10 returning "id", "full_name", "email", "phone", "cpf", "cep", "address", "number", "complement", "district", "state", "city", "password", "image", "image_url", "created_at", "updated_at" -- params: ["54498358848", null, "Rua Manoel Marcelino de Mattos", "21", null, "Boiçucanga", "SP", "São Sebastião", "2025-09-25T12:58:54.040Z", "client-1758805133259-52ub31z5z"]
+✅ [CHECKOUT-STEP3] Registro completado com sucesso
+POST /api/checkout/complete-registration 200 in 383ms :: {"success":true,"messa…
+🛒 [SIMPLE-CHECKOUT] Iniciando checkout simplificado
+🔍 [SIMPLE] Buscando cliente: {
+  cpf: '54498358848',
+  email: 'contatogabrielmarquez@gmail.com',
+  name: 'Gabriel Alves Marques dos Santos'
+}
+Query: select "id", "full_name", "email", "phone", "cpf", "cep", "address", "number", "complement", "district", "state", "city", "password", "image", "image_url", "created_at", "updated_at" from "clients"
+✅ [SIMPLE] Cliente encontrado por CPF: client-1758805133259-52ub31z5z
+Query: insert into "pets" ("id", "client_id", "name", "species", "breed", "birth_date", "age", "sex", "castrated", "color", "weight", "microchip", "previous_diseases", "surgeries", "allergies", "current_medications", "hereditary_conditions", "vaccine_data", "last_checkup", "parasite_treatments", "plan_id", "image", "image_url", "is_active", "created_at", "updated_at") values ($1, $2, $3, $4, $5, default, $6, $7, $8, default, $9, default, default, default, default, default, default, $10, default, default, $11, default, default, $12, default, default) returning "id", "client_id", "name", "species", "breed", "birth_date", "age", "sex", "castrated", "color", "weight", "microchip", "previous_diseases", "surgeries", "allergies", "current_medications", "hereditary_conditions", "vaccine_data", "last_checkup", "parasite_treatments", "plan_id", "image", "image_url", "is_active", "created_at", "updated_at" -- params: ["pet-1758805134605-qt5ghx14", "client-1758805133259-52ub31z5z", "Baunilha", "Cão", "Pug", "2", "Macho", false, "0", "\"[]\"", "ec994283-76de-4605-afa3-0670a8a0a475", true]
+✅ [SIMPLE] Pet criado: Baunilha (pet-1758805134605-qt5ghx14)
+Query: select "id", "name", "price", "description", "features", "image", "button_text", "plan_type", "is_active", "display_order", "created_at", "billing_frequency", "base_price", "installment_price", "installment_count", "per_pet_billing", "pet_discounts", "payment_description", "available_payment_methods", "available_billing_options", "annual_price", "annual_installment_price", "annual_installment_count" from "plans" where "plans"."id" = $1 -- params: ["ec994283-76de-4605-afa3-0670a8a0a475"]
+💰 [PRICE-CALCULATION] Preço calculado no servidor: {
+  planName: 'BASIC',
+  basePrice: 1,
+  petCount: 1,
+  totalWithDiscounts: '1.00',
+  correctAmountInCents: 100,
+  isDiscountEligible: true
+}
+POST /api/checkout/simple-process 501 in 549ms :: {"error":"PIX não implementad…
