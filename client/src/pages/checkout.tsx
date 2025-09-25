@@ -270,6 +270,11 @@ export default function Checkout() {
     const newCollapsedState = [...collapsedPets];
     newCollapsedState[index] = true;
     setCollapsedPets(newCollapsedState);
+    
+    // Reset do estado de edição para que o botão de apagar apareça
+    const newEditingState = [...editingPets];
+    newEditingState[index] = false;
+    setEditingPets(newEditingState);
   };
 
   // Função para verificar se todos os pets estão colapsados
