@@ -378,33 +378,19 @@ export default function Checkout() {
       if (response.ok) {
         const result = await response.json();
         
-        // LOG DETALHADO: Vamos ver exatamente o que está sendo retornado
-        console.log('🔍 [FRONTEND] Resposta completa da API:', JSON.stringify(result, null, 2));
-        
-        // Pode vir como cieloStatus (número) ou mappedStatus (string)
-        const cieloStatus = result.data?.cieloStatus;
+        // Usar apenas o campo mappedStatus para verificar aprovação
         const mappedStatus = result.data?.mappedStatus;
         
-        console.log('🔍 [FRONTEND] Status extraídos:', { 
-          cieloStatus, 
-          mappedStatus, 
-          cieloStatusType: typeof cieloStatus,
-          mappedStatusType: typeof mappedStatus 
-        });
+        console.log('🔍 [FRONTEND] Status do pagamento:', { mappedStatus });
         
-        // Status de aprovação - pode vir como número 2, string "2" ou string "approved"
-        const isApproved = cieloStatus === 2 || 
-                          cieloStatus === '2' || 
-                          cieloStatus === 'approved' ||  // ← ESTA LINHA FALTAVA!
-                          mappedStatus === 'approved' ||
-                          mappedStatus === 2;
+        // Lógica simplificada: apenas mappedStatus
+        // pending = aguardando pagamento
+        // approved = aprovado, pode redirecionar
+        const isApproved = mappedStatus === 'approved';
         
-        console.log('🔍 [FRONTEND] Verificações de aprovação:', {
-          'cieloStatus === 2': cieloStatus === 2,
-          'cieloStatus === "2"': cieloStatus === '2',
-          'mappedStatus === "approved"': mappedStatus === 'approved',
-          'mappedStatus === 2': mappedStatus === 2,
-          'resultado final': isApproved
+        console.log('🔍 [FRONTEND] Verificação de aprovação:', {
+          mappedStatus,
+          isApproved
         });
         
         // Log quando aprovado

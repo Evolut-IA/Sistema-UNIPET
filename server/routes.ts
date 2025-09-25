@@ -4024,7 +4024,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
           paymentId,
           merchantOrderId: queryResult.merchantOrderId || '',
           // Cielo payment data
-          cieloStatus: queryResult.payment?.status || 0,
+          cieloStatus: (queryResult as any).Payment?.Status || 0,
+          mappedStatus: (() => {
+            // Cielo retorna Payment (PascalCase), não payment (camelCase)
+            const cieloPayment = (queryResult as any).Payment;
+            const status = cieloPayment?.Status || 0;
+            console.log('🔍 [PAYMENT-QUERY] Mapeando status para resposta:', { 
+              status, 
+              statusType: typeof status,
+              hasPayment: !!cieloPayment,
+              paymentKeys: cieloPayment ? Object.keys(cieloPayment) : []
+            });
+            
+            if (status === 1) return 'pending'; // Authorized
+            if (status === 2) return 'approved'; // Paid/Captured ✅
+            if (status === 3) return 'declined'; // Denied
+            if (status === 10) return 'cancelled'; // Voided
+            if (status === 11) return 'refunded'; // Refunded
+            if (status === 12) return 'pending'; // Pending ← ESTE É O CASO ATUAL
+            if (status === 13) return 'cancelled'; // Aborted
+            if (status === 20) return 'pending'; // Scheduled
+            return 'pending'; // Default
+          })(),
           amount: queryResult.payment?.amount || 0,
           capturedAmount: queryResult.payment?.capturedAmount || 0,
           tid: queryResult.payment?.tid || '',
