@@ -674,21 +674,21 @@ export default function CustomerProfile() {
                     </div>
                     
                     {pet.plan ? (
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium" style={{ color: 'var(--text-dark-primary)' }}>
+                      <div className="flex items-center justify-between text-sm">
+                        <div className="flex items-center space-x-2">
+                          <span className="font-medium" style={{ color: 'var(--text-dark-primary)' }}>
                             Plano Ativo:
                           </span>
-                          <span className="text-sm px-2 py-1 rounded"
+                          <span className="px-2 py-0.5 rounded"
                             style={{ background: 'var(--bg-cream-light)', color: 'var(--text-teal)' }}>
                             {pet.plan.name}
                           </span>
                         </div>
                         {pet.plan.basePrice && (
-                          <p className="text-sm" style={{ color: 'var(--text-dark-secondary)' }}>
+                          <span style={{ color: 'var(--text-dark-secondary)' }}>
                             Valor: R$ {parseFloat(pet.plan.basePrice).toFixed(2).replace('.', ',')}
                             {pet.plan.billingFrequency === 'monthly' ? '/mês' : '/ano'}
-                          </p>
+                          </span>
                         )}
                       </div>
                     ) : (
