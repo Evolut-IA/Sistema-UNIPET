@@ -1314,38 +1314,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // ============================================
-      // STEP 2: CREATE PET FOR THE CLIENT
+      // STEP 2: VALIDATE PET DATA (NOT CREATE YET)
       // ============================================
       
-      // CORREÇÃO: Pets já são criados no endpoint /api/checkout/save-customer-data
-      // Comentando para evitar duplicação
-      /*
-      if (paymentData.pets && Array.isArray(paymentData.pets) && paymentData.pets.length > 0) {
-        for (const petData of paymentData.pets) {
-          const newPetData = {
-            id: `pet-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`,
-            clientId: client.id,
-            name: petData.name || 'Pet',
-            species: petData.species || 'Cão',
-            breed: petData.breed || 'SRD',
-            age: petData.age?.toString() || '1',
-            sex: petData.sex || 'Macho',
-            castrated: petData.castrated || false,
-            weight: petData.weight?.toString() || '1',
-            vaccineData: JSON.stringify([]),
-            planId: planData.planId,
-            isActive: true
-          };
-          
-          try {
-            const pet = await storage.createPet(newPetData);
-            console.log(`✅ [SIMPLE] Pet criado: ${pet.name} (${pet.id})`);
-          } catch (petError) {
-            console.error(`⚠️ [SIMPLE] Erro ao criar pet (continuando):`, petError);
-          }
-        }
-      }
-      */
+      // Pets serão criados apenas após pagamento aprovado
+      const petsToCreate = paymentData.pets || [];
+      console.log(`📋 [SIMPLE] ${petsToCreate.length} pets serão criados após pagamento aprovado`);
 
       // ============================================
       // STEP 3: PROCESS PAYMENT
@@ -1440,11 +1414,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
         
         if (paymentResult.payment?.status === 2) {
-          // Payment approved - create contract
+          // Payment approved - primeiro criar os pets
+          const createdPets = [];
+          if (petsToCreate && Array.isArray(petsToCreate) && petsToCreate.length > 0) {
+            for (const petData of petsToCreate) {
+              const newPetData = {
+                id: `pet-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`,
+                clientId: client.id,
+                name: petData.name || 'Pet',
+                species: petData.species || 'Cão',
+                breed: petData.breed || '',
+                age: petData.age?.toString() || '1',
+                sex: petData.sex || '',
+                castrated: petData.castrated || false,
+                weight: petData.weight?.toString() || '1',
+                vaccineData: JSON.stringify([]),
+                planId: planData.planId,
+                isActive: true
+              };
+              
+              try {
+                const pet = await storage.createPet(newPetData);
+                createdPets.push(pet);
+                console.log(`✅ [SIMPLE] Pet criado após pagamento aprovado: ${pet.name} (${pet.id})`);
+              } catch (petError) {
+                console.error(`⚠️ [SIMPLE] Erro ao criar pet (continuando):`, petError);
+              }
+            }
+          }
+          
+          // Create contract
           const contractData = {
             clientId: client.id,
             planId: planData.planId,
-            petId: planData.pets?.[0]?.id || 'temp-pet', // Use first pet or temp placeholder
+            petId: createdPets[0]?.id || 'temp-pet', // Use first created pet or temp placeholder
             contractNumber: `UNIPET-${Date.now()}-${client.id.substring(0, 4).toUpperCase()}`,
             status: 'active' as const,
             startDate: new Date(),
@@ -1529,12 +1532,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         // Check if PIX was generated successfully (status 12 = Pending)
         if (pixPaymentResult.payment?.status === 12) {
-          // Get the first pet created for the contract
+          // Create pets for PIX payment (will be activated when payment is confirmed)
+          const createdPets = [];
           let firstPetId = 'default-pet';
-          if (paymentData.pets && paymentData.pets.length > 0) {
-            const clientPets = await storage.getPetsByClientId(client.id);
-            if (clientPets.length > 0) {
-              firstPetId = clientPets[0].id;
+          
+          if (petsToCreate && Array.isArray(petsToCreate) && petsToCreate.length > 0) {
+            for (const petData of petsToCreate) {
+              const newPetData = {
+                id: `pet-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`,
+                clientId: client.id,
+                name: petData.name || 'Pet',
+                species: petData.species || 'Cão',
+                breed: petData.breed || '',
+                age: petData.age?.toString() || '1',
+                sex: petData.sex || '',
+                castrated: petData.castrated || false,
+                weight: petData.weight?.toString() || '1',
+                vaccineData: JSON.stringify([]),
+                planId: planData.planId,
+                isActive: true // Will be activated when PIX is confirmed
+              };
+              
+              try {
+                const pet = await storage.createPet(newPetData);
+                createdPets.push(pet);
+                console.log(`✅ [SIMPLE-PIX] Pet criado para pagamento PIX: ${pet.name} (${pet.id})`);
+              } catch (petError) {
+                console.error(`⚠️ [SIMPLE-PIX] Erro ao criar pet (continuando):`, petError);
+              }
+            }
+            
+            if (createdPets.length > 0) {
+              firstPetId = createdPets[0].id;
             }
           }
           

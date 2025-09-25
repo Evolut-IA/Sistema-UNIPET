@@ -585,7 +585,7 @@ export default function Checkout() {
           return;
         }
       }
-      // Primeiro salvar dados do cliente
+      // Primeiro salvar apenas dados do cliente (sem pets)
       const clientResponse = await fetch('/api/checkout/save-customer-data', {
         method: 'POST',
         headers: {
@@ -602,15 +602,7 @@ export default function Checkout() {
             state: customerData.state,
             zipCode: customerData.zipCode
           },
-          petsData: petsData.map(pet => ({
-            name: pet.name,
-            species: pet.species,
-            breed: pet.breed || '',
-            age: String(pet.age || 1),
-            weight: String(pet.weight || 1),
-            sex: pet.sex || '',
-            planId: selectedPlan?.id
-          }))
+          petsData: [] // Não enviar pets nesta etapa
         }),
       });
 
