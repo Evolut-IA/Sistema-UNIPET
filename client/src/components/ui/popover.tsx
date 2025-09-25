@@ -26,7 +26,7 @@ const ResponsivePopover = ({ children, open, onOpenChange, modal }: ResponsivePo
   
   if (isMobile) {
     return (
-      <Drawer open={open} onOpenChange={onOpenChange}>
+      <Drawer open={open ?? false} onOpenChange={onOpenChange}>
         {children}
       </Drawer>
     )
@@ -65,7 +65,7 @@ const PopoverContent = React.forwardRef<
         align={align}
         sideOffset={sideOffset}
         className={cn(
-          "z-50 rounded-md border bg-popover text-popover-foreground shadow-md outline-none",
+          "z-50 max-h-[min(300px,var(--radix-popover-content-available-height))] overflow-y-auto overflow-x-hidden rounded-md border bg-popover text-popover-foreground shadow-md outline-none",
           "data-[state=open]:animate-in data-[state=closed]:animate-out",
           "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0", 
           "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",

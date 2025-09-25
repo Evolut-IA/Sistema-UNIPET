@@ -80,14 +80,14 @@ const SheetContent = React.forwardRef<
           return cn(
             baseClasses,
             // Mobile: Constrain height for top sheets
-            "max-h-[60vh]",
+            "max-h-[60vh] overflow-y-auto",
             "p-4"
           )
         case 'bottom':
           return cn(
             baseClasses,
-            // Mobile: Constrain height for bottom sheets  
-            "max-h-[85vh]",
+            // Mobile: Constrain height for bottom sheets
+            "max-h-[85vh] overflow-y-auto",
             "p-4"
           )
         default:
@@ -107,7 +107,7 @@ const SheetContent = React.forwardRef<
         case 'bottom':
           return cn(
             baseClasses,
-            "max-h-[70vh]",
+            "max-h-[70vh] overflow-y-auto",
             "p-5"
           )
         default:
@@ -128,7 +128,7 @@ const SheetContent = React.forwardRef<
         case 'bottom':
           return cn(
             baseClasses,
-            "max-h-[60vh]",
+            "max-h-[60vh] overflow-y-auto",
             "p-6"
           )
         default:
