@@ -1041,18 +1041,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
           };
           
           const parsedPetData = insertPetSchema.parse(petToSave);
-          console.log("🐕 [CHECKOUT-STEP2] Criando pet para cliente existente:", parsedPetData.name);
-          const savedPet = await storage.createPet(parsedPetData as any);
-          savedPets.push(savedPet as any);
+          console.log("✅ [CHECKOUT-STEP2] Pet validado para cliente existente (será criado após pagamento):", parsedPetData.name);
+          // Pet será criado apenas após pagamento aprovado no endpoint simple-process
+          // savedPets.push(savedPet as any); - removido pois pet não será criado aqui
         }
         
         const { password: _, ...clientResponse } = updatedClient || existingClient;
         
         return res.status(200).json({
           success: true,
-          message: "Cliente existente - pets adicionados com sucesso",
+          message: "Cliente existente - dados validados (pets serão criados após pagamento)",
           client: clientResponse,
-          pets: savedPets,
+          pets: [], // Pets não são mais criados neste endpoint
           clientId: existingClient.id,
           isExistingClient: true
         });
@@ -1090,14 +1090,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Validate pet data
         const parsedPetData = insertPetSchema.parse(petToSave);
         
-        console.log("🐕 [CHECKOUT-STEP2] Criando pet:", parsedPetData.name);
-        const savedPet = await storage.createPet(parsedPetData as any);
-        savedPets.push(savedPet);
+        console.log("✅ [CHECKOUT-STEP2] Pet validado (será criado após pagamento):", parsedPetData.name);
+        // Pet será criado apenas após pagamento aprovado no endpoint simple-process
+        // savedPets.push(savedPet); - removido pois pet não será criado aqui
       }
       
       console.log("✅ [CHECKOUT-STEP2] Dados salvos com sucesso", {
         clientId: savedClient.id,
-        petsCount: savedPets.length
+        petsValidated: 0 // Pets não são mais salvos neste endpoint
       });
       
       // Return success without password
@@ -1105,9 +1105,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.status(201).json({
         success: true,
-        message: "Dados do cliente e pets salvos com sucesso",
+        message: "Cliente criado com sucesso (pets serão criados após pagamento)",
         client: clientResponse,
-        pets: savedPets,
+        pets: [], // Pets não são mais criados neste endpoint
         clientId: savedClient.id
       });
       
@@ -1900,25 +1900,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         await storage.updateClient(validatedClient.id, updatedClientData);
         console.log("✅ [PRE-PAYMENT] Cliente atualizado com endereço completo");
 
-        // Salvar pet(s) se fornecido(s)
+        // Pets serão criados apenas após pagamento aprovado
+        // Validar dados dos pets sem salvá-los
         if (paymentData.pets && paymentData.pets.length > 0) {
           for (const petData of paymentData.pets) {
-            const petId = `pet-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-            const newPet = {
-              id: petId,
-              clientId: validatedClient.id,
-              name: petData.name,
-              species: petData.species || 'Cão',
-              breed: petData.breed || 'SRD',
-              age: petData.age ? petData.age.toString() : '1',
-              sex: petData.sex || 'Macho',
-              castrated: petData.castrated || false,
-              isActive: true,
-              planId: planData.planId
-            };
-            
-            await storage.createPet(newPet);
-            console.log("✅ [PRE-PAYMENT] Pet salvo:", { name: petData.name, species: petData.species });
+            console.log("✅ [PRE-PAYMENT] Pet validado (será criado após pagamento):", { 
+              name: petData.name, 
+              species: petData.species || 'Cão' 
+            });
           }
         }
       } catch (saveError) {
@@ -2177,8 +2166,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
             }
           } else {
             // Standard flow: Get client's pets to create contracts
-            console.log("📋 [NEW-CONTRACT] Criando novos contratos");
-            const clientPets = await storage.getPetsByClientId(clientId);
+            console.log("📋 [NEW-CONTRACT] Criando pets após pagamento aprovado");
+            // Create pets first (only after payment is approved)
+            const createdPets = [];
+            if (paymentData.pets && paymentData.pets.length > 0) {
+              for (const petData of paymentData.pets) {
+                const petId = `pet-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+                const newPet = {
+                  id: petId,
+                  clientId: targetClient.id,
+                  name: petData.name,
+                  species: petData.species || 'Cão',
+                  breed: petData.breed || 'SRD',
+                  age: petData.age ? petData.age.toString() : '1',
+                  sex: petData.sex || 'Macho',
+                  castrated: petData.castrated || false,
+                  weight: petData.weight?.toString() || '1',
+                  vaccineData: JSON.stringify([]),
+                  isActive: true,
+                  planId: planData.planId
+                };
+                
+                try {
+                  const pet = await storage.createPet(newPet);
+                  createdPets.push(pet);
+                  console.log("✅ [PAYMENT-APPROVED] Pet criado após pagamento aprovado:", { 
+                    name: pet.name, 
+                    species: pet.species,
+                    petId: pet.id
+                  });
+                } catch (petError) {
+                  console.error("⚠️ [PAYMENT-APPROVED] Erro ao criar pet (continuando):", petError);
+                }
+              }
+            }
+            
+            const clientPets = createdPets.length > 0 ? createdPets : await storage.getPetsByClientId(clientId);
             
             // Create contract for each pet
             for (const pet of clientPets) {
