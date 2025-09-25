@@ -1291,7 +1291,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           district: addressData?.district || null,
           city: addressData?.city || null,
           state: addressData?.state || null,
-          cep: addressData?.zipCode?.replace(/\D/g, '') || null
+          cep: addressData?.cep?.replace(/\D/g, '') || null
         };
         
         try {
@@ -1839,7 +1839,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         email: paymentData.customer.email || validatedClient.email,
         cpf: paymentData.customer.cpf?.replace(/\D/g, '') || validatedClient.cpf,
         phone: paymentData.customer.phone || validatedClient.phone,
-        cep: addressData.zipCode || addressData.cep || null,
+        cep: addressData.cep || null,
         address: addressData.address || null,
         number: addressData.number || null,
         complement: addressData.complement || null,
@@ -1932,7 +1932,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                   street: addressData.address || '',
                   number: addressData.number || 'S/N',
                   complement: addressData.complement || '',
-                  zipCode: (addressData.zipCode || addressData.cep || '').replace(/\D/g, ''),
+                  zipCode: (addressData.cep || '').replace(/\D/g, ''),
                   city: addressData.city || '',
                   state: addressData.state || '',
                   country: 'BRA'
@@ -2033,7 +2033,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               district: addressData.district || '',
               city: addressData.city || '',
               state: addressData.state || '',
-              cep: addressData.cep || addressData.zipCode || ''
+              cep: addressData.cep || ''
             };
             
             // Create the new client
@@ -2062,7 +2062,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               district: addressData.district,
               city: addressData.city,
               state: addressData.state,
-              cep: addressData.cep || addressData.zipCode
+              cep: addressData.cep
             });
           } else {
             throw new Error('Cliente não existe e não foi possível criar automaticamente');
