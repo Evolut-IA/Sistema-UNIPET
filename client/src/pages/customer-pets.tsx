@@ -495,18 +495,24 @@ export default function CustomerPets() {
                             </div>
                             <div>
                               <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-dark-primary)' }}>Sexo</label>
-                              <input
-                                type="text"
-                                value={editFormData.sex || 'Não informado'}
-                                readOnly
-                                className="w-full px-2 py-1 text-sm border rounded cursor-not-allowed"
-                                style={{ 
-                                  borderColor: 'var(--border-gray)', 
-                                  backgroundColor: 'var(--bg-cream-light)', 
-                                  color: 'var(--text-dark-secondary)',
-                                  opacity: 0.8
-                                }}
-                              />
+                              <Select 
+                                value={editFormData.sex || ''} 
+                                onValueChange={(value) => updateFormField('sex', value)}
+                              >
+                                <SelectTrigger 
+                                  className="w-full p-3 rounded-lg border text-sm"
+                                  style={{
+                                    borderColor: 'var(--border-gray)',
+                                    background: 'white'
+                                  }}
+                                >
+                                  <SelectValue placeholder="Selecionar sexo" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Macho">Macho</SelectItem>
+                                  <SelectItem value="Fêmea">Fêmea</SelectItem>
+                                </SelectContent>
+                              </Select>
                             </div>
                             <div>
                               <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-dark-primary)' }}>Castrado</label>
