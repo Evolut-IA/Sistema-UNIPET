@@ -410,30 +410,69 @@ export default function Checkout() {
 
     console.log('🚀 Iniciando polling PIX para pagamento:', pixData.paymentId);
     
+    // Captura o paymentId em uma variável local para evitar problemas de closure
+    const currentPaymentId = pixData.paymentId;
+    let checkCount = 0;
+    
     const pollInterval = setInterval(async () => {
-      const isConfirmed = await checkPixPaymentStatus(pixData.paymentId);
+      checkCount++;
+      console.log(`🔄 [${checkCount}] Verificando status do PIX para payment: ${currentPaymentId}`);
       
-      if (isConfirmed) {
-        console.log('🎉 PIX APROVADO! Redirecionando para login com popup de sucesso...');
-        clearInterval(pollInterval);
-        setIsPaymentConfirmed(true);
+      try {
+        const isConfirmed = await checkPixPaymentStatus(currentPaymentId);
+        console.log(`📊 [${checkCount}] Resultado da verificação PIX:`, isConfirmed);
         
-        // Redirecionar imediatamente para a página de login com popup de sucesso
-        navigate('/customer/login?payment_success=true');
+        if (isConfirmed) {
+          console.log('🎉 PIX APROVADO! Redirecionando para login com popup de sucesso...');
+          clearInterval(pollInterval);
+          setIsPaymentConfirmed(true);
+          
+          // Forçar redirecionamento usando window.location para garantir navegação
+          setTimeout(() => {
+            console.log('🚪 Executando redirecionamento...');
+            window.location.href = '/customer/login?payment_success=true';
+          }, 100);
+        }
+      } catch (error) {
+        console.error(`❌ [${checkCount}] Erro durante verificação do PIX:`, error);
       }
     }, 3000); // Verificar a cada 3 segundos
 
+    // Fazer primeira verificação imediatamente
+    setTimeout(async () => {
+      console.log('🔍 Primeira verificação imediata...');
+      try {
+        const isConfirmed = await checkPixPaymentStatus(currentPaymentId);
+        console.log('📊 Status inicial:', isConfirmed);
+        
+        if (isConfirmed) {
+          console.log('🎉 PIX JÁ ESTAVA APROVADO! Redirecionando imediatamente...');
+          clearInterval(pollInterval);
+          setIsPaymentConfirmed(true);
+          
+          // Forçar redirecionamento
+          setTimeout(() => {
+            console.log('🚪 Executando redirecionamento imediato...');
+            window.location.href = '/customer/login?payment_success=true';
+          }, 100);
+        }
+      } catch (error) {
+        console.error('❌ Erro na primeira verificação:', error);
+      }
+    }, 500);
+
     // Limpar polling após 10 minutos (600 segundos) para evitar polling infinito
     const timeout = setTimeout(() => {
-      console.log('⏰ Timeout do polling PIX');
+      console.log('⏰ Timeout do polling PIX após 10 minutos');
       clearInterval(pollInterval);
     }, 600000);
 
     return () => {
+      console.log('🧹 Limpando polling PIX...');
       clearInterval(pollInterval);
       clearTimeout(timeout);
     };
-  }, [pixData?.paymentId, isPaymentConfirmed, navigate]);
+  }, [pixData?.paymentId, isPaymentConfirmed]);
 
   // Funções utilitárias para máscaras de cartão
   const formatCardNumber = (value: string): string => {
