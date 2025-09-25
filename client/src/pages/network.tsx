@@ -336,12 +336,7 @@ export default function Network() {
                           </div>
                         </div>
 
-                        <AnimatedSection 
-                          animation="slideUp" 
-                          delay={400 + (index * 50)} 
-                          duration={400}
-                          className="flex gap-3 mt-auto"
-                        >
+                        <div className="flex gap-3 mt-auto">
                           <Button 
                             className={cn(
                               unit.googleMapsUrl ? "flex-1" : "w-full",
@@ -383,7 +378,7 @@ export default function Network() {
                               <MapPin className="h-4 w-4" style={{ color: 'var(--icon-teal)' }} />
                             </Button>
                           )}
-                        </AnimatedSection>
+                        </div>
                       </CardContent>
                     </Card>
                   ))}
