@@ -91,7 +91,6 @@ export const plans = pgTable("plans", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
   buttonText: text("button_text").default("Contratar Plano").notNull(),
   displayOrder: integer("display_order").default(0).notNull(),
-  price: integer("price").default(0).notNull(),
   planType: planTypeEnum("plan_type").default("with_waiting_period").notNull(),
   billingFrequency: planBillingFrequencyEnum("billing_frequency").default("monthly").notNull(),
   basePrice: decimal("base_price", { precision: 10, scale: 2 }).default("0.00").notNull(),
@@ -433,7 +432,6 @@ export const insertPlanSchema = z.object({
   isActive: z.boolean().default(true),
   buttonText: z.string().default("Contratar Plano"),
   displayOrder: z.number().default(0),
-  price: z.number().default(0),
   planType: z.enum(["with_waiting_period", "without_waiting_period"]).default("with_waiting_period"),
   billingFrequency: z.enum(["monthly", "annual"]).default("monthly"),
   basePrice: z.string().refine((val) => !isNaN(parseFloat(val)) && parseFloat(val) >= 0, {

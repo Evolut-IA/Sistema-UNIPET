@@ -923,7 +923,7 @@ export class DatabaseStorage implements IStorage {
       const result = await db.select({
         id: plans.id,
         name: plans.name,
-        price: plans.price,
+
         description: plans.description,
         features: plans.features,
         image: plans.image,
@@ -959,7 +959,7 @@ export class DatabaseStorage implements IStorage {
       const result = await db.select({
         id: plans.id,
         name: plans.name,
-        price: plans.price,
+
         description: plans.description,
         features: plans.features,
         image: plans.image,
@@ -999,7 +999,7 @@ export class DatabaseStorage implements IStorage {
       const [plan] = await db.select({
         id: plans.id,
         name: plans.name,
-        price: plans.price,
+
         description: plans.description,
         features: plans.features,
         image: plans.image,

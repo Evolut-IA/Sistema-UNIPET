@@ -197,7 +197,7 @@ export class InMemoryStorage implements IStorage {
       {
         id: "1",
         name: "Plano Básico",
-        price: 2000,
+
         description: "Cobertura básica para seu pet",
         features: ["Consultas", "Vacinas", "Exames básicos"],
         image: "/BASICicon.svg", // Adicionar imagem do plano
@@ -310,7 +310,7 @@ export class InMemoryStorage implements IStorage {
       isActive: plan.isActive ?? true,
       buttonText: plan.buttonText ?? "Contratar Plano",
       displayOrder: plan.displayOrder ?? 0,
-      price: plan.price ?? 0,
+
       planType: plan.planType ?? "with_waiting_period",
       billingFrequency: plan.billingFrequency || "monthly",
       basePrice: plan.basePrice || "0.00",
@@ -777,7 +777,7 @@ export class DatabaseStorage implements IStorage {
       const result = await db.select({
         id: plans.id,
         name: plans.name,
-        price: plans.price,
+
         description: plans.description,
         features: plans.features,
         image: plans.image,
@@ -813,7 +813,7 @@ export class DatabaseStorage implements IStorage {
       const result = await db.select({
         id: plans.id,
         name: plans.name,
-        price: plans.price,
+
         description: plans.description,
         features: plans.features,
         image: plans.image,
@@ -853,7 +853,7 @@ export class DatabaseStorage implements IStorage {
       const [plan] = await db.select({
         id: plans.id,
         name: plans.name,
-        price: plans.price,
+
         description: plans.description,
         features: plans.features,
         image: plans.image,
@@ -1316,7 +1316,7 @@ export class DatabaseStorage implements IStorage {
             p.created_at,
             p.display_order,
             pp.coparticipacao,
-            pp.price,
+
             pp.pay_value,
             pp.is_included,
             pp.plan_id
@@ -1341,7 +1341,7 @@ export class DatabaseStorage implements IStorage {
             p.created_at,
             p.display_order,
             NULL as coparticipacao,
-            NULL as price,
+
             NULL as pay_value,
             NULL as is_included,
             NULL as plan_id
