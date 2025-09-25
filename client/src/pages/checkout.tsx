@@ -367,7 +367,12 @@ export default function Checkout() {
   const checkPixPaymentStatus = async (paymentId: string): Promise<boolean> => {
     try {
       const response = await fetch(`/api/payments/query/${paymentId}`, {
-        credentials: 'include'
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Checkout-Polling': 'true' // Header especial para permitir polling sem autenticação
+        },
+        credentials: 'same-origin'
       });
       
       if (response.ok) {

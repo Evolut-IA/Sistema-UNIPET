@@ -3899,7 +3899,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Query payment status
-  app.get("/api/payments/query/:paymentId", requireAuth, async (req, res) => {
+  // Permitir polling do PIX sem autenticação quando vem do checkout
+  app.get("/api/payments/query/:paymentId", async (req, res) => {
+    // Verificar autenticação - permitir polling do checkout sem auth
+    const isCheckoutPolling = req.headers['x-checkout-polling'] === 'true';
+    if (!isCheckoutPolling && !req.session?.userId) {
+      return res.status(401).json({ error: "Autenticação necessária" });
+    }
     const correlationId = req.headers['x-correlation-id'] as string || 
                          Math.random().toString(36).substring(7);
     
