@@ -1489,6 +1489,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Process PIX payment
         console.log('🔄 [SIMPLE-PIX] Processando pagamento PIX');
         
+        // Initialize Cielo service
+        const cieloService = new CieloService();
+        
         const pixRequest = {
           MerchantOrderId: `UNIPET-${Date.now()}`,
           Customer: {
