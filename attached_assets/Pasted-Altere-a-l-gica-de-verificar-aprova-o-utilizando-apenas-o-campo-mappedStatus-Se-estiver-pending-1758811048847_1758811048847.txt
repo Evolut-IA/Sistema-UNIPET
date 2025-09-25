@@ -1,0 +1,48 @@
+Altere a lógica de verificar aprovação utilizando apenas o campo 'mappedStatus'. Se estiver 'pending' está pedente (aguardando pagamento) e se estiver 'pending' está aprovado e pode redirecionar a pessoal imediatamente para a página '/customer/login' e aparecer o popup de congratulations.
+
+EXEMPLO DE LOGS DE PAGAMENTO APROVADO:
+
+🔍 [Cielo] Consultando pagamento {
+  correlationId: '8ae23653-354a-4437-9043-7dd85e3110fe',
+  paymentId: '50d9703c-508e-4820-9459-2ef01a5ba059'
+}
+🔗 [Cielo] URL de consulta: https://apiquery.cieloecommerce.cielo.com.br/1/sales/50d9703c-508e-4820-9459-2ef01a5ba059
+✅ [Cielo] Status interpretado corretamente: {
+  correlationId: '8ae23653-354a-4437-9043-7dd85e3110fe',
+  paymentId: '50d9703c-508e-4820-9459-2ef01a5ba059',
+  cieloStatus: 2,
+  mappedStatus: 'approved',
+  capturedAmount: 100,
+  capturedDate: '2025-09-25 11:18:36',
+  isApproved: true
+}
+Query: select "id", "client_id", "plan_id", "pet_id", "contract_number", "status", "start_date", "end_date", "billing_period", "monthly_amount", "annual_amount", "payment_method", "cielo_payment_id", "has_coparticipation", "proof_of_sale", "authorization_code", "tid", "received_date", "return_code", "return_message", "pix_qr_code", "pix_code", "created_at", "updated_at" from "contracts" where "contracts"."cielo_payment_id" = $1 -- params: ["50d9703c-508e-4820-9459-2ef01a5ba059"]
+GET /api/payments/query/50d9703c-508e-4820-9459-2ef01a5ba059 200 in 673ms :: {"…
+🔍 [PAYMENT-QUERY] Consultando status de pagamento {
+  correlationId: '5qo6',
+  paymentId: '50d9703c-508e-4820-9459-2ef01a5ba059',
+  userId: undefined
+
+
+EXEMPLO DE LOGS DE PAGAEMENTO PENDENTE:
+  
+🔍 [Cielo] Consultando pagamento {
+  correlationId: '617cd97d-df71-4af1-b9ff-ef344d91a385',
+  paymentId: '173453fb-f210-4ed7-acc6-abf60227d13c'
+}
+🔗 [Cielo] URL de consulta: https://apiquery.cieloecommerce.cielo.com.br/1/sales/173453fb-f210-4ed7-acc6-abf60227d13c
+✅ [Cielo] Status interpretado corretamente: {
+  correlationId: '617cd97d-df71-4af1-b9ff-ef344d91a385',
+  paymentId: '173453fb-f210-4ed7-acc6-abf60227d13c',
+  cieloStatus: 12,
+  mappedStatus: 'pending',
+  capturedAmount: undefined,
+  capturedDate: undefined,
+  isApproved: false
+}
+Query: select "id", "client_id", "plan_id", "pet_id", "contract_number", "status", "start_date", "end_date", "billing_period", "monthly_amount", "annual_amount", "payment_method", "cielo_payment_id", "has_coparticipation", "proof_of_sale", "authorization_code", "tid", "received_date", "return_code", "return_message", "pix_qr_code", "pix_code", "created_at", "updated_at" from "contracts" where "contracts"."cielo_payment_id" = $1 -- params: ["173453fb-f210-4ed7-acc6-abf60227d13c"]
+GET /api/payments/query/173453fb-f210-4ed7-acc6-abf60227d13c 200 in 1006ms :: {…
+🔍 [PAYMENT-QUERY] Consultando status de pagamento {
+  correlationId: 'ucwz4c',
+  paymentId: '173453fb-f210-4ed7-acc6-abf60227d13c',
+  userId: undefined
