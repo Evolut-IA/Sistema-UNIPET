@@ -7,7 +7,7 @@ import Footer from "@/components/layout/footer";
 
 interface Client {
   id: string;
-  full_name: string;
+  fullName: string;
   email: string;
   phone?: string;
   cpf?: string;
@@ -382,7 +382,7 @@ export default function CustomerProfile() {
                     {client?.imageUrl ? (
                       <img 
                         src={client.imageUrl} 
-                        alt={client.full_name}
+                        alt={client.fullName}
                         className="w-20 h-20 rounded-full object-cover"
                       />
                     ) : (
@@ -428,8 +428,8 @@ export default function CustomerProfile() {
                         <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-dark-primary)' }}>Nome Completo</label>
                         <input
                           type="text"
-                          value={editFormData.full_name || ''}
-                          onChange={(e) => updateFormField('full_name', e.target.value)}
+                          value={editFormData.fullName || ''}
+                          onChange={(e) => updateFormField('fullName', e.target.value)}
                           className="w-full px-3 py-2 border rounded-lg"
                           style={{ borderColor: 'var(--border-gray)' }}
                         />
@@ -473,7 +473,7 @@ export default function CustomerProfile() {
                     </>
                   ) : (
                     <>
-                      <p style={{ color: 'var(--text-dark-secondary)' }}>{formatInfo('Nome', client?.full_name)}</p>
+                      <p style={{ color: 'var(--text-dark-secondary)' }}>{formatInfo('Nome', client?.fullName)}</p>
                       <p style={{ color: 'var(--text-dark-secondary)' }}>{formatInfo('Email', client?.email)}</p>
                       <p style={{ color: 'var(--text-dark-secondary)' }}>{formatInfo('Telefone', client?.phone)}</p>
                       <p style={{ color: 'var(--text-dark-secondary)' }}>{formatInfo('CPF', client?.cpf)}</p>

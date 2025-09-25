@@ -26,12 +26,13 @@ args = "Frontend"
 name = "Backend"
 author = "agent"
 
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npm run dev"
-
 [workflows.workflow.metadata]
 outputType = "console"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev:server"
+waitForPort = 5001
 
 [[workflows.workflow]]
 name = "Frontend"
@@ -54,7 +55,7 @@ localPort = 5000
 externalPort = 80
 
 [[ports]]
-localPort = 33977
+localPort = 42199
 externalPort = 3001
 
 [deployment]
