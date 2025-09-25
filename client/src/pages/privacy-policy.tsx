@@ -12,7 +12,7 @@ const defaultPrivacyPolicy = `
 **UNIPET PLAN LTDA.**
 CNPJ: 61.863.611/0001-58
 Endereço: Av. Dom Severino, 1372, Fátima, Teresina-PI, CEP: 64049-370
-Telefone: (86) 3232-7374
+Telefone: 8632327374
 E-mail: contato@unipetplan.com.br
 
 Esta Política de Privacidade foi elaborada em conformidade com a Lei Federal nº 13.709/2018 (Lei Geral de Proteção de Dados - LGPD) e demais normas aplicáveis sobre proteção de dados pessoais.
@@ -108,7 +108,8 @@ Conforme a LGPD, você possui os seguintes direitos:
 ### 8.1 Exercício dos Direitos
 Para exercer seus direitos, entre em contato através de:
 - E-mail: contato@unipetplan.com.br
-- Telefone: (86) 3232-7374
+- Telefone: 8632327374
+- WhatsApp: 8632327374
 - Endereço: Av. Dom Severino, 1372, Fátima, Teresina-PI, CEP: 64049-370
 
 ## 9. Cookies e Tecnologias Similares
@@ -124,8 +125,8 @@ Você pode gerenciar suas preferências de cookies através das configurações 
 
 ## 10. Encarregado de Proteção de Dados
 
-Para questões específicas sobre proteção de dados, entre em contato com nosso Encarregado:
-E-mail: dpo@unipetplan.com.br
+Para questões específicas sobre proteção de dados, entre em contato através dos nossos canais oficiais:
+E-mail: contato@unipetplan.com.br
 
 ## 11. Alterações na Política
 

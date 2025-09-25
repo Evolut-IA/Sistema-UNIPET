@@ -12,7 +12,7 @@ const defaultTermsOfUse = `
 **UNIPET PLAN LTDA.**
 CNPJ: 61.863.611/0001-58
 Endereço: Av. Dom Severino, 1372, Fátima, Teresina-PI, CEP: 64049-370
-Telefone: (86) 3232-7374
+Telefone: 8632327374
 E-mail: contato@unipetplan.com.br
 Horário de Funcionamento: Segunda a sexta: 8h às 18h | Sábado: 8h às 12h
 
@@ -225,14 +225,15 @@ O contrato pode ser rescindido por:
 ## 15. Reclamações e Atendimento
 
 ### 15.1 Canais de Atendimento
-- Telefone: (86) 3232-7374
+- Telefone: 8632327374
 - E-mail: contato@unipetplan.com.br
-- WhatsApp: (86) 9-8232-7374
-- Endereço: Av. Dom Severino, 1372, Fátima, Teresina-PI
+- WhatsApp: 8632327374
+- Endereço: Av. Dom Severino, 1372, Fátima, Teresina-PI, CEP: 64049-370
+- Horário de Funcionamento: Segunda a sexta: 8h às 18h | Sábado: 8h às 12h
 
-### 15.2 Ouvidoria
-Para reclamações não resolvidas pelos canais convencionais:
-- E-mail: ouvidoria@unipetplan.com.br
+### 15.2 Reclamações
+Para reclamações não resolvidas pelos canais convencionais, utilize nossos canais oficiais:
+- E-mail: contato@unipetplan.com.br
 - Prazo de resposta: até 10 dias úteis
 
 ### 15.3 Órgãos Externos
