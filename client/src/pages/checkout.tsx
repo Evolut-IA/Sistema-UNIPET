@@ -33,6 +33,7 @@ interface PetData {
   breed: string;
   age: string | number;
   weight: number;
+  sex?: string;
 }
 
 interface CustomerData {
@@ -161,7 +162,8 @@ export default function Checkout() {
     species: '',
     breed: '',
     age: '',
-    weight: 0
+    weight: 0,
+    sex: ''
   }]);
   const [customerData, setCustomerData] = useState<CustomerData>({
     name: '',
@@ -223,7 +225,8 @@ export default function Checkout() {
       species: '',
       breed: '',
       age: '',
-      weight: 0
+      weight: 0,
+      sex: ''
     }]);
   };
 
@@ -239,7 +242,8 @@ export default function Checkout() {
         species: '',
         breed: '',
         age: '',
-        weight: 0
+        weight: 0,
+        sex: ''
       }]);
       setCollapsedPets([false]); // Mantém expandido para preenchimento
       setEditingPets([false]); // Não está editando
@@ -1117,6 +1121,27 @@ export default function Checkout() {
                                   className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
                                   placeholder="Idade"
                                 />
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium mb-2">
+                                  Sexo
+                                </label>
+                                <Select value={pet.sex || ''} onValueChange={(value) => updatePet(index, 'sex', value)}>
+                                  <SelectTrigger 
+                                    className="w-full p-3 rounded-lg border text-sm"
+                                    style={{
+                                      borderColor: 'var(--border-gray)',
+                                      background: 'white'
+                                    }}
+                                  >
+                                    <SelectValue placeholder="Selecione o sexo" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="Macho">Macho</SelectItem>
+                                    <SelectSeparator />
+                                    <SelectItem value="Fêmea">Fêmea</SelectItem>
+                                  </SelectContent>
+                                </Select>
                               </div>
                             </div>
                             
