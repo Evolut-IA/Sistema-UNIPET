@@ -151,6 +151,14 @@ export default function PrivacyPolicy() {
 
   // Convert markdown-like content to HTML
   const formatContent = (text: string) => {
+    const formatInlineText = (text: string) => {
+      // Process **bold text** within lines
+      const parts = text.split(/\*\*(.*?)\*\*/g);
+      return parts.map((part, i) => 
+        i % 2 === 1 ? <strong key={i} className="font-semibold">{part}</strong> : part
+      );
+    };
+
     return text
       .split('\n')
       .map((line, index) => {
@@ -164,15 +172,16 @@ export default function PrivacyPolicy() {
           return <h3 key={index} className="text-xl font-medium mb-3 mt-6" style={{ color: 'var(--text-dark-primary)' }}>{line.substring(4)}</h3>;
         }
         if (line.startsWith('- ')) {
-          return <li key={index} className="mb-2 ml-4" style={{ color: 'var(--text-dark-secondary)' }}>{line.substring(2)}</li>;
+          const content = line.substring(2);
+          return <li key={index} className="mb-2 ml-4" style={{ color: 'var(--text-dark-secondary)' }}>{formatInlineText(content)}</li>;
         }
-        if (line.startsWith('**') && line.endsWith('**')) {
+        if (line.startsWith('**') && line.endsWith('**') && line.split('**').length === 3) {
           return <p key={index} className="font-semibold mb-4" style={{ color: 'var(--text-dark-secondary)' }}>{line.substring(2, line.length - 2)}</p>;
         }
         if (line.trim() === '') {
           return <br key={index} />;
         }
-        return <p key={index} className="mb-4 leading-relaxed" style={{ color: 'var(--text-dark-secondary)' }}>{line}</p>;
+        return <p key={index} className="mb-4 leading-relaxed" style={{ color: 'var(--text-dark-secondary)' }}>{formatInlineText(line)}</p>;
       });
   };
 
