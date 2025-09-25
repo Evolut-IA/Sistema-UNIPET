@@ -333,38 +333,6 @@ export default function CustomerProfile() {
               <h2 className="text-xl font-semibold mb-3" style={{ color: 'var(--text-dark-primary)' }}>
                 Informações Pessoais
               </h2>
-              <div>
-                {!isEditing ? (
-                  <button
-                    onClick={startEditing}
-                    className="flex items-center space-x-2 px-3 py-2 rounded-lg border"
-                    style={{ borderColor: 'var(--border-gray)', color: 'var(--text-dark-secondary)' }}
-                  >
-                    <Edit className="w-4 h-4" />
-                    <span>Editar</span>
-                  </button>
-                ) : (
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={saveChanges}
-                      disabled={isSaving}
-                      className="flex items-center space-x-2 px-3 py-2 rounded-lg"
-                      style={{ background: 'var(--btn-ver-planos-bg)', color: 'var(--btn-ver-planos-text)' }}
-                    >
-                      <Save className="w-4 h-4" />
-                      <span>{isSaving ? 'Salvando...' : 'Salvar'}</span>
-                    </button>
-                    <button
-                      onClick={cancelEditing}
-                      className="flex items-center space-x-2 px-3 py-2 rounded-lg border"
-                      style={{ borderColor: 'var(--border-gray)', color: 'var(--text-dark-secondary)' }}
-                    >
-                      <X className="w-4 h-4" />
-                      <span>Cancelar</span>
-                    </button>
-                  </div>
-                )}
-              </div>
             </div>
 
             <div className="grid md:grid-cols-2 gap-6 mb-6">
@@ -602,6 +570,49 @@ export default function CustomerProfile() {
                 <p><span className="font-medium">Última atualização:</span> {formatDate(client?.updatedAt)}</p>
               </div>
             </div>
+
+            {/* Action Buttons */}
+            <div className="flex items-center space-x-2 pt-4">
+              {!isEditing ? (
+                <button
+                  onClick={startEditing}
+                  className="flex items-center space-x-2 px-3 py-2 rounded-lg border"
+                  style={{ borderColor: 'var(--border-gray)', color: 'var(--text-dark-secondary)' }}
+                >
+                  <Edit className="w-4 h-4" />
+                  <span>Editar</span>
+                </button>
+              ) : (
+                <>
+                  <button
+                    onClick={saveChanges}
+                    disabled={isSaving}
+                    className="flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors"
+                    style={{ 
+                      background: 'var(--btn-ver-planos-bg)', 
+                      color: 'var(--btn-ver-planos-text)',
+                      opacity: isSaving ? 0.6 : 1
+                    }}
+                  >
+                    {isSaving ? (
+                      <div className="w-4 h-4 border border-white border-t-transparent rounded-full animate-spin"></div>
+                    ) : (
+                      <Save className="w-4 h-4" />
+                    )}
+                    <span>{isSaving ? 'Salvando...' : 'Salvar'}</span>
+                  </button>
+                  <button
+                    onClick={cancelEditing}
+                    disabled={isSaving}
+                    className="flex items-center space-x-2 px-3 py-2 rounded-lg border"
+                    style={{ borderColor: 'var(--border-gray)', color: 'var(--text-dark-secondary)' }}
+                  >
+                    <X className="w-4 h-4" />
+                    <span>Cancelar</span>
+                  </button>
+                </>
+              )}
+            </div>
           </motion.div>
 
           {/* Pets and Plans Section */}
@@ -704,7 +715,6 @@ export default function CustomerProfile() {
               </div>
             )}
           </motion.div>
-
         </div>
       </div>
       <Footer />
