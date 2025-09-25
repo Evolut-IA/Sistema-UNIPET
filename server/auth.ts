@@ -1,5 +1,7 @@
 import { Express, Request, Response, NextFunction } from "express";
 import session from "express-session";
+import connectPgSimple from "connect-pg-simple";
+import pg from "pg";
 import rateLimit from "express-rate-limit";
 import { autoConfig } from "./config.js";
 
@@ -13,6 +15,11 @@ declare module 'express-session' {
 
 
 export function setupAuth(app: Express) {
+  // Configure PostgreSQL store for sessions
+  const PostgreSQLStore = connectPgSimple(session);
+  const pgPool = new pg.Pool({
+    connectionString: process.env.DATABASE_URL,
+  });
 
   const sessionSettings: session.SessionOptions = {
     secret: autoConfig.get('SESSION_SECRET'),
@@ -25,7 +32,11 @@ export function setupAuth(app: Express) {
       sameSite: 'lax'
     },
     name: 'connect.sid', // Explicitly set session name
-    store: undefined // Use default memory store for development
+    store: new PostgreSQLStore({
+      pool: pgPool,
+      tableName: 'session',
+      createTableIfMissing: true
+    })
   };
 
   // Remove trust proxy for local development
