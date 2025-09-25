@@ -780,7 +780,12 @@ export default function Checkout() {
     
     let totalCents = 0;
     // Converter basePrice (string em reais) para centavos
-    const basePriceCents = Math.round(parseFloat(selectedPlan.basePrice || '0') * 100);
+    let basePriceCents = Math.round(parseFloat(selectedPlan.basePrice || '0') * 100);
+    
+    // Para planos COMFORT e PLATINUM, multiplicar por 12 (cobrança anual)
+    if (['COMFORT', 'PLATINUM'].some(type => selectedPlan.name.toUpperCase().includes(type))) {
+      basePriceCents = basePriceCents * 12;
+    }
     
     // Calcular preço por pet com desconto individual
     petsData.forEach((_, index) => {
