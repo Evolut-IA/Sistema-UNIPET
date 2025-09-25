@@ -428,20 +428,30 @@ export default function CustomerProfile() {
                         <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-dark-primary)' }}>Nome Completo</label>
                         <input
                           type="text"
-                          value={editFormData.fullName || ''}
-                          onChange={(e) => updateFormField('fullName', e.target.value)}
-                          className="w-full px-3 py-2 border rounded-lg"
-                          style={{ borderColor: 'var(--border-gray)' }}
+                          value={editFormData.fullName || 'Não informado'}
+                          readOnly
+                          className="w-full px-3 py-2 border rounded-lg cursor-not-allowed"
+                          style={{ 
+                            borderColor: 'var(--border-gray)', 
+                            backgroundColor: 'var(--bg-cream-light)', 
+                            color: 'var(--text-dark-secondary)',
+                            opacity: 0.8
+                          }}
                         />
                       </div>
                       <div>
                         <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-dark-primary)' }}>Email</label>
                         <input
                           type="email"
-                          value={editFormData.email || ''}
-                          onChange={(e) => updateFormField('email', e.target.value)}
-                          className="w-full px-3 py-2 border rounded-lg"
-                          style={{ borderColor: 'var(--border-gray)' }}
+                          readOnly
+                          value={editFormData.email || 'Não informado'}
+                          className="w-full px-3 py-2 border rounded-lg cursor-not-allowed"
+                          style={{ 
+                            borderColor: 'var(--border-gray)', 
+                            backgroundColor: 'var(--bg-cream-light)', 
+                            color: 'var(--text-dark-secondary)',
+                            opacity: 0.8
+                          }}
                         />
                       </div>
                       <div>
@@ -451,7 +461,7 @@ export default function CustomerProfile() {
                           value={editFormData.phone || ''}
                           onChange={(e) => updateFormField('phone', e.target.value)}
                           placeholder="Não informado"
-                          className="w-full px-3 py-2 border rounded-lg"
+                          className="w-full px-3 py-2 border rounded-lg cursor-not-allowed"
                           style={{ borderColor: 'var(--border-gray)' }}
                         />
                       </div>
@@ -495,7 +505,7 @@ export default function CustomerProfile() {
                           value={editFormData.cep || ''}
                           onChange={(e) => updateFormField('cep', e.target.value)}
                           placeholder="Não informado"
-                          className="w-full px-3 py-2 border rounded-lg"
+                          className="w-full px-3 py-2 border rounded-lg cursor-not-allowed"
                           style={{ borderColor: 'var(--border-gray)' }}
                         />
                       </div>
@@ -506,7 +516,7 @@ export default function CustomerProfile() {
                           value={editFormData.address || ''}
                           onChange={(e) => updateFormField('address', e.target.value)}
                           placeholder="Não informado"
-                          className="w-full px-3 py-2 border rounded-lg"
+                          className="w-full px-3 py-2 border rounded-lg cursor-not-allowed"
                           style={{ borderColor: 'var(--border-gray)' }}
                         />
                       </div>
@@ -518,7 +528,7 @@ export default function CustomerProfile() {
                             value={editFormData.number || ''}
                             onChange={(e) => updateFormField('number', e.target.value)}
                             placeholder="Não informado"
-                            className="w-full px-3 py-2 border rounded-lg"
+                            className="w-full px-3 py-2 border rounded-lg cursor-not-allowed"
                             style={{ borderColor: 'var(--border-gray)' }}
                           />
                         </div>
@@ -529,7 +539,7 @@ export default function CustomerProfile() {
                             value={editFormData.complement || ''}
                             onChange={(e) => updateFormField('complement', e.target.value)}
                             placeholder="Não informado"
-                            className="w-full px-3 py-2 border rounded-lg"
+                            className="w-full px-3 py-2 border rounded-lg cursor-not-allowed"
                             style={{ borderColor: 'var(--border-gray)' }}
                           />
                         </div>
@@ -541,7 +551,7 @@ export default function CustomerProfile() {
                           value={editFormData.district || ''}
                           onChange={(e) => updateFormField('district', e.target.value)}
                           placeholder="Não informado"
-                          className="w-full px-3 py-2 border rounded-lg"
+                          className="w-full px-3 py-2 border rounded-lg cursor-not-allowed"
                           style={{ borderColor: 'var(--border-gray)' }}
                         />
                       </div>
@@ -553,7 +563,7 @@ export default function CustomerProfile() {
                             value={editFormData.city || ''}
                             onChange={(e) => updateFormField('city', e.target.value)}
                             placeholder="Não informado"
-                            className="w-full px-3 py-2 border rounded-lg"
+                            className="w-full px-3 py-2 border rounded-lg cursor-not-allowed"
                             style={{ borderColor: 'var(--border-gray)' }}
                           />
                         </div>
@@ -564,7 +574,7 @@ export default function CustomerProfile() {
                             value={editFormData.state || ''}
                             onChange={(e) => updateFormField('state', e.target.value)}
                             placeholder="Não informado"
-                            className="w-full px-3 py-2 border rounded-lg"
+                            className="w-full px-3 py-2 border rounded-lg cursor-not-allowed"
                             style={{ borderColor: 'var(--border-gray)' }}
                           />
                         </div>
