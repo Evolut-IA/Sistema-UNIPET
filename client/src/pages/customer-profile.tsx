@@ -684,12 +684,6 @@ export default function CustomerProfile() {
                             {pet.plan.name}
                           </span>
                         </div>
-                        {pet.plan.basePrice && (
-                          <span style={{ color: 'var(--text-dark-secondary)' }}>
-                            Valor: R$ {parseFloat(pet.plan.basePrice).toFixed(2).replace('.', ',')}
-                            {pet.plan.billingFrequency === 'monthly' ? '/mês' : '/ano'}
-                          </span>
-                        )}
                       </div>
                     ) : (
                       <div className="text-center py-2">
