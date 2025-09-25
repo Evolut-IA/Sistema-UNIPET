@@ -1486,10 +1486,112 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
         }
       } else if (paymentMethod === 'pix') {
-        // PIX payment logic would go here
-        return res.status(501).json({
-          error: "PIX não implementado no endpoint simplificado ainda"
-        });
+        // Process PIX payment
+        console.log('🔄 [SIMPLE-PIX] Processando pagamento PIX');
+        
+        const pixRequest = {
+          MerchantOrderId: `UNIPET-${Date.now()}`,
+          Customer: {
+            Name: customerName,
+            Identity: customerCpf.replace(/\D/g, ''),
+            IdentityType: 'CPF' as 'CPF' | 'CNPJ',
+            Email: customerEmail
+          },
+          Payment: {
+            Type: 'Pix' as const,
+            Amount: correctAmountInCents,
+            Provider: 'Cielo' as const
+          }
+        };
+        
+        let pixPaymentResult: any;
+        try {
+          pixPaymentResult = await cieloService.createPixPayment(pixRequest);
+          console.log('✅ [SIMPLE-PIX] PIX gerado com sucesso:', {
+            paymentId: pixPaymentResult.payment?.paymentId,
+            hasQrCode: !!pixPaymentResult.payment?.qrCodeBase64Image,
+            hasQrCodeString: !!pixPaymentResult.payment?.qrCodeString
+          });
+        } catch (pixError: any) {
+          console.error('❌ [SIMPLE-PIX] Erro ao gerar PIX:', pixError);
+          return res.status(400).json({
+            error: 'Erro ao gerar código PIX',
+            details: pixError.message
+          });
+        }
+        
+        // Check if PIX was generated successfully (status 12 = Pending)
+        if (pixPaymentResult.payment?.status === 12) {
+          // Create contract for PIX pending payment
+          const contractData = {
+            clientId: client.id,
+            petId: newPet.id,
+            planId: selectedPlan.id,
+            contractNumber: `UNIPET-${Date.now()}-${newPet.id.substring(0, 4).toUpperCase()}`,
+            billingPeriod: 'monthly' as const,
+            status: 'pending' as const, // PIX starts as pending until confirmed
+            startDate: new Date(),
+            monthlyAmount: selectedPlan.price.toString(),
+            paymentMethod: 'pix',
+            cieloPaymentId: pixPaymentResult.payment.paymentId,
+            proofOfSale: pixPaymentResult.payment.proofOfSale || '',
+            authorizationCode: pixPaymentResult.payment.authorizationCode || '',
+            tid: pixPaymentResult.payment.tid || '',
+            returnCode: pixPaymentResult.payment.returnCode,
+            returnMessage: pixPaymentResult.payment.returnMessage,
+            pixQrCode: pixPaymentResult.payment.qrCodeBase64Image || null,
+            pixCode: pixPaymentResult.payment.qrCodeString || null
+          };
+          
+          // Validate PIX response has required fields
+          if (!pixPaymentResult.payment.qrCodeBase64Image || !pixPaymentResult.payment.qrCodeString) {
+            console.error('❌ [SIMPLE-PIX] Resposta PIX incompleta - faltam QR Code ou código copia-cola');
+            return res.status(400).json({
+              error: 'Resposta PIX incompleta',
+              details: 'QR Code ou código copia-cola não foram gerados corretamente'
+            });
+          }
+          
+          // Create contract - fail if unable to store payment record
+          try {
+            const contract = await storage.createContract(contractData);
+            console.log(`✅ [SIMPLE-PIX] Contrato criado para pagamento PIX pendente: ${contract.id}`);
+          } catch (contractError: any) {
+            console.error(`❌ [SIMPLE-PIX] Erro crítico ao criar contrato:`, contractError);
+            // Don't return QR Code if we can't track the payment
+            return res.status(503).json({
+              error: 'Erro ao registrar pagamento',
+              details: 'Não foi possível registrar o pagamento PIX. Por favor, tente novamente.',
+              technicalDetails: process.env.NODE_ENV === 'development' ? contractError.message : undefined
+            });
+          }
+          
+          return res.status(200).json({
+            success: true,
+            message: "QR Code PIX gerado com sucesso!",
+            payment: {
+              paymentId: pixPaymentResult.payment.paymentId,
+              status: pixPaymentResult.payment.status,
+              method: paymentMethod,
+              pixQrCode: pixPaymentResult.payment.qrCodeBase64Image,
+              pixCode: pixPaymentResult.payment.qrCodeString
+            },
+            client: {
+              id: client.id,
+              name: client.fullName,
+              email: client.email
+            }
+          });
+        } else {
+          // PIX generation failed
+          return res.status(400).json({
+            error: "Erro ao gerar código PIX",
+            details: pixPaymentResult.payment?.returnMessage || "Não foi possível gerar o QR Code",
+            paymentMethod,
+            status: pixPaymentResult.payment?.status,
+            returnCode: pixPaymentResult.payment?.returnCode
+          });
+        }
       } else {
         return res.status(400).json({
           error: "Método de pagamento não suportado",
