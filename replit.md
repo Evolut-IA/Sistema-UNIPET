@@ -4,6 +4,15 @@
 UNIPET PLAN is a comprehensive pet health plan management system designed to streamline pet insurance plan management, customer relationships, and healthcare network unit administration. It features a customer-facing website for plan selection and quote requests, alongside an admin dashboard for content and business management. The system is built with a full-stack TypeScript solution, utilizing a React frontend, Express.js backend, and PostgreSQL database with Drizzle ORM. The project emphasizes security, performance, scalability, and aims to simplify pet healthcare administration.
 
 ## Recent Changes
+- **September 25, 2025**: Species Display Standardization - Fixed Hardcoded Species Lists
+  - Identified and corrected discrepancy between database values and frontend display for species names
+  - Database had "Tartaruga, jabuti" but frontend was showing "Tartarugas ou jabutis" (hardcoded lists)
+  - Created reusable useSpecies hook that fetches species data from /api/species endpoint
+  - Updated all components to use API data instead of hardcoded lists: checkout.tsx, PetForm.tsx, contact.tsx, contact-section.tsx
+  - Now displays exactly what's stored in the 'name' column of the 'species' table
+  - Added proper loading states and error handling for species fetching
+  - Ensures consistency between database and all user interfaces
+
 - **September 25, 2025**: PIX Payment Fix - Corrected Foreign Key Constraint Error
   - Fixed critical error where PIX payments were failing due to foreign key constraint violation
   - Reverted to creating pets immediately when PIX QR code is generated (status 12)
