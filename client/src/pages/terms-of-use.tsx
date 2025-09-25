@@ -7,104 +7,268 @@ import { Link } from "wouter";
 const defaultTermsOfUse = `
 # Termos de Uso
 
-## 1. Aceitação dos Termos
+## 1. Identificação da Prestadora
 
-Ao acessar e utilizar o site da UNIPET PLAN, você concorda em cumprir e estar vinculado a estes Termos de Uso. Se você não concordar com qualquer parte destes termos, não deve utilizar nossos serviços.
+**UNIPET PLAN LTDA.**
+CNPJ: 61.863.611/0001-58
+Endereço: Av. Dom Severino, 1372, Fátima, Teresina-PI, CEP: 64049-370
+Telefone: (86) 3232-7374
+E-mail: contato@unipetplan.com.br
+Horário de Funcionamento: Segunda a sexta: 8h às 18h | Sábado: 8h às 12h
 
-## 2. Descrição dos Serviços
+## 2. Aceitação dos Termos
 
-A UNIPET PLAN oferece planos de saúde para animais de estimação, conectando proprietários de pets a uma rede credenciada de clínicas e hospitais veterinários.
+Ao acessar, navegar ou utilizar qualquer serviço disponibilizado pela UNIPET PLAN, o USUÁRIO declara ter lido, compreendido e aceito integralmente estes Termos de Uso, bem como nossa Política de Privacidade, comprometendo-se ao seu cumprimento.
 
-## 3. Elegibilidade
+A não concordância com qualquer disposição destes termos implica na vedação do uso dos serviços oferecidos.
 
-Para utilizar nossos serviços, você deve:
-- Ter pelo menos 18 anos de idade
-- Fornecer informações precisas e atualizadas
-- Ser o proprietário legal do animal de estimação
-- Residir em uma área atendida por nossa rede credenciada
+## 3. Definições
 
-## 4. Cadastro e Conta
+Para os fins deste instrumento, considera-se:
+- **Prestadora:** UNIPET PLAN LTDA.;
+- **Usuário:** pessoa física que acessa a plataforma;
+- **Contratante:** pessoa física que celebra contrato de plano de saúde animal;
+- **Beneficiário:** animal de estimação coberto pelo plano;
+- **Rede Credenciada:** profissionais e estabelecimentos veterinários conveniados;
+- **Plataforma:** website, aplicativo e demais canais digitais da Prestadora.
 
-### 4.1 Responsabilidades do Usuário
-- Manter a confidencialidade de suas informações de acesso
-- Notificar imediatamente sobre uso não autorizado de sua conta
-- Fornecer informações verdadeiras e atualizadas
-- Atualizar dados quando necessário
+## 4. Objeto e Descrição dos Serviços
 
-### 4.2 Suspensão de Conta
-Reservamo-nos o direito de suspender ou encerrar contas que violem estes termos.
+### 4.1 Serviços Oferecidos
+A UNIPET PLAN oferece planos de saúde para animais de estimação, proporcionando:
+- Acesso à rede credenciada de clínicas e hospitais veterinários;
+- Cobertura de procedimentos conforme modalidade contratada;
+- Atendimento 24 horas para emergências;
+- Serviços de telemedicina veterinária;
+- Programas de bem-estar e prevenção.
 
-## 5. Planos e Pagamentos
+### 4.2 Modalidades de Planos
+Os planos são oferecidos em diferentes modalidades, com coberturas específicas detalhadas no contrato individual de cada Contratante.
 
-### 5.1 Contratação
-- Os planos estão sujeitos à aprovação e análise
-- Preços podem variar conforme localização e tipo de animal
-- Carências podem ser aplicadas conforme regulamentação
+## 5. Condições de Elegibilidade
 
-### 5.2 Pagamentos
-- Mensalidades devem ser pagas nas datas de vencimento
-- Atraso no pagamento pode resultar em suspensão dos serviços
-- Reajustes seguem regulamentação do setor
+### 5.1 Do Contratante
+Para contratar os serviços, o interessado deve:
+- Ter capacidade civil plena (maior de 18 anos) ou estar representado/assistido;
+- Fornecer informações verdadeiras, atuais e completas;
+- Possuir CPF regularizado junto à Receita Federal;
+- Ser proprietário ou responsável legal pelo animal beneficiário;
+- Residir em área de cobertura da rede credenciada.
 
-## 6. Uso da Rede Credenciada
+### 5.2 Do Animal Beneficiário
+O animal deve:
+- Ter idade compatível com a modalidade do plano escolhida;
+- Estar em condições de saúde que permitam a contratação;
+- Possuir documentação veterinária adequada quando exigível;
+- Submeter-se a período de carência conforme regulamentação.
 
-### 6.1 Agendamento
-- Consultas devem ser agendadas diretamente com a clínica escolhida
-- Apresentação da carteirinha ou documento é obrigatória
-- Alguns serviços podem requerer autorização prévia
+## 6. Processo de Contratação
 
-### 6.2 Coparticipação
-- Alguns planos incluem coparticipação em determinados procedimentos
-- Valores de coparticipação serão informados no momento do atendimento
+### 6.1 Solicitação de Cotação
+O interessado pode solicitar cotação através dos canais disponíveis, fornecendo informações sobre:
+- Dados pessoais do contratante;
+- Características do animal (espécie, raça, idade, histórico);
+- Modalidade de plano desejada;
+- Localização geográfica.
 
-## 7. Limitações e Exclusões
+### 6.2 Análise e Aprovação
+A contratação está sujeita à análise de risco e pode ser:
+- Aprovada integralmente;
+- Aprovada com restrições ou coparticipação;
+- Recusada conforme critérios técnicos e atuariais.
 
-### 7.1 Condições Pré-existentes
-- Doenças diagnosticadas antes da contratação podem ter cobertura limitada
-- Período de carência aplica-se conforme contrato
+### 6.3 Documentação Necessária
+Para formalização do contrato, podem ser exigidos:
+- Documento de identidade e CPF do contratante;
+- Comprovante de residência;
+- Carteira de vacinação do animal;
+- Atestado de saúde veterinário;
+- Outros documentos conforme modalidade escolhida.
 
-### 7.2 Procedimentos Não Cobertos
-- Procedimentos estéticos
-- Reprodução assistida
-- Tratamentos experimentais
-- Outras exclusões conforme contrato específico
+## 7. Obrigações das Partes
 
-## 8. Propriedade Intelectual
+### 7.1 Obrigações da UNIPET PLAN
+- Disponibilizar rede credenciada adequada;
+- Garantir cobertura conforme contrato;
+- Manter sistema de atendimento eficiente;
+- Processar reembolsos nos prazos estabelecidos;
+- Prestar informações claras sobre serviços e coberturas.
 
-Todo o conteúdo do site, incluindo textos, imagens, logos e design, é propriedade da UNIPET PLAN e está protegido por leis de direitos autorais.
+### 7.2 Obrigações do Contratante
+- Efetuar pagamento das mensalidades na data de vencimento;
+- Manter dados atualizados;
+- Utilizar os serviços conforme termos contratuais;
+- Cumprir orientações da rede credenciada;
+- Comunicar sinistros dentro dos prazos estabelecidos.
 
-## 9. Privacidade
+## 8. Condições Financeiras
 
-O tratamento de dados pessoais segue nossa Política de Privacidade, que faz parte integrante destes Termos de Uso.
+### 8.1 Mensalidades
+- O valor da mensalidade é definido conforme modalidade do plano;
+- Pagamento deve ser realizado até a data de vencimento;
+- Atraso superior a 60 dias implica suspensão automática;
+- Inadimplência por mais de 90 dias resulta em cancelamento.
 
-## 10. Limitação de Responsabilidade
+### 8.2 Reajustes
+- Reajustes anuais seguem regulamentação específica do setor;
+- Alterações serão comunicadas com antecedência mínima de 60 dias;
+- Mudança de faixa etária pode implicar revisão de valores.
 
+### 8.3 Coparticipação
+Alguns procedimentos podem incluir coparticipação do contratante, conforme:
+- Percentual definido em contrato;
+- Valor comunicado no momento do atendimento;
+- Cobrança direta ao usuário no estabelecimento credenciado.
+
+## 9. Carências e Coberturas
+
+### 9.1 Períodos de Carência
+- Consultas: sem carência;
+- Exames simples: 30 dias;
+- Cirurgias eletivas: 120 dias;
+- Emergências: 24 horas;
+- Condições pré-existentes: conforme análise médica.
+
+### 9.2 Exclusões de Cobertura
+Não estão cobertos:
+- Procedimentos estéticos;
+- Reprodução assistida;
+- Tratamentos experimentais;
+- Condições pré-existentes não declaradas;
+- Outras exclusões específicas do contrato.
+
+## 10. Uso da Plataforma Digital
+
+### 10.1 Criação de Conta
+O usuário compromete-se a:
+- Fornecer informações verdadeiras e atualizadas;
+- Manter confidencialidade de suas credenciais de acesso;
+- Notificar imediatamente sobre uso não autorizado;
+- Não compartilhar sua conta com terceiros.
+
+### 10.2 Conduta Permitida
+É vedado utilizar a plataforma para:
+- Atividades ilícitas ou fraudulentas;
+- Transmissão de conteúdo ofensivo ou inadequado;
+- Tentativas de acesso não autorizado;
+- Interferência no funcionamento do sistema.
+
+## 11. Propriedade Intelectual
+
+### 11.1 Direitos da UNIPET PLAN
+Todo conteúdo da plataforma, incluindo:
+- Marca, logotipos e identidade visual;
+- Textos, imagens e vídeos;
+- Software e funcionalidades;
+- Banco de dados e informações;
+
+São de propriedade exclusiva da UNIPET PLAN, protegidos por direitos autorais e propriedade intelectual.
+
+### 11.2 Uso Autorizado
+O usuário pode acessar o conteúdo exclusivamente para:
+- Utilização pessoal dos serviços contratados;
+- Consulta de informações relevantes ao seu plano;
+- Comunicação com a rede credenciada.
+
+## 12. Proteção de Dados
+
+O tratamento de dados pessoais observa nossa Política de Privacidade e a Lei Geral de Proteção de Dados (LGPD), garantindo:
+- Transparência no uso de informações;
+- Segurança no armazenamento de dados;
+- Respeito aos direitos dos titulares;
+- Finalidades específicas e legítimas.
+
+## 13. Responsabilidades e Limitações
+
+### 13.1 Responsabilidade da Rede Credenciada
+- Profissionais credenciados atuam com autonomia técnica;
+- UNIPET PLAN não se responsabiliza por atos profissionais específicos;
+- Qualidade do atendimento é de responsabilidade do prestador;
+- Reclamações devem ser direcionadas aos órgãos competentes.
+
+### 13.2 Limitações de Responsabilidade
 A UNIPET PLAN não se responsabiliza por:
-- Interrupções no serviço por motivos técnicos
-- Atos de terceiros, incluindo prestadores credenciados
-- Danos indiretos ou consequenciais
+- Danos causados por caso fortuito ou força maior;
+- Interrupções de serviço por manutenção programada;
+- Atos de terceiros não controlados pela empresa;
+- Decisões técnicas dos profissionais credenciados;
+- Lucros cessantes ou danos indiretos.
 
-## 11. Rescisão
+### 13.3 Excludentes de Responsabilidade
+Não há responsabilidade nos casos de:
+- Informações falsas fornecidas pelo contratante;
+- Não cumprimento das orientações médicas;
+- Utilização inadequada dos serviços;
+- Violação destes termos de uso.
 
-### 11.1 Pelo Usuário
-- Cancelamento pode ser solicitado a qualquer momento
-- Condições de cancelamento conforme contrato
+## 14. Rescisão e Cancelamento
 
-### 11.2 Pela UNIPET PLAN
-- Podemos encerrar serviços por violação destes termos
-- Inadimplência pode resultar em cancelamento automático
+### 14.1 Por Iniciativa do Contratante
+- Cancelamento pode ser solicitado a qualquer momento;
+- Deve ser formalizado através dos canais oficiais;
+- Direito de arrependimento conforme Código de Defesa do Consumidor;
+- Eventual reembolso seguirá critérios contratuais.
 
-## 12. Alterações nos Termos
+### 14.2 Por Iniciativa da UNIPET PLAN
+O contrato pode ser rescindido por:
+- Inadimplência superior a 90 dias;
+- Violação grave dos termos contratuais;
+- Fraude ou informações falsas;
+- Conduta inadequada na utilização dos serviços.
 
-Reservamo-nos o direito de modificar estes Termos de Uso a qualquer momento. Alterações significativas serão comunicadas com antecedência.
+### 14.3 Efeitos da Rescisão
+- Cessação imediata da cobertura;
+- Quitação de débitos pendentes;
+- Devolução de documentos quando aplicável;
+- Exclusão de dados conforme política de privacidade.
 
-## 13. Lei Aplicável
+## 15. Reclamações e Atendimento
 
-Estes Termos de Uso são regidos pelas leis brasileiras. Disputas serão resolvidas no foro da comarca de nossa sede.
+### 15.1 Canais de Atendimento
+- Telefone: (86) 3232-7374
+- E-mail: contato@unipetplan.com.br
+- WhatsApp: (86) 9-8232-7374
+- Endereço: Av. Dom Severino, 1372, Fátima, Teresina-PI
 
-## 14. Contato
+### 15.2 Ouvidoria
+Para reclamações não resolvidas pelos canais convencionais:
+- E-mail: ouvidoria@unipetplan.com.br
+- Prazo de resposta: até 10 dias úteis
 
-Para dúvidas sobre estes Termos de Uso, entre em contato através dos canais disponíveis em nosso site.
+### 15.3 Órgãos Externos
+O contratante pode recorrer a:
+- Procon local
+- Agência Nacional de Saúde Suplementar (ANS)
+- Poder Judiciário
+
+## 16. Alterações dos Termos
+
+### 16.1 Modificações
+A UNIPET PLAN reserva-se o direito de alterar estes termos mediante:
+- Comunicação prévia de 30 dias para alterações substanciais;
+- Publicação no website oficial;
+- Notificação através dos canais de contato cadastrados.
+
+### 16.2 Aceitação das Alterações
+O uso continuado dos serviços após as modificações implica aceitação tácita dos novos termos.
+
+## 17. Disposições Gerais
+
+### 17.1 Lei Aplicável e Foro
+Este contrato é regido pelas leis brasileiras, especialmente:
+- Lei nº 8.078/90 (Código de Defesa do Consumidor);
+- Lei nº 13.709/18 (Lei Geral de Proteção de Dados);
+- Lei nº 10.406/02 (Código Civil);
+- Regulamentações específicas do setor.
+
+### 17.2 Foro Competente
+Fica eleito o foro da Comarca de Teresina, Estado do Piauí, para dirimir quaisquer controvérsias decorrentes deste instrumento, renunciando as partes a qualquer outro, por mais privilegiado que seja.
+
+### 17.3 Validade das Cláusulas
+A eventual nulidade ou inaplicabilidade de qualquer disposição não afetará a validade e eficácia das demais cláusulas.
+
+### 17.4 Comunicações
+Todas as comunicações serão consideradas válidas quando enviadas para os endereços cadastrados na plataforma ou constantes deste instrumento.
 
 **Última atualização:** ${new Date().toLocaleDateString('pt-BR')}
 `;
