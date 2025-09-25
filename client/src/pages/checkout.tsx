@@ -376,9 +376,10 @@ export default function Checkout() {
       });
       
       if (response.ok) {
-        const data = await response.json();
+        const result = await response.json();
         // Status 2 da Cielo significa "Paid/Captured"
-        return data.data?.cieloStatus === 2;
+        console.log('🔍 Status do PIX:', result.data?.cieloStatus);
+        return result.data?.cieloStatus === 2;
       }
       return false;
     } catch (error) {
@@ -389,22 +390,34 @@ export default function Checkout() {
 
   // Hook para polling do pagamento PIX
   useEffect(() => {
-    if (!pixData?.paymentId || isPaymentConfirmed) return;
+    if (!pixData?.paymentId || isPaymentConfirmed) {
+      console.log('🔍 Polling PIX condições:', { 
+        hasPaymentId: !!pixData?.paymentId, 
+        paymentId: pixData?.paymentId,
+        isPaymentConfirmed 
+      });
+      return;
+    }
 
+    console.log('🚀 Iniciando polling PIX para pagamento:', pixData.paymentId);
+    
     const pollInterval = setInterval(async () => {
+      console.log('🔄 Verificando status do PIX...');
       const isConfirmed = await checkPixPaymentStatus(pixData.paymentId);
       
       if (isConfirmed) {
+        console.log('✅ PIX APROVADO! Redirecionando...');
         clearInterval(pollInterval);
         setIsPaymentConfirmed(true);
         
-        // Redirecionar imediatamente para customer/login com parâmetro para mostrar popup
+        // Redirecionar imediatamente para a página de login
         navigate('/customer/login?payment_success=true');
       }
     }, 3000); // Verificar a cada 3 segundos
 
     // Limpar polling após 10 minutos (600 segundos) para evitar polling infinito
     const timeout = setTimeout(() => {
+      console.log('⏰ Timeout do polling PIX');
       clearInterval(pollInterval);
     }, 600000);
 
