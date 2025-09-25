@@ -1343,7 +1343,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Calcular preço correto usando basePrice do banco de dados e aplicando descontos
       const basePriceDecimal = parseFloat(selectedPlan.basePrice || '0');
-      const basePriceCents = Math.round(basePriceDecimal * 100);
+      let basePriceCents = Math.round(basePriceDecimal * 100);
+      
+      // Para planos COMFORT e PLATINUM, multiplicar por 12 (cobrança anual)
+      if (['COMFORT', 'PLATINUM'].some(type => selectedPlan.name.toUpperCase().includes(type))) {
+        basePriceCents = basePriceCents * 12;
+      }
       
       // Aplicar desconto apenas para planos Basic/Infinity e pets a partir do 2º
       let totalCents = 0;
@@ -1365,6 +1370,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log("💰 [PRICE-CALCULATION] Preço calculado no servidor:", {
         planName: selectedPlan.name,
         basePrice: basePriceDecimal,
+        isAnnualPlan: ['COMFORT', 'PLATINUM'].some(type => selectedPlan.name.toUpperCase().includes(type)),
+        basePriceCents: basePriceCents,
         petCount: petCount,
         totalWithDiscounts: (correctAmountInCents / 100).toFixed(2),
         correctAmountInCents: correctAmountInCents,
