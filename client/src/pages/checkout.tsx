@@ -205,7 +205,7 @@ export default function Checkout() {
     if (petsData.length >= 5) return false;
     const lastPet = petsData[petsData.length - 1];
     if (!lastPet) return false;
-    return lastPet.name.trim() !== '' && lastPet.species.trim() !== '' && lastPet.age > 0;
+    return lastPet.name.trim() !== '' && lastPet.species.trim() !== '' && lastPet.age && parseInt(lastPet.age.toString()) > 0;
   };
 
   // Funções para gerenciar múltiplos pets
@@ -253,8 +253,20 @@ export default function Checkout() {
     setCollapsedPets(newCollapsedState);
   };
 
+  // Função para validar se um pet pode ser salvo
+  const isPetDataValid = (pet: PetData) => {
+    return pet.name.trim() !== '' && 
+           pet.species.trim() !== '' && 
+           pet.age && parseInt(pet.age.toString()) > 0;
+  };
+
   // Função para salvar um pet (colapsar a div)
   const savePet = (index: number) => {
+    const pet = petsData[index];
+    if (!isPetDataValid(pet)) {
+      return; // Não salva se os dados não são válidos
+    }
+    
     const newCollapsedState = [...collapsedPets];
     newCollapsedState[index] = true;
     setCollapsedPets(newCollapsedState);
@@ -1023,8 +1035,8 @@ export default function Checkout() {
                                 </label>
                                 <input
                                   type="number"
-                                  value={pet.age}
-                                  onChange={(e) => updatePet(index, 'age', parseInt(e.target.value) || 0)}
+                                  value={pet.age || ''}
+                                  onChange={(e) => updatePet(index, 'age', e.target.value)}
                                   className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"
                                   placeholder="Idade"
                                 />
@@ -1036,7 +1048,8 @@ export default function Checkout() {
                               <button
                                 type="button"
                                 onClick={() => savePet(index)}
-                                className="px-4 py-2 rounded-lg transition-colors"
+                                disabled={!isPetDataValid(pet)}
+                                className="px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                 style={{
                                   background: 'var(--btn-ver-planos-bg)',
                                   color: 'var(--btn-ver-planos-text)',
