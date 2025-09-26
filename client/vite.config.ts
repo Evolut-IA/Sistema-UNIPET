@@ -13,22 +13,22 @@ export default defineConfig({
   
   // Configurações de servidor de desenvolvimento
   server: {
-    port: 5000,
-    host: '0.0.0.0',
+    port: parseInt(process.env.VITE_PORT || '5000', 10),
+    host: process.env.VITE_HOST || '0.0.0.0',
     open: false,
     allowedHosts: true,
     
     // Configurações de proxy para desenvolvimento
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: process.env.VITE_API_TARGET || 'http://localhost:3000',
         changeOrigin: true,
         secure: false,
         timeout: 10000,
         proxyTimeout: 10000
       },
       '/admin/api': {
-        target: 'http://localhost:3000',
+        target: process.env.VITE_API_TARGET || 'http://localhost:3000',
         changeOrigin: true,
         secure: false,
         timeout: 10000,
