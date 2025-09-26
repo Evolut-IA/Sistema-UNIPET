@@ -172,8 +172,8 @@ async function initializeUnifiedServer(): Promise<void> {
     });
 
     // 6. Iniciar servidor
-    const port = 5000; // Fixed port for unified server
-    const host = '0.0.0.0';
+    const port = parseInt(autoConfig.get('PORT') || '3000', 10); // Use autoConfig for port with fallback
+    const host = autoConfig.get('HOST') || '0.0.0.0';
 
     unipetServer.listen(port, host, () => {
       console.log('\n🎉 SERVIDOR UNIFICADO INICIADO COM SUCESSO!');

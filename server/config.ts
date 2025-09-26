@@ -233,7 +233,31 @@ class AutoConfig {
    * Obtém uma configuração específica
    */
   public get(key: string): any {
-    return process.env[key] || this.config[key];
+    try {
+      const value = process.env[key] || this.config[key];
+      
+      // Special handling for PORT to ensure it's valid
+      if (key === 'PORT') {
+        const port = value || '3000';
+        const parsedPort = parseInt(port, 10);
+        if (isNaN(parsedPort) || parsedPort < 1 || parsedPort > 65535) {
+          console.warn(`⚠️ Invalid PORT value: ${port}, defaulting to 3000`);
+          return '3000';
+        }
+        return port;
+      }
+      
+      return value;
+    } catch (error) {
+      console.error(`❌ Error getting config for key '${key}':`, error);
+      
+      // Provide safe defaults for critical configuration keys
+      if (key === 'PORT') return '3000';
+      if (key === 'HOST') return '0.0.0.0';
+      if (key === 'NODE_ENV') return 'development';
+      
+      return undefined;
+    }
   }
 
   /**
