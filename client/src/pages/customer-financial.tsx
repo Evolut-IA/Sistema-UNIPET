@@ -610,8 +610,7 @@ export default function CustomerFinancial() {
                     <div className="flex flex-col space-y-3 md:grid md:grid-cols-3 md:gap-4 md:items-center md:space-y-0">
                       
                       {/* Coluna Esquerda: Título e Subtítulo */}
-                      <div className="flex items-center space-x-3">
-                        {getPaymentMethodIcon(payment.paymentMethod)}
+                      <div className="flex items-center">
                         <div>
                           <h4 className="font-medium" style={{ color: "var(--text-dark-primary)" }}>
                             {payment.planName} - {payment.petName}
@@ -634,17 +633,11 @@ export default function CustomerFinancial() {
                         )}
                       </div>
 
-                      {/* Coluna Direita: Valor e Status */}
+                      {/* Coluna Direita: Valor */}
                       <div className="md:text-right">
                         <p className="font-bold text-lg" style={{ color: "var(--text-teal)" }}>
                           {formatCurrency(payment.amount)}
                         </p>
-                        <div className="flex items-center md:justify-end space-x-2">
-                          {getStatusIcon(payment.status)}
-                          <span className="text-sm" style={{ color: "var(--text-dark-secondary)" }}>
-                            {getStatusLabel(payment.status)}
-                          </span>
-                        </div>
                       </div>
                       
                     </div>
