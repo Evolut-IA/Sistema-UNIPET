@@ -499,7 +499,7 @@ export default function CustomerFinancial() {
             <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--text-dark-primary)' }}>
               Contratos
             </h3>
-            <div className="space-y-4">
+            <div className="space-y-3">
               {contracts.length > 0 ? (
                 contracts.map((contract) => {
                   const renewalDate = contract.expirationDate ? new Date(contract.expirationDate) : null;
@@ -508,8 +508,8 @@ export default function CustomerFinancial() {
                   const isExpired = contract.isExpired;
                   
                   return (
-                    <div key={contract.id} className="p-4 rounded-lg border" style={{ borderColor: 'var(--border-gray)', background: 'var(--bg-cream-light)' }}>
-                      <div className="flex items-center justify-between mb-2">
+                    <div key={contract.id} className="p-3 rounded-lg border" style={{ borderColor: 'var(--border-gray)', background: 'var(--bg-cream-light)' }}>
+                      <div className="flex items-center justify-between mb-1.5">
                         <div className="flex items-center space-x-3">
                           {getStatusIcon(contract.status)}
                           <h4 className="font-medium" style={{ color: 'var(--text-dark-primary)' }}>
@@ -535,7 +535,7 @@ export default function CustomerFinancial() {
                         </div>
                       </div>
                       
-                      <div className="grid md:grid-cols-4 gap-4 text-sm">
+                      <div className="grid md:grid-cols-4 gap-3 text-sm">
                         <div>
                           <p style={{ color: 'var(--text-dark-secondary)' }}>Contrato: #{contract.contractNumber}</p>
                           <p style={{ color: 'var(--text-dark-secondary)' }}>Data de Início: {formatDate(contract.startDate)}</p>
