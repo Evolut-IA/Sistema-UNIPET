@@ -450,12 +450,28 @@ export default function CustomerFinancial() {
                       <div className="flex flex-col space-y-2 md:grid md:grid-cols-3 md:gap-3 md:space-y-0">
                         
                         {/* Linha 1 */}
-                        <div className="flex items-center space-x-3">
-                          {getStatusIcon(contract.status)}
+                        <div className="flex items-center justify-between md:block">
                           <div>
                             <h4 className="font-medium text-sm" style={{ color: "var(--text-dark-primary)" }}>
                               {contract.planName} - {contract.petName}
                             </h4>
+                          </div>
+                          <div className="flex items-center space-x-2 md:hidden">
+                            <span className="px-3 py-1 rounded-full text-sm font-medium"
+                              style={{ 
+                                background: contract.status === "active" ? "var(--text-teal)" : "var(--text-dark-secondary)", 
+                                color: "white" 
+                              }}>
+                              {getStatusLabel(contract.status)}
+                            </span>
+                            {(isRenewalNeeded || isExpired) && (
+                              <button
+                                onClick={() => handleRenewalCheckout(contract)}
+                                className="px-3 py-1 bg-red-500 text-white text-xs font-medium rounded-full transition-colors"
+                              >
+                                Regularizar
+                              </button>
+                            )}
                           </div>
                         </div>
                         
@@ -467,7 +483,7 @@ export default function CustomerFinancial() {
                           </p>
                         </div>
                         
-                        <div className="flex items-center justify-end space-x-2">
+                        <div className="hidden md:flex items-center justify-end space-x-2">
                           <span className="px-3 py-1 rounded-full text-sm font-medium"
                             style={{ 
                               background: contract.status === "active" ? "var(--text-teal)" : "var(--text-dark-secondary)", 
