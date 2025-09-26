@@ -110,12 +110,17 @@ export class PaymentReceiptService {
 
       const payment = cieloPaymentDetails.payment;
       
-      // Validate that payment is approved/completed
-      // Accept both numeric status (2) and mapped status ('approved')
+      // Validate that payment is approved/completed or PIX pending
+      // Accept status 2 (approved), status 12 (PIX pending) and mapped status ('approved')
       const statusStr = String(payment.status);
-      const isPaymentApproved = payment.status === 2 || statusStr === 'approved' || statusStr === '2';
-      if (!isPaymentApproved) {
-        console.warn('⚠️ [RECEIPT-SERVICE] Tentativa de gerar comprovante para pagamento não aprovado', {
+      const isPaymentValid = payment.status === 2 || 
+                            payment.status === 12 || // PIX pendente (QR Code gerado)
+                            statusStr === 'approved' || 
+                            statusStr === '2' || 
+                            statusStr === '12';
+      
+      if (!isPaymentValid) {
+        console.warn('⚠️ [RECEIPT-SERVICE] Tentativa de gerar comprovante para pagamento com status inválido', {
           correlationId: logId,
           paymentId: receiptData.cieloPaymentId,
           status: payment.status,
@@ -123,8 +128,16 @@ export class PaymentReceiptService {
         });
         return {
           success: false,
-          error: `Pagamento não está aprovado. Status: ${payment.returnMessage || 'Desconhecido'}`
+          error: `Status do pagamento não permite geração de comprovante. Status: ${payment.returnMessage || 'Desconhecido'}`
         };
+      }
+      
+      // Log para status PIX pendente
+      if (payment.status === 12 || statusStr === '12') {
+        console.log('📄 [RECEIPT-SERVICE] Gerando comprovante para pagamento PIX pendente', {
+          correlationId: logId,
+          paymentId: receiptData.cieloPaymentId
+        });
       }
 
       console.log('✅ [RECEIPT-SERVICE] Dados oficiais obtidos da Cielo', {
