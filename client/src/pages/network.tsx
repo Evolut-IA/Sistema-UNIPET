@@ -283,7 +283,7 @@ export default function Network() {
                         />
                       </div>
 
-                      <CardHeader className="pb-4">
+                      <CardHeader className="pb-0">
                         <CardTitle className="text-xl font-bold text-[var(--text-teal)] leading-tight">
                           {unit.name}
                         </CardTitle>
