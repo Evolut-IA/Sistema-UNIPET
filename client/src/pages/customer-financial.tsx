@@ -569,87 +569,63 @@ export default function CustomerFinancial() {
               ) : paymentHistory.length > 0 ? (
                 paymentHistory.map((payment) => (
                   <div key={payment.id} className="p-4 rounded-lg border" style={{ borderColor: 'var(--border-gray)' }}>
-                    <div className="flex items-center justify-between mb-3">
+                    {/* Layout em 3 colunas */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                      
+                      {/* Coluna Esquerda: Título e Subtítulo */}
                       <div className="flex items-center space-x-3">
                         {getPaymentMethodIcon(payment.paymentMethod)}
                         <div>
-                          <h4 className="font-medium" style={{ color: 'var(--text-dark-primary)' }}>
+                          <h4 className="font-medium" style={{ color: "var(--text-dark-primary)" }}>
                             {payment.planName} - {payment.petName}
                           </h4>
-                          <p className="text-sm" style={{ color: 'var(--text-dark-secondary)' }}>
+                          <p className="text-sm" style={{ color: "var(--text-dark-secondary)" }}>
                             Contrato: #{payment.contractNumber}
                           </p>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <p className="font-bold text-lg" style={{ color: 'var(--text-teal)' }}>
-                          {formatCurrency(payment.amount)}
-                        </p>
-                        <div className="flex items-center space-x-2">
-                          {getStatusIcon(payment.status)}
-                          <span className="text-sm" style={{ color: 'var(--text-dark-secondary)' }}>
-                            {getStatusLabel(payment.status)}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="grid md:grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <p style={{ color: 'var(--text-dark-secondary)' }}>
+
+                      {/* Coluna Meio: Método e Data */}
+                      <div className="text-sm">
+                        <p style={{ color: "var(--text-dark-secondary)" }}>
                           Método: {getPaymentMethodLabel(payment.paymentMethod)}
                         </p>
                         {payment.receivedDate && (
-                          <p style={{ color: 'var(--text-dark-secondary)' }}>
+                          <p style={{ color: "var(--text-dark-secondary)" }}>
                             Data: {formatDate(payment.receivedDate)}
                           </p>
                         )}
                       </div>
-                      
-                      {/* Payment Receipt Information */}
-                      {(payment.proofOfSale || payment.authorizationCode || payment.tid) && (
-                        <div className="p-3 rounded bg-gray-50">
-                          <h5 className="font-medium mb-2" style={{ color: 'var(--text-dark-primary)' }}>
-                            Comprovante de Pagamento
-                          </h5>
-                          {payment.proofOfSale && (
-                            <p className="text-xs" style={{ color: 'var(--text-dark-secondary)' }}>
-                              NSU: {payment.proofOfSale}
-                            </p>
-                          )}
-                          {payment.authorizationCode && (
-                            <p className="text-xs" style={{ color: 'var(--text-dark-secondary)' }}>
-                              Código de Autorização: {payment.authorizationCode}
-                            </p>
-                          )}
-                          {payment.tid && (
-                            <p className="text-xs" style={{ color: 'var(--text-dark-secondary)' }}>
-                              TID: {payment.tid}
-                            </p>
-                          )}
-                          {payment.returnMessage && (
-                            <p className="text-xs mt-1" style={{ color: 'var(--text-dark-secondary)' }}>
-                              Status: {payment.returnMessage}
-                            </p>
-                          )}
+
+                      {/* Coluna Direita: Valor e Status */}
+                      <div className="text-right">
+                        <p className="font-bold text-lg" style={{ color: "var(--text-teal)" }}>
+                          {formatCurrency(payment.amount)}
+                        </p>
+                        <div className="flex items-center justify-end space-x-2">
+                          {getStatusIcon(payment.status)}
+                          <span className="text-sm" style={{ color: "var(--text-dark-secondary)" }}>
+                            {getStatusLabel(payment.status)}
+                          </span>
                         </div>
-                      )}
+                      </div>
+                      
                     </div>
 
                     {/* PIX Information - Only show for pending payments */}
-                    {payment.paymentMethod === 'pix' && payment.status === 'pending' && (payment.pixQrCode || payment.pixCode) && (
-                      <div className="mt-3 p-3 rounded" style={{ background: 'var(--bg-cream-light)' }}>
-                        <h5 className="font-medium mb-2" style={{ color: 'var(--text-dark-primary)' }}>
+                    {payment.paymentMethod === "pix" && payment.status === "pending" && (payment.pixQrCode || payment.pixCode) && (
+                      <div className="mt-3 p-3 rounded" style={{ background: "var(--bg-cream-light)" }}>
+                        <h5 className="font-medium mb-2" style={{ color: "var(--text-dark-primary)" }}>
                           Informações PIX
                         </h5>
                         {payment.pixCode && (
-                          <p className="text-xs font-mono" style={{ color: 'var(--text-dark-secondary)' }}>
+                          <p className="text-xs font-mono" style={{ color: "var(--text-dark-secondary)" }}>
                             Código PIX: {payment.pixCode}
                           </p>
                         )}
                         {payment.pixQrCode && (
                           <div className="mt-2">
-                            <p className="text-xs mb-1" style={{ color: 'var(--text-dark-secondary)' }}>QR Code PIX disponível</p>
+                            <p className="text-xs mb-1" style={{ color: "var(--text-dark-secondary)" }}>QR Code PIX disponível</p>
                           </div>
                         )}
                       </div>
