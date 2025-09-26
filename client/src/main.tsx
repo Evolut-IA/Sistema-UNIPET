@@ -51,7 +51,7 @@ async function initializeApp(): Promise<void> {
 
     logInfo('✅ Aplicação inicializada com sucesso', {
       reactVersion: React.version,
-      nodeEnv: process.env.NODE_ENV
+      nodeEnv: process.env['NODE_ENV']
     });
 
   } catch (error) {
@@ -67,7 +67,7 @@ async function initializeApp(): Promise<void> {
   }
 }
 
-// Função para mostrar erro de inicialização de forma robusta
+// Função para mostrar erro de inicialização de forma robusta e segura
 function showInitializationError(error: Error): void {
   try {
     // Remover qualquer conteúdo existente
@@ -75,74 +75,122 @@ function showInitializationError(error: Error): void {
       rootElement.innerHTML = '';
     }
 
-    // Criar elemento de erro robusto
+    // Criar elemento de erro usando métodos seguros do DOM
     const errorDiv = document.createElement("div");
-    errorDiv.innerHTML = `
-      <div style="
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, var(--bg-red-2) 0%, var(--bg-red-3) 100%);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        z-index: 10000;
-        font-family: system-ui, -apple-system, sans-serif;
-        color: rgb(var(--primary-foreground));
-        text-align: center;
-        padding: 20px;
-        box-sizing: border-box;
-      ">
-        <div style="font-size: 48px; margin-bottom: 20px;">🚨</div>
-        <h1 style="font-size: 24px; margin-bottom: 16px; margin: 0 0 16px 0;">
-          Falha na inicialização
-        </h1>
-        <p style="font-size: 16px; margin-bottom: 24px; max-width: 500px; line-height: 1.5;">
-          Erro: ${error.message.replace(/</g, "&lt;").replace(/>/g, "&gt;")}
-        </p>
-        <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
-          <button onclick="window.location.href='/'" style="
-            background: var(--bg-teal);
-            color: var(--text-light);
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            min-width: 140px;
-          " onmouseover="this.style.background='var(--bg-teal-dark)'" onmouseout="this.style.background='var(--bg-teal)'"> 
-            🏠 Página Inicial
-          </button>
-        </div>
-        <div style="
-          margin-top: 24px;
-          font-size: 12px;
-          opacity: 0.8;
-          max-width: 600px;
-        ">
-          <p>Se o problema persistir, tente:</p>
-          <ul style="text-align: left; display: inline-block; margin: 8px 0;">
-            <li>Limpar cache do navegador</li>
-            <li>Verificar conexão com a internet</li>
-            <li>Usar um navegador diferente</li>
-            <li>Contatar suporte técnico</li>
-          </ul>
-        </div>
-        <div style="
-          margin-top: 16px;
-          font-size: 10px;
-          opacity: 0.6;
-          font-family: monospace;
-        ">
-${error.stack ? error.stack.split('\n').slice(0, 3).join('\n').replace(/</g, "&lt;").replace(/>/g, "&gt;") : 'Stack trace não disponível'}
-        </div>
-      </div>
+    
+    // Container principal
+    const container = document.createElement("div");
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--bg-red-2) 0%, var(--bg-red-3) 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      font-family: system-ui, -apple-system, sans-serif;
+      color: rgb(var(--primary-foreground));
+      text-align: center;
+      padding: 20px;
+      box-sizing: border-box;
     `;
+
+    // Ícone de erro
+    const icon = document.createElement("div");
+    icon.style.cssText = "font-size: 48px; margin-bottom: 20px;";
+    icon.textContent = "🚨";
+
+    // Título
+    const title = document.createElement("h1");
+    title.style.cssText = "font-size: 24px; margin-bottom: 16px; margin: 0 0 16px 0;";
+    title.textContent = "Falha na inicialização";
+
+    // Mensagem de erro (usando textContent para segurança)
+    const message = document.createElement("p");
+    message.style.cssText = "font-size: 16px; margin-bottom: 24px; max-width: 500px; line-height: 1.5;";
+    message.textContent = `Erro: ${error.message}`;
+
+    // Container do botão
+    const buttonContainer = document.createElement("div");
+    buttonContainer.style.cssText = "display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;";
+    
+    const homeButton = document.createElement("button");
+    homeButton.style.cssText = `
+      background: var(--bg-teal);
+      color: var(--text-light);
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      min-width: 140px;
+    `;
+    homeButton.textContent = "🏠 Página Inicial";
+    
+    // Usar addEventListener ao invés de onclick inline para segurança
+    homeButton.addEventListener('click', () => window.location.href = '/');
+    homeButton.addEventListener('mouseover', () => homeButton.style.background = 'var(--bg-teal-dark)');
+    homeButton.addEventListener('mouseout', () => homeButton.style.background = 'var(--bg-teal)');
+
+    // Container das dicas
+    const tipsContainer = document.createElement("div");
+    tipsContainer.style.cssText = `
+      margin-top: 24px;
+      font-size: 12px;
+      opacity: 0.8;
+      max-width: 600px;
+    `;
+    
+    const tipsTitle = document.createElement("p");
+    tipsTitle.textContent = "Se o problema persistir, tente:";
+    
+    const tipsList = document.createElement("ul");
+    tipsList.style.cssText = "text-align: left; display: inline-block; margin: 8px 0;";
+    
+    const tips = [
+      "Limpar cache do navegador",
+      "Verificar conexão com a internet", 
+      "Usar um navegador diferente",
+      "Contatar suporte técnico"
+    ];
+    
+    tips.forEach(tip => {
+      const li = document.createElement("li");
+      li.textContent = tip;
+      tipsList.appendChild(li);
+    });
+
+    // Stack trace (usando textContent para segurança)
+    const stackContainer = document.createElement("div");
+    stackContainer.style.cssText = `
+      margin-top: 16px;
+      font-size: 10px;
+      opacity: 0.6;
+      font-family: monospace;
+    `;
+    stackContainer.textContent = error.stack 
+      ? error.stack.split('\n').slice(0, 3).join('\n')
+      : 'Stack trace não disponível';
+
+    // Montar estrutura do DOM
+    buttonContainer.appendChild(homeButton);
+    tipsContainer.appendChild(tipsTitle);
+    tipsContainer.appendChild(tipsList);
+    
+    container.appendChild(icon);
+    container.appendChild(title);
+    container.appendChild(message);
+    container.appendChild(buttonContainer);
+    container.appendChild(tipsContainer);
+    container.appendChild(stackContainer);
+    
+    errorDiv.appendChild(container);
 
     // Adicionar ao DOM
     document.body.appendChild(errorDiv);
@@ -249,31 +297,39 @@ function setupRecoveryListeners(): void {
   }, true);
 }
 
-// Função para mostrar notificação offline
+// Função para mostrar notificação offline (usando métodos seguros do DOM)
 function showOfflineNotification(): void {
   try {
     const notification = document.createElement('div');
-    notification.innerHTML = `
-      <div style="
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: var(--bg-gold);
-        color: var(--text-light);
-        padding: 12px 24px;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px var(--shadow-dark);
-        z-index: 10000;
-        font-family: system-ui, -apple-system, sans-serif;
-        font-size: 14px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      ">
-        📡 <span>Você está offline. Algumas funcionalidades podem não funcionar.</span>
-      </div>
+    
+    const container = document.createElement('div');
+    container.style.cssText = `
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-gold);
+      color: var(--text-light);
+      padding: 12px 24px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px var(--shadow-dark);
+      z-index: 10000;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     `;
+    
+    const iconSpan = document.createElement('span');
+    iconSpan.textContent = '📡';
+    
+    const messageSpan = document.createElement('span');
+    messageSpan.textContent = 'Você está offline. Algumas funcionalidades podem não funcionar.';
+    
+    container.appendChild(iconSpan);
+    container.appendChild(messageSpan);
+    notification.appendChild(container);
 
     document.body.appendChild(notification);
 
