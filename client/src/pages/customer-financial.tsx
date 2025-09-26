@@ -392,8 +392,6 @@ export default function CustomerFinancial() {
     );
   }
 
-  const activeContracts = contracts.filter(contract => contract.status === 'active');
-  const totalMonthlyAmount = activeContracts.reduce((sum, contract) => sum + parseFloat(contract.monthlyAmount), 0);
 
   return (
     <>
@@ -427,67 +425,6 @@ export default function CustomerFinancial() {
             </div>
           </motion.div>
 
-          {/* Summary Cards */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="grid md:grid-cols-3 gap-6 mb-8"
-          >
-            {/* Active Contracts Card */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <div className="flex items-center space-x-4 mb-4">
-                <div className="w-12 h-12 rounded-lg flex items-center justify-center"
-                  style={{ background: 'var(--bg-cream-light)' }}>
-                  <FileText className="w-6 h-6" style={{ color: 'var(--text-teal)' }} />
-                </div>
-                <div>
-                  <h3 className="font-semibold" style={{ color: 'var(--text-dark-primary)' }}>
-                    Contratos
-                  </h3>
-                  <p className="text-2xl font-bold" style={{ color: 'var(--text-teal)' }}>
-                    {activeContracts.length}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Monthly Total Card */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <div className="flex items-center space-x-4 mb-4">
-                <div className="w-12 h-12 rounded-lg flex items-center justify-center"
-                  style={{ background: 'var(--bg-cream-light)' }}>
-                  <DollarSign className="w-6 h-6" style={{ color: 'var(--text-teal)' }} />
-                </div>
-                <div>
-                  <h3 className="font-semibold" style={{ color: 'var(--text-dark-primary)' }}>
-                    Valor Mensal Total
-                  </h3>
-                  <p className="text-2xl font-bold" style={{ color: 'var(--text-teal)' }}>
-                    {formatCurrency(totalMonthlyAmount)}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Payment Receipts Count Card */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <div className="flex items-center space-x-4 mb-4">
-                <div className="w-12 h-12 rounded-lg flex items-center justify-center"
-                  style={{ background: 'var(--bg-cream-light)' }}>
-                  <FileText className="w-6 h-6" style={{ color: 'var(--text-teal)' }} />
-                </div>
-                <div>
-                  <h3 className="font-semibold" style={{ color: 'var(--text-dark-primary)' }}>
-                    Comprovante UNIPET
-                  </h3>
-                  <p className="text-2xl font-bold" style={{ color: 'var(--text-teal)' }}>
-                    {paymentReceipts.length}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
 
           {/* Active Contracts Section */}
           <motion.div
