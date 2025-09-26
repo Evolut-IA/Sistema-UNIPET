@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
-import { ArrowLeft, CreditCard, FileText, DollarSign, Calendar, CheckCircle, XCircle, Clock, Download } from "lucide-react";
+import { ArrowLeft, CreditCard, FileText, DollarSign, Calendar, CheckCircle, XCircle, Clock, Download, ChevronDown, ChevronUp } from "lucide-react";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 
@@ -85,6 +85,11 @@ export default function CustomerFinancial() {
   const [error, setError] = useState<string | null>(null);
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [receiptsError, setReceiptsError] = useState<string | null>(null);
+  
+  // Estados para controlar se as seções estão expandidas ou colapsadas
+  const [contractsExpanded, setContractsExpanded] = useState(false);
+  const [historyExpanded, setHistoryExpanded] = useState(false);
+  const [receiptsExpanded, setReceiptsExpanded] = useState(false);
 
   useEffect(() => {
     const checkAuthAndLoadFinancialData = async () => {
@@ -521,9 +526,20 @@ export default function CustomerFinancial() {
             transition={{ delay: 0.2 }}
             className="mb-8 bg-white rounded-xl shadow-lg p-6"
           >
-            <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--text-dark-primary)' }}>
-              Contratos
-            </h3>
+            <div 
+              className="flex items-center justify-between mb-4 cursor-pointer"
+              onClick={() => setContractsExpanded(!contractsExpanded)}
+            >
+              <h3 className="text-lg font-semibold" style={{ color: 'var(--text-dark-primary)' }}>
+                Contratos
+              </h3>
+              {contractsExpanded ? (
+                <ChevronUp className="w-5 h-5" style={{ color: 'var(--text-dark-secondary)' }} />
+              ) : (
+                <ChevronDown className="w-5 h-5" style={{ color: 'var(--text-dark-secondary)' }} />
+              )}
+            </div>
+            {contractsExpanded && (
             <div className="space-y-4">
               {contracts.length > 0 ? (
                 contracts.map((contract) => {
@@ -608,7 +624,8 @@ export default function CustomerFinancial() {
                   <p style={{ color: 'var(--text-dark-secondary)' }}>Nenhum contrato encontrado.</p>
                 </div>
               )}
-            </div>
+              </div>
+            )}
           </motion.div>
 
           {/* Payment History Section */}
@@ -618,18 +635,31 @@ export default function CustomerFinancial() {
             transition={{ delay: 0.3 }}
             className="mb-8 bg-white rounded-xl shadow-lg p-6"
           >
-            <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--text-dark-primary)' }}>
-              Histórico de Pagamentos
-              {isLoadingPayments && (
-                <div className="inline-flex items-center ml-3">
-                  <div className="w-4 h-4 border-2 rounded-full animate-spin" 
-                    style={{borderColor: 'var(--text-teal)', borderTopColor: 'transparent'}}></div>
-                  <span className="ml-2 text-sm" style={{ color: 'var(--text-dark-secondary)' }}>
-                    Carregando...
-                  </span>
-                </div>
+            <div 
+              className="flex items-center justify-between mb-4 cursor-pointer"
+              onClick={() => setHistoryExpanded(!historyExpanded)}
+            >
+              <div className="flex items-center">
+                <h3 className="text-lg font-semibold" style={{ color: 'var(--text-dark-primary)' }}>
+                  Histórico de Pagamentos
+                </h3>
+                              {isLoadingPayments && (
+                                <div className="inline-flex items-center ml-3">
+                                  <div className="w-4 h-4 border-2 rounded-full animate-spin" 
+                                    style={{borderColor: 'var(--text-teal)', borderTopColor: 'transparent'}}></div>
+                                  <span className="ml-2 text-sm" style={{ color: 'var(--text-dark-secondary)' }}>
+                                    Carregando...
+                                  </span>
+                                </div>
+                              )}
+              </div>
+              {historyExpanded ? (
+                <ChevronUp className="w-5 h-5" style={{ color: 'var(--text-dark-secondary)' }} />
+              ) : (
+                <ChevronDown className="w-5 h-5" style={{ color: 'var(--text-dark-secondary)' }} />
               )}
-            </h3>
+            </div>
+            {historyExpanded && (
             <div className="space-y-4">
               {paymentError ? (
                 <div className="p-6 text-center rounded-lg" style={{ background: 'rgb(var(--error-bg))', borderColor: 'rgb(var(--error-border))' }}>
@@ -753,7 +783,8 @@ export default function CustomerFinancial() {
                   </p>
                 </div>
               )}
-            </div>
+              </div>
+            )}
           </motion.div>
 
           {/* Official Payment Receipts Section */}
@@ -895,7 +926,8 @@ export default function CustomerFinancial() {
                   </p>
                 </div>
               )}
-            </div>
+              </div>
+            )}
           </motion.div>
 
         </div>
