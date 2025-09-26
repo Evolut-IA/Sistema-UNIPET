@@ -269,7 +269,7 @@ export default function Network() {
               <AnimatedList animation="slideUp" delay={300} staggerDelay={75}>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {currentUnits.map((unit: NetworkUnit) => (
-                    <Card key={unit.id} className="shadow-lg rounded-xl border-none bg-[var(--bg-cream-lighter)] overflow-hidden flex flex-col h-full">
+                    <Card key={unit.id} className="shadow-lg rounded-xl border bg-[var(--bg-cream-lighter)] overflow-hidden flex flex-col h-full" style={{borderColor: '#dbdbdb'}}>
                       <div className="relative">
                         <img 
                           src={unit.imageUrl || '/placeholder-veterinary.jpg'}
