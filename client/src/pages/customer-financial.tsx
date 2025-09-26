@@ -447,7 +447,7 @@ export default function CustomerFinancial() {
                   return (
                     <div key={contract.id} className="p-3 rounded-lg border" style={{ borderColor: 'var(--border-gray)', background: 'var(--bg-cream-light)' }}>
                       {/* Layout 3x3 Grid */}
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      <div className="flex flex-col space-y-2 md:grid md:grid-cols-3 md:gap-3 md:space-y-0">
                         
                         {/* Linha 1 */}
                         <div className="flex items-center space-x-3">
@@ -502,7 +502,7 @@ export default function CustomerFinancial() {
                           )}
                         </div>
                         
-                        <div className="text-right">
+                        <div className="md:text-right">
                           <p style={{ color: "var(--text-dark-secondary)" }}>
                             Valor: <span className="font-medium text-lg" style={{ color: "var(--text-teal)" }}>
                               {getCurrentContractValue(contract)}
@@ -527,7 +527,7 @@ export default function CustomerFinancial() {
                           )}
                         </div>
                         
-                        <div className="text-right text-sm">
+                        <div className="md:text-right text-sm">
                           {getCountdownDisplay(contract.daysRemaining, contract.isExpired)}
                         </div>
                         
@@ -591,7 +591,7 @@ export default function CustomerFinancial() {
                 paymentHistory.map((payment) => (
                   <div key={payment.id} className="p-4 rounded-lg border" style={{ borderColor: 'var(--border-gray)' }}>
                     {/* Layout em 3 colunas */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                    <div className="flex flex-col space-y-3 md:grid md:grid-cols-3 md:gap-4 md:items-center md:space-y-0">
                       
                       {/* Coluna Esquerda: Título e Subtítulo */}
                       <div className="flex items-center space-x-3">
@@ -619,11 +619,11 @@ export default function CustomerFinancial() {
                       </div>
 
                       {/* Coluna Direita: Valor e Status */}
-                      <div className="text-right">
+                      <div className="md:text-right">
                         <p className="font-bold text-lg" style={{ color: "var(--text-teal)" }}>
                           {formatCurrency(payment.amount)}
                         </p>
-                        <div className="flex items-center justify-end space-x-2">
+                        <div className="flex items-center md:justify-end space-x-2">
                           {getStatusIcon(payment.status)}
                           <span className="text-sm" style={{ color: "var(--text-dark-secondary)" }}>
                             {getStatusLabel(payment.status)}
@@ -731,7 +731,7 @@ export default function CustomerFinancial() {
                       </div>
 
                       {/* Lado direito: Botão e Data */}
-                      <div className="flex flex-col items-center md:items-end md:text-right">
+                      <div className="flex flex-col items-start md:items-end md:text-right">
                         <button
                           onClick={() => handleDownloadReceipt(receipt.id)}
                           className="flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors mb-2"
