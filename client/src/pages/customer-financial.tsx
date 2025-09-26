@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { ArrowLeft, CreditCard, FileText, DollarSign, Calendar, CheckCircle, XCircle, Clock, Download } from "lucide-react";
@@ -86,7 +86,7 @@ export default function CustomerFinancial() {
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [receiptsError, setReceiptsError] = useState<string | null>(null);
   const [downloadingReceiptId, setDownloadingReceiptId] = useState<string | null>(null);
-  const downloadTimeoutRef = useState<NodeJS.Timeout | null>(null)[0];
+  const downloadTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const checkAuthAndLoadFinancialData = async () => {
@@ -300,10 +300,13 @@ export default function CustomerFinancial() {
         
         // Small delay to show completion animation
         downloadTimeoutRef.current = setTimeout(() => {
-          if (downloadingReceiptId === receiptId) {
-            setDownloadingReceiptId(null);
-            downloadTimeoutRef.current = null;
-          }
+          setDownloadingReceiptId(prevId => {
+            if (prevId === receiptId) {
+              downloadTimeoutRef.current = null;
+              return null;
+            }
+            return prevId;
+          });
         }, 1000);
       } else if (response.status === 401) {
         alert("Sessão expirada. Faça login novamente.");
