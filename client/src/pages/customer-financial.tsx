@@ -446,70 +446,91 @@ export default function CustomerFinancial() {
                   
                   return (
                     <div key={contract.id} className="p-3 rounded-lg border" style={{ borderColor: 'var(--border-gray)', background: 'var(--bg-cream-light)' }}>
-                      <div className="flex items-center justify-between mb-1.5">
+                      {/* Layout 3x3 Grid */}
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        
+                        {/* Linha 1 */}
                         <div className="flex items-center space-x-3">
                           {getStatusIcon(contract.status)}
-                          <h4 className="font-medium" style={{ color: 'var(--text-dark-primary)' }}>
-                            {contract.planName} - {contract.petName}
-                          </h4>
+                          <div>
+                            <h4 className="font-medium text-sm" style={{ color: "var(--text-dark-primary)" }}>
+                              {contract.planName} - {contract.petName}
+                            </h4>
+                          </div>
                         </div>
-                        <div className="flex items-center space-x-2">
+                        
+                        <div className="text-sm">
+                          <p style={{ color: "var(--text-dark-secondary)" }}>
+                            Tipo: <span className="font-medium" style={{ color: "var(--text-dark-primary)" }}>
+                              {getPlanTypeLabel(contract.billingPeriod || "monthly")}
+                            </span>
+                          </p>
+                        </div>
+                        
+                        <div className="flex items-center justify-end space-x-2">
                           <span className="px-3 py-1 rounded-full text-sm font-medium"
                             style={{ 
-                              background: contract.status === 'active' ? 'var(--text-teal)' : 'var(--text-dark-secondary)', 
-                              color: 'white' 
+                              background: contract.status === "active" ? "var(--text-teal)" : "var(--text-dark-secondary)", 
+                              color: "white" 
                             }}>
                             {getStatusLabel(contract.status)}
                           </span>
                           {(isRenewalNeeded || isExpired) && (
                             <button
                               onClick={() => handleRenewalCheckout(contract)}
-                              className="px-4 py-1 bg-red-500 text-white text-sm font-medium rounded-full transition-colors"
+                              className="px-3 py-1 bg-red-500 text-white text-xs font-medium rounded-full transition-colors"
                             >
                               Regularizar
                             </button>
                           )}
                         </div>
-                      </div>
-                      
-                      <div className="grid md:grid-cols-4 gap-3 text-sm">
-                        <div>
-                          <p style={{ color: 'var(--text-dark-secondary)' }}>Contrato: #{contract.contractNumber}</p>
-                          <p style={{ color: 'var(--text-dark-secondary)' }}>Data de Início: {formatDate(contract.startDate)}</p>
-                        </div>
-                        <div>
-                          <p style={{ color: 'var(--text-dark-secondary)' }}>
-                            Tipo: <span className="font-medium" style={{ color: 'var(--text-dark-primary)' }}>
-                              {getPlanTypeLabel(contract.billingPeriod || 'monthly')}
-                            </span>
+
+                        {/* Linha 2 */}
+                        <div className="text-sm">
+                          <p style={{ color: "var(--text-dark-secondary)" }}>
+                            Contrato: #{contract.contractNumber}
                           </p>
+                        </div>
+                        
+                        <div className="text-sm">
                           {renewalDay && (
-                            <p style={{ color: 'var(--text-dark-secondary)' }}>
-                              Dia da renovação: <span className="font-medium" style={{ color: 'var(--text-dark-primary)' }}>
+                            <p style={{ color: "var(--text-dark-secondary)" }}>
+                              Dia da renovação: <span className="font-medium" style={{ color: "var(--text-dark-primary)" }}>
                                 {renewalDay}
                               </span>
                             </p>
                           )}
                         </div>
-                        <div>
-                          {renewalDate && !isNaN(renewalDate.getTime()) && (
-                            <p style={{ color: 'var(--text-dark-secondary)' }}>
-                              Próxima renovação: <span className="font-medium" style={{ color: 'var(--text-dark-primary)' }}>
-                                {formatDate(renewalDate.toISOString())}
-                              </span>
-                            </p>
-                          )}
-                          <div className="mt-1">
-                            {getCountdownDisplay(contract.daysRemaining, contract.isExpired)}
-                          </div>
-                        </div>
-                        <div>
-                          <p style={{ color: 'var(--text-dark-secondary)' }}>
-                            Valor: <span className="font-medium text-lg" style={{ color: 'var(--text-teal)' }}>
+                        
+                        <div className="text-right">
+                          <p style={{ color: "var(--text-dark-secondary)" }}>
+                            Valor: <span className="font-medium text-lg" style={{ color: "var(--text-teal)" }}>
                               {getCurrentContractValue(contract)}
                             </span>
                           </p>
                         </div>
+
+                        {/* Linha 3 */}
+                        <div className="text-sm">
+                          <p style={{ color: "var(--text-dark-secondary)" }}>
+                            Data de Início: {formatDate(contract.startDate)}
+                          </p>
+                        </div>
+                        
+                        <div className="text-sm">
+                          {renewalDate && !isNaN(renewalDate.getTime()) && (
+                            <p style={{ color: "var(--text-dark-secondary)" }}>
+                              Próxima renovação: <span className="font-medium" style={{ color: "var(--text-dark-primary)" }}>
+                                {formatDate(renewalDate.toISOString())}
+                              </span>
+                            </p>
+                          )}
+                        </div>
+                        
+                        <div className="text-right text-sm">
+                          {getCountdownDisplay(contract.daysRemaining, contract.isExpired)}
+                        </div>
+                        
                       </div>
                     </div>
                   );
