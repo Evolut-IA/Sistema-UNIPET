@@ -1471,6 +1471,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
           try {
             const contract = await storage.createContract(contractData);
             console.log(`✅ [SIMPLE] Contrato criado: ${contract.id}`);
+            
+            // Generate payment receipt for credit card
+            try {
+              const { PaymentReceiptService } = await import("./services/payment-receipt-service.js");
+              const receiptService = new PaymentReceiptService();
+              
+              const receiptData = {
+                contractId: contract.id,
+                cieloPaymentId: paymentResult.payment.paymentId,
+                clientName: client.fullName,
+                clientEmail: client.email,
+                petName: createdPets[0]?.name || 'Pet',
+                planName: selectedPlan.name
+              };
+              
+              console.log(`📄 [SIMPLE-RECEIPT] Gerando comprovante para pagamento com cartão`);
+              const receiptResult = await receiptService.generatePaymentReceipt(receiptData, `simple_${paymentResult.payment.paymentId}`);
+              
+              if (receiptResult.success) {
+                console.log("✅ [SIMPLE-RECEIPT] Comprovante oficial gerado com sucesso:", {
+                  receiptId: receiptResult.receiptId,
+                  receiptNumber: receiptResult.receiptNumber,
+                  contractNumber: contract.contractNumber
+                });
+              } else {
+                console.error("❌ [SIMPLE-RECEIPT] Erro ao gerar comprovante:", receiptResult.error);
+              }
+            } catch (receiptError: any) {
+              console.error("❌ [SIMPLE-RECEIPT] Erro ao gerar comprovante de pagamento:", receiptError.message);
+            }
           } catch (contractError) {
             console.error(`⚠️ [SIMPLE] Erro ao criar contrato:`, contractError);
           }
@@ -1610,6 +1640,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
           try {
             const contract = await storage.createContract(contractData);
             console.log(`✅ [SIMPLE-PIX] Contrato criado para pagamento PIX pendente: ${contract.id}`);
+            
+            // Generate payment receipt for PIX
+            try {
+              const { PaymentReceiptService } = await import("./services/payment-receipt-service.js");
+              const receiptService = new PaymentReceiptService();
+              
+              const receiptData = {
+                contractId: contract.id,
+                cieloPaymentId: pixPaymentResult.payment.paymentId,
+                clientName: client.fullName,
+                clientEmail: client.email,
+                petName: firstPetId.startsWith('temp-') ? 'Pet' : (await storage.getPet(firstPetId))?.name || 'Pet',
+                planName: selectedPlan.name
+              };
+              
+              console.log(`📄 [SIMPLE-PIX-RECEIPT] Gerando comprovante para pagamento PIX`);
+              const receiptResult = await receiptService.generatePaymentReceipt(receiptData, `simple_pix_${pixPaymentResult.payment.paymentId}`);
+              
+              if (receiptResult.success) {
+                console.log("✅ [SIMPLE-PIX-RECEIPT] Comprovante oficial gerado com sucesso:", {
+                  receiptId: receiptResult.receiptId,
+                  receiptNumber: receiptResult.receiptNumber,
+                  contractNumber: contract.contractNumber
+                });
+              } else {
+                console.error("❌ [SIMPLE-PIX-RECEIPT] Erro ao gerar comprovante:", receiptResult.error);
+              }
+            } catch (receiptError: any) {
+              console.error("❌ [SIMPLE-PIX-RECEIPT] Erro ao gerar comprovante de pagamento PIX:", receiptError.message);
+            }
           } catch (contractError: any) {
             console.error(`❌ [SIMPLE-PIX] Erro crítico ao criar contrato:`, contractError);
             // Don't return QR Code if we can't track the payment
