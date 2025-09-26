@@ -85,6 +85,8 @@ export default function CustomerFinancial() {
   const [error, setError] = useState<string | null>(null);
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [receiptsError, setReceiptsError] = useState<string | null>(null);
+  const [downloadingReceiptId, setDownloadingReceiptId] = useState<string | null>(null);
+  const downloadTimeoutRef = useState<NodeJS.Timeout | null>(null)[0];
 
   useEffect(() => {
     const checkAuthAndLoadFinancialData = async () => {
@@ -265,35 +267,57 @@ export default function CustomerFinancial() {
   };
 
   const handleDownloadReceipt = async (receiptId: string) => {
+    // Prevent multiple downloads
+    if (downloadingReceiptId) return;
+    
     try {
+      setDownloadingReceiptId(receiptId);
+      
+      // Clear any existing timeout
+      if (downloadTimeoutRef.current) {
+        clearTimeout(downloadTimeoutRef.current);
+        downloadTimeoutRef.current = null;
+      }
+      
       // Use fetch with same-origin policy to preserve session cookies
       const response = await fetch(`/api/customer/payment-receipts/${receiptId}/download`, {
-        credentials: 'include',
-        method: 'GET'
+        credentials: "include",
+        method: "GET"
       });
 
       if (response.ok) {
         // Get the PDF blob and create a download
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.style.display = 'none';
+        const a = document.createElement("a");
+        a.style.display = "none";
         a.href = url;
         a.download = `comprovante_${receiptId}.pdf`;
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
+        
+        // Small delay to show completion animation
+        downloadTimeoutRef.current = setTimeout(() => {
+          if (downloadingReceiptId === receiptId) {
+            setDownloadingReceiptId(null);
+            downloadTimeoutRef.current = null;
+          }
+        }, 1000);
       } else if (response.status === 401) {
-        alert('Sessão expirada. Faça login novamente.');
-        navigate('/customer/login');
+        alert("Sessão expirada. Faça login novamente.");
+        navigate("/customer/login");
+        setDownloadingReceiptId(null);
       } else {
-        const errorData = await response.json().catch(() => ({ error: 'Erro desconhecido' }));
-        alert(`Erro ao baixar comprovante: ${errorData.error || 'Erro desconhecido'}`);
+        const errorData = await response.json().catch(() => ({ error: "Erro desconhecido" }));
+        alert(`Erro ao baixar comprovante: ${errorData.error || "Erro desconhecido"}`);
+        setDownloadingReceiptId(null);
       }
     } catch (error) {
-      console.error('Erro ao baixar comprovante:', error);
-      alert('Erro ao tentar baixar o comprovante. Tente novamente.');
+      console.error("Download error:", error);
+      alert("Erro ao baixar comprovante. Tente novamente.");
+      setDownloadingReceiptId(null);
     }
   };
 
@@ -743,15 +767,23 @@ export default function CustomerFinancial() {
                       <div className="flex flex-col items-start md:items-end md:text-right">
                         <button
                           onClick={() => handleDownloadReceipt(receipt.id)}
-                          className="flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors mb-2"
+                          disabled={downloadingReceiptId === receipt.id}
+                          className="flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 mb-2"
                           style={{ 
-                            background: 'var(--text-teal)', 
+                            background: downloadingReceiptId === receipt.id ? 'var(--text-dark-secondary)' : 'var(--text-teal)', 
                             color: 'white',
-                            transition: 'background-color 0.2s'
+                            opacity: downloadingReceiptId === receipt.id ? 0.8 : 1,
+                            cursor: downloadingReceiptId === receipt.id ? 'not-allowed' : 'pointer'
                           }}
                         >
-                          <Download className="w-4 h-4" />
-                          <span>Baixar Comprovante PDF</span>
+                          {downloadingReceiptId === receipt.id ? (
+                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                          ) : (
+                            <Download className="w-4 h-4" />
+                          )}
+                          <span>
+                            {downloadingReceiptId === receipt.id ? 'Baixando...' : 'Baixar Comprovante PDF'}
+                          </span>
                         </button>
                         
                         {/* Data do Pagamento */}
