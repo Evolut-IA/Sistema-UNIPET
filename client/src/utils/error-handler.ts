@@ -497,7 +497,35 @@ class ErrorHandler {
 
     const notification = document.createElement('div');
     notification.className = `error-notification error-${error.severity}`;
-    notification.innerHTML = `
+    // Build structure safely using DOM methods instead of innerHTML
+    const icon = document.createElement('div');
+    icon.className = 'error-icon';
+    icon.textContent = '⚠️';
+
+    const content = document.createElement('div');
+    content.className = 'error-content';
+
+    const title = document.createElement('div');
+    title.className = 'error-title';
+    title.textContent = this.getErrorMessage(error);
+    content.appendChild(title);
+
+    if (error.severity === 'critical') {
+      const action = document.createElement('div');
+      action.className = 'error-action';
+      action.textContent = 'Recarregando página...';
+      content.appendChild(action);
+    }
+
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'error-close';
+    closeBtn.type = 'button';
+    closeBtn.textContent = '×';
+    closeBtn.addEventListener('click', () => notification.remove());
+
+    notification.append(icon, content, closeBtn);
+
+
       <div class="error-icon">⚠️</div>
       <div class="error-content">
         <div class="error-title">${this.getErrorMessage(error)}</div>
