@@ -125,7 +125,7 @@ export default class ErrorBoundary extends Component<Props, State> {
                 </Button>
               </div>
 
-              {process.env.NODE_ENV === 'development' && this.state.error && (
+              {import.meta.env.MODE === 'development' && this.state.error && (
                 <details className="mt-4 p-3 rounded text-xs" style={{ backgroundColor: 'var(--bg-loading)' }}>
                   <summary className="font-semibold cursor-pointer">
                     Detalhes do erro (desenvolvimento)

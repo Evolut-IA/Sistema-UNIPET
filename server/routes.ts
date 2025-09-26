@@ -36,6 +36,7 @@ import {
 } from "../shared/schema.js";
 import express from "express";
 import chatRoutes from "./routes/chat.js";
+import rateLimit from "express-rate-limit";
 
 
 
@@ -106,8 +107,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Setup authentication
   setupAuth(app);
 
+  // Rate limiting for admin login endpoint
+  const adminLoginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5, // limit each IP to 5 requests per windowMs
+    message: { error: "Muitas tentativas de login. Tente novamente em 15 minutos." },
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+
   // Admin login endpoint
-  app.post("/admin/api/login", async (req, res) => {
+  app.post("/admin/api/login", adminLoginLimiter, async (req, res) => {
     try {
       const loginData = adminLoginSchema.parse(req.body);
 
@@ -120,7 +130,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(500).json({ error: "Configuração do servidor incorreta" });
       }
 
-      if (loginData.login === adminLogin && loginData.password === adminPassword) {
+      // Secure password comparison
+      const isValidLogin = loginData.login === adminLogin;
+      let isValidPassword = false;
+
+      // Check if password is bcrypt hash or plain text (for backwards compatibility)
+      if (adminPassword.startsWith('$2a$') || adminPassword.startsWith('$2b$')) {
+        // It's a bcrypt hash
+        isValidPassword = await bcrypt.compare(loginData.password, adminPassword);
+      } else {
+        // Plain text comparison (less secure, for backwards compatibility)
+        isValidPassword = loginData.password === adminPassword;
+        console.warn("⚠️ [ADMIN-LOGIN] Using plain text password comparison. Consider using bcrypt hash for SENHA environment variable.");
+      }
+
+      if (isValidLogin && isValidPassword) {
         // Set admin session
         req.session.admin = { login: adminLogin, authenticated: true };
         

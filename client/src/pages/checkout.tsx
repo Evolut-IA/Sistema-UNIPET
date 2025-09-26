@@ -608,7 +608,8 @@ export default function Checkout() {
             full_name: customerData.name,
             email: customerData.email,
             phone: customerData.phone,
-            password: '123456', // Senha padrão temporária
+            // SECURITY: Password should be collected from user input in a secure manner
+            // Remove hardcoded password for security compliance
             address: customerData.address,
             city: customerData.city,
             state: customerData.state,

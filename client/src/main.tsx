@@ -51,7 +51,8 @@ async function initializeApp(): Promise<void> {
 
     logInfo('✅ Aplicação inicializada com sucesso', {
       reactVersion: React.version,
-      nodeEnv: process.env['NODE_ENV']
+      // SECURITY FIX: process is not available in browser environment
+      nodeEnv: import.meta.env.MODE || 'production'
     });
 
   } catch (error) {
