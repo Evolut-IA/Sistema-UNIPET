@@ -297,31 +297,6 @@ export default function CustomerFinancial() {
     }
   };
 
-  const getReceiptStatusColor = (status: string) => {
-    switch (status) {
-      case 'generated':
-        return 'var(--text-teal)';
-      case 'downloaded':
-        return 'rgb(var(--star-active))';
-      case 'sent':
-        return 'rgb(var(--primary))';
-      default:
-        return 'var(--text-dark-secondary)';
-    }
-  };
-
-  const getReceiptStatusLabel = (status: string): string => {
-    switch (status) {
-      case 'generated':
-        return 'Gerado';
-      case 'downloaded':
-        return 'Baixado';
-      case 'sent':
-        return 'Enviado';
-      default:
-        return status;
-    }
-  };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -803,87 +778,37 @@ export default function CustomerFinancial() {
               ) : paymentReceipts.length > 0 ? (
                 paymentReceipts.map((receipt) => (
                   <div key={receipt.id} className="p-4 rounded-lg border" style={{ borderColor: 'var(--border-gray)' }}>
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center space-x-3">
-                        <FileText className="w-5 h-5" style={{ color: 'var(--text-teal)' }} />
-                        <div>
-                          <h4 className="font-medium" style={{ color: 'var(--text-dark-primary)' }}>
-                            Comprovante #{receipt.receiptNumber}
-                          </h4>
-                          {receipt.planName && receipt.petName && (
-                            <p className="text-sm" style={{ color: 'var(--text-dark-secondary)' }}>
-                              {receipt.planName} - {receipt.petName}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-bold text-lg" style={{ color: 'var(--text-teal)' }}>
-                          {formatCurrency(receipt.paymentAmount)}
-                        </p>
-                        <div className="flex items-center justify-end space-x-2">
-                          <span className="px-2 py-1 rounded-full text-xs font-medium"
-                            style={{ 
-                              background: getReceiptStatusColor(receipt.status) + '20',
-                              color: getReceiptStatusColor(receipt.status)
-                            }}>
-                            {getReceiptStatusLabel(receipt.status)}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
+                    {/* Título */}
+                    <h4 className="font-medium mb-1" style={{ color: 'var(--text-dark-primary)' }}>
+                      Comprovante #{receipt.receiptNumber}
+                    </h4>
                     
-                    <div className="grid md:grid-cols-2 gap-4 text-sm mb-4">
-                      <div>
-                        <p style={{ color: 'var(--text-dark-secondary)' }}>
-                          Método: {getPaymentMethodLabel(receipt.paymentMethod)}
-                        </p>
-                        <p style={{ color: 'var(--text-dark-secondary)' }}>
-                          Data do Pagamento: {formatDate(receipt.paymentDate)}
-                        </p>
-                      </div>
-                      
-                      {/* Official Cielo Information */}
-                      {(receipt.proofOfSale || receipt.authorizationCode || receipt.tid) && (
-                        <div className="p-3 rounded" style={{ background: 'var(--bg-cream-light)' }}>
-                          <h5 className="font-medium mb-2" style={{ color: 'var(--text-dark-primary)' }}>
-                            Dados Oficiais da Cielo
-                          </h5>
-                          {receipt.proofOfSale && (
-                            <p className="text-xs" style={{ color: 'var(--text-dark-secondary)' }}>
-                              Comprovante de Venda: {receipt.proofOfSale}
-                            </p>
-                          )}
-                          {receipt.authorizationCode && (
-                            <p className="text-xs" style={{ color: 'var(--text-dark-secondary)' }}>
-                              Código de Autorização: {receipt.authorizationCode}
-                            </p>
-                          )}
-                          {receipt.tid && (
-                            <p className="text-xs" style={{ color: 'var(--text-dark-secondary)' }}>
-                              TID: {receipt.tid}
-                            </p>
-                          )}
-                        </div>
-                      )}
-                    </div>
+                    {/* Subtítulo */}
+                    {receipt.planName && receipt.petName && (
+                      <p className="text-sm mb-4" style={{ color: 'var(--text-dark-secondary)' }}>
+                        {receipt.planName} - {receipt.petName}
+                      </p>
+                    )}
 
-                    {/* Download Button */}
-                    <div className="flex justify-end">
+                    {/* Botão de Download centralizado */}
+                    <div className="flex flex-col items-center">
                       <button
                         onClick={() => handleDownloadReceipt(receipt.id)}
-                        className="flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors"
+                        className="flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors mb-2"
                         style={{ 
                           background: 'var(--text-teal)', 
                           color: 'white',
                           transition: 'background-color 0.2s'
                         }}
-
-
                       >
                         <Download className="w-4 h-4" />
                         <span>Baixar Comprovante PDF</span>
                       </button>
+                      
+                      {/* Data do Pagamento */}
+                      <p className="text-sm" style={{ color: 'var(--text-dark-secondary)' }}>
+                        Data do Pagamento: {formatDate(receipt.paymentDate)}
+                      </p>
                     </div>
                   </div>
                 ))
