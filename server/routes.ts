@@ -4381,6 +4381,70 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // TEST ENDPOINT - Generate payment receipt manually
+  app.post("/api/test/generate-receipt", async (req, res) => {
+    try {
+      const { contractId } = req.body;
+      
+      if (!contractId) {
+        return res.status(400).json({ error: "contractId is required" });
+      }
+      
+      // Get contract details
+      const contract = await storage.getContract(contractId);
+      if (!contract) {
+        return res.status(404).json({ error: "Contract not found" });
+      }
+      
+      // Get client and pet details
+      const client = await storage.getClient(contract.clientId);
+      const pet = contract.petId ? await storage.getPet(contract.petId) : null;
+      const plan = await storage.getPlan(contract.planId);
+      
+      console.log("📄 [TEST-RECEIPT] Starting manual receipt generation", {
+        contractId,
+        cieloPaymentId: contract.cieloPaymentId,
+        clientName: client?.fullName,
+        petName: pet?.name
+      });
+      
+      // Import and test PaymentReceiptService
+      const { PaymentReceiptService } = await import("./services/payment-receipt-service.js");
+      const receiptService = new PaymentReceiptService();
+      
+      const receiptData = {
+        contractId: contract.id,
+        cieloPaymentId: contract.cieloPaymentId || "test-payment-id",
+        clientName: client?.fullName || "Test Client",
+        clientEmail: client?.email || "test@example.com",
+        petName: pet?.name || "Test Pet",
+        planName: plan?.name || "Test Plan"
+      };
+      
+      const result = await receiptService.generatePaymentReceipt(receiptData, `test_${Date.now()}`);
+      
+      console.log("📄 [TEST-RECEIPT] Result:", result);
+      
+      return res.json({
+        success: result.success,
+        result,
+        contractDetails: {
+          contractId: contract.id,
+          cieloPaymentId: contract.cieloPaymentId,
+          status: contract.status
+        }
+      });
+      
+    } catch (error: any) {
+      console.error("❌ [TEST-RECEIPT] Error:", error);
+      return res.status(500).json({ 
+        error: "Failed to generate receipt", 
+        details: error.message,
+        stack: process.env.NODE_ENV === "development" ? error.stack : undefined
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
