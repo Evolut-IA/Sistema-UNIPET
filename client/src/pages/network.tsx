@@ -283,13 +283,10 @@ export default function Network() {
                         />
                       </div>
 
-                      <CardHeader className="pb-0">
-                        <CardTitle className="text-xl font-bold text-[var(--text-teal)] leading-tight">
+                      <CardContent className="px-6 pt-6 pb-0 flex flex-col flex-1">
+                        <h3 className="text-xl font-bold text-[var(--text-teal)] leading-tight mb-3">
                           {unit.name}
-                        </CardTitle>
-                      </CardHeader>
-
-                      <CardContent className="pt-0 flex flex-col flex-1">
+                        </h3>
                         <div className="space-y-3 mb-6">
                           <div className="flex items-start space-x-3">
                             <MapPin className="h-4 w-4 text-[var(--icon-teal)] mt-1 flex-shrink-0" />
