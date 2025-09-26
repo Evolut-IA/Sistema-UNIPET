@@ -4397,7 +4397,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Get client and pet details
-      const client = await storage.getClient(contract.clientId);
+      const client = await storage.getClientById(contract.clientId);
       const pet = contract.petId ? await storage.getPet(contract.petId) : null;
       const plan = await storage.getPlan(contract.planId);
       
