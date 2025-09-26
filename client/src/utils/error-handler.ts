@@ -526,13 +526,6 @@ class ErrorHandler {
     notification.append(icon, content, closeBtn);
 
 
-      <div class="error-icon">⚠️</div>
-      <div class="error-content">
-        <div class="error-title">${this.getErrorMessage(error)}</div>
-        ${error.severity === 'critical' ? '<div class="error-action">Recarregando página...</div>' : ''}
-      </div>
-      <button class="error-close" onclick="this.parentElement.remove()">×</button>
-    `;
 
     // Estilos inline para garantir funcionamento
     notification.style.cssText = `

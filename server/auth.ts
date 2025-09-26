@@ -34,7 +34,7 @@ export function setupAuth(app: Express) {
     name: 'connect.sid', // Explicitly set session name
     store: new PostgreSQLStore({
       pool: pgPool,
-      tableName: 'session',
+      tableName: 'express_sessions',
       createTableIfMissing: true
     })
   };
