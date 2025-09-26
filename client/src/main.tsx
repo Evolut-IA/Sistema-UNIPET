@@ -101,7 +101,7 @@ function showInitializationError(error: Error): void {
           Falha na inicialização
         </h1>
         <p style="font-size: 16px; margin-bottom: 24px; max-width: 500px; line-height: 1.5;">
-          Erro: ${error.message}
+          Erro: ${error.message.replace(/</g, "&lt;").replace(/>/g, "&gt;")}
         </p>
         <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
           <button onclick="window.location.href='/'" style="
@@ -139,7 +139,7 @@ function showInitializationError(error: Error): void {
           opacity: 0.6;
           font-family: monospace;
         ">
-          ${error.stack ? error.stack.split('\n').slice(0, 3).join('\n') : 'Stack trace não disponível'}
+${error.stack ? error.stack.split('\n').slice(0, 3).join('\n').replace(/</g, "&lt;").replace(/>/g, "&gt;") : 'Stack trace não disponível'}
         </div>
       </div>
     `;
