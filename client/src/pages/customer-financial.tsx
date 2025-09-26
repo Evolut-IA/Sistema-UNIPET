@@ -715,37 +715,45 @@ export default function CustomerFinancial() {
               ) : paymentReceipts.length > 0 ? (
                 paymentReceipts.map((receipt) => (
                   <div key={receipt.id} className="p-4 rounded-lg border" style={{ borderColor: 'var(--border-gray)' }}>
-                    {/* Título */}
-                    <h4 className="font-medium mb-1" style={{ color: 'var(--text-dark-primary)' }}>
-                      Comprovante #{receipt.receiptNumber}
-                    </h4>
-                    
-                    {/* Subtítulo */}
-                    {receipt.planName && receipt.petName && (
-                      <p className="text-sm mb-4" style={{ color: 'var(--text-dark-secondary)' }}>
-                        {receipt.planName} - {receipt.petName}
-                      </p>
-                    )}
-
-                    {/* Botão de Download centralizado */}
-                    <div className="flex flex-col items-center">
-                      <button
-                        onClick={() => handleDownloadReceipt(receipt.id)}
-                        className="flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors mb-2"
-                        style={{ 
-                          background: 'var(--text-teal)', 
-                          color: 'white',
-                          transition: 'background-color 0.2s'
-                        }}
-                      >
-                        <Download className="w-4 h-4" />
-                        <span>Baixar Comprovante PDF</span>
-                      </button>
+                    {/* Container responsivo */}
+                    <div className="flex flex-col md:flex-row md:items-start md:justify-between">
                       
-                      {/* Data do Pagamento */}
-                      <p className="text-sm" style={{ color: 'var(--text-dark-secondary)' }}>
-                        Data do Pagamento: {formatDate(receipt.paymentDate)}
-                      </p>
+                      {/* Lado esquerdo: Título e Subtítulo */}
+                      <div className="flex-1 mb-4 md:mb-0">
+                        {/* Título */}
+                        <h4 className="font-medium mb-1" style={{ color: 'var(--text-dark-primary)' }}>
+                          Comprovante #{receipt.receiptNumber}
+                        </h4>
+                        
+                        {/* Subtítulo */}
+                        {receipt.planName && receipt.petName && (
+                          <p className="text-sm" style={{ color: 'var(--text-dark-secondary)' }}>
+                            {receipt.planName} - {receipt.petName}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Lado direito: Botão e Data */}
+                      <div className="flex flex-col items-center md:items-end md:text-right">
+                        <button
+                          onClick={() => handleDownloadReceipt(receipt.id)}
+                          className="flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors mb-2"
+                          style={{ 
+                            background: 'var(--text-teal)', 
+                            color: 'white',
+                            transition: 'background-color 0.2s'
+                          }}
+                        >
+                          <Download className="w-4 h-4" />
+                          <span>Baixar Comprovante PDF</span>
+                        </button>
+                        
+                        {/* Data do Pagamento */}
+                        <p className="text-sm" style={{ color: 'var(--text-dark-secondary)' }}>
+                          Data do Pagamento: {formatDate(receipt.paymentDate)}
+                        </p>
+                      </div>
+                      
                     </div>
                   </div>
                 ))
