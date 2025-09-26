@@ -31,6 +31,8 @@ import {
   type InsertGuide,
   type SatisfactionSurvey,
   type InsertSatisfactionSurvey,
+  type PaymentReceipt,
+  type InsertPaymentReceipt,
   type User,
   type InsertUser,
   contactSubmissions,
