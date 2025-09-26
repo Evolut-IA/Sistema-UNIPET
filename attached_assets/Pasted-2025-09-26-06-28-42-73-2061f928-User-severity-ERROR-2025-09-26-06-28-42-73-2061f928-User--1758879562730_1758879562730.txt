@@ -1,0 +1,164 @@
+2025-09-26 06:28:42.73
+2061f928
+User
+severity: 'ERROR',
+2025-09-26 06:28:42.73
+2061f928
+User
+code: '42P07',
+2025-09-26 06:28:42.73
+2061f928
+User
+detail: undefined,
+2025-09-26 06:28:42.73
+2061f928
+User
+hint: undefined,
+2025-09-26 06:28:42.73
+2061f928
+User
+position: undefined,
+2025-09-26 06:28:42.73
+2061f928
+User
+internalPosition: undefined,
+2025-09-26 06:28:42.73
+2061f928
+User
+internalQuery: undefined,
+2025-09-26 06:28:42.73
+2061f928
+User
+where: undefined,
+2025-09-26 06:28:42.73
+2061f928
+User
+schema: undefined,
+2025-09-26 06:28:42.73
+2061f928
+User
+table: undefined,
+2025-09-26 06:28:42.73
+2061f928
+User
+column: undefined,
+2025-09-26 06:28:42.73
+2061f928
+User
+dataType: undefined,
+2025-09-26 06:28:42.73
+2061f928
+User
+constraint: undefined,
+2025-09-26 06:28:42.73
+2061f928
+User
+file: 'index.c',
+2025-09-26 06:28:42.73
+2061f928
+User
+line: '897',
+2025-09-26 06:28:42.73
+2061f928
+User
+routine: 'index_create'
+2025-09-26 06:28:42.73
+2061f928
+User
+}
+2025-09-26 06:28:42.94
+2061f928
+User
+Erro no servidor: error: relation "session_pkey" already exists
+2025-09-26 06:28:42.94
+2061f928
+User
+at /home/runner/workspace/node_modules/pg-pool/index.js:45:11
+2025-09-26 06:28:42.94
+2061f928
+User
+at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-09-26 06:28:42.94
+2061f928
+User
+at async PGStore._asyncQuery (/home/runner/workspace/node_modules/connect-pg-simple/index.js:328:21)
+2025-09-26 06:28:42.94
+2061f928
+User
+at async PGStore._rawEnsureSessionStoreTable (/home/runner/workspace/node_modules/connect-pg-simple/index.js:187:9)
+2025-09-26 06:28:42.94
+2061f928
+User
+at async PGStore._asyncQuery (/home/runner/workspace/node_modules/connect-pg-simple/index.js:321:7) {
+2025-09-26 06:28:42.94
+2061f928
+User
+length: 94,
+2025-09-26 06:28:42.94
+2061f928
+User
+severity: 'ERROR',
+2025-09-26 06:28:42.94
+2061f928
+User
+code: '42P07',
+2025-09-26 06:28:42.94
+2061f928
+User
+detail: undefined,
+2025-09-26 06:28:42.94
+2061f928
+User
+hint: undefined,
+2025-09-26 06:28:42.94
+2061f928
+User
+position: undefined,
+2025-09-26 06:28:42.94
+2061f928
+User
+internalPosition: undefined,
+2025-09-26 06:28:42.94
+2061f928
+User
+internalQuery: undefined,
+2025-09-26 06:28:42.94
+2061f928
+User
+where: undefined,
+2025-09-26 06:28:42.94
+2061f928
+User
+schema: undefined,
+2025-09-26 06:28:42.94
+2061f928
+User
+table: undefined,
+2025-09-26 06:28:42.94
+2061f928
+User
+column: undefined,
+2025-09-26 06:28:42.94
+2061f928
+User
+dataType: undefined,
+2025-09-26 06:28:42.94
+2061f928
+User
+constraint: undefined,
+2025-09-26 06:28:42.94
+2061f928
+User
+file: 'index.c',
+2025-09-26 06:28:42.94
+2061f928
+User
+line: '897',
+2025-09-26 06:28:42.94
+2061f928
+User
+routine: 'index_create'
+2025-09-26 06:28:42.94
+2061f928
+User
+}
