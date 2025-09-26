@@ -40,7 +40,7 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "cd client && npm run dev"
+args = "cd client && npm run dev -- --port 5000 --host 0.0.0.0"
 waitForPort = 5000
 
 [workflows.workflow.metadata]
@@ -55,16 +55,8 @@ localPort = 5000
 externalPort = 80
 
 [[ports]]
-localPort = 5001
-externalPort = 3003
-
-[[ports]]
-localPort = 34881
+localPort = 44373
 externalPort = 3001
-
-[[ports]]
-localPort = 35517
-externalPort = 3002
 
 [deployment]
 deploymentTarget = "gce"

@@ -724,8 +724,8 @@ export default function CustomerFinancial() {
                       )}
                     </div>
 
-                    {/* PIX Information */}
-                    {payment.paymentMethod === 'pix' && (payment.pixQrCode || payment.pixCode) && (
+                    {/* PIX Information - Only show for pending payments */}
+                    {payment.paymentMethod === 'pix' && payment.status === 'pending' && (payment.pixQrCode || payment.pixCode) && (
                       <div className="mt-3 p-3 rounded" style={{ background: 'var(--bg-cream-light)' }}>
                         <h5 className="font-medium mb-2" style={{ color: 'var(--text-dark-primary)' }}>
                           Informações PIX
@@ -742,6 +742,7 @@ export default function CustomerFinancial() {
                         )}
                       </div>
                     )}
+
                   </div>
                 ))
               ) : (
