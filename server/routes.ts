@@ -1621,6 +1621,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             proofOfSale: pixPaymentResult.payment.proofOfSale || '',
             authorizationCode: pixPaymentResult.payment.authorizationCode || '',
             tid: pixPaymentResult.payment.tid || '',
+            receivedDate: new Date(), // Add received date for PIX transactions
             returnCode: pixPaymentResult.payment.returnCode,
             returnMessage: pixPaymentResult.payment.returnMessage,
             pixQrCode: pixPaymentResult.payment.qrCodeBase64Image || null,
