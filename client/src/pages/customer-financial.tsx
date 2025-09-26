@@ -605,7 +605,7 @@ export default function CustomerFinancial() {
                 </div>
               ) : paymentHistory.length > 0 ? (
                 paymentHistory.map((payment) => (
-                  <div key={payment.id} className="p-4 rounded-lg border" style={{ borderColor: 'var(--border-gray)' }}>
+                  <div key={payment.id} className="p-4 rounded-lg border" style={{ borderColor: 'var(--border-gray)', background: 'var(--bg-cream-light)' }}>
                     {/* Layout em 3 colunas */}
                     <div className="flex flex-col space-y-3 md:grid md:grid-cols-3 md:gap-4 md:items-center md:space-y-0">
                       
@@ -720,7 +720,7 @@ export default function CustomerFinancial() {
                 </div>
               ) : paymentReceipts.length > 0 ? (
                 paymentReceipts.map((receipt) => (
-                  <div key={receipt.id} className="p-4 rounded-lg border" style={{ borderColor: 'var(--border-gray)' }}>
+                  <div key={receipt.id} className="p-4 rounded-lg border" style={{ borderColor: 'var(--border-gray)', background: 'var(--bg-cream-light)' }}>
                     {/* Container responsivo */}
                     <div className="flex flex-col md:flex-row md:items-start md:justify-between">
                       
