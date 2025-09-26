@@ -1,0 +1,141 @@
+🛒 [SIMPLE-CHECKOUT] Iniciando checkout simplificado
+🔍 [SIMPLE] Buscando cliente: { cpf: '54498358848', email: 'contato@gmail.com', name: 'teste' }
+Query: select "id", "full_name", "email", "phone", "cpf", "cep", "address", "number", "complement", "district", "state", "city", "password", "image", "image_url", "created_at", "updated_at" from "clients"
+✅ [SIMPLE] Cliente encontrado por CPF: client-1758816558948-9hk2ilmr7
+📋 [SIMPLE] 1 pets serão criados após pagamento aprovado
+Query: select "id", "name", "description", "features", "image", "button_text", "plan_type", "is_active", "display_order", "created_at", "billing_frequency", "base_price", "installment_price", "installment_count", "per_pet_billing", "pet_discounts", "payment_description", "available_payment_methods", "available_billing_options", "annual_price", "annual_installment_price", "annual_installment_count" from "plans" where "plans"."id" = $1 -- params: ["7a8c94f9-1336-495f-a771-12755bfd4921"]
+💰 [PRICE-CALCULATION] Preço calculado no servidor: {
+  planName: 'COMFORT',
+  basePrice: 1,
+  isAnnualPlan: true,
+  basePriceCents: 1200,
+  petCount: 1,
+  totalWithDiscounts: '12.00',
+  correctAmountInCents: 1200,
+  isDiscountEligible: false
+}
+🔄 [Cielo] Processando pagamento com cartão de crédito {
+  correlationId: '4225e924-3359-4d8c-b044-4fedfb1eeaac',
+  merchantId: '47ea3034...',
+  environment: 'production',
+  apiUrl: 'https://api.cieloecommerce.cielo.com.br'
+}
+🔍 [DEBUG] Data de expiração - ANTES da formatação: 09/2033
+🔍 [DEBUG] Data de expiração - DEPOIS da formatação: 09/2033
+🔍 [DEBUG] Formato esperado pela Cielo: MM/YYYY (exemplo: 12/2025)
+🔍 [DEBUG] Comprimento da data formatada: 7 caracteres
+🔍 [DEBUG] Data de expiração - DEPOIS da formatação: 09/2033
+🔄 [Cielo] Enviando formato oficial 2025 para cartão: {
+  MerchantOrderId: 'ORDER_1758876723081_ydvfhq',
+  Payment: {
+    Type: 'CreditCard',
+    Amount: 1200,
+    Installments: 12,
+    CreditCard: {
+      cardNumber: '****2328',
+      holder: 'GABRIEL A M DOS SAN',
+      brand: 'Master',
+      expirationDate: '09/2033'
+    }
+  }
+}
+📋 [Cielo] Resposta RAW completa do Credit Card: {
+  correlationId: '4225e924-3359-4d8c-b044-4fedfb1eeaac',
+  responseStatus: 201,
+  fullResponse: '{\n' +
+    '  "MerchantOrderId": "ORDER_1758876723081_ydvfhq",\n' +
+    '  "Customer": {\n' +
+    '    "Name": "teste",\n' +
+    '    "Identity": "",\n' +
+    '    "IdentityType": "CPF",\n' +
+    '    "Email": "contatogabrielmarquez@gmail.com",\n' +
+    '    "Address": {\n' +
+    '      "Street": "Rua Manoel Marcelino de Mattos",\n' +
+    '      "Number": "21",\n' +
+    '      "Complement": "",\n' +
+    '      "ZipCode": "11618222",\n' +
+    '      "City": "São Sebastião",\n' +
+    '      "State": "SP",\n' +
+    '      "Country": "BRA",\n' +
+    '      "AddressType": 0\n' +
+    '    }\n' +
+    '  },\n' +
+    '  "Payment": {\n' +
+    '    "ServiceTaxAmount": 0,\n' +
+    '    "Installments": 12,\n' +
+    '    "Interest": 0,\n' +
+    '    "Capture": true,\n' +
+    '    "Authenticate": false,\n' +
+    '    "Recurrent": false,\n' +
+    '    "CreditCard": {\n' +
+    '      "CardNumber": "234074******2328",\n' +
+    '      "Holder": "GABRIEL A M DOS SAN",\n' +
+    '      "ExpirationDate": "09/2033",\n' +
+    '      "SaveCard": false,\n' +
+    '      "Brand": "Master"\n' +
+    '    },\n' +
+    '    "Tid": "28224704854PB99NA79E",\n' +
+    '    "ProofOfSale": "010002",\n' +
+    '    "SoftDescriptor": "UNIPETPLAN",\n' +
+    '    "Provider": "Cielo",\n' +
+    '    "Eci": "0",\n' +
+    '    "IsQrCode": false,\n' +
+    '    "SentOrderId": "CQdE6CWixfTwHSUZjg00",\n' +
+    '    "Amount": 1200,\n' +
+    '    "ReceivedDate": "2025-09-26 05:52:03",\n' +
+    '    "Status": 3,\n' +
+    '    "IsSplitted": false,\n' +
+    '    "ReturnMessage": "Autorizacao negada",\n' +
+    '    "ReturnCode": "EE",\n' +
+    '    "PaymentId": "269ef61c-8466-426d-af2a-60fe7e581470",\n' +
+    '    "Type": "CreditCard",\n' +
+    '    "Currency": "BRL",\n' +
+    '    "Country": "BRA",\n' +
+    '    "Links": [\n' +
+    '      {\n' +
+    '        "Method": "GET",\n' +
+    '        "Rel": "self",\n' +
+    '        "Href": "https://apiquery.cieloecommerce.cielo.com.br/1/sales/269ef61c-8466-426d-af2a-60fe7e581470"\n' +
+    '      }\n' +
+    '    ]\n' +
+    '  }\n' +
+    '}'
+}
+📋 [Cielo] Resposta processada do Credit Card: {
+  correlationId: '4225e924-3359-4d8c-b044-4fedfb1eeaac',
+  responseStatus: 201,
+  hasPayment: true,
+  hasPaymentCapital: true,
+  hasPaymentLower: false,
+  paymentFields: [
+    'ServiceTaxAmount', 'Installments',
+    'Interest',         'Capture',
+    'Authenticate',     'Recurrent',
+    'CreditCard',       'Tid',
+    'ProofOfSale',      'SoftDescriptor',
+    'Provider',         'Eci',
+    'IsQrCode',         'SentOrderId',
+    'Amount',           'ReceivedDate',
+    'Status',           'IsSplitted',
+    'ReturnMessage',    'ReturnCode',
+    'PaymentId',        'Type',
+    'Currency',         'Country',
+    'Links'
+  ],
+  paymentId: '269ef61c-8466-426d-af2a-60fe7e581470',
+  status: 3,
+  returnCode: 'EE',
+  returnMessage: 'Autorizacao negada',
+  allResponseKeys: [ 'MerchantOrderId', 'Customer', 'Payment' ]
+}
+✅ [Cielo] Credit Card processado com sucesso {
+  correlationId: '4225e924-3359-4d8c-b044-4fedfb1eeaac',
+  paymentId: '269ef61c-8466-426d-af2a-60fe7e581470',
+  status: 3
+}
+💳 [SIMPLE] Resultado do pagamento: {
+  paymentId: '269ef61c-8466-426d-af2a-60fe7e581470',
+  status: 3,
+  approved: false
+}
+POST /api/checkout/simple-process 400 in 853ms :: {"error":"Pagamento não autor…
