@@ -5,7 +5,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { clientConfig } from "../config";
 
 // Função para formatar telefone brasileiro com formatação dinâmica para 8 ou 9 dígitos
-const formatBrazilianPhoneForDisplay = (value: string | null | undefined): string => {
+export const formatBrazilianPhoneForDisplay = (value: string | null | undefined): string => {
   if (!value) return '';
 
   // Remove todos os caracteres não numéricos

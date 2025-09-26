@@ -1,6 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectSeparator, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
@@ -35,6 +34,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { useNetworkPageData } from "@/hooks/use-parallel-data";
 import { AnimatedSection } from "@/components/ui/animated-section";
 import { AnimatedList } from "@/components/ui/animated-list";
+import { formatBrazilianPhoneForDisplay } from "@/hooks/use-site-settings";
 // ByteaImageDisplay removed - now using Supabase Storage images
 
 // Estilos e scripts removidos para simplificar o build
@@ -268,7 +268,7 @@ export default function Network() {
             <>
               <AnimatedList animation="slideUp" delay={300} staggerDelay={75}>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {currentUnits.map((unit: NetworkUnit, index: number) => (
+                  {currentUnits.map((unit: NetworkUnit) => (
                     <Card key={unit.id} className="shadow-lg rounded-xl border-none bg-[var(--bg-cream-lighter)] overflow-hidden flex flex-col h-full">
                       <div className="relative">
                         <img 
@@ -297,44 +297,10 @@ export default function Network() {
                           </div>
                           <div className="flex items-center space-x-3">
                             <Phone className="h-4 w-4 text-[var(--icon-teal)] flex-shrink-0" />
-                            <span className="text-[var(--text-dark-primary)] text-sm font-medium">{unit.phone}</span>
+                            <span className="text-[var(--text-dark-primary)] text-sm font-medium">{formatBrazilianPhoneForDisplay(unit.phone)}</span>
                           </div>
                         </div>
 
-                        <div className="mb-6 flex-1">
-                          <h4 className="font-semibold text-[var(--text-teal)] mb-3">Serviços Disponíveis:</h4>
-                          <div className="network-services-container space-y-2.5">
-                            {unit.services.slice(0, 2).map((service: string, serviceIndex: number) => (
-                              <div key={serviceIndex} className="network-services-row">
-                                <div className="network-services-badge-wrapper">
-                                  <Badge 
-                                    className="network-services-badge bg-[var(--bg-teal)]/10 text-[var(--text-teal)] border-[var(--border-teal-light)]"
-                                    title={service}
-                                  >
-                                    {service}
-                                  </Badge>
-                                </div>
-                              </div>
-                            ))}
-                            {unit.services.length >= 3 && (
-                              <div className="network-services-row flex items-center gap-3">
-                                <div className="network-services-badge-wrapper">
-                                  <Badge 
-                                    className="network-services-badge bg-[var(--bg-teal)]/10 text-[var(--text-teal)] border-[var(--border-teal-light)]"
-                                    title={unit.services[2]}
-                                  >
-                                    {unit.services[2]}
-                                  </Badge>
-                                </div>
-                                {unit.services.length > 3 && (
-                                  <Badge className="network-services-counter bg-[var(--bg-teal)]/10 text-[var(--text-teal)] border-[var(--border-teal-light)]">
-                                    +{unit.services.length - 3}
-                                  </Badge>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </div>
 
                         <div className="flex gap-3 mt-auto">
                           <Button 
