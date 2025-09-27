@@ -1,0 +1,151 @@
+2025-09-27 14:52:21.03
+db05b6b3
+System
+forwarding local port 5000 to external port 80 (mapped as 1104)
+2025-09-27 14:52:29.03
+db05b6b3
+User
+> planodesaudepet@1.0.0 start
+2025-09-27 14:52:29.03
+db05b6b3
+User
+> NODE_ENV=production tsx unified-server.ts
+2025-09-27 14:52:39.31
+db05b6b3
+User
+🔍 Carregando .env de: /home/runner/workspace/.env
+2025-09-27 14:52:39.31
+db05b6b3
+User
+📄 Status do .env: Arquivo não encontrado (usando variáveis de ambiente do sistema)
+2025-09-27 14:52:39.31
+db05b6b3
+User
+🔍 Variáveis de ambiente carregadas:
+2025-09-27 14:52:39.31
+db05b6b3
+User
+LOGIN: ✅ Presente
+2025-09-27 14:52:39.31
+db05b6b3
+User
+SENHA: ✅ Presente
+2025-09-27 14:52:39.31
+db05b6b3
+User
+DATABASE_URL: ✅ Presente
+2025-09-27 14:52:39.31
+db05b6b3
+User
+NODE_ENV: production
+2025-09-27 14:52:39.31
+db05b6b3
+User
+✅ Todas as configurações obrigatórias estão presentes
+2025-09-27 14:52:39.31
+db05b6b3
+User
+🔒 Validação de segurança concluída com sucesso
+2025-09-27 14:52:39.31
+db05b6b3
+User
+🚀 CONFIGURAÇÃO AUTOMÁTICA APLICADA:
+2025-09-27 14:52:39.31
+db05b6b3
+User
+=====================================
+2025-09-27 14:52:39.31
+db05b6b3
+User
+🌍 Ambiente: production
+2025-09-27 14:52:39.31
+db05b6b3
+User
+🔌 Porta: 5000
+2025-09-27 14:52:39.31
+db05b6b3
+User
+🏠 Host: 0.0.0.0
+2025-09-27 14:52:39.31
+db05b6b3
+User
+💾 Armazenamento: local
+2025-09-27 14:52:39.31
+db05b6b3
+User
+🔑 Sessão: Configurada
+2025-09-27 14:52:39.31
+db05b6b3
+User
+📞 Contato: Configurado via ambiente/banco
+2025-09-27 14:52:39.31
+db05b6b3
+User
+=====================================
+2025-09-27 14:52:39.58
+db05b6b3
+User
+⚠️ Node.js 18 and below are deprecated and will no longer be supported in future versions of @supabase/supabase-js. Please upgrade to Node.js 20 or later. For more information, visit: https://github.com/orgs/supabase/discussions/37217
+2025-09-27 14:52:41.26
+db05b6b3
+User
+🔌 Banco: Conectado e saudável
+2025-09-27 14:52:41.26
+db05b6b3
+User
+2025-09-27 14:52:41.26
+db05b6b3
+User
+📋 SERVIÇOS DISPONÍVEIS:
+2025-09-27 14:52:41.26
+db05b6b3
+User
+🦄 UNIPET:
+2025-09-27 14:52:41.26
+db05b6b3
+User
+• Frontend: / (raiz)
+2025-09-27 14:52:41.26
+db05b6b3
+User
+• APIs: /api/*
+2025-09-27 14:52:41.26
+db05b6b3
+User
+• Health: /api/health
+2025-09-27 14:52:41.26
+db05b6b3
+User
+🔧 ADMIN:
+2025-09-27 14:52:41.26
+db05b6b3
+User
+• Frontend: /admin
+2025-09-27 14:52:41.26
+db05b6b3
+User
+• APIs: /admin/api/*
+2025-09-27 14:52:41.26
+db05b6b3
+User
+• Health: /admin/health
+2025-09-27 14:52:41.26
+db05b6b3
+User
+🔒 FUNCIONALIDADES:
+2025-09-27 14:52:41.26
+db05b6b3
+User
+• Roteamento unificado
+2025-09-27 14:52:41.26
+db05b6b3
+User
+• Banco de dados compartilhado
+2025-09-27 14:52:41.26
+db05b6b3
+User
+• Sessions e cookies configurados
+2025-09-27 14:52:41.26
+db05b6b3
+User
+• Tratamento de erros global

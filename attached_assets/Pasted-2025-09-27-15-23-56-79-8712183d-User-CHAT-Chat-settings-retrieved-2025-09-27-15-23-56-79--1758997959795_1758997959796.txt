@@ -1,0 +1,160 @@
+2025-09-27 15:23:56.79
+8712183d
+User
+✅ [CHAT] Chat settings retrieved: {
+2025-09-27 15:23:56.79
+8712183d
+User
+hasBotIcon: true,
+2025-09-27 15:23:56.79
+8712183d
+User
+hasUserIcon: true,
+2025-09-27 15:23:56.79
+8712183d
+User
+botIconUrl: <Buffer 89 50 4e 47 0d 0a 1a 0a 00 00 00 0d 49 48 44 52 00 00 00 40 00 00 00 2c 08 03 00 00 00 e2 81 4e cd 00 00 03 00 50 4c 54 45 fd fd fd f5 f4 f5 50 93 31 ... 3453 more bytes>,
+2025-09-27 15:23:56.79
+8712183d
+User
+userIconUrl: <Buffer 89 50 4e 47 0d 0a 1a 0a 00 00 00 0d 49 48 44 52 00 00 00 40 00 00 00 2c 08 03 00 00 00 e2 81 4e cd 00 00 03 00 50 4c 54 45 fd fd fd f5 f4 f5 50 93 31 ... 3453 more bytes>
+2025-09-27 15:23:56.79
+8712183d
+User
+}
+2025-09-27 15:23:56.79
+8712183d
+User
+GET /api/chat/settings 304 in 319ms
+2025-09-27 15:23:59.55
+8712183d
+User
+GET /api/plans 304 in 181ms
+2025-09-27 15:23:59.70
+8712183d
+User
+GET /api/site-settings 304 in 329ms
+2025-09-27 15:23:59.72
+8712183d
+User
+✅ [CHAT] Chat settings retrieved: {
+2025-09-27 15:23:59.72
+8712183d
+User
+hasBotIcon: true,
+2025-09-27 15:23:59.72
+8712183d
+User
+hasUserIcon: true,
+2025-09-27 15:23:59.72
+8712183d
+User
+botIconUrl: <Buffer 89 50 4e 47 0d 0a 1a 0a 00 00 00 0d 49 48 44 52 00 00 00 40 00 00 00 2c 08 03 00 00 00 e2 81 4e cd 00 00 03 00 50 4c 54 45 fd fd fd f5 f4 f5 50 93 31 ... 3453 more bytes>,
+2025-09-27 15:23:59.72
+8712183d
+User
+userIconUrl: <Buffer 89 50 4e 47 0d 0a 1a 0a 00 00 00 0d 49 48 44 52 00 00 00 40 00 00 00 2c 08 03 00 00 00 e2 81 4e cd 00 00 03 00 50 4c 54 45 fd fd fd f5 f4 f5 50 93 31 ... 3453 more bytes>
+2025-09-27 15:23:59.72
+8712183d
+User
+}
+2025-09-27 15:23:59.72
+8712183d
+User
+GET /api/chat/settings 304 in 324ms
+2025-09-27 15:24:11.76
+8712183d
+User
+GET /api/plans 304 in 164ms
+2025-09-27 15:24:11.77
+8712183d
+User
+GET /api/species 304 in 171ms
+2025-09-27 15:29:38.10
+8712183d
+User
+🛒 [CHECKOUT-STEP2] Iniciando salvamento dos dados do cliente e pets
+2025-09-27 15:29:38.10
+8712183d
+User
+🔍 [CHECKOUT-STEP2] Dados recebidos (sem CPF): { email: 'camargo@gmail.com', hasPassword: false, petsCount: 0 }
+2025-09-27 15:29:38.28
+8712183d
+User
+🆕 [CHECKOUT-STEP2] Criando novo cliente sem CPF (será adicionado no Step 3)
+2025-09-27 15:29:38.32
+8712183d
+User
+❌ [CHECKOUT-STEP2] Erro ao salvar dados: Error: Illegal arguments: undefined, number
+2025-09-27 15:29:38.32
+8712183d
+User
+at _async (/home/runner/workspace/node_modules/bcryptjs/dist/bcrypt.js:214:46)
+2025-09-27 15:29:38.32
+8712183d
+User
+at /home/runner/workspace/node_modules/bcryptjs/dist/bcrypt.js:223:17
+2025-09-27 15:29:38.32
+8712183d
+User
+at new Promise ()
+2025-09-27 15:29:38.32
+8712183d
+User
+at bcrypt.hash (/home/runner/workspace/node_modules/bcryptjs/dist/bcrypt.js:222:20)
+2025-09-27 15:29:38.32
+8712183d
+User
+at (/home/runner/workspace/server/routes.ts:1089:43)
+2025-09-27 15:29:38.32
+8712183d
+User
+at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-09-27 15:29:38.32
+8712183d
+User
+POST /api/checkout/save-customer-data 500 in 219ms
+2025-09-27 15:30:01.44
+8712183d
+User
+🛒 [CHECKOUT-STEP2] Iniciando salvamento dos dados do cliente e pets
+2025-09-27 15:30:01.44
+8712183d
+User
+🔍 [CHECKOUT-STEP2] Dados recebidos (sem CPF): { email: 'camargo@gmail.com', hasPassword: false, petsCount: 0 }
+2025-09-27 15:30:01.60
+8712183d
+User
+🆕 [CHECKOUT-STEP2] Criando novo cliente sem CPF (será adicionado no Step 3)
+2025-09-27 15:30:01.63
+8712183d
+User
+❌ [CHECKOUT-STEP2] Erro ao salvar dados: Error: Illegal arguments: undefined, number
+2025-09-27 15:30:01.63
+8712183d
+User
+at _async (/home/runner/workspace/node_modules/bcryptjs/dist/bcrypt.js:214:46)
+2025-09-27 15:30:01.63
+8712183d
+User
+at /home/runner/workspace/node_modules/bcryptjs/dist/bcrypt.js:223:17
+2025-09-27 15:30:01.63
+8712183d
+User
+at new Promise ()
+2025-09-27 15:30:01.63
+8712183d
+User
+at bcrypt.hash (/home/runner/workspace/node_modules/bcryptjs/dist/bcrypt.js:222:20)
+2025-09-27 15:30:01.63
+8712183d
+User
+at (/home/runner/workspace/server/routes.ts:1089:43)
+2025-09-27 15:30:01.63
+8712183d
+User
+at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-09-27 15:30:01.63
+8712183d
+User
+POST /api/checkout/save-customer-data 500 in 192ms
