@@ -1470,50 +1470,79 @@ export async function registerRoutes(app: Express): Promise<Server> {
             }
           }
           
-          // Create contract
-          const contractData = {
-            clientId: client.id,
-            planId: planData.planId,
-            petId: createdPets[0]?.id || 'temp-pet', // Use first created pet or temp placeholder
-            contractNumber: `UNIPET-${Date.now()}-${client.id.substring(0, 4).toUpperCase()}`,
-            status: 'active' as const,
-            startDate: new Date(),
-            monthlyAmount: selectedPlan.basePrice || '0',
-            paymentMethod: 'credit_card',
-            cieloPaymentId: paymentResult.payment.paymentId,
-            proofOfSale: paymentResult.payment.proofOfSale,
-            authorizationCode: paymentResult.payment.authorizationCode,
-            tid: paymentResult.payment.tid,
-            returnCode: paymentResult.payment.returnCode,
-            returnMessage: paymentResult.payment.returnMessage
-          };
-          
-          try {
-            const contract = await storage.createContract(contractData);
-            console.log(`✅ [SIMPLE] Contrato criado: ${contract.id}`);
+          // Create contract for each pet
+          const contracts: any[] = [];
+          for (const pet of createdPets) {
+            const contractData = {
+              clientId: client.id,
+              planId: planData.planId,
+              petId: pet.id,
+              contractNumber: `UNIPET-${Date.now()}-${pet.id.substring(0, 4).toUpperCase()}`,
+              status: 'active' as const,
+              startDate: new Date(),
+              monthlyAmount: selectedPlan.basePrice || '0',
+              paymentMethod: 'credit_card',
+              cieloPaymentId: paymentResult.payment.paymentId,
+              proofOfSale: paymentResult.payment.proofOfSale,
+              authorizationCode: paymentResult.payment.authorizationCode,
+              tid: paymentResult.payment.tid,
+              returnCode: paymentResult.payment.returnCode,
+              returnMessage: paymentResult.payment.returnMessage
+            };
             
-            // Generate payment receipt for credit card
+            try {
+              const contract = await storage.createContract(contractData);
+              contracts.push(contract);
+              console.log(`✅ [SIMPLE] Contrato criado para pet ${pet.name}: ${contract.id}`);
+            } catch (contractError) {
+              console.error(`⚠️ [SIMPLE] Erro ao criar contrato para pet ${pet.name}:`, contractError);
+            }
+          }
+          
+          // Generate payment receipt with all pets
+          if (contracts.length > 0) {
             try {
               const { PaymentReceiptService } = await import("./services/payment-receipt-service.js");
               const receiptService = new PaymentReceiptService();
               
+              // Prepare pets data for receipt
+              const petsForReceipt = createdPets.map(pet => ({
+                name: pet.name || 'Pet',
+                species: pet.species || 'Cão',
+                breed: pet.breed,
+                age: pet.age,
+                weight: pet.weight,
+                sex: pet.sex,
+                planName: selectedPlan.name,
+                planType: selectedPlan.planType || 'BASIC',
+                value: Math.round(parseFloat(selectedPlan.basePrice || '0') * 100),
+                discount: 0,
+                discountedValue: Math.round(parseFloat(selectedPlan.basePrice || '0') * 100)
+              }));
+              
               const receiptData = {
-                contractId: contract.id,
+                contractId: contracts[0].id,
                 cieloPaymentId: paymentResult.payment.paymentId,
                 clientName: client.fullName,
                 clientEmail: client.email,
-                petName: createdPets[0]?.name || 'Pet',
-                planName: selectedPlan.name
+                clientCPF: client.cpf,
+                clientPhone: client.phone,
+                pets: petsForReceipt,
+                paymentMethod: 'credit_card',
+                installments: paymentData.payment?.installments || 1,
+                installmentValue: correctAmountInCents,
+                totalDiscount: 0,
+                finalAmount: correctAmountInCents
               };
               
-              console.log(`📄 [SIMPLE-RECEIPT] Gerando comprovante para pagamento com cartão`);
+              console.log(`📄 [SIMPLE-RECEIPT] Gerando comprovante consolidado para ${createdPets.length} pets`);
               const receiptResult = await receiptService.generatePaymentReceipt(receiptData, `simple_${paymentResult.payment.paymentId}`);
               
               if (receiptResult.success) {
                 console.log("✅ [SIMPLE-RECEIPT] Comprovante oficial gerado com sucesso:", {
                   receiptId: receiptResult.receiptId,
                   receiptNumber: receiptResult.receiptNumber,
-                  contractNumber: contract.contractNumber
+                  petsIncluded: createdPets.length
                 });
               } else {
                 console.error("❌ [SIMPLE-RECEIPT] Erro ao gerar comprovante:", receiptResult.error);
@@ -1521,8 +1550,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
             } catch (receiptError: any) {
               console.error("❌ [SIMPLE-RECEIPT] Erro ao gerar comprovante de pagamento:", receiptError.message);
             }
-          } catch (contractError) {
-            console.error(`⚠️ [SIMPLE] Erro ao criar contrato:`, contractError);
           }
           
           return res.status(200).json({
@@ -1593,6 +1620,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           let firstPetId = null;
           
           // Create pets immediately for PIX
+          const createdPetsPix: any[] = [];
           if (petsToCreate && petsToCreate.length > 0) {
             for (const petData of petsToCreate) {
               const newPetData = {
@@ -1612,6 +1640,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               
               try {
                 const pet = await storage.createPet(newPetData);
+                createdPetsPix.push(pet);
                 if (!firstPetId) firstPetId = pet.id;
                 console.log(`✅ [SIMPLE-PIX] Pet criado: ${pet.name} (${pet.id})`);
               } catch (petError) {
@@ -1624,29 +1653,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             firstPetId = `temp-${Date.now()}`;
           }
           
-          console.log(`📋 [SIMPLE-PIX] PIX gerado - pets criados com sucesso`);
-          
-          // Create contract for PIX pending payment
-          const contractData = {
-            clientId: client.id,
-            petId: firstPetId,
-            planId: selectedPlan.id,
-            contractNumber: `UNIPET-${Date.now()}-${firstPetId.substring(0, 4).toUpperCase()}`,
-            billingPeriod: 'monthly' as const,
-            status: 'active' as const, // Contract is created as active, payment status will be tracked separately
-            startDate: new Date(),
-            monthlyAmount: selectedPlan.basePrice || '0',
-            paymentMethod: 'pix',
-            cieloPaymentId: pixPaymentResult.payment.paymentId,
-            proofOfSale: pixPaymentResult.payment.proofOfSale || '',
-            authorizationCode: pixPaymentResult.payment.authorizationCode || '',
-            tid: pixPaymentResult.payment.tid || '',
-            receivedDate: new Date(), // Add received date for PIX transactions
-            returnCode: pixPaymentResult.payment.returnCode,
-            returnMessage: pixPaymentResult.payment.returnMessage,
-            pixQrCode: pixPaymentResult.payment.qrCodeBase64Image || null,
-            pixCode: pixPaymentResult.payment.qrCodeString || null
-          };
+          console.log(`📋 [SIMPLE-PIX] PIX gerado - ${createdPetsPix.length} pets criados com sucesso`);
           
           // Validate PIX response has required fields
           if (!pixPaymentResult.payment.qrCodeBase64Image || !pixPaymentResult.payment.qrCodeString) {
@@ -1657,48 +1664,95 @@ export async function registerRoutes(app: Express): Promise<Server> {
             });
           }
           
-          // Create contract - fail if unable to store payment record
-          try {
-            const contract = await storage.createContract(contractData);
-            console.log(`✅ [SIMPLE-PIX] Contrato criado para pagamento PIX pendente: ${contract.id}`);
+          // Create contract for each pet (PIX pending payment)
+          const contractsPix: any[] = [];
+          for (const pet of createdPetsPix) {
+            const contractData = {
+              clientId: client.id,
+              petId: pet.id,
+              planId: selectedPlan.id,
+              contractNumber: `UNIPET-${Date.now()}-${pet.id.substring(0, 4).toUpperCase()}`,
+              billingPeriod: 'monthly' as const,
+              status: 'active' as const,
+              startDate: new Date(),
+              monthlyAmount: selectedPlan.basePrice || '0',
+              paymentMethod: 'pix',
+              cieloPaymentId: pixPaymentResult.payment.paymentId,
+              proofOfSale: pixPaymentResult.payment.proofOfSale || '',
+              authorizationCode: pixPaymentResult.payment.authorizationCode || '',
+              tid: pixPaymentResult.payment.tid || '',
+              receivedDate: new Date(),
+              returnCode: pixPaymentResult.payment.returnCode,
+              returnMessage: pixPaymentResult.payment.returnMessage,
+              pixQrCode: pixPaymentResult.payment.qrCodeBase64Image || null,
+              pixCode: pixPaymentResult.payment.qrCodeString || null
+            };
             
-            // Generate payment receipt for PIX
             try {
-              const { PaymentReceiptService } = await import("./services/payment-receipt-service.js");
-              const receiptService = new PaymentReceiptService();
-              
-              const receiptData = {
-                contractId: contract.id,
-                cieloPaymentId: pixPaymentResult.payment.paymentId,
-                clientName: client.fullName,
-                clientEmail: client.email,
-                petName: firstPetId.startsWith('temp-') ? 'Pet' : (await storage.getPet(firstPetId))?.name || 'Pet',
-                planName: selectedPlan.name
-              };
-              
-              console.log(`📄 [SIMPLE-PIX-RECEIPT] Gerando comprovante para pagamento PIX`);
-              const receiptResult = await receiptService.generatePaymentReceipt(receiptData, `simple_pix_${pixPaymentResult.payment.paymentId}`);
-              
-              if (receiptResult.success) {
-                console.log("✅ [SIMPLE-PIX-RECEIPT] Comprovante oficial gerado com sucesso:", {
-                  receiptId: receiptResult.receiptId,
-                  receiptNumber: receiptResult.receiptNumber,
-                  contractNumber: contract.contractNumber
-                });
-              } else {
-                console.error("❌ [SIMPLE-PIX-RECEIPT] Erro ao gerar comprovante:", receiptResult.error);
-              }
-            } catch (receiptError: any) {
-              console.error("❌ [SIMPLE-PIX-RECEIPT] Erro ao gerar comprovante de pagamento PIX:", receiptError.message);
+              const contract = await storage.createContract(contractData);
+              contractsPix.push(contract);
+              console.log(`✅ [SIMPLE-PIX] Contrato criado para pet ${pet.name}: ${contract.id}`);
+            } catch (contractError: any) {
+              console.error(`❌ [SIMPLE-PIX] Erro ao criar contrato para pet ${pet.name}:`, contractError);
             }
-          } catch (contractError: any) {
-            console.error(`❌ [SIMPLE-PIX] Erro crítico ao criar contrato:`, contractError);
-            // Don't return QR Code if we can't track the payment
+          }
+          
+          if (contractsPix.length === 0) {
+            console.error(`❌ [SIMPLE-PIX] Nenhum contrato foi criado`);
             return res.status(503).json({
               error: 'Erro ao registrar pagamento',
               details: 'Não foi possível registrar o pagamento PIX. Por favor, tente novamente.',
-              technicalDetails: process.env.NODE_ENV === 'development' ? contractError.message : undefined
+              technicalDetails: process.env.NODE_ENV === 'development' ? 'Nenhum contrato foi criado' : undefined
             });
+          }
+          
+          // Generate payment receipt with all pets for PIX
+          try {
+            const { PaymentReceiptService } = await import("./services/payment-receipt-service.js");
+            const receiptService = new PaymentReceiptService();
+            
+            // Prepare pets data for receipt
+            const petsForReceipt = createdPetsPix.map(pet => ({
+              name: pet.name || 'Pet',
+              species: pet.species || 'Cão',
+              breed: pet.breed,
+              age: pet.age,
+              weight: pet.weight,
+              sex: pet.sex,
+              planName: selectedPlan.name,
+              planType: selectedPlan.planType || 'BASIC',
+              value: Math.round(parseFloat(selectedPlan.basePrice || '0') * 100),
+              discount: 0,
+              discountedValue: Math.round(parseFloat(selectedPlan.basePrice || '0') * 100)
+            }));
+            
+            const receiptData = {
+              contractId: contractsPix[0].id,
+              cieloPaymentId: pixPaymentResult.payment.paymentId,
+              clientName: client.fullName,
+              clientEmail: client.email,
+              clientCPF: client.cpf,
+              clientPhone: client.phone,
+              pets: petsForReceipt,
+              paymentMethod: 'pix',
+              totalDiscount: 0,
+              finalAmount: correctAmountInCents
+            };
+            
+            console.log(`📄 [SIMPLE-PIX-RECEIPT] Gerando comprovante consolidado para ${createdPetsPix.length} pets`);
+            const receiptResult = await receiptService.generatePaymentReceipt(receiptData, `simple_pix_${pixPaymentResult.payment.paymentId}`);
+            
+            if (receiptResult.success) {
+              console.log("✅ [SIMPLE-PIX-RECEIPT] Comprovante oficial gerado com sucesso:", {
+                receiptId: receiptResult.receiptId,
+                receiptNumber: receiptResult.receiptNumber,
+                petsIncluded: createdPetsPix.length
+              });
+            } else {
+              console.error("❌ [SIMPLE-PIX-RECEIPT] Erro ao gerar comprovante:", receiptResult.error);
+            }
+          } catch (receiptError: any) {
+            console.error("❌ [SIMPLE-PIX-RECEIPT] Erro ao gerar comprovante de pagamento PIX:", receiptError.message);
           }
           
           return res.status(200).json({
