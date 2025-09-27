@@ -14,15 +14,54 @@ pdfMake.vfs = (vfsFonts as any).vfs;
 interface PaymentReceiptData {
   contractId?: string;
   cieloPaymentId: string;
+  
+  // Dados do cliente expandidos
   clientName: string;
   clientEmail: string;
-  petName?: string;
-  planName?: string;
+  clientCPF?: string;
+  clientPhone?: string;
+  clientAddress?: {
+    street: string;
+    number: string;
+    complement?: string;
+    neighborhood: string;
+    city: string;
+    state: string;
+    zipCode: string;
+  };
+  
+  // Dados dos pets (array completo)
   pets?: Array<{
     name: string;
+    species: string; // 'Cão' ou 'Gato'
+    breed?: string;
+    age?: number;
+    weight?: number;
+    sex?: string; // 'M' ou 'F'
     planName: string;
-    value: number;
+    planType: string; // 'BASIC', 'INFINITY', 'COMFORT', 'PLATINUM'
+    value: number; // em centavos
+    discount?: number; // percentual (5, 10, 15)
+    discountedValue?: number; // valor com desconto em centavos
   }>;
+  
+  // Dados do pagamento
+  paymentMethod?: string; // 'credit_card' ou 'pix'
+  installments?: number;
+  installmentValue?: number; // valor da parcela em centavos
+  totalDiscount?: number; // desconto total em centavos
+  finalAmount?: number; // valor final em centavos
+  
+  // Dados do plano geral
+  planFeatures?: {
+    hasCoparticipation: boolean;
+    hasWaitingPeriod: boolean;
+    billingType: 'monthly' | 'annual';
+  };
+  
+  // Compatibilidade com versão anterior
+  petName?: string;
+  planName?: string;
 }
 
 export interface GenerateReceiptResult {
@@ -307,8 +346,17 @@ export class PaymentReceiptService {
                 { text: 'Dados do Cliente', style: 'billToTitle', marginBottom: 10 },
                 { text: receiptData.clientName, style: 'billToText', bold: true },
                 { text: receiptData.clientEmail, style: 'billToText' },
-                ...(receiptData.petName ? [{ text: `Pet: ${receiptData.petName}`, style: 'billToText' }] : []),
-                ...(receiptData.planName ? [{ text: `Plano: ${receiptData.planName}`, style: 'billToText' }] : [])
+                ...(receiptData.clientCPF ? [{ text: `CPF: ${receiptData.clientCPF.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')}`, style: 'billToText' }] : []),
+                ...(receiptData.clientPhone ? [{ text: `Telefone: ${receiptData.clientPhone}`, style: 'billToText' }] : []),
+                ...(receiptData.clientAddress ? [
+                  { text: `${receiptData.clientAddress.street}, ${receiptData.clientAddress.number}${receiptData.clientAddress.complement ? ' - ' + receiptData.clientAddress.complement : ''}`, style: 'billToText' },
+                  { text: `${receiptData.clientAddress.neighborhood} - ${receiptData.clientAddress.city}/${receiptData.clientAddress.state}`, style: 'billToText' },
+                  { text: `CEP: ${receiptData.clientAddress.zipCode.replace(/(\d{5})(\d{3})/, '$1-$2')}`, style: 'billToText' }
+                ] : []),
+                // Resumo dos pets (se múltiplos)
+                ...(receiptData.pets && receiptData.pets.length > 1 ? [
+                  { text: `Total de pets: ${receiptData.pets.length}`, style: 'billToText', bold: true, marginTop: 5 }
+                ] : [])
               ]
             }
           ],
@@ -353,19 +401,34 @@ export class PaymentReceiptService {
               ],
               // Service items - múltiplos pets se disponível
               ...(receiptData.pets && receiptData.pets.length > 0 ? 
-                receiptData.pets.map((pet, index) => [
-                  {
-                    stack: [
-                      { text: pet.planName || receiptData.planName || 'Plano de Saúde Pet', style: 'serviceDescription', bold: true },
-                      { text: `Pagamento referente ao plano contratado`, style: 'serviceDetails' },
-                      { text: `Pet: ${pet.name}`, style: 'serviceDetails' },
-                      ...(index > 0 ? [{ text: `Desconto aplicado: ${index === 1 ? '5%' : index === 2 ? '10%' : '15%'}`, style: 'serviceDetails', color: '#16a34a' }] : [])
-                    ]
-                  },
-                  { text: '1', style: 'tableCell', alignment: 'center' },
-                  { text: (pet.value / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }), style: 'tableCell', alignment: 'right' },
-                  { text: (pet.value / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }), style: 'tableCell', alignment: 'right' }
-                ]) :
+                receiptData.pets.map((pet, index) => {
+                  // Usar valores já calculados se disponíveis, senão usar fallback
+                  const unitValue = pet.discountedValue || pet.value || 0;
+                  const originalValue = pet.value || 0;
+                  const hasDiscount = pet.discount && pet.discount > 0;
+                  
+                  return [
+                    {
+                      stack: [
+                        { text: pet.planName || receiptData.planName || 'Plano de Saúde Pet', style: 'serviceDescription', bold: true },
+                        { text: `Pagamento referente ao plano contratado`, style: 'serviceDetails' },
+                        { text: `Pet: ${pet.name}`, style: 'serviceDetails' },
+                        { text: `Espécie: ${pet.species || 'Não informado'}`, style: 'serviceDetails' },
+                        ...(pet.breed ? [{ text: `Raça: ${pet.breed}`, style: 'serviceDetails' }] : []),
+                        ...(pet.age ? [{ text: `Idade: ${pet.age} ${pet.age === 1 ? 'ano' : 'anos'}`, style: 'serviceDetails' }] : []),
+                        ...(pet.weight ? [{ text: `Peso: ${pet.weight}kg`, style: 'serviceDetails' }] : []),
+                        ...(pet.sex ? [{ text: `Sexo: ${pet.sex === 'M' ? 'Macho' : pet.sex === 'F' ? 'Fêmea' : pet.sex}`, style: 'serviceDetails' }] : []),
+                        ...(hasDiscount ? [
+                          { text: `Desconto aplicado: ${pet.discount}%`, style: 'serviceDetails', color: '#16a34a' },
+                          { text: `Valor original: ${(originalValue / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`, style: 'serviceDetails', decoration: 'lineThrough' }
+                        ] : [])
+                      ]
+                    },
+                    { text: '1', style: 'tableCell', alignment: 'center' },
+                    { text: (unitValue / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }), style: 'tableCell', alignment: 'right' },
+                    { text: (unitValue / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }), style: 'tableCell', alignment: 'right' }
+                  ];
+                }) :
                 // Fallback para pets únicos (compatibilidade)
                 [[
                   {
@@ -390,7 +453,7 @@ export class PaymentReceiptService {
           marginBottom: 30
         },
 
-        // Totals section
+        // Totals section - Cálculo detalhado quando houver pets e descontos
         {
           columns: [
             { width: '60%', text: '' },
@@ -399,9 +462,70 @@ export class PaymentReceiptService {
               table: {
                 widths: ['60%', '40%'],
                 body: [
-                  ['Subtotal', { text: amount, alignment: 'right' }],
-                  [{ text: 'Total', bold: true }, { text: amount, alignment: 'right', bold: true }],
-                  [{ text: 'Valor Pago', bold: true, color: 'rgb(var(--success))' }, { text: amount, alignment: 'right', bold: true, color: 'rgb(var(--success))' }]
+                  // Subtotal (soma dos valores sem desconto)
+                  ...(receiptData.pets && receiptData.pets.length > 0 && receiptData.totalDiscount ? [
+                    ['Subtotal', { 
+                      text: ((receiptData.pets.reduce((sum, pet) => sum + (pet.value || 0), 0)) / 100).toLocaleString('pt-BR', { 
+                        style: 'currency', 
+                        currency: 'BRL' 
+                      }), 
+                      alignment: 'right' 
+                    }],
+                    // Desconto total
+                    ['Desconto Total', { 
+                      text: `- ${(receiptData.totalDiscount / 100).toLocaleString('pt-BR', { 
+                        style: 'currency', 
+                        currency: 'BRL' 
+                      })}`, 
+                      alignment: 'right', 
+                      color: '#16a34a' 
+                    }]
+                  ] : [
+                    ['Subtotal', { text: amount, alignment: 'right' }]
+                  ]),
+                  
+                  // Total final
+                  [{ text: 'Total', bold: true }, { 
+                    text: receiptData.finalAmount ? 
+                      (receiptData.finalAmount / 100).toLocaleString('pt-BR', { 
+                        style: 'currency', 
+                        currency: 'BRL' 
+                      }) : amount, 
+                    alignment: 'right', 
+                    bold: true 
+                  }],
+                  
+                  // Parcelamento (se houver)
+                  ...(receiptData.installments && receiptData.installments > 1 ? [
+                    [`${receiptData.installments}x de`, { 
+                      text: receiptData.installmentValue ? 
+                        (receiptData.installmentValue / 100).toLocaleString('pt-BR', { 
+                          style: 'currency', 
+                          currency: 'BRL' 
+                        }) : 
+                        ((receiptData.finalAmount || cieloPayment.amount) / receiptData.installments / 100).toLocaleString('pt-BR', { 
+                          style: 'currency', 
+                          currency: 'BRL' 
+                        }), 
+                      alignment: 'right' 
+                    }]
+                  ] : []),
+                  
+                  // Valor pago
+                  [{ 
+                    text: receiptData.paymentMethod === 'pix' ? 'Valor PIX' : 'Valor Pago', 
+                    bold: true, 
+                    color: '#16a34a' 
+                  }, { 
+                    text: receiptData.finalAmount ? 
+                      (receiptData.finalAmount / 100).toLocaleString('pt-BR', { 
+                        style: 'currency', 
+                        currency: 'BRL' 
+                      }) : amount, 
+                    alignment: 'right', 
+                    bold: true, 
+                    color: '#16a34a' 
+                  }]
                 ]
               },
               layout: 'lightHorizontalLines'
@@ -430,6 +554,38 @@ export class PaymentReceiptService {
           marginBottom: 30
         },
 
+        // Informações do Plano (se disponível)
+        ...(receiptData.planFeatures ? [
+          { text: 'CARACTERÍSTICAS DO PLANO', style: 'sectionHeader' },
+          {
+            table: {
+              widths: ['35%', '65%'],
+              body: [
+                ['Tipo de Cobrança:', { 
+                  text: receiptData.planFeatures.billingType === 'annual' ? 'Anual' : 'Mensal', 
+                  style: 'dataValue' 
+                }],
+                ['Coparticipação:', { 
+                  text: receiptData.planFeatures.hasCoparticipation ? 'Com coparticipação' : 'Sem coparticipação', 
+                  style: 'dataValue' 
+                }],
+                ['Carência:', { 
+                  text: receiptData.planFeatures.hasWaitingPeriod ? 'Com período de carência' : 'Sem período de carência', 
+                  style: 'dataValue' 
+                }],
+                ...(receiptData.pets && receiptData.pets.length > 1 ? [
+                  ['Pets Cobertos:', { 
+                    text: receiptData.pets.map(pet => `${pet.name} (${pet.species})`).join(', '), 
+                    style: 'dataValue' 
+                  }]
+                ] : [])
+              ]
+            },
+            layout: 'lightHorizontalLines',
+            marginBottom: 30
+          }
+        ] : []),
+
         // Footer information
         {
           table: {
@@ -440,6 +596,9 @@ export class PaymentReceiptService {
                   { text: 'INFORMAÇÕES IMPORTANTES', style: 'footerTitle' },
                   { text: '• Este comprovante foi gerado automaticamente com dados oficiais da API Cielo', style: 'footerText' },
                   { text: '• Mantenha este comprovante como prova de pagamento do seu plano de saúde pet', style: 'footerText' },
+                  ...(receiptData.pets && receiptData.pets.length > 1 ? [
+                    { text: `• Este comprovante inclui cobertura para ${receiptData.pets.length} pets`, style: 'footerText' }
+                  ] : []),
                   { text: '• Para dúvidas ou suporte, entre em contato: contato@unipetplan.com.br', style: 'footerText' },
                   { text: `• Documento gerado em ${currentDate} - Sistema UNIPET PLAN`, style: 'footerText' }
                 ],
