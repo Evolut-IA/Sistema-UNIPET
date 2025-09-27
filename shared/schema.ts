@@ -546,7 +546,7 @@ export const insertClientSchema = z.object({
 export const insertClientSchemaStep2 = z.object({
   full_name: z.string().min(1, "Nome é obrigatório"),
   email: z.string().email("Email inválido").min(1, "Email é obrigatório"),
-  password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres"),
+  password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres").optional(), // Optional - sistema usa email + CPF para login
   phone: z.string().min(1, "Telefone é obrigatório"),
   cpf: z.string().optional(), // CPF opcional no Step 2
   cep: z.string().optional(),
