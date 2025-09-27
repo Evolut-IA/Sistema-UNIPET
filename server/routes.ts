@@ -1045,10 +1045,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
           phone: parsedClientData.phone || existingClient.phone,
         };
         
-        // Only update password if provided
-        if (parsedClientData.password) {
-          updateData.password = await bcrypt.hash(parsedClientData.password, 12);
-        }
         
         // Skip client update to avoid Drizzle errors for now
         const updatedClient = existingClient;
@@ -1086,13 +1082,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log("🆕 [CHECKOUT-STEP2] Criando novo cliente sem CPF (será adicionado no Step 3)");
       
       // Hash password
-      const hashedPassword = await bcrypt.hash(parsedClientData.password, 12);
+      const hashedPassword = null; // Sistema não usa senhas
       
       // Create client with UUID - CPF null for Step 2
       const clientToSave = {
         ...parsedClientData,
         fullName: parsedClientData.full_name,
-        password: hashedPassword,
+        password: null, // Sistema não usa senhas para compras
         cpf: null, // CPF null temporariamente (será adicionado no Step 3)
         id: `client-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
       };
