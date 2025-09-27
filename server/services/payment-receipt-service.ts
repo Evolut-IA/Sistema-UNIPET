@@ -512,7 +512,7 @@ export class PaymentReceiptService {
         tableHeader: {
           fontSize: 11,
           bold: true,
-          color: '#333',
+          color: '#FFFFFF',
           marginTop: 5,
           marginBottom: 5
         },
