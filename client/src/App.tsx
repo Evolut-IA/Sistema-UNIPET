@@ -21,6 +21,7 @@ import CustomerPets from "@/pages/customer-pets";
 import CustomerProfile from "@/pages/customer-profile";
 import CustomerSurveys from "@/pages/customer-surveys";
 import CustomerFinancial from "@/pages/customer-financial";
+import RenewalCheckout from "@/pages/renewal-checkout";
 import TelemedicinePage from "@/pages/telemedicine";
 import AdminLoginPage from "@/pages/admin-login";
 import Header from "@/components/layout/header";
@@ -149,6 +150,7 @@ function Router() {
         <Route path="/customer/profile" component={CustomerProfile} />
         <Route path="/customer/surveys" component={CustomerSurveys} />
         <Route path="/customer/financial" component={CustomerFinancial} />
+        <Route path="/customer/renewal-checkout" component={RenewalCheckout} />
         <Route path="/customer/telemedicine" component={TelemedicinePage} />
         
         {/* Public Routes with Layout */}
