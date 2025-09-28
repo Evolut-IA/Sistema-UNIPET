@@ -52,7 +52,8 @@ interface ContractData {
 
 export default function RenewalCheckout() {
   const [location, navigate] = useLocation();
-  const urlParams = new URLSearchParams(location.split('?')[1]);
+  // Usar window.location.search para capturar os query parameters corretamente
+  const urlParams = new URLSearchParams(window.location.search);
   const contractId = urlParams.get('contractId');
 
   // Estados principais
