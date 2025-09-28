@@ -266,7 +266,6 @@ export default function CustomerFinancial() {
       console.error('Erro ao baixar comprovante:', error);
       alert('Erro ao tentar baixar o comprovante. Tente novamente.');
     }
-    } finally {
       setDownloadingReceiptId(null);
   };
 
