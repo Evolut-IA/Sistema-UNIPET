@@ -1,7 +1,7 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
-import { ArrowLeft, CreditCard, FileText, DollarSign, Calendar, CheckCircle, XCircle, Clock, Download } from "lucide-react";
+import { ArrowLeft, CreditCard, FileText, DollarSign, CheckCircle, XCircle, Clock, Download } from "lucide-react";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 
@@ -77,16 +77,11 @@ export default function CustomerFinancial() {
   const [, navigate] = useLocation();
   const [client, setClient] = useState<Client | null>(null);
   const [contracts, setContracts] = useState<Contract[]>([]);
-  const [paymentHistory, setPaymentHistory] = useState<PaymentHistory[]>([]);
   const [paymentReceipts, setPaymentReceipts] = useState<PaymentReceipt[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingPayments, setIsLoadingPayments] = useState(false);
   const [isLoadingReceipts, setIsLoadingReceipts] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [paymentError, setPaymentError] = useState<string | null>(null);
   const [receiptsError, setReceiptsError] = useState<string | null>(null);
-  const [downloadingReceiptId, setDownloadingReceiptId] = useState<string | null>(null);
-  const downloadTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const checkAuthAndLoadFinancialData = async () => {
@@ -123,34 +118,6 @@ export default function CustomerFinancial() {
           setError(`Erro ao carregar contratos: ${contractsResponse.statusText}`);
         }
 
-        // Load payment history with specific error handling
-        setIsLoadingPayments(true);
-        setPaymentError(null);
-        
-        const paymentResponse = await fetch('/api/clients/payment-history', {
-          credentials: 'include'
-        });
-
-        if (paymentResponse.ok) {
-          const paymentResult = await paymentResponse.json();
-          setPaymentHistory(paymentResult.paymentHistory || []);
-        } else {
-          let errorMessage = 'Erro ao carregar histórico de pagamentos';
-          
-          if (paymentResponse.status === 401) {
-            navigate('/customer/login');
-            return;
-          } else if (paymentResponse.status === 404) {
-            errorMessage = 'Serviço de histórico de pagamentos não encontrado';
-          } else if (paymentResponse.status === 500) {
-            errorMessage = 'Erro interno do servidor ao buscar histórico de pagamentos';
-          } else {
-            errorMessage = `Erro ao carregar histórico: ${paymentResponse.statusText}`;
-          }
-          
-          console.error('Payment history error:', paymentResponse.status, paymentResponse.statusText);
-          setPaymentError(errorMessage);
-        }
 
         // Load payment receipts (official Cielo receipts)
         setIsLoadingReceipts(true);
@@ -267,60 +234,35 @@ export default function CustomerFinancial() {
   };
 
   const handleDownloadReceipt = async (receiptId: string) => {
-    // Prevent multiple downloads
-    if (downloadingReceiptId) return;
-    
     try {
-      setDownloadingReceiptId(receiptId);
-      
-      // Clear any existing timeout
-      if (downloadTimeoutRef.current) {
-        clearTimeout(downloadTimeoutRef.current);
-        downloadTimeoutRef.current = null;
-      }
-      
       // Use fetch with same-origin policy to preserve session cookies
       const response = await fetch(`/api/customer/payment-receipts/${receiptId}/download`, {
-        credentials: "include",
-        method: "GET"
+        credentials: 'include',
+        method: 'GET'
       });
 
       if (response.ok) {
         // Get the PDF blob and create a download
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.style.display = "none";
+        const a = document.createElement('a');
+        a.style.display = 'none';
         a.href = url;
         a.download = `comprovante_${receiptId}.pdf`;
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
-        
-        // Small delay to show completion animation
-        downloadTimeoutRef.current = setTimeout(() => {
-          setDownloadingReceiptId(prevId => {
-            if (prevId === receiptId) {
-              downloadTimeoutRef.current = null;
-              return null;
-            }
-            return prevId;
-          });
-        }, 1000);
       } else if (response.status === 401) {
-        alert("Sessão expirada. Faça login novamente.");
-        navigate("/customer/login");
-        setDownloadingReceiptId(null);
+        alert('Sessão expirada. Faça login novamente.');
+        navigate('/customer/login');
       } else {
-        const errorData = await response.json().catch(() => ({ error: "Erro desconhecido" }));
-        alert(`Erro ao baixar comprovante: ${errorData.error || "Erro desconhecido"}`);
-        setDownloadingReceiptId(null);
+        const errorData = await response.json().catch(() => ({ error: 'Erro desconhecido' }));
+        alert(`Erro ao baixar comprovante: ${errorData.error || 'Erro desconhecido'}`);
       }
     } catch (error) {
-      console.error("Download error:", error);
-      alert("Erro ao baixar comprovante. Tente novamente.");
-      setDownloadingReceiptId(null);
+      console.error('Erro ao baixar comprovante:', error);
+      alert('Erro ao tentar baixar o comprovante. Tente novamente.');
     }
   };
 
@@ -339,29 +281,7 @@ export default function CustomerFinancial() {
     }
   };
 
-  const getPaymentMethodIcon = (method: string) => {
-    switch (method) {
-      case 'credit_card':
-      case 'cartao':
-        return <CreditCard className="w-5 h-5" style={{ color: 'var(--text-teal)' }} />;
-      case 'pix':
-        return <FileText className="w-5 h-5" style={{ color: 'var(--text-teal)' }} />;
-      default:
-        return <DollarSign className="w-5 h-5" style={{ color: 'var(--text-teal)' }} />;
-    }
-  };
 
-  const getPaymentMethodLabel = (method: string): string => {
-    switch (method) {
-      case 'credit_card':
-      case 'cartao':
-        return 'Cartão de Crédito';
-      case 'pix':
-        return 'PIX';
-      default:
-        return method;
-    }
-  };
 
   const getStatusLabel = (status: string): string => {
     switch (status) {
@@ -473,107 +393,70 @@ export default function CustomerFinancial() {
                   
                   return (
                     <div key={contract.id} className="p-3 rounded-lg border" style={{ borderColor: 'var(--border-gray)', background: 'var(--bg-cream-light)' }}>
-                      {/* Layout 3x3 Grid */}
-                      <div className="flex flex-col space-y-2 md:grid md:grid-cols-3 md:gap-3 md:space-y-0">
-                        
-                        {/* Linha 1 */}
-                        <div className="flex items-center justify-between md:block">
-                          <div>
-                            <h4 className="font-medium text-sm" style={{ color: "var(--text-dark-primary)" }}>
-                              {contract.planName} - {contract.petName}
-                            </h4>
-                          </div>
-                          <div className="flex items-center space-x-2 md:hidden">
-                            <span className="px-3 py-1 rounded-full text-sm font-medium"
-                              style={{ 
-                                background: contract.status === "active" ? "var(--text-teal)" : "var(--text-dark-secondary)", 
-                                color: "white" 
-                              }}>
-                              {getStatusLabel(contract.status)}
-                            </span>
-                            {(isRenewalNeeded || isExpired) && (
-                              <button
-                                onClick={() => handleRenewalCheckout(contract)}
-                                className="px-3 py-1 bg-red-500 text-white text-xs font-medium rounded-full transition-colors"
-                              >
-                                Regularizar
-                              </button>
-                            )}
-                          </div>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <div className="flex items-center space-x-3">
+                          {getStatusIcon(contract.status)}
+                          <h4 className="font-medium" style={{ color: 'var(--text-dark-primary)' }}>
+                            {contract.planName} - {contract.petName}
+                          </h4>
                         </div>
-                        
-                        <div className="text-sm">
-                          <p style={{ color: "var(--text-dark-secondary)" }}>
-                            Tipo: <span className="font-medium" style={{ color: "var(--text-dark-primary)" }}>
-                              {getPlanTypeLabel(contract.billingPeriod || "monthly")}
-                            </span>
-                          </p>
-                        </div>
-                        
-                        <div className="hidden md:flex items-center justify-end space-x-2">
+                        <div className="flex items-center space-x-2">
                           <span className="px-3 py-1 rounded-full text-sm font-medium"
                             style={{ 
-                              background: contract.status === "active" ? "var(--text-teal)" : "var(--text-dark-secondary)", 
-                              color: "white" 
+                              background: contract.status === 'active' ? 'var(--text-teal)' : 'var(--text-dark-secondary)', 
+                              color: 'white' 
                             }}>
                             {getStatusLabel(contract.status)}
                           </span>
                           {(isRenewalNeeded || isExpired) && (
                             <button
                               onClick={() => handleRenewalCheckout(contract)}
-                              className="px-3 py-1 bg-red-500 text-white text-xs font-medium rounded-full transition-colors"
+                              className="px-4 py-1 bg-red-500 text-white text-sm font-medium rounded-full transition-colors"
                             >
                               Regularizar
                             </button>
                           )}
                         </div>
-
-                        {/* Linha 2 */}
-                        <div className="text-sm">
-                          <p style={{ color: "var(--text-dark-secondary)" }}>
-                            Contrato: #{contract.contractNumber}
-                          </p>
+                      </div>
+                      
+                      <div className="grid md:grid-cols-4 gap-3 text-sm">
+                        <div>
+                          <p style={{ color: 'var(--text-dark-secondary)' }}>Contrato: #{contract.contractNumber}</p>
+                          <p style={{ color: 'var(--text-dark-secondary)' }}>Data de Início: {formatDate(contract.startDate)}</p>
                         </div>
-                        
-                        <div className="text-sm">
+                        <div>
+                          <p style={{ color: 'var(--text-dark-secondary)' }}>
+                            Tipo: <span className="font-medium" style={{ color: 'var(--text-dark-primary)' }}>
+                              {getPlanTypeLabel(contract.billingPeriod || 'monthly')}
+                            </span>
+                          </p>
                           {renewalDay && (
-                            <p style={{ color: "var(--text-dark-secondary)" }}>
-                              Dia da renovação: <span className="font-medium" style={{ color: "var(--text-dark-primary)" }}>
+                            <p style={{ color: 'var(--text-dark-secondary)' }}>
+                              Dia da renovação: <span className="font-medium" style={{ color: 'var(--text-dark-primary)' }}>
                                 {renewalDay}
                               </span>
                             </p>
                           )}
                         </div>
-                        
-                        <div className="md:text-right">
-                          <p style={{ color: "var(--text-dark-secondary)" }}>
-                            Valor: <span className="font-medium text-lg" style={{ color: "var(--text-teal)" }}>
-                              {getCurrentContractValue(contract)}
-                            </span>
-                          </p>
-                        </div>
-
-                        {/* Linha 3 */}
-                        <div className="text-sm">
-                          <p style={{ color: "var(--text-dark-secondary)" }}>
-                            Data de Início: {formatDate(contract.startDate)}
-                          </p>
-                        </div>
-                        
-                        <div className="text-sm">
+                        <div>
                           {renewalDate && !isNaN(renewalDate.getTime()) && (
-                            <p style={{ color: "var(--text-dark-secondary)" }}>
-                              Próxima renovação: <span className="font-medium" style={{ color: "var(--text-dark-primary)" }}>
+                            <p style={{ color: 'var(--text-dark-secondary)' }}>
+                              Próxima renovação: <span className="font-medium" style={{ color: 'var(--text-dark-primary)' }}>
                                 {formatDate(renewalDate.toISOString())}
                               </span>
                             </p>
                           )}
+                          <div className="mt-1">
+                            {getCountdownDisplay(contract.daysRemaining, contract.isExpired)}
+                          </div>
                         </div>
-                        
-                        <div className="md:text-right text-sm">
-                          {getCountdownDisplay(contract.daysRemaining, contract.isExpired)}
+                        <div>
+                          <p style={{ color: 'var(--text-dark-secondary)' }}>
+                            Valor: <span className="font-medium text-lg" style={{ color: 'var(--text-teal)' }}>
+                              {getCurrentContractValue(contract)}
+                            </span>
+                          </p>
                         </div>
-                        
                       </div>
                     </div>
                   );
@@ -587,120 +470,6 @@ export default function CustomerFinancial() {
             </div>
           </motion.div>
 
-          {/* Payment History Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="mb-8 bg-white rounded-xl shadow-lg p-6"
-          >
-            <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--text-dark-primary)' }}>
-              Histórico de Pagamentos
-              {isLoadingPayments && (
-                <div className="inline-flex items-center ml-3">
-                  <div className="w-4 h-4 border-2 rounded-full animate-spin" 
-                    style={{borderColor: 'var(--text-teal)', borderTopColor: 'transparent'}}></div>
-                  <span className="ml-2 text-sm" style={{ color: 'var(--text-dark-secondary)' }}>
-                    Carregando...
-                  </span>
-                </div>
-              )}
-            </h3>
-            <div className="space-y-4">
-              {paymentError ? (
-                <div className="p-6 text-center rounded-lg" style={{ background: 'rgb(var(--error-bg))', borderColor: 'rgb(var(--error-border))' }}>
-                  <XCircle className="w-12 h-12 mx-auto mb-4" style={{ color: 'rgb(var(--error-red))' }} />
-                  <p className="font-medium mb-2" style={{ color: 'rgb(var(--error-red))' }}>
-                    Erro ao carregar histórico de pagamentos
-                  </p>
-                  <p className="text-sm mb-4" style={{ color: 'rgb(var(--error-red-dark))' }}>
-                    {paymentError}
-                  </p>
-                  <button
-                    onClick={() => window.location.reload()}
-                    className="px-4 py-2 rounded-lg text-sm font-medium"
-                    style={{ 
-                      background: 'rgb(var(--error-red))', 
-                      color: 'white',
-                      transition: 'background-color 0.2s'
-                    }}
-
-
-                  >
-                    Tentar Novamente
-                  </button>
-                </div>
-              ) : paymentHistory.length > 0 ? (
-                paymentHistory.map((payment) => (
-                  <div key={payment.id} className="p-4 rounded-lg border" style={{ borderColor: 'var(--border-gray)', background: 'var(--bg-cream-light)' }}>
-                    {/* Layout em 3 colunas */}
-                    <div className="flex flex-col space-y-3 md:grid md:grid-cols-3 md:gap-4 md:items-center md:space-y-0">
-                      
-                      {/* Coluna Esquerda: Título e Subtítulo */}
-                      <div className="flex items-center">
-                        <div>
-                          <h4 className="font-medium" style={{ color: "var(--text-dark-primary)" }}>
-                            {payment.planName} - {payment.petName}
-                          </h4>
-                          <p className="text-sm" style={{ color: "var(--text-dark-secondary)" }}>
-                            Contrato: #{payment.contractNumber}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Coluna Meio: Método e Data */}
-                      <div className="text-sm">
-                        <p style={{ color: "var(--text-dark-secondary)" }}>
-                          Método: {getPaymentMethodLabel(payment.paymentMethod)}
-                        </p>
-                        {payment.receivedDate && (
-                          <p style={{ color: "var(--text-dark-secondary)" }}>
-                            Data: {formatDate(payment.receivedDate)}
-                          </p>
-                        )}
-                      </div>
-
-                      {/* Coluna Direita: Valor */}
-                      <div className="md:text-right">
-                        <p className="font-bold text-lg" style={{ color: "var(--text-teal)" }}>
-                          {formatCurrency(payment.amount)}
-                        </p>
-                      </div>
-                      
-                    </div>
-
-                    {/* PIX Information - Only show for pending payments */}
-                    {payment.paymentMethod === "pix" && payment.status === "pending" && (payment.pixQrCode || payment.pixCode) && (
-                      <div className="mt-3 p-3 rounded" style={{ background: "var(--bg-cream-light)" }}>
-                        <h5 className="font-medium mb-2" style={{ color: "var(--text-dark-primary)" }}>
-                          Informações PIX
-                        </h5>
-                        {payment.pixCode && (
-                          <p className="text-xs font-mono" style={{ color: "var(--text-dark-secondary)" }}>
-                            Código PIX: {payment.pixCode}
-                          </p>
-                        )}
-                        {payment.pixQrCode && (
-                          <div className="mt-2">
-                            <p className="text-xs mb-1" style={{ color: "var(--text-dark-secondary)" }}>QR Code PIX disponível</p>
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                  </div>
-                ))
-              ) : (
-                <div className="p-6 text-center" style={{ background: 'var(--bg-cream-light)' }}>
-                  <Calendar className="w-12 h-12 mx-auto mb-4" style={{ color: 'var(--text-dark-secondary)' }} />
-                  <p style={{ color: 'var(--text-dark-secondary)' }}>Nenhum histórico de pagamento encontrado.</p>
-                  <p className="text-sm mt-2" style={{ color: 'var(--text-dark-secondary)' }}>
-                    Seus pagamentos aparecerão aqui após serem processados.
-                  </p>
-                </div>
-              )}
-            </div>
-          </motion.div>
 
           {/* Official Payment Receipts Section */}
           <motion.div
@@ -747,7 +516,7 @@ export default function CustomerFinancial() {
                 </div>
               ) : paymentReceipts.length > 0 ? (
                 paymentReceipts.map((receipt) => (
-                  <div key={receipt.id} className="p-4 rounded-lg border" style={{ borderColor: 'var(--border-gray)', background: 'var(--bg-cream-light)' }}>
+                  <div key={receipt.id} className="p-4 rounded-lg border" style={{ borderColor: 'var(--border-gray)' }}>
                     {/* Container responsivo */}
                     <div className="flex flex-col md:flex-row md:items-start md:justify-between">
                       
@@ -767,26 +536,18 @@ export default function CustomerFinancial() {
                       </div>
 
                       {/* Lado direito: Botão e Data */}
-                      <div className="flex flex-col items-start md:items-end md:text-right">
+                      <div className="flex flex-col items-center md:items-end md:text-right">
                         <button
                           onClick={() => handleDownloadReceipt(receipt.id)}
-                          disabled={downloadingReceiptId === receipt.id}
-                          className="flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 mb-2"
+                          className="flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors mb-2"
                           style={{ 
-                            background: downloadingReceiptId === receipt.id ? 'var(--text-dark-secondary)' : 'var(--text-teal)', 
+                            background: 'var(--text-teal)', 
                             color: 'white',
-                            opacity: downloadingReceiptId === receipt.id ? 0.8 : 1,
-                            cursor: downloadingReceiptId === receipt.id ? 'not-allowed' : 'pointer'
+                            transition: 'background-color 0.2s'
                           }}
                         >
-                          {downloadingReceiptId === receipt.id ? (
-                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                          ) : (
-                            <Download className="w-4 h-4" />
-                          )}
-                          <span>
-                            {downloadingReceiptId === receipt.id ? 'Baixando...' : 'Baixar Comprovante PDF'}
-                          </span>
+                          <Download className="w-4 h-4" />
+                          <span>Baixar Comprovante PDF</span>
                         </button>
                         
                         {/* Data do Pagamento */}
