@@ -82,7 +82,6 @@ export default function CustomerFinancial() {
   const [isLoadingReceipts, setIsLoadingReceipts] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [receiptsError, setReceiptsError] = useState<string | null>(null);
-  const [downloadingReceiptId, setDownloadingReceiptId] = useState<string | null>(null);
 
   useEffect(() => {
     const checkAuthAndLoadFinancialData = async () => {
@@ -235,7 +234,6 @@ export default function CustomerFinancial() {
   };
 
   const handleDownloadReceipt = async (receiptId: string) => {
-    setDownloadingReceiptId(receiptId);
     try {
       // Use fetch with same-origin policy to preserve session cookies
       const response = await fetch(`/api/customer/payment-receipts/${receiptId}/download`, {
@@ -266,8 +264,6 @@ export default function CustomerFinancial() {
       console.error('Erro ao baixar comprovante:', error);
       alert('Erro ao tentar baixar o comprovante. Tente novamente.');
     }
-    } finally {
-      setDownloadingReceiptId(null);
   };
 
 
@@ -543,27 +539,15 @@ export default function CustomerFinancial() {
                       <div className="flex flex-col items-center md:items-end md:text-right">
                         <button
                           onClick={() => handleDownloadReceipt(receipt.id)}
-                          disabled={downloadingReceiptId === receipt.id}
                           className="flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors mb-2"
                           style={{ 
-                            background: downloadingReceiptId === receipt.id ? 'var(--text-dark-secondary)' : 'var(--text-teal)', 
+                            background: 'var(--text-teal)', 
                             color: 'white',
-                            transition: 'background-color 0.2s',
-                            cursor: downloadingReceiptId === receipt.id ? 'not-allowed' : 'pointer',
-                            opacity: downloadingReceiptId === receipt.id ? 0.7 : 1
+                            transition: 'background-color 0.2s'
                           }}
                         >
-                          {downloadingReceiptId === receipt.id ? (
-                            <>
-                              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                              <span>Baixando...</span>
-                            </>
-                          ) : (
-                            <>
-                              <Download className="w-4 h-4" />
-                              <span>Baixar Comprovante PDF</span>
-                            </>
-                          )}
+                          <Download className="w-4 h-4" />
+                          <span>Baixar Comprovante PDF</span>
                         </button>
                         
                         {/* Data do Pagamento */}

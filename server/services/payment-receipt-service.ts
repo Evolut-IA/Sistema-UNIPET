@@ -417,7 +417,6 @@ export class PaymentReceiptService {
                         { text: `Espécie: ${pet.species || 'Não informado'}`, style: 'serviceDetails' },
                         ...(pet.breed ? [{ text: `Raça: ${pet.breed}`, style: 'serviceDetails' }] : []),
                         ...(pet.age ? [{ text: `Idade: ${pet.age} ${pet.age === 1 ? 'ano' : 'anos'}`, style: 'serviceDetails' }] : []),
-                        ...(pet.weight ? [{ text: `Peso: ${pet.weight}kg`, style: 'serviceDetails' }] : []),
                         ...(pet.sex ? [{ text: `Sexo: ${pet.sex === 'M' ? 'Macho' : pet.sex === 'F' ? 'Fêmea' : pet.sex}`, style: 'serviceDetails' }] : []),
                         ...(hasDiscount ? [
                           { text: `Desconto aplicado: ${pet.discount}%`, style: 'serviceDetails', color: '#16a34a' },
