@@ -1499,6 +1499,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               proofOfSale: paymentResult.payment.proofOfSale,
               authorizationCode: paymentResult.payment.authorizationCode,
               tid: paymentResult.payment.tid,
+              receivedDate: new Date(), // Add the payment received date
               returnCode: paymentResult.payment.returnCode,
               returnMessage: paymentResult.payment.returnMessage
             };
