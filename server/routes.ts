@@ -4575,6 +4575,193 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Contract Renewal Payment Endpoint
+  app.post("/api/checkout/renewal", requireClient, async (req, res) => {
+    try {
+      console.log("🔄 [RENEWAL] Iniciando renovação de contrato");
+      
+      const { contractId, paymentMethod, payment } = req.body;
+      const clientId = req.session.client?.id;
+      
+      // Validate required fields
+      if (!contractId || !paymentMethod) {
+        return res.status(400).json({ 
+          error: "Dados incompletos - contractId e paymentMethod são obrigatórios" 
+        });
+      }
+
+      // Get and validate contract
+      const contract = await storage.getContract(contractId);
+      if (!contract) {
+        return res.status(404).json({ error: "Contrato não encontrado" });
+      }
+      
+      // Verify ownership
+      if (contract.clientId !== clientId) {
+        return res.status(403).json({ error: "Não autorizado para renovar este contrato" });
+      }
+
+      // Get client and plan data
+      const client = await storage.getClient(clientId);
+      if (!client) {
+        return res.status(404).json({ error: "Cliente não encontrado" });
+      }
+      
+      const plan = await storage.getPlan(contract.planId);
+      if (!plan) {
+        return res.status(404).json({ error: "Plano não encontrado" });
+      }
+
+      // Calculate amount server-side based on billing period
+      let amount: number;
+      if (contract.billingPeriod === 'annual') {
+        amount = parseFloat(contract.annualAmount || '0') * 100; // Convert to cents
+      } else {
+        amount = parseFloat(contract.monthlyAmount || '0') * 100; // Convert to cents  
+      }
+      
+      console.log(`💳 [RENEWAL] Processando: Contract ${contractId}, Amount: ${amount}, Method: ${paymentMethod}`);
+
+      let paymentResult;
+      let orderId = `RENEWAL_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+      
+      if (paymentMethod === 'credit_card' && payment) {
+        // Process credit card payment
+        const cieloService = new CieloService();
+        const creditCardRequest = {
+          merchantOrderId: orderId,
+          customer: {
+            name: client.fullName || client.full_name || 'Cliente',
+            email: client.email,
+            identity: client.cpf,
+            identityType: 'CPF' as const,
+            address: {
+              street: client.address || '',
+              number: client.number || 'S/N',
+              complement: client.complement || '',
+              zipCode: client.cep || client.zipCode || '',
+              city: client.city || '',
+              state: client.state || '',
+              country: 'BRA'
+            }
+          },
+          payment: {
+            type: 'CreditCard' as const,
+            amount: amount,
+            installments: payment.installments || 1,
+            creditCard: {
+              cardNumber: payment.cardNumber,
+              holder: payment.holder,
+              expirationDate: payment.expirationDate,
+              securityCode: payment.securityCode
+            }
+          }
+        };
+        
+        paymentResult = await cieloService.createCreditCardPayment(creditCardRequest);
+        
+        console.log(`💳 [RENEWAL] Resultado do pagamento:`, {
+          paymentId: paymentResult.payment?.paymentId,
+          status: paymentResult.payment?.status,
+          approved: paymentResult.payment?.status === 2
+        });
+        
+        if (paymentResult.payment?.status === 2) {
+          // Payment approved - update contract
+          await storage.updateContract(contractId, {
+            status: 'active',
+            receivedDate: new Date(),
+            cieloPaymentId: paymentResult.payment.paymentId,
+            proofOfSale: paymentResult.payment.proofOfSale,
+            authorizationCode: paymentResult.payment.authorizationCode,
+            tid: paymentResult.payment.tid,
+            returnCode: paymentResult.payment.returnCode,
+            returnMessage: paymentResult.payment.returnMessage,
+            updatedAt: new Date()
+          });
+
+          console.log(`✅ [RENEWAL] Contrato renovado: ${contractId}`);
+          
+          // Generate payment receipt
+          const receiptService = new PaymentReceiptService();
+          const receiptResult = await receiptService.generateReceipt({
+            contractId: contractId,
+            cieloPaymentId: paymentResult.payment.paymentId,
+            clientName: client.fullName || client.full_name || 'Cliente',
+            clientEmail: client.email,
+            clientCPF: client.cpf,
+            petName: contract.petName || '',
+            planName: contract.planName || plan.name || '',
+            paymentMethod: 'credit_card'
+          });
+
+          return res.json({
+            success: true,
+            orderId: orderId,
+            paymentId: paymentResult.payment.paymentId,
+            message: "Renovação realizada com sucesso"
+          });
+        } else {
+          // Payment declined
+          const errorMessage = paymentResult.payment?.returnMessage || 'Pagamento recusado';
+          return res.status(400).json({ 
+            error: errorMessage,
+            code: paymentResult.payment?.returnCode 
+          });
+        }
+        
+      } else if (paymentMethod === 'pix') {
+        // Generate PIX payment
+        const cieloService = new CieloService();
+        const pixRequest = {
+          merchantOrderId: orderId,
+          customer: {
+            name: client.fullName || client.full_name || 'Cliente',
+            identity: client.cpf || ''
+          },
+          payment: {
+            type: 'Pix' as const,
+            amount: amount
+          }
+        };
+        
+        paymentResult = await cieloService.createPixPayment(pixRequest);
+        
+        if (paymentResult.payment?.qrCodeBase64) {
+          console.log(`📱 [RENEWAL] PIX QR Code gerado: ${contractId}`);
+          
+          // Store PIX data for future verification (don't mark as active yet)
+          await storage.updateContract(contractId, {
+            pixQrCode: paymentResult.payment.qrCodeBase64,
+            pixCode: paymentResult.payment.qrCodeString,
+            cieloPaymentId: paymentResult.payment.paymentId,
+            updatedAt: new Date()
+            // Don't update status to active until payment confirmed
+          });
+          
+          return res.json({
+            success: true,
+            orderId: orderId,
+            paymentId: paymentResult.payment.paymentId,
+            pixQrCode: paymentResult.payment.qrCodeBase64,
+            pixCopyPaste: paymentResult.payment.qrCodeString,
+            message: "QR Code PIX gerado com sucesso"
+          });
+        } else {
+          return res.status(500).json({ error: "Erro ao gerar QR Code PIX" });
+        }
+      } else {
+        return res.status(400).json({ error: "Método de pagamento inválido" });
+      }
+      
+    } catch (error) {
+      console.error("❌ [RENEWAL] Erro:", error);
+      return res.status(500).json({ 
+        error: error instanceof Error ? error.message : "Erro ao processar renovação" 
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

@@ -204,7 +204,7 @@ export default function RenewalCheckout() {
         ...(paymentMethod === 'credit' && { cardData })
       };
 
-      const response = await fetch('/api/checkout/process-payment', {
+      const response = await fetch('/api/checkout/renewal', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
