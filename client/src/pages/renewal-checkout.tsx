@@ -370,36 +370,18 @@ export default function RenewalCheckout() {
               Dados para Pagamento
             </h3>
 
-            {/* Billing Period Selection */}
-            <div className="mb-6">
-              <label className="block text-sm font-medium mb-3" style={{color: 'var(--text-dark-primary)'}}>
-                Período de Cobrança
-              </label>
-              <div className="grid grid-cols-2 gap-4">
-                <button
-                  onClick={() => setBillingPeriod('monthly')}
-                  className={`p-4 rounded-lg border-2 transition-all ${billingPeriod === 'monthly' ? 'border-teal-500 bg-teal-50' : 'border-gray-200'}`}
-                >
-                  <div className="text-left">
-                    <p className="font-semibold" style={{color: 'var(--text-dark-primary)'}}>Mensal</p>
-                    <p className="text-sm" style={{color: 'var(--text-dark-secondary)'}}>
-                      {contractData && formatCurrency(contractData.monthlyAmount)}/mês
-                    </p>
-                  </div>
-                </button>
-                <button
-                  onClick={() => setBillingPeriod('annual')}
-                  className={`p-4 rounded-lg border-2 transition-all ${billingPeriod === 'annual' ? 'border-teal-500 bg-teal-50' : 'border-gray-200'}`}
-                >
-                  <div className="text-left">
-                    <p className="font-semibold" style={{color: 'var(--text-dark-primary)'}}>Anual</p>
-                    <p className="text-sm" style={{color: 'var(--text-dark-secondary)'}}>
-                      {contractData && formatCurrency(contractData.annualAmount)}/ano
-                    </p>
-                    <p className="text-xs text-green-600">💰 Economia!</p>
-                  </div>
-                </button>
-              </div>
+            {/* Billing Period Info */}
+            <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+              <p className="text-sm font-medium" style={{color: 'var(--text-dark-secondary)'}}>
+                Período de Cobrança: 
+                <span className="ml-2 font-semibold" style={{color: 'var(--text-dark-primary)'}}>
+                  {billingPeriod === 'annual' ? 'Anual' : 'Mensal'}
+                </span>
+                <span className="ml-2" style={{color: 'var(--text-teal)'}}>
+                  {formatCurrency(billingPeriod === 'annual' ? contractData?.annualAmount || '0' : contractData?.monthlyAmount || '0')}
+                  {billingPeriod === 'annual' ? '/ano' : '/mês'}
+                </span>
+              </p>
             </div>
 
             {/* Address Data */}
