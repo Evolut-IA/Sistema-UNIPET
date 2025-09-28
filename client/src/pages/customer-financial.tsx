@@ -154,7 +154,7 @@ export default function CustomerFinancial() {
         setError(`Erro ao carregar dados financeiros: ${errorMessage}`);
       } finally {
         setIsLoading(false);
-        setIsLoadingPayments(false);
+
         setIsLoadingReceipts(false);
       }
     };
@@ -403,10 +403,10 @@ export default function CustomerFinancial() {
                         <div className="flex items-center space-x-2">
                           <span className="px-3 py-1 rounded-full text-sm font-medium"
                             style={{ 
-                              background: contract.status === 'active' ? 'var(--text-teal)' : 'var(--text-dark-secondary)', 
+                              background: isRenewalNeeded ? '#dc2626' : (contract.status === 'active' ? 'var(--text-teal)' : 'var(--text-dark-secondary)'), 
                               color: 'white' 
                             }}>
-                            {getStatusLabel(contract.status)}
+                            {isRenewalNeeded ? 'Renovar' : getStatusLabel(contract.status)}
                           </span>
                           {(isRenewalNeeded || isExpired) && (
                             <button
