@@ -231,7 +231,7 @@ export default function CustomerFinancial() {
     });
 
     // Navigate to checkout with renewal parameters
-    navigate(`/checkout?${renewalParams.toString()}`);
+    navigate(`/customer/renewal-checkout?contractId=${contract.id}`);
   };
 
   const handleDownloadReceipt = async (receiptId: string) => {
