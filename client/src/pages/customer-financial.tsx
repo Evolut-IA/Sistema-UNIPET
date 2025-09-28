@@ -231,6 +231,15 @@ export default function CustomerFinancial() {
     });
 
     // Navigate to checkout with renewal parameters
+    console.log('Contract sendo passado para renovação:', contract);
+    console.log('Contract ID:', contract.id);
+    
+    if (!contract.id) {
+      console.error('Erro: Contrato sem ID!', contract);
+      alert('Erro: ID do contrato não encontrado. Por favor, recarregue a página.');
+      return;
+    }
+    
     navigate(`/customer/renewal-checkout?contractId=${contract.id}`);
   };
 
