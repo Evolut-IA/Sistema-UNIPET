@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation, useRoute } from 'wouter';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'wouter';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
+import Header from '@/components/layout/header';
+import Footer from '@/components/layout/footer';
+import { ArrowLeft } from 'lucide-react';
 
 // Reutilizar tipos e utilitários do checkout principal
 interface Plan {
@@ -80,131 +83,126 @@ export default function RenewalCheckout() {
   const [showPixResult, setShowPixResult] = useState(false);
 
   // Estados de endereço (obrigatório para pagamento)
-  const [addressData, setAddressData] = useState({
-    cpf: '',
+  const [address, setAddress] = useState({
     zipCode: '',
-    address: '',
-    district: '',
     city: '',
-    state: ''
+    state: '',
+    district: '',
+    address: '',
+    cpf: ''
   });
 
-  // Carregar dados do contrato
-  useEffect(() => {
-    if (!contractId) {
-      setError('ID do contrato não fornecido');
-      setIsLoading(false);
-      return;
-    }
+  // Formatadores de entrada (reutilizar do checkout principal)
+  const formatCPF = (value: string) => {
+    return value
+      .replace(/\D/g, '')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d{1,2})/, '$1-$2')
+      .replace(/(-\d{2})\d+?$/, '$1');
+  };
 
-    const loadContractData = async () => {
+  const formatCEP = (value: string) => {
+    return value
+      .replace(/\D/g, '')
+      .replace(/(\d{5})(\d)/, '$1-$2')
+      .replace(/(-\d{3})\d+?$/, '$1');
+  };
+
+  // Buscar dados do contrato
+  useEffect(() => {
+    const fetchContractData = async () => {
+      if (!contractId) {
+        setError('ID do contrato não encontrado');
+        setIsLoading(false);
+        return;
+      }
+
       try {
-        console.log('🔄 [RENEWAL] Carregando dados do contrato:', contractId);
+        console.log('📋 [RENEWAL] Buscando dados do contrato:', contractId);
         
-        const response = await fetch(`/api/contracts/${contractId}/renewal`, {
-          credentials: 'include'
+        // Buscar dados do contrato para renovação
+        const response = await fetch(`/api/clients/contracts/${contractId}/renewal`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
         });
 
         if (!response.ok) {
-          if (response.status === 401) {
-            throw new Error('Você precisa estar logado para renovar um contrato');
-          }
-          if (response.status === 404) {
-            throw new Error('Contrato não encontrado ou não pertence a você');
-          }
-          throw new Error(`Erro ao carregar dados: ${response.status}`);
+          throw new Error('Erro ao buscar dados do contrato');
         }
 
-        const result = await response.json();
-        const renewalData = result.renewalData;
+        const data = await response.json();
+        console.log('✅ [RENEWAL] Dados do contrato recebidos:', data);
         
-        console.log('✅ [RENEWAL] Dados carregados:', renewalData);
+        setContractData(data);
         
-        // Ajustar valores baseado no período de faturamento
-        if (!renewalData.monthlyAmount || !renewalData.annualAmount) {
-          const amount = parseFloat(renewalData.amount) || 0;
-          renewalData.monthlyAmount = renewalData.billingPeriod === 'monthly' ? amount.toString() : (amount / 12).toString();
-          renewalData.annualAmount = renewalData.billingPeriod === 'annual' ? amount.toString() : (amount * 12).toString();
+        // Se tem billing period configurado, usar ele
+        if (data.billingPeriod) {
+          setBillingPeriod(data.billingPeriod);
         }
-        
-        setContractData(renewalData);
-        setBillingPeriod(renewalData.billingPeriod || 'monthly');
-        
-        // Pré-preencher dados de endereço se disponíveis
-        setAddressData({
-          cpf: renewalData.client.cpf || '',
-          zipCode: renewalData.client.zipCode || '',
-          address: renewalData.client.address || '',
-          district: renewalData.client.district || '',
-          city: renewalData.client.city || '',
-          state: renewalData.client.state || ''
-        });
 
-      } catch (error) {
-        console.error('❌ [RENEWAL] Erro ao carregar dados:', error);
-        setError(error instanceof Error ? error.message : 'Erro desconhecido');
+        // Se tem dados do cliente, preencher endereço
+        if (data.client) {
+          setAddress({
+            zipCode: data.client.zipCode || '',
+            city: data.client.city || '',
+            state: data.client.state || '',
+            district: data.client.district || '',
+            address: data.client.address || '',
+            cpf: data.client.cpf || ''
+          });
+        }
+
+      } catch (err) {
+        console.error('❌ [RENEWAL] Erro ao buscar dados:', err);
+        setError(err instanceof Error ? err.message : 'Erro ao carregar dados');
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadContractData();
+    fetchContractData();
   }, [contractId]);
 
-  // Formatação de valores
-  const formatCurrency = (value: string | number): string => {
-    const numValue = typeof value === 'string' ? parseFloat(value) : value;
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(numValue);
-  };
+  // Função de processamento do pagamento
+  const processRenewalPayment = async () => {
+    if (!contractData) return;
 
-  const formatCPF = (value: string): string => {
-    const numbers = value.replace(/\\D/g, '');
-    return numbers
-      .replace(/(\\d{3})(\\d)/, '$1.$2')
-      .replace(/(\\d{3})(\\d)/, '$1.$2')
-      .replace(/(\\d{3})(\\d{1,2})$/, '$1-$2');
-  };
+    // Validações básicas
+    if (!address.cpf) {
+      toast.error('Por favor, informe seu CPF');
+      return;
+    }
 
-  const formatCEP = (value: string): string => {
-    const numbers = value.replace(/\\D/g, '');
-    return numbers.replace(/(\\d{5})(\\d)/, '$1-$2');
-  };
-
-  // Validação de campos obrigatórios
-  const validatePaymentData = (): boolean => {
-    if (!addressData.cpf || !addressData.zipCode) {
-      toast.error('Por favor, preencha CPF e CEP');
-      return false;
+    if (!address.zipCode || !address.city || !address.state || !address.district || !address.address) {
+      toast.error('Por favor, preencha todos os campos do endereço');
+      return;
     }
 
     if (paymentMethod === 'credit') {
       if (!cardData.cardNumber || !cardData.cardHolder || !cardData.expirationDate || !cardData.securityCode) {
         toast.error('Por favor, preencha todos os dados do cartão');
-        return false;
+        return;
       }
     }
 
-    return true;
-  };
-
-  // Processar pagamento
-  const processRenewalPayment = async () => {
-    if (!validatePaymentData() || !contractData) return;
-
-    setIsProcessingPayment(true);
-    
     try {
-      const paymentData = {
+      setIsProcessingPayment(true);
+      console.log('💳 [RENEWAL] Processando renovação...');
+
+      // Usar o valor baseado no período escolhido (que agora vem do contrato)
+      const amount = billingPeriod === 'monthly' 
+        ? parseFloat(contractData.monthlyAmount || contractData.plan.price)
+        : parseFloat(contractData.annualAmount || contractData.plan.price);
+
+      const payload = {
         contractId: contractData.id,
         paymentMethod,
         billingPeriod,
-        amount: billingPeriod === 'annual' ? contractData.annualAmount : contractData.monthlyAmount,
-        isRenewal: true,
+        amount,
         clientData: {
-          ...addressData,
+          ...address,
           name: contractData.client.name,
           email: contractData.client.email,
           phone: contractData.client.phone
@@ -212,16 +210,19 @@ export default function RenewalCheckout() {
         ...(paymentMethod === 'credit' && { cardData })
       };
 
-      const response = await fetch('/api/checkout/renewal', {
+      console.log('📤 [RENEWAL] Enviando payload:', payload);
+
+      const response = await fetch('/api/clients/contracts/renew', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
-        credentials: 'include',
-        body: JSON.stringify(paymentData)
+        body: JSON.stringify(payload)
       });
 
       const result = await response.json();
+      console.log('📥 [RENEWAL] Resposta do servidor:', result);
 
       if (!response.ok) {
         throw new Error(result.error || 'Erro no processamento do pagamento');
@@ -251,317 +252,437 @@ export default function RenewalCheckout() {
   // Loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{background: 'var(--bg-beige)'}}>
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4" style={{borderColor: 'var(--bg-teal-dark)'}}></div>
-          <p style={{color: 'var(--text-dark-primary)'}}>Carregando dados da renovação...</p>
+      <>
+        <Header />
+        <div className="min-h-screen flex items-center justify-center" style={{background: 'var(--bg-beige)'}}>
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4" style={{borderColor: 'var(--bg-teal-dark)'}}></div>
+            <p style={{color: 'var(--text-dark-primary)'}}>Carregando dados da renovação...</p>
+          </div>
         </div>
-      </div>
+        <Footer />
+      </>
     );
   }
 
   // Error state
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{background: 'var(--bg-beige)'}}>
-        <div className="text-center max-w-md mx-auto p-6">
-          <div className="text-6xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-bold mb-4" style={{color: 'var(--text-dark-primary)'}}>Ops! Algo deu errado</h2>
-          <p className="mb-6" style={{color: 'var(--text-dark-secondary)'}}>{error}</p>
-          <button
-            onClick={() => navigate('/customer/financial')}
-            className="px-6 py-3 rounded-lg font-semibold"
-            style={{background: 'var(--btn-ver-planos-bg)', color: 'var(--text-light)'}}
-          >
-            Voltar para Área Financeira
-          </button>
+      <>
+        <Header />
+        <div className="min-h-screen flex items-center justify-center" style={{background: 'var(--bg-beige)'}}>
+          <div className="text-center max-w-md mx-auto p-6">
+            <div className="text-6xl mb-4">⚠️</div>
+            <h2 className="text-2xl font-bold mb-4" style={{color: 'var(--text-dark-primary)'}}>Ops! Algo deu errado</h2>
+            <p className="mb-6" style={{color: 'var(--text-dark-secondary)'}}>{error}</p>
+            <button
+              onClick={() => navigate('/customer/financial')}
+              className="px-6 py-3 rounded-lg font-semibold"
+              style={{background: 'var(--btn-ver-planos-bg)', color: 'var(--text-light)'}}
+            >
+              Voltar para Área Financeira
+            </button>
+          </div>
         </div>
-      </div>
+        <Footer />
+      </>
     );
   }
 
   // PIX Result view
   if (showPixResult && pixQrCode) {
     return (
-      <div className="min-h-screen" style={{background: 'var(--bg-beige)'}}>
-        <div className="container mx-auto px-4 py-8">
-          <div className="max-w-2xl mx-auto text-center">
-            <div className="bg-white rounded-lg p-8 shadow-lg">
-              <h2 className="text-2xl font-bold mb-6" style={{color: 'var(--text-dark-primary)'}}>
-                Pagamento PIX - Renovação
+      <>
+        <Header />
+        <div className="min-h-screen" style={{background: 'var(--bg-beige)'}}>
+          <motion.div 
+            className="container mx-auto px-4 py-12 max-w-md"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-4" style={{color: 'var(--text-dark-primary)'}}>
+                Pagamento via PIX
               </h2>
-              
-              <div className="mb-6">
-                <img 
-                  src={pixQrCode} 
-                  alt="QR Code PIX" 
-                  className="mx-auto w-72 h-72 object-contain"
-                  style={{ imageRendering: 'crisp-edges' }}
-                />
-              </div>
-              
-              <div className="space-y-4">
-                <p className="text-lg font-semibold" style={{color: 'var(--text-dark-primary)'}}>
-                  Valor: {formatCurrency(billingPeriod === 'annual' ? contractData?.annualAmount || '0' : contractData?.monthlyAmount || '0')}
-                </p>
-                
-                <div className="bg-gray-100 p-4 rounded-lg">
-                  <p className="text-sm mb-2" style={{color: 'var(--text-dark-secondary)'}}>Código PIX:</p>
-                  <p className="font-mono text-sm break-all" style={{color: 'var(--text-dark-primary)'}}>{pixCode}</p>
-                  <button
-                    onClick={() => navigator.clipboard.writeText(pixCode || '')}
-                    className="mt-2 text-sm px-4 py-2 rounded"
-                    style={{background: 'var(--btn-ver-planos-bg)', color: 'var(--text-light)'}}
-                  >
-                    Copiar Código
-                  </button>
-                </div>
-                
-                <p className="text-sm" style={{color: 'var(--text-dark-secondary)'}}>
-                  Após o pagamento, seu plano será reativado automaticamente.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Main renewal checkout interface
-  return (
-    <div className="min-h-screen" style={{background: 'var(--bg-beige)'}}>
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-6xl mx-auto">
-          
-          {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold mb-4" style={{color: 'var(--text-dark-primary)'}}>
-              Renovação do Plano
-            </h1>
-            <div className="inline-flex items-center px-4 py-2 rounded-full" style={{background: 'var(--bg-teal-light)', color: 'var(--text-teal)'}}>
-              <span className="font-semibold" style={{color: '#FFFFFF'}}>Contrato: {contractData?.contractNumber}</span>
-            </div>
-          </div>
-
-          {/* Contract Summary */}
-          {contractData && (
-            <div className="bg-white rounded-lg p-6 mb-8 shadow-sm">
-              <h3 className="text-lg font-semibold mb-4" style={{color: 'var(--text-dark-primary)'}}>
-                Resumo do Contrato
-              </h3>
-              <div className="grid md:grid-cols-3 gap-6">
-                <div>
-                  <p className="text-sm" style={{color: 'var(--text-dark-secondary)'}}>Pet:</p>
-                  <p className="font-semibold" style={{color: 'var(--text-dark-primary)'}}>{contractData.pet.name}</p>
-                  <p className="text-sm" style={{color: 'var(--text-dark-secondary)'}}>{contractData.pet.species} - {contractData.pet.breed}</p>
-                </div>
-                <div>
-                  <p className="text-sm" style={{color: 'var(--text-dark-secondary)'}}>Plano:</p>
-                  <p className="font-semibold" style={{color: 'var(--text-dark-primary)'}}>{contractData.plan.name}</p>
-                </div>
-                <div>
-                  <p className="text-sm" style={{color: 'var(--text-dark-secondary)'}}>Valor:</p>
-                  <p className="font-semibold text-lg" style={{color: 'var(--text-teal)'}}>
-                    {formatCurrency(billingPeriod === 'annual' ? contractData.annualAmount : contractData.monthlyAmount)}
-                    <span className="text-sm"> /{billingPeriod === 'annual' ? 'ano' : 'mês'}</span>
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Payment Form */}
-          <div className="bg-white rounded-lg p-6 shadow-sm">
-            <h3 className="text-xl font-semibold mb-6" style={{color: 'var(--text-dark-primary)'}}>
-              Dados para Pagamento
-            </h3>
-
-            {/* Billing Period Info */}
-            <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-              <p className="text-sm font-medium" style={{color: 'var(--text-dark-secondary)'}}>
-                Período de Cobrança: 
-                <span className="ml-2 font-semibold" style={{color: 'var(--text-dark-primary)'}}>
-                  {billingPeriod === 'annual' ? 'Anual' : 'Mensal'}
-                </span>
-                <span className="ml-2" style={{color: 'var(--text-teal)'}}>
-                  {formatCurrency(billingPeriod === 'annual' ? contractData?.annualAmount || '0' : contractData?.monthlyAmount || '0')}
-                  {billingPeriod === 'annual' ? '/ano' : '/mês'}
-                </span>
+              <p style={{color: 'var(--text-dark-secondary)'}}>
+                Escaneie o código QR ou copie o código PIX
               </p>
             </div>
 
-            {/* Address Data */}
-            <div className="mb-6">
-              <h4 className="text-lg font-semibold mb-4" style={{color: 'var(--text-dark-primary)'}}>
-                Confirme seus dados
-              </h4>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
-                    CPF *
-                  </label>
-                  <input
-                    type="text"
-                    value={addressData.cpf}
-                    onChange={(e) => setAddressData({...addressData, cpf: formatCPF(e.target.value)})}
-                    className="w-full p-3 rounded-lg border"
-                    style={{borderColor: 'var(--border-gray)', background: 'white'}}
-                    placeholder="000.000.000-00"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
-                    CEP *
-                  </label>
-                  <input
-                    type="text"
-                    value={addressData.zipCode}
-                    onChange={(e) => setAddressData({...addressData, zipCode: formatCEP(e.target.value)})}
-                    className="w-full p-3 rounded-lg border"
-                    style={{borderColor: 'var(--border-gray)', background: 'white'}}
-                    placeholder="00000-000"
-                    required
-                  />
-                </div>
+            <div className="bg-white rounded-lg p-6 shadow-lg mb-6">
+              <div className="mb-6 p-4 bg-gray-50 rounded">
+                <img src={pixQrCode} alt="QR Code PIX" className="mx-auto w-64 h-64" />
               </div>
-            </div>
 
-            {/* Payment Method Selection */}
-            <div className="mb-6">
-              <label className="block text-sm font-medium mb-3" style={{color: 'var(--text-dark-primary)'}}>
-                Forma de Pagamento
-              </label>
-              <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm font-medium mb-2" style={{color: 'var(--text-dark-secondary)'}}>
+                  Código PIX:
+                </p>
+                <div className="p-3 bg-gray-50 rounded break-all text-xs">
+                  {pixCode}
+                </div>
                 <button
-                  onClick={() => setPaymentMethod('credit')}
-                  className={`p-4 rounded-lg border-2 transition-all ${paymentMethod === 'credit' ? 'border-teal-500 bg-teal-50' : 'border-gray-200'}`}
+                  onClick={() => {
+                    navigator.clipboard.writeText(pixCode || '');
+                    toast.success('Código PIX copiado!');
+                  }}
+                  className="mt-4 w-full py-3 rounded-lg font-semibold"
+                  style={{background: 'var(--btn-ver-planos-bg)', color: 'var(--text-light)'}}
                 >
-                  <div className="text-center">
-                    <p className="font-semibold" style={{color: 'var(--text-dark-primary)'}}>💳 Cartão de Crédito</p>
-                    <p className="text-sm" style={{color: 'var(--text-dark-secondary)'}}>Aprovação imediata</p>
-                  </div>
-                </button>
-                <button
-                  onClick={() => setPaymentMethod('pix')}
-                  className={`p-4 rounded-lg border-2 transition-all ${paymentMethod === 'pix' ? 'border-teal-500 bg-teal-50' : 'border-gray-200'}`}
-                >
-                  <div className="text-center">
-                    <p className="font-semibold" style={{color: 'var(--text-dark-primary)'}}>🔄 PIX</p>
-                    <p className="text-sm" style={{color: 'var(--text-dark-secondary)'}}>Pagamento instantâneo</p>
-                  </div>
+                  Copiar Código PIX
                 </button>
               </div>
             </div>
 
-            {/* Credit Card Form */}
-            {paymentMethod === 'credit' && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                transition={{ duration: 0.3 }}
-                className="mb-6"
-              >
-                <h4 className="text-lg font-semibold mb-4" style={{color: 'var(--text-dark-primary)'}}>
-                  Dados do Cartão
-                </h4>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
-                      Número do Cartão *
-                    </label>
-                    <input
-                      type="text"
-                      value={cardData.cardNumber}
-                      onChange={(e) => setCardData({...cardData, cardNumber: e.target.value})}
-                      className="w-full p-3 rounded-lg border"
-                      style={{borderColor: 'var(--border-gray)', background: 'white'}}
-                      placeholder="0000 0000 0000 0000"
-                      required
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
-                      Nome do Titular *
-                    </label>
-                    <input
-                      type="text"
-                      value={cardData.cardHolder}
-                      onChange={(e) => setCardData({...cardData, cardHolder: e.target.value})}
-                      className="w-full p-3 rounded-lg border"
-                      style={{borderColor: 'var(--border-gray)', background: 'white'}}
-                      placeholder="Nome como está no cartão"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
-                      Validade *
-                    </label>
-                    <input
-                      type="text"
-                      value={cardData.expirationDate}
-                      onChange={(e) => setCardData({...cardData, expirationDate: e.target.value})}
-                      className="w-full p-3 rounded-lg border"
-                      style={{borderColor: 'var(--border-gray)', background: 'white'}}
-                      placeholder="MM/AA"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2" style={{color: 'var(--text-dark-primary)'}}>
-                      CVV *
-                    </label>
-                    <input
-                      type="text"
-                      value={cardData.securityCode}
-                      onChange={(e) => setCardData({...cardData, securityCode: e.target.value})}
-                      className="w-full p-3 rounded-lg border"
-                      style={{borderColor: 'var(--border-gray)', background: 'white'}}
-                      placeholder="000"
-                      required
-                    />
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {/* Action Buttons */}
-            <div className="flex flex-col md:flex-row gap-4 pt-6 border-t" style={{borderColor: 'var(--border-gray)'}}>
+            <div className="text-center">
               <button
                 onClick={() => navigate('/customer/financial')}
-                className="px-6 py-3 rounded-lg font-semibold border"
-                style={{
-                  borderColor: 'var(--border-gray)',
-                  color: 'var(--text-dark-secondary)',
-                  background: 'white'
-                }}
+                className="text-sm underline"
+                style={{color: 'var(--text-dark-secondary)'}}
               >
-                Cancelar
-              </button>
-              <button
-                onClick={processRenewalPayment}
-                disabled={isProcessingPayment}
-                className="flex-1 px-6 py-3 rounded-lg font-semibold transition-all disabled:opacity-50"
-                style={{
-                  background: 'var(--btn-ver-planos-bg)',
-                  color: 'var(--text-light)'
-                }}
-              >
-                {isProcessingPayment ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                    Processando...
-                  </span>
-                ) : (
-                  `Renovar por ${contractData && formatCurrency(billingPeriod === 'annual' ? contractData.annualAmount : contractData.monthlyAmount)}`
-                )}
+                Voltar para Área Financeira
               </button>
             </div>
-          </div>
+          </motion.div>
         </div>
+        <Footer />
+      </>
+    );
+  }
+
+  // Main checkout view
+  if (!contractData) return null;
+
+  return (
+    <>
+      <Header />
+      <div className="min-h-screen" style={{background: 'var(--bg-beige)'}}>
+        <motion.div 
+          className="container mx-auto px-4 py-8"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
+          <div className="max-w-6xl mx-auto">
+            {/* Back Button */}
+            <button
+              onClick={() => navigate('/customer/financial')}
+              className="flex items-center gap-2 mb-6 px-4 py-2 text-sm font-medium rounded-lg hover:bg-gray-100 transition-colors"
+              style={{color: 'var(--text-dark-primary)'}}
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Voltar para Área Financeira
+            </button>
+
+            {/* Header */}
+            <div className="text-center mb-8">
+              <h1 className="text-3xl font-bold mb-2" style={{color: 'var(--text-dark-primary)'}}>
+                Renovação de Contrato
+              </h1>
+              <p style={{color: 'var(--text-dark-secondary)'}}>
+                Contrato #{contractData.contractNumber}
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* Resumo do Contrato */}
+              <div>
+                <h2 className="text-xl font-bold mb-4" style={{color: 'var(--text-dark-primary)'}}>
+                  Resumo da Renovação
+                </h2>
+
+                {/* Card do Plano */}
+                <div className="bg-white rounded-lg p-6 shadow-sm mb-4">
+                  <h3 className="font-semibold text-lg mb-2" style={{color: 'var(--text-dark-primary)'}}>
+                    {contractData.plan.name}
+                  </h3>
+                  
+                  {/* Pet Info */}
+                  <div className="mb-4 p-3 bg-gray-50 rounded">
+                    <p className="text-sm font-medium" style={{color: 'var(--text-dark-secondary)'}}>
+                      Pet: {contractData.pet.name}
+                    </p>
+                    <p className="text-xs" style={{color: 'var(--text-dark-tertiary)'}}>
+                      {contractData.pet.species} • {contractData.pet.breed}
+                    </p>
+                  </div>
+
+                  {/* Billing Info - sem seletor, apenas mostra o configurado */}
+                  <div className="mb-4">
+                    <p className="text-sm font-medium mb-2" style={{color: 'var(--text-dark-secondary)'}}>
+                      Período de Cobrança
+                    </p>
+                    <div className="p-3 bg-blue-50 border border-blue-200 rounded">
+                      <p className="font-semibold" style={{color: 'var(--text-dark-primary)'}}>
+                        {billingPeriod === 'monthly' ? 'Mensal' : 'Anual'}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Valor Total */}
+                  <div className="border-t pt-4">
+                    <div className="flex justify-between items-center">
+                      <span className="font-semibold" style={{color: 'var(--text-dark-primary)'}}>
+                        Total:
+                      </span>
+                      <span className="text-2xl font-bold" style={{color: '#FFFFFF'}}>
+                        R$ {billingPeriod === 'monthly' 
+                          ? contractData.monthlyAmount || contractData.plan.price
+                          : contractData.annualAmount || contractData.plan.price}
+                      </span>
+                    </div>
+                    <p className="text-xs mt-1" style={{color: 'var(--text-dark-tertiary)'}}>
+                      Cobrança {billingPeriod === 'monthly' ? 'mensal' : 'anual'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Features do Plano */}
+                {contractData.plan.features && contractData.plan.features.length > 0 && (
+                  <div className="bg-white rounded-lg p-6 shadow-sm">
+                    <h3 className="font-semibold mb-3" style={{color: 'var(--text-dark-primary)'}}>
+                      Benefícios Inclusos
+                    </h3>
+                    <ul className="space-y-2">
+                      {contractData.plan.features.map((feature, index) => (
+                        <li key={index} className="flex items-start">
+                          <span className="mr-2" style={{color: 'var(--accent-teal)'}}>✓</span>
+                          <span className="text-sm" style={{color: 'var(--text-dark-secondary)'}}>
+                            {feature}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+
+              {/* Formulário de Pagamento */}
+              <div>
+                <h2 className="text-xl font-bold mb-4" style={{color: 'var(--text-dark-primary)'}}>
+                  Dados de Pagamento
+                </h2>
+
+                {/* Dados Pessoais */}
+                <div className="bg-white rounded-lg p-6 shadow-sm mb-4">
+                  <h3 className="font-semibold mb-4" style={{color: 'var(--text-dark-primary)'}}>
+                    Dados Pessoais
+                  </h3>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-1" style={{color: 'var(--text-dark-secondary)'}}>
+                        CPF
+                      </label>
+                      <input
+                        type="text"
+                        value={address.cpf}
+                        onChange={(e) => setAddress({...address, cpf: formatCPF(e.target.value)})}
+                        placeholder="000.000.000-00"
+                        className="w-full px-3 py-2 border rounded-lg"
+                        maxLength={14}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Endereço */}
+                <div className="bg-white rounded-lg p-6 shadow-sm mb-4">
+                  <h3 className="font-semibold mb-4" style={{color: 'var(--text-dark-primary)'}}>
+                    Endereço de Cobrança
+                  </h3>
+                  
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-1" style={{color: 'var(--text-dark-secondary)'}}>
+                          CEP
+                        </label>
+                        <input
+                          type="text"
+                          value={address.zipCode}
+                          onChange={(e) => setAddress({...address, zipCode: formatCEP(e.target.value)})}
+                          placeholder="00000-000"
+                          className="w-full px-3 py-2 border rounded-lg"
+                          maxLength={9}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1" style={{color: 'var(--text-dark-secondary)'}}>
+                          Cidade
+                        </label>
+                        <input
+                          type="text"
+                          value={address.city}
+                          onChange={(e) => setAddress({...address, city: e.target.value})}
+                          className="w-full px-3 py-2 border rounded-lg"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-1" style={{color: 'var(--text-dark-secondary)'}}>
+                          Estado
+                        </label>
+                        <select
+                          value={address.state}
+                          onChange={(e) => setAddress({...address, state: e.target.value})}
+                          className="w-full px-3 py-2 border rounded-lg"
+                        >
+                          <option value="">Selecione</option>
+                          <option value="SP">SP</option>
+                          <option value="RJ">RJ</option>
+                          <option value="MG">MG</option>
+                          <option value="RS">RS</option>
+                          <option value="PR">PR</option>
+                          <option value="SC">SC</option>
+                          {/* Adicionar mais estados conforme necessário */}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1" style={{color: 'var(--text-dark-secondary)'}}>
+                          Bairro
+                        </label>
+                        <input
+                          type="text"
+                          value={address.district}
+                          onChange={(e) => setAddress({...address, district: e.target.value})}
+                          className="w-full px-3 py-2 border rounded-lg"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium mb-1" style={{color: 'var(--text-dark-secondary)'}}>
+                        Endereço
+                      </label>
+                      <input
+                        type="text"
+                        value={address.address}
+                        onChange={(e) => setAddress({...address, address: e.target.value})}
+                        className="w-full px-3 py-2 border rounded-lg"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Método de Pagamento */}
+                <div className="bg-white rounded-lg p-6 shadow-sm mb-6">
+                  <h3 className="font-semibold mb-4" style={{color: 'var(--text-dark-primary)'}}>
+                    Forma de Pagamento
+                  </h3>
+
+                  <div className="space-y-3 mb-4">
+                    <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                      <input
+                        type="radio"
+                        value="credit"
+                        checked={paymentMethod === 'credit'}
+                        onChange={(e) => setPaymentMethod(e.target.value as 'credit')}
+                        className="mr-3"
+                      />
+                      <span style={{color: 'var(--text-dark-primary)'}}>Cartão de Crédito</span>
+                    </label>
+                    
+                    <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                      <input
+                        type="radio"
+                        value="pix"
+                        checked={paymentMethod === 'pix'}
+                        onChange={(e) => setPaymentMethod(e.target.value as 'pix')}
+                        className="mr-3"
+                      />
+                      <span style={{color: 'var(--text-dark-primary)'}}>PIX</span>
+                    </label>
+                  </div>
+
+                  {/* Campos do Cartão */}
+                  {paymentMethod === 'credit' && (
+                    <div className="space-y-4 pt-4 border-t">
+                      <div>
+                        <label className="block text-sm font-medium mb-1" style={{color: 'var(--text-dark-secondary)'}}>
+                          Número do Cartão
+                        </label>
+                        <input
+                          type="text"
+                          value={cardData.cardNumber}
+                          onChange={(e) => setCardData({...cardData, cardNumber: e.target.value})}
+                          placeholder="0000 0000 0000 0000"
+                          className="w-full px-3 py-2 border rounded-lg"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium mb-1" style={{color: 'var(--text-dark-secondary)'}}>
+                          Nome no Cartão
+                        </label>
+                        <input
+                          type="text"
+                          value={cardData.cardHolder}
+                          onChange={(e) => setCardData({...cardData, cardHolder: e.target.value})}
+                          placeholder="Nome como está no cartão"
+                          className="w-full px-3 py-2 border rounded-lg"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium mb-1" style={{color: 'var(--text-dark-secondary)'}}>
+                            Validade
+                          </label>
+                          <input
+                            type="text"
+                            value={cardData.expirationDate}
+                            onChange={(e) => setCardData({...cardData, expirationDate: e.target.value})}
+                            placeholder="MM/AA"
+                            className="w-full px-3 py-2 border rounded-lg"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium mb-1" style={{color: 'var(--text-dark-secondary)'}}>
+                            CVV
+                          </label>
+                          <input
+                            type="text"
+                            value={cardData.securityCode}
+                            onChange={(e) => setCardData({...cardData, securityCode: e.target.value})}
+                            placeholder="000"
+                            className="w-full px-3 py-2 border rounded-lg"
+                            maxLength={4}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Botão de Pagamento */}
+                <button
+                  onClick={processRenewalPayment}
+                  disabled={isProcessingPayment}
+                  className="w-full py-4 rounded-lg font-semibold transition-colors"
+                  style={{
+                    background: isProcessingPayment ? '#ccc' : 'var(--btn-ver-planos-bg)',
+                    color: 'var(--text-light)'
+                  }}
+                >
+                  {isProcessingPayment ? (
+                    <span className="flex items-center justify-center">
+                      <span className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></span>
+                      Processando...
+                    </span>
+                  ) : (
+                    `Renovar Contrato - R$ ${billingPeriod === 'monthly' 
+                      ? contractData.monthlyAmount || contractData.plan.price
+                      : contractData.annualAmount || contractData.plan.price}`
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </motion.div>
       </div>
-    </div>
+      <Footer />
+    </>
   );
 }
