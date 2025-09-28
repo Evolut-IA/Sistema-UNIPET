@@ -1472,7 +1472,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           // Create contract for each pet
           const contracts: any[] = [];
-          for (const pet of createdPets) {
+          for (let i = 0; i < createdPets.length; i++) {
+            const pet = createdPets[i];
+            
+            // Calculate the correct price for this pet including discount
+            let petMonthlyAmount = parseFloat(selectedPlan.basePrice || '0');
+            
+            // Apply discount for 2nd, 3rd, 4th+ pets for BASIC and INFINITY plans
+            if (['BASIC', 'INFINITY'].some(type => selectedPlan.name.toUpperCase().includes(type)) && i > 0) {
+              const discountPercentage = i === 1 ? 5 :  // 2nd pet: 5%
+                                       i === 2 ? 10 : // 3rd pet: 10%
+                                       15;             // 4th+ pets: 15%
+              petMonthlyAmount = petMonthlyAmount * (1 - discountPercentage / 100);
+            }
+            
             const contractData = {
               clientId: client.id,
               planId: planData.planId,
@@ -1480,7 +1493,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               contractNumber: `UNIPET-${Date.now()}-${pet.id.substring(0, 4).toUpperCase()}`,
               status: 'active' as const,
               startDate: new Date(),
-              monthlyAmount: selectedPlan.basePrice || '0',
+              monthlyAmount: petMonthlyAmount.toFixed(2),
               paymentMethod: 'credit_card',
               cieloPaymentId: paymentResult.payment.paymentId,
               proofOfSale: paymentResult.payment.proofOfSale,
@@ -1506,19 +1519,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
               const receiptService = new PaymentReceiptService();
               
               // Prepare pets data for receipt
-              const petsForReceipt = createdPets.map(pet => ({
-                name: pet.name || 'Pet',
-                species: pet.species || 'Cão',
-                breed: pet.breed,
-                age: pet.age,
-                weight: pet.weight,
-                sex: pet.sex,
-                planName: selectedPlan.name,
-                planType: selectedPlan.planType || 'BASIC',
-                value: Math.round(parseFloat(selectedPlan.basePrice || '0') * 100),
-                discount: 0,
-                discountedValue: Math.round(parseFloat(selectedPlan.basePrice || '0') * 100)
-              }));
+              const petsForReceipt = createdPets.map((pet, index) => {
+                const basePrice = parseFloat(selectedPlan.basePrice || '0');
+                let discountPercentage = 0;
+                
+                // Apply discount for 2nd, 3rd, 4th+ pets for BASIC and INFINITY plans
+                if (['BASIC', 'INFINITY'].some(type => selectedPlan.name.toUpperCase().includes(type)) && index > 0) {
+                  discountPercentage = index === 1 ? 5 :  // 2nd pet: 5%
+                                      index === 2 ? 10 : // 3rd pet: 10%
+                                      15;             // 4th+ pets: 15%
+                }
+                
+                const discountedPrice = basePrice * (1 - discountPercentage / 100);
+                
+                return {
+                  name: pet.name || 'Pet',
+                  species: pet.species || 'Cão',
+                  breed: pet.breed,
+                  age: pet.age,
+                  weight: pet.weight,
+                  sex: pet.sex,
+                  planName: selectedPlan.name,
+                  planType: selectedPlan.planType || 'BASIC',
+                  value: Math.round(basePrice * 100),
+                  discount: discountPercentage,
+                  discountedValue: Math.round(discountedPrice * 100)
+                };
+              });
               
               const receiptData = {
                 contractId: contracts[0].id,
@@ -1666,7 +1693,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           // Create contract for each pet (PIX pending payment)
           const contractsPix: any[] = [];
-          for (const pet of createdPetsPix) {
+          for (let i = 0; i < createdPetsPix.length; i++) {
+            const pet = createdPetsPix[i];
+            
+            // Calculate the correct price for this pet including discount
+            let petMonthlyAmount = parseFloat(selectedPlan.basePrice || '0');
+            
+            // Apply discount for 2nd, 3rd, 4th+ pets for BASIC and INFINITY plans
+            if (['BASIC', 'INFINITY'].some(type => selectedPlan.name.toUpperCase().includes(type)) && i > 0) {
+              const discountPercentage = i === 1 ? 5 :  // 2nd pet: 5%
+                                       i === 2 ? 10 : // 3rd pet: 10%
+                                       15;             // 4th+ pets: 15%
+              petMonthlyAmount = petMonthlyAmount * (1 - discountPercentage / 100);
+            }
+            
             const contractData = {
               clientId: client.id,
               petId: pet.id,
@@ -1675,7 +1715,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               billingPeriod: 'monthly' as const,
               status: 'active' as const,
               startDate: new Date(),
-              monthlyAmount: selectedPlan.basePrice || '0',
+              monthlyAmount: petMonthlyAmount.toFixed(2),
               paymentMethod: 'pix',
               cieloPaymentId: pixPaymentResult.payment.paymentId,
               proofOfSale: pixPaymentResult.payment.proofOfSale || '',
@@ -1712,19 +1752,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
             const receiptService = new PaymentReceiptService();
             
             // Prepare pets data for receipt
-            const petsForReceipt = createdPetsPix.map(pet => ({
-              name: pet.name || 'Pet',
-              species: pet.species || 'Cão',
-              breed: pet.breed,
-              age: pet.age,
-              weight: pet.weight,
-              sex: pet.sex,
-              planName: selectedPlan.name,
-              planType: selectedPlan.planType || 'BASIC',
-              value: Math.round(parseFloat(selectedPlan.basePrice || '0') * 100),
-              discount: 0,
-              discountedValue: Math.round(parseFloat(selectedPlan.basePrice || '0') * 100)
-            }));
+            const petsForReceipt = createdPetsPix.map((pet, index) => {
+              const basePrice = parseFloat(selectedPlan.basePrice || '0');
+              let discountPercentage = 0;
+              
+              // Apply discount for 2nd, 3rd, 4th+ pets for BASIC and INFINITY plans
+              if (['BASIC', 'INFINITY'].some(type => selectedPlan.name.toUpperCase().includes(type)) && index > 0) {
+                discountPercentage = index === 1 ? 5 :  // 2nd pet: 5%
+                                    index === 2 ? 10 : // 3rd pet: 10%
+                                    15;             // 4th+ pets: 15%
+              }
+              
+              const discountedPrice = basePrice * (1 - discountPercentage / 100);
+              
+              return {
+                name: pet.name || 'Pet',
+                species: pet.species || 'Cão',
+                breed: pet.breed,
+                age: pet.age,
+                weight: pet.weight,
+                sex: pet.sex,
+                planName: selectedPlan.name,
+                planType: selectedPlan.planType || 'BASIC',
+                value: Math.round(basePrice * 100),
+                discount: discountPercentage,
+                discountedValue: Math.round(discountedPrice * 100)
+              };
+            });
             
             const receiptData = {
               contractId: contractsPix[0].id,
