@@ -120,6 +120,13 @@ export default function RenewalCheckout() {
         
         console.log('✅ [RENEWAL] Dados carregados:', renewalData);
         
+        // Ajustar valores baseado no período de faturamento
+        if (!renewalData.monthlyAmount || !renewalData.annualAmount) {
+          const amount = parseFloat(renewalData.amount) || 0;
+          renewalData.monthlyAmount = renewalData.billingPeriod === 'monthly' ? amount.toString() : (amount / 12).toString();
+          renewalData.annualAmount = renewalData.billingPeriod === 'annual' ? amount.toString() : (amount * 12).toString();
+        }
+        
         setContractData(renewalData);
         setBillingPeriod(renewalData.billingPeriod || 'monthly');
         
