@@ -249,6 +249,7 @@ export class PaymentReceiptService {
         clientEmail: receiptData.clientEmail,
         petName: receiptData.petName || null,
         planName: receiptData.planName || null,
+        petsData: receiptData.pets || null, // Save the complete pets array
         createdAt: new Date(),
         updatedAt: new Date()
       };
@@ -829,6 +830,7 @@ export class PaymentReceiptService {
         clientEmail: receiptData.clientEmail,
         petName: receiptData.petName || 'Pet não informado',
         planName: receiptData.planName || 'Plano não informado',
+        pets: receiptData.petsData || undefined, // Use the complete pets data if available
         contractId: receiptData.contractId || undefined
       };
 

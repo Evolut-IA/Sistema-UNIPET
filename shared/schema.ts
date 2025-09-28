@@ -343,6 +343,19 @@ export const paymentReceipts = pgTable("payment_receipts", {
   clientEmail: text("client_email").notNull(),
   petName: text("pet_name"),
   planName: text("plan_name"),
+  petsData: json("pets_data").$type<Array<{
+    name: string;
+    species: string;
+    breed?: string;
+    age?: number;
+    weight?: number;
+    sex?: string;
+    planName: string;
+    planType: string;
+    value: number;
+    discount?: number;
+    discountedValue?: number;
+  }>>(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
