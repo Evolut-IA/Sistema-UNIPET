@@ -333,7 +333,7 @@ export default function RenewalCheckout() {
               Renovação do Plano
             </h1>
             <div className="inline-flex items-center px-4 py-2 rounded-full" style={{background: 'var(--bg-teal-light)', color: 'var(--text-teal)'}}>
-              <span className="font-semibold">Contrato: {contractData?.contractNumber}</span>
+              <span className="font-semibold" style={{color: '#FFFFFF'}}>Contrato: {contractData?.contractNumber}</span>
             </div>
           </div>
 
