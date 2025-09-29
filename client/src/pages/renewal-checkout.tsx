@@ -586,23 +586,6 @@ export default function RenewalCheckout() {
                       </p>
                     </div>
                   </div>
-
-                  {/* Valor Total */}
-                  <div className="border-t pt-4">
-                    <div className="flex justify-between items-center">
-                      <span className="font-semibold" style={{color: 'var(--text-dark-primary)'}}>
-                        Total:
-                      </span>
-                      <span className="text-2xl font-bold" style={{color: '#FFFFFF'}}>
-                        R$ {billingPeriod === 'monthly' 
-                          ? contractData.monthlyAmount || contractData.plan.price
-                          : contractData.annualAmount || contractData.plan.price}
-                      </span>
-                    </div>
-                    <p className="text-xs mt-1" style={{color: 'var(--text-dark-tertiary)'}}>
-                      Cobrança {billingPeriod === 'monthly' ? 'mensal' : 'anual'}
-                    </p>
-                  </div>
                 </div>
 
                 {/* Features do Plano */}
