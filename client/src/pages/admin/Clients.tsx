@@ -73,6 +73,13 @@ export default function Clients() {
     ...getQueryOptions('clients'),
   });
 
+  const { data: searchResults = [], isLoading: searchLoading } = useQuery<Client[]>({
+    queryKey: ["/admin/api/clients/search", { search: searchQuery }],
+    enabled: searchQuery.length > 2,
+    staleTime: 2 * 60 * 1000, // 2 minutos para resultados de busca
+    gcTime: 5 * 60 * 1000, // 5 minutos
+  });
+
   // Calculate filtered and paginated clients first
   const filteredClients = searchQuery.length > 2 ? searchResults : clients;
   const totalClients = filteredClients.length;
@@ -106,13 +113,6 @@ export default function Clients() {
     queryKey: ["/admin/api/clients", selectedClient?.id, "pets"],
     enabled: !!selectedClient?.id,
     ...getQueryOptions('pets'),
-  });
-
-  const { data: searchResults = [], isLoading: searchLoading } = useQuery<Client[]>({
-    queryKey: ["/admin/api/clients/search", { search: searchQuery }],
-    enabled: searchQuery.length > 2,
-    staleTime: 2 * 60 * 1000, // 2 minutos para resultados de busca
-    gcTime: 5 * 60 * 1000, // 5 minutos
   });
 
   const deleteClientMutation = useMutation({
@@ -336,6 +336,11 @@ export default function Clients() {
               onChange={(e) => {
                 setSearchQuery(e.target.value);
                 setCurrentPage(1); // Reset para página 1 ao buscar
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault(); // Previne o refresh da página ao pressionar Enter
+                }
               }}
               className="pl-10 w-80"
               data-testid="input-search-clients"
