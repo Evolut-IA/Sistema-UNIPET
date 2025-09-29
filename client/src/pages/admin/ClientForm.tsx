@@ -161,7 +161,7 @@ export default function ClientForm() {
         title: isEdit ? "Cliente atualizado" : "Cliente cadastrado",
         description: isEdit ? "Cliente foi atualizado com sucesso." : "Cliente foi cadastrado com sucesso.",
       });
-      setLocation("/admin/clientes");
+      setLocation("/clientes");
     },
     onError: () => {
       toast({
@@ -204,7 +204,7 @@ export default function ClientForm() {
       <Button
         variant="outline"
         size="sm"
-        onClick={() => setLocation("/admin/clientes")}
+        onClick={() => setLocation("/clientes")}
         data-testid="button-back-to-clients"
         className="w-full sm:w-auto"
       >
@@ -398,7 +398,7 @@ export default function ClientForm() {
                   type="button"
                   variant="outline"
                   size="sm"
-                  onClick={() => setLocation("/admin/clientes")}
+                  onClick={() => setLocation("/clientes")}
                   data-testid="button-cancel"
                   className="md:w-auto w-full md:h-10 h-12 md:text-sm text-base"
                 >
