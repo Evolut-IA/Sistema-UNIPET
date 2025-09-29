@@ -83,32 +83,8 @@ export default function RenewalCheckout() {
   const [pixCode, setPixCode] = useState<string | null>(null);
   const [showPixResult, setShowPixResult] = useState(false);
 
-  // Estados de endereço (obrigatório para pagamento)
-  const [address, setAddress] = useState({
-    zipCode: '',
-    city: '',
-    state: '',
-    district: '',
-    address: '',
-    cpf: ''
-  });
+  // Dados de endereço serão usados diretamente do cliente cadastrado
 
-  // Formatadores de entrada (reutilizar do checkout principal)
-  const formatCPF = (value: string) => {
-    return value
-      .replace(/\D/g, '')
-      .replace(/(\d{3})(\d)/, '$1.$2')
-      .replace(/(\d{3})(\d)/, '$1.$2')
-      .replace(/(\d{3})(\d{1,2})/, '$1-$2')
-      .replace(/(-\d{2})\d+?$/, '$1');
-  };
-
-  const formatCEP = (value: string) => {
-    return value
-      .replace(/\D/g, '')
-      .replace(/(\d{5})(\d)/, '$1-$2')
-      .replace(/(-\d{3})\d+?$/, '$1');
-  };
 
   // Buscar dados do contrato
   useEffect(() => {
@@ -157,17 +133,7 @@ export default function RenewalCheckout() {
           setBillingPeriod(contractInfo.billingPeriod);
         }
 
-        // Se tem dados do cliente, preencher endereço
-        if (contractInfo.client) {
-          setAddress({
-            zipCode: contractInfo.client.zipCode || '',
-            city: contractInfo.client.city || '',
-            state: contractInfo.client.state || '',
-            district: contractInfo.client.district || '',
-            address: contractInfo.client.address || '',
-            cpf: contractInfo.client.cpf || ''
-          });
-        }
+        // Dados do cliente já estão no contractInfo.client
 
       } catch (err) {
         console.error('❌ [RENEWAL] Erro ao buscar dados:', err);
@@ -184,16 +150,7 @@ export default function RenewalCheckout() {
   const processRenewalPayment = async () => {
     if (!contractData) return;
 
-    // Validações básicas
-    if (!address.cpf) {
-      toast.error('Por favor, informe seu CPF');
-      return;
-    }
-
-    if (!address.zipCode || !address.city || !address.state || !address.district || !address.address) {
-      toast.error('Por favor, preencha todos os campos do endereço');
-      return;
-    }
+    // Validações básicas - dados já vêm do cliente cadastrado
 
     if (paymentMethod === 'credit') {
       if (!cardData.cardNumber || !cardData.cardHolder || !cardData.expirationDate || !cardData.securityCode) {
@@ -217,7 +174,12 @@ export default function RenewalCheckout() {
         billingPeriod,
         amount,
         clientData: {
-          ...address,
+          zipCode: contractData.client.zipCode || '',
+          city: contractData.client.city || '',
+          state: contractData.client.state || '',
+          district: contractData.client.district || '',
+          address: contractData.client.address || '',
+          cpf: contractData.client.cpf || '',
           name: contractData.client.name,
           email: contractData.client.email,
           phone: contractData.client.phone
@@ -231,20 +193,20 @@ export default function RenewalCheckout() {
       const checkoutPayload = {
         clientId: contractData.client.id,
         addressData: {
-          cep: address.zipCode,
-          address: address.address,
-          number: address.number,
-          complement: address.complement,
-          district: address.district,
-          city: address.city,
-          state: address.state,
+          cep: contractData.client.zipCode || '',
+          address: contractData.client.address || '',
+          number: contractData.client.number || '',
+          complement: contractData.client.complement || '',
+          district: contractData.client.district || '',
+          city: contractData.client.city || '',
+          state: contractData.client.state || '',
           phone: contractData.client.phone
         },
         paymentData: {
           customer: {
             name: contractData.client.name,
             email: contractData.client.email,
-            cpf: address.cpf
+            cpf: contractData.client.cpf || ''
           },
           payment: paymentMethod === 'credit' ? {
             type: 'CreditCard',
@@ -542,110 +504,6 @@ export default function RenewalCheckout() {
                 <h2 className="text-xl font-bold mb-4" style={{color: 'var(--text-dark-primary)'}}>
                   Dados de Pagamento
                 </h2>
-
-                {/* Dados Pessoais */}
-                <div className="bg-white rounded-lg p-6 shadow-sm mb-4">
-                  <h3 className="font-semibold mb-4" style={{color: 'var(--text-dark-primary)'}}>
-                    Dados Pessoais
-                  </h3>
-                  
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium mb-1" style={{color: 'var(--text-dark-secondary)'}}>
-                        CPF
-                      </label>
-                      <input
-                        type="text"
-                        value={address.cpf}
-                        onChange={(e) => setAddress({...address, cpf: formatCPF(e.target.value)})}
-                        placeholder="000.000.000-00"
-                        className="w-full px-3 py-2 border rounded-lg"
-                        maxLength={14}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Endereço */}
-                <div className="bg-white rounded-lg p-6 shadow-sm mb-4">
-                  <h3 className="font-semibold mb-4" style={{color: 'var(--text-dark-primary)'}}>
-                    Endereço de Cobrança
-                  </h3>
-                  
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium mb-1" style={{color: 'var(--text-dark-secondary)'}}>
-                          CEP
-                        </label>
-                        <input
-                          type="text"
-                          value={address.zipCode}
-                          onChange={(e) => setAddress({...address, zipCode: formatCEP(e.target.value)})}
-                          placeholder="00000-000"
-                          className="w-full px-3 py-2 border rounded-lg"
-                          maxLength={9}
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1" style={{color: 'var(--text-dark-secondary)'}}>
-                          Cidade
-                        </label>
-                        <input
-                          type="text"
-                          value={address.city}
-                          onChange={(e) => setAddress({...address, city: e.target.value})}
-                          className="w-full px-3 py-2 border rounded-lg"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium mb-1" style={{color: 'var(--text-dark-secondary)'}}>
-                          Estado
-                        </label>
-                        <select
-                          value={address.state}
-                          onChange={(e) => setAddress({...address, state: e.target.value})}
-                          className="w-full px-3 py-2 border rounded-lg"
-                        >
-                          <option value="">Selecione</option>
-                          <option value="SP">SP</option>
-                          <option value="RJ">RJ</option>
-                          <option value="MG">MG</option>
-                          <option value="RS">RS</option>
-                          <option value="PR">PR</option>
-                          <option value="SC">SC</option>
-                          {/* Adicionar mais estados conforme necessário */}
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1" style={{color: 'var(--text-dark-secondary)'}}>
-                          Bairro
-                        </label>
-                        <input
-                          type="text"
-                          value={address.district}
-                          onChange={(e) => setAddress({...address, district: e.target.value})}
-                          className="w-full px-3 py-2 border rounded-lg"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-1" style={{color: 'var(--text-dark-secondary)'}}>
-                        Endereço
-                      </label>
-                      <input
-                        type="text"
-                        value={address.address}
-                        onChange={(e) => setAddress({...address, address: e.target.value})}
-                        className="w-full px-3 py-2 border rounded-lg"
-                      />
-                    </div>
-                  </div>
-                </div>
 
                 {/* Método de Pagamento */}
                 <div className="bg-white rounded-lg p-6 shadow-sm mb-6">
