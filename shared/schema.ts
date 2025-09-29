@@ -608,9 +608,10 @@ export const insertPetSchema = z.object({
   name: z.string().min(1, "Nome do pet é obrigatório"),
   species: z.string().min(1, "Espécie é obrigatória"),
   breed: z.string().optional(),
+  birthDate: z.date().optional(),
   age: z.string().optional(),
   sex: z.enum(["Macho", "Fêmea"], { required_error: "Sexo do pet é obrigatório" }),
-  castrated: z.boolean().default(false),
+  castrated: z.boolean().optional().default(false),
   color: z.string().optional(),
   weight: z.string().refine((val) => !val || (!isNaN(parseFloat(val)) && parseFloat(val) > 0), {
     message: "Peso deve ser um número positivo",

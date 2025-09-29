@@ -34,16 +34,18 @@ export default function ClientForm() {
     enabled: isEdit,
   });
 
-  const { data: pets = [], isLoading: petsLoading } = useQuery<any[]>({
+  const { data: pets = [], isLoading: petsLoading, refetch: refetchPets } = useQuery<any[]>({
     queryKey: ["/admin/api/clients", params.id, "pets"],
     queryFn: () => apiRequest("GET", `/admin/api/clients/${params.id}/pets`),
-    enabled: isEdit,
+    enabled: !!params.id && !!client,
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
   });
 
   const { data: plans = [] } = useQuery<any[]>({
     queryKey: ["/admin/api/plans"],
     queryFn: () => apiRequest("GET", "/admin/api/plans"),
-    enabled: isEdit,
+    enabled: !!params.id,
   });
 
   // Function to get plan name by ID
