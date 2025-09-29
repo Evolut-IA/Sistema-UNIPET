@@ -1,0 +1,37 @@
+[vite] connected.
+🌐 Configurações do cliente carregadas: 
+Object {contact: {…}, env: {…}, api: {…}, upload: {…}, pagination: {…}, …}
+🛡️ Error Handler inicializado com sucesso
+⚙️ Inicializando configuração da aplicação...
+✅ Configuração válida e completa
+🌍 Ambiente: development
+🔗 API: http://localhost:3000
+📧 Contato: contato@unipetplan.com.br
+🎨 Tema: var(--bg-teal-dark)
+🔍 [useSiteSettings] Fetching site settings...
+🔍 AboutSection component - Settings: 
+Object {hasImage: false, imageLoaded: "missing"}
+🔍 [CHAT] Loaded chat settings: 
+Object {id: "77d0d663-ecc3-48a8-8100-c6c6a39cd50b", welcomeMessage: "🐾 Olá! Sou o assistente virtual da UniPet Plan! Estou aqui para ajudar você com informações sobre…", placeholderText: "Digite sua dúvida...", chatTitle: "Assistente Virtual", buttonIcon: "MessageCircle", …}
+🔍 [CHAT] Bot icon: Present (Binary Data)
+🔍 [CHAT] Support icon: Not set
+✅ [useSiteSettings] Successfully fetched site settings: 
+Object {id: "19c61b78-d8a3-4b26-a289-7b71e87856f4", whatsapp: "558632327374", email: "contato@unipetplan.com.br", phone: "558632327374", instagramUrl: "https://www.instagram.com/unipetplan/", …}
+🔍 AboutSection component - Settings: 
+Object {hasImage: true, imageLoaded: "loaded"}
+Contract sendo passado para renovação: 
+Object {id: "cb2f9cfc-00f9-42ed-bbb7-a1fcb84a395d", contractNumber: "UNIPET-1759081697273-PET-", status: "inactive", originalStatus: "active", startDate: "2025-09-28T17:48:17.273Z", …}
+Contract ID: cb2f9cfc-00f9-42ed-bbb7-a1fcb84a395d
+📋 [RENEWAL] Buscando dados do contrato: cb2f9cfc-00f9-42ed-bbb7-a1fcb84a395d
+✅ [RENEWAL] Dados do contrato recebidos: 
+Object {success: true, renewalData: {…}}
+💳 [RENEWAL] Processando renovação...
+📤 [RENEWAL] Enviando payload: 
+Object {contractId: "cb2f9cfc-00f9-42ed-bbb7-a1fcb84a395d", paymentMethod: "pix", billingPeriod: "monthly", amount: 0.9, clientData: {…}}
+❌ [RENEWAL] Erro no pagamento: 
+SyntaxError {message: "Failed to execute 'json' on 'Response': Unexpected token '<', "<!DOCTYPE "... is not valid JSON"}
+
+at t.value (https://516f1d8c-32a9-4506-8db9-fedb45e7088a-00-r5yejwtna93i.spock.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://516f1d8c-32a9-4506-8db9-fedb45e7088a-00-r5yejwtna93i.spock.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://516f1d8c-32a9-4506-8db9-fedb45e7088a-00-r5yejwtna93i.spock.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://516f1d8c-32a9-4506-8db9-fedb45e7088a-00-r5yejwtna93i.spock.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400

@@ -226,13 +226,62 @@ export default function RenewalCheckout() {
 
       console.log('📤 [RENEWAL] Enviando payload:', payload);
 
-      const response = await fetch('/api/clients/contracts/renew', {
+      // Preparar dados no formato esperado pela API
+      const checkoutPayload = {
+        clientId: contractData.client.id,
+        addressData: {
+          cep: address.zipCode,
+          address: address.address,
+          number: address.number,
+          complement: address.complement,
+          district: address.district,
+          city: address.city,
+          state: address.state,
+          phone: contractData.client.phone
+        },
+        paymentData: {
+          customer: {
+            name: contractData.client.name,
+            email: contractData.client.email,
+            cpf: address.cpf
+          },
+          payment: paymentMethod === 'credit' ? {
+            type: 'CreditCard',
+            installments: 1,
+            card: {
+              number: cardData.cardNumber,
+              holder: cardData.cardHolder,
+              expirationDate: cardData.expirationDate,
+              securityCode: cardData.securityCode
+            }
+          } : undefined
+        },
+        planData: {
+          planId: contractData.plan.id,
+          billingPeriod: billingPeriod,
+          pets: [{
+            id: contractData.pet.id,
+            name: contractData.pet.name,
+            species: contractData.pet.species,
+            breed: contractData.pet.breed,
+            age: contractData.pet.age,
+            weight: contractData.pet.weight
+          }]
+        },
+        paymentMethod: paymentMethod === 'credit' ? 'credit_card' : 'pix',
+        isRenewal: true,
+        renewalContractId: contractId
+      };
+
+      console.log('📤 [RENEWAL] Enviando payload para checkout/process:', checkoutPayload);
+
+      const response = await fetch('/api/checkout/process', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        credentials: 'include', // Usar cookies de sessão ao invés de token JWT
-        body: JSON.stringify(payload)
+        credentials: 'include', // Usar cookies de sessão
+        body: JSON.stringify(checkoutPayload)
       });
 
       const result = await response.json();
