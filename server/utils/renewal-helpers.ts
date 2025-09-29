@@ -1,0 +1,145 @@
+/**
+ * Helper functions for contract renewal and regularization
+ * These functions ensure that contracts maintain their original renewal day
+ * instead of being shifted to the payment date during regularization
+ */
+
+/**
+ * Calculates the next renewal date maintaining the original day of the month
+ * This ensures that contracts always renew on their original day, not the payment day
+ */
+export function calculateNextRenewalDate(
+  originalStartDate: Date, 
+  currentDate: Date, 
+  billingPeriod: 'monthly' | 'annual'
+): Date {
+  const originalDay = originalStartDate.getDate();
+  const nextRenewal = new Date(currentDate);
+  
+  if (billingPeriod === 'monthly') {
+    // Start with current month
+    nextRenewal.setDate(1); // Set to first to avoid date overflow issues
+    
+    // Find the next month where the original day hasn't passed yet
+    while (true) {
+      const daysInMonth = new Date(nextRenewal.getFullYear(), nextRenewal.getMonth() + 1, 0).getDate();
+      const targetDay = Math.min(originalDay, daysInMonth); // Handle months with fewer days
+      
+      nextRenewal.setDate(targetDay);
+      
+      // If this date is after the current date, we found our next renewal
+      if (nextRenewal > currentDate) {
+        return nextRenewal;
+      }
+      
+      // Move to next month
+      nextRenewal.setMonth(nextRenewal.getMonth() + 1);
+      nextRenewal.setDate(1);
+    }
+  } else { // annual
+    // Set to the anniversary date in the current year
+    nextRenewal.setMonth(originalStartDate.getMonth());
+    nextRenewal.setDate(originalStartDate.getDate());
+    
+    // If we've already passed this year's anniversary, move to next year
+    if (nextRenewal <= currentDate) {
+      nextRenewal.setFullYear(nextRenewal.getFullYear() + 1);
+    }
+    
+    return nextRenewal;
+  }
+}
+
+/**
+ * Calculates how many billing periods are overdue
+ * This is used to charge all overdue periods at once during regularization
+ */
+export function calculateOverduePeriods(
+  lastPaidDate: Date | null,
+  currentDate: Date,
+  billingPeriod: 'monthly' | 'annual',
+  originalStartDate: Date
+): number {
+  // If never paid, calculate from original start date
+  const referenceDate = lastPaidDate || originalStartDate;
+  
+  if (billingPeriod === 'monthly') {
+    // Calculate months difference
+    const monthsDiff = 
+      (currentDate.getFullYear() - referenceDate.getFullYear()) * 12 +
+      (currentDate.getMonth() - referenceDate.getMonth());
+    
+    // Check if we've passed the billing day this month
+    const originalDay = originalStartDate.getDate();
+    const currentDay = currentDate.getDate();
+    
+    // If we haven't reached the billing day this month, subtract one
+    const periodsOverdue = currentDay >= originalDay ? monthsDiff : monthsDiff - 1;
+    
+    return Math.max(0, periodsOverdue);
+  } else { // annual
+    // Calculate years difference
+    const yearsDiff = currentDate.getFullYear() - referenceDate.getFullYear();
+    
+    // Check if we've passed the anniversary date this year
+    const hasPassedAnniversary = 
+      currentDate.getMonth() > originalStartDate.getMonth() ||
+      (currentDate.getMonth() === originalStartDate.getMonth() && 
+       currentDate.getDate() >= originalStartDate.getDate());
+    
+    const periodsOverdue = hasPassedAnniversary ? yearsDiff : yearsDiff - 1;
+    
+    return Math.max(0, periodsOverdue);
+  }
+}
+
+/**
+ * Calculates the correct received date for contract regularization
+ * This maintains the original billing day instead of using the payment date
+ */
+export function calculateRegularizationReceivedDate(
+  originalStartDate: Date,
+  currentDate: Date,
+  billingPeriod: 'monthly' | 'annual'
+): Date {
+  const originalDay = originalStartDate.getDate();
+  const receivedDate = new Date(currentDate);
+  
+  if (billingPeriod === 'monthly') {
+    // Set to the billing day of the current month
+    const daysInCurrentMonth = new Date(receivedDate.getFullYear(), receivedDate.getMonth() + 1, 0).getDate();
+    const targetDay = Math.min(originalDay, daysInCurrentMonth);
+    
+    receivedDate.setDate(targetDay);
+    
+    // If we've already passed this month's billing day, this payment covers this month
+    // Otherwise, it covers last month
+    if (currentDate.getDate() < targetDay) {
+      receivedDate.setMonth(receivedDate.getMonth() - 1);
+    }
+  } else { // annual
+    // Set to this year's anniversary date
+    receivedDate.setMonth(originalStartDate.getMonth());
+    receivedDate.setDate(originalStartDate.getDate());
+    
+    // If we haven't reached this year's anniversary yet, use last year's
+    if (currentDate < receivedDate) {
+      receivedDate.setFullYear(receivedDate.getFullYear() - 1);
+    }
+  }
+  
+  return receivedDate;
+}
+
+/**
+ * Calculates the total amount to charge for overdue periods
+ * Used during regularization to charge all overdue payments at once
+ */
+export function calculateRegularizationAmount(
+  baseAmount: number,
+  overduePeriods: number,
+  includeCurrentPeriod: boolean = true
+): number {
+  const totalPeriods = includeCurrentPeriod ? overduePeriods + 1 : overduePeriods;
+  return baseAmount * Math.max(1, totalPeriods);
+}

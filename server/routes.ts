@@ -29,6 +29,12 @@ import { supabaseStorage } from "./supabase-storage.js";
 import { CieloService, type CreditCardPaymentRequest } from "./services/cielo-service.js";
 import { PaymentStatusService } from "./services/payment-status-service.js";
 import { 
+  calculateNextRenewalDate, 
+  calculateOverduePeriods, 
+  calculateRegularizationReceivedDate,
+  calculateRegularizationAmount 
+} from "./utils/renewal-helpers.js";
+import { 
   checkoutProcessSchema, 
   paymentCaptureSchema, 
   paymentCancelSchema, 
@@ -2294,7 +2300,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
             // CRITICAL FIX: Determine if payment is confirmed before marking as active
             const isPaymentConfirmed = paymentMethod === 'credit_card' && paymentResult.payment?.status === 2;
             const contractStatus = isPaymentConfirmed ? 'active' : 'pending';
-            const paymentReceived = isPaymentConfirmed ? new Date() : null;
             
             // Get the existing contract to renew
             const existingContract = await storage.getContract(renewalContractId);
@@ -2336,7 +2341,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
               proofOfSale: paymentResult.payment?.proofOfSale,
               authorizationCode: paymentResult.payment?.authorizationCode,
               tid: paymentResult.payment?.tid,
-              receivedDate: paymentReceived,
+              receivedDate: isPaymentConfirmed ? calculateRegularizationReceivedDate(
+                new Date(existingContract.startDate),
+                new Date(),
+                existingContract.billingPeriod || 'monthly'
+              ) : null,
               returnCode: paymentResult.payment?.returnCode,
               returnMessage: paymentResult.payment?.returnMessage,
               // PIX specific data
