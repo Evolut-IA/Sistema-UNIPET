@@ -466,23 +466,26 @@ export default function ClientForm() {
                     className="flex flex-col md:flex-row md:items-center justify-between p-4 border border-border rounded-lg bg-card gap-4 md:gap-0"
                   >
                     <div className="flex-1">
-                      <div className="flex items-center gap-3">
-                        <h3 className="font-semibold text-foreground">{pet.name}</h3>
-                        <Badge variant="neutral">{pet.species}</Badge>
-                        {pet.breed && (
-                          <Badge variant="neutral">{pet.breed}</Badge>
-                        )}
+                      {/* Mobile: Nome sozinho, Desktop: Nome + tags na linha */}
+                      <div className="flex flex-col md:flex-row md:items-center md:gap-3">
+                        <h3 className="font-semibold text-foreground mb-2 md:mb-0">{pet.name}</h3>
+                        <div className="flex flex-col md:flex-row gap-2 md:gap-3">
+                          <Badge variant="neutral">{pet.species}</Badge>
+                          {pet.breed && (
+                            <Badge variant="neutral">{pet.breed}</Badge>
+                          )}
+                        </div>
                       </div>
-                      <div className="text-sm text-muted-foreground mt-1">
+                      <div className="text-sm text-muted-foreground mt-2">
                         {pet.birthDate && (
-                          <span>Nascimento: {new Date(pet.birthDate).toLocaleDateString('pt-BR')}</span>
+                          <div className="mb-1">Nascimento: {new Date(pet.birthDate).toLocaleDateString('pt-BR')}</div>
                         )}
                         {pet.planId && (
-                          <span>Plano: {getPlanName(pet.planId)}</span>
+                          <div>Plano: {getPlanName(pet.planId)}</div>
                         )}
                       </div>
                     </div>
-                    <div className="flex space-x-2">
+                    <div className="flex space-x-2 mt-2 md:mt-0">
                       <Button
                         variant="outline"
                         size="sm"
