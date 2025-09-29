@@ -378,20 +378,20 @@ export default function Clients() {
       </div>
 
       {/* Modern Table Container */}
-      <div className="container my-10 space-y-4 border border-border rounded-lg bg-accent shadow-sm">
+      <div className="container my-10 space-y-4 border border-[#E5E7EB] rounded-lg bg-white shadow-sm">
 
         {/* Table */}
         <div className="rounded-lg overflow-hidden">
           <Table className="w-full">
           <TableHeader>
-            <TableRow className="bg-accent">
-              {visibleColumns.includes("Nome") && <TableHead className="w-[200px] bg-accent">Nome</TableHead>}
-              {visibleColumns.includes("Telefone") && <TableHead className="w-[140px] bg-accent">Telefone</TableHead>}
-              {visibleColumns.includes("Email") && <TableHead className="w-[180px] bg-accent">Email</TableHead>}
-              {visibleColumns.includes("CPF") && <TableHead className="w-[120px] bg-accent">CPF</TableHead>}
-              {visibleColumns.includes("Cidade") && <TableHead className="w-[120px] bg-accent">Cidade</TableHead>}
-              {visibleColumns.includes("Data") && <TableHead className="w-[120px] bg-accent">Data</TableHead>}
-              {visibleColumns.includes("Ações") && <TableHead className="w-[200px] bg-accent">Ações</TableHead>}
+            <TableRow className="bg-white border-b border-[#E5E7EB]">
+              {visibleColumns.includes("Nome") && <TableHead className="w-[200px] bg-white">Nome</TableHead>}
+              {visibleColumns.includes("Telefone") && <TableHead className="w-[140px] bg-white">Telefone</TableHead>}
+              {visibleColumns.includes("Email") && <TableHead className="w-[180px] bg-white">Email</TableHead>}
+              {visibleColumns.includes("CPF") && <TableHead className="w-[120px] bg-white">CPF</TableHead>}
+              {visibleColumns.includes("Cidade") && <TableHead className="w-[120px] bg-white">Cidade</TableHead>}
+              {visibleColumns.includes("Data") && <TableHead className="w-[120px] bg-white">Data</TableHead>}
+              {visibleColumns.includes("Ações") && <TableHead className="w-[200px] bg-white">Ações</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -405,39 +405,39 @@ export default function Clients() {
               ))
             ) : displayClients && displayClients.length > 0 ? (
               displayClients.map((client: Client) => (
-                <TableRow key={client.id} className="bg-accent">
+                <TableRow key={client.id} className="bg-white border-b border-[#E5E7EB]">
                   {visibleColumns.includes("Nome") && (
-                    <TableCell className="font-medium whitespace-nowrap bg-accent">
+                    <TableCell className="font-medium whitespace-nowrap bg-white">
                       {client.fullName || client.full_name}
                     </TableCell>
                   )}
                   {visibleColumns.includes("Telefone") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
+                    <TableCell className="whitespace-nowrap bg-white">
                       {client.phone}
                     </TableCell>
                   )}
                   {visibleColumns.includes("Email") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
+                    <TableCell className="whitespace-nowrap bg-white">
                       {client.email || "Não informado"}
                     </TableCell>
                   )}
                   {visibleColumns.includes("CPF") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
+                    <TableCell className="whitespace-nowrap bg-white">
                       {client.cpf}
                     </TableCell>
                   )}
                   {visibleColumns.includes("Cidade") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
+                    <TableCell className="whitespace-nowrap bg-white">
                       {client.city || "Não informado"}
                     </TableCell>
                   )}
                   {visibleColumns.includes("Data") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
+                    <TableCell className="whitespace-nowrap bg-white">
                       {client.createdAt && format(new Date(client.createdAt), "dd/MM/yyyy", { locale: ptBR })}
                     </TableCell>
                   )}
                   {visibleColumns.includes("Ações") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
+                    <TableCell className="whitespace-nowrap bg-white">
                       <div className="flex items-center space-x-1">
                         <Button
                           variant="outline"
@@ -478,8 +478,8 @@ export default function Clients() {
                 </TableRow>
               ))
             ) : (
-              <TableRow className="bg-accent">
-                <TableCell colSpan={visibleColumns.length} className="text-center py-12 bg-accent">
+              <TableRow className="bg-white border-b border-[#E5E7EB]">
+                <TableCell colSpan={visibleColumns.length} className="text-center py-12 bg-white">
                   <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                   <p className="text-muted-foreground">
                     {searchQuery.length > 2
