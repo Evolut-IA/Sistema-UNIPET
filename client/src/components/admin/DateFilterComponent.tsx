@@ -110,7 +110,7 @@ const DateFilterComponent = React.memo(function DateFilterComponent({
   // No default range on component mount - starts with no filter
 
   return (
-    <Card className={cn("w-full", className)}>
+    <Card className={cn("w-full", className)} style={{ backgroundColor: '#FFFFFF' }}>
       <CardContent className="p-3 sm:p-4">
         <div className="space-y-3 sm:space-y-4">
           {/* Header */}
