@@ -1,0 +1,249 @@
+  userId: undefined
+}
+🔍 [Cielo] Consultando pagamento {
+  correlationId: '33f6412f-cca2-4e30-a140-e5a8d687e215',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760'
+}
+🔗 [Cielo] URL de consulta: https://apiquery.cieloecommerce.cielo.com.br/1/sales/4180bfbe-54bd-4ac5-ac59-966bf5ec9760
+✅ [Cielo] Status interpretado corretamente: {
+  correlationId: '33f6412f-cca2-4e30-a140-e5a8d687e215',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760',
+  cieloStatus: 12,
+  mappedStatus: 'pending',
+  capturedAmount: undefined,
+  capturedDate: undefined,
+  isApproved: false
+}
+Query: select "id", "client_id", "plan_id", "pet_id", "contract_number", "status", "start_date", "end_date", "billing_period", "monthly_amount", "annual_amount", "payment_method", "cielo_payment_id", "has_coparticipation", "proof_of_sale", "authorization_code", "tid", "received_date", "return_code", "return_message", "pix_qr_code", "pix_code", "created_at", "updated_at" from "contracts" where "contracts"."cielo_payment_id" = $1 -- params: ["4180bfbe-54bd-4ac5-ac59-966bf5ec9760"]
+GET /api/payments/query/4180bfbe-54bd-4ac5-ac59-966bf5ec9760 200 in 1183ms :: {…
+🔍 [PAYMENT-QUERY] Consultando status de pagamento {
+  correlationId: '9ak247',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760',
+  userId: undefined
+}
+🔍 [Cielo] Consultando pagamento {
+  correlationId: '0c013288-1be3-4bfb-ada5-976950eaab0d',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760'
+}
+🔗 [Cielo] URL de consulta: https://apiquery.cieloecommerce.cielo.com.br/1/sales/4180bfbe-54bd-4ac5-ac59-966bf5ec9760
+✅ [Cielo] Status interpretado corretamente: {
+  correlationId: '0c013288-1be3-4bfb-ada5-976950eaab0d',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760',
+  cieloStatus: 12,
+  mappedStatus: 'pending',
+  capturedAmount: undefined,
+  capturedDate: undefined,
+  isApproved: false
+}
+Query: select "id", "client_id", "plan_id", "pet_id", "contract_number", "status", "start_date", "end_date", "billing_period", "monthly_amount", "annual_amount", "payment_method", "cielo_payment_id", "has_coparticipation", "proof_of_sale", "authorization_code", "tid", "received_date", "return_code", "return_message", "pix_qr_code", "pix_code", "created_at", "updated_at" from "contracts" where "contracts"."cielo_payment_id" = $1 -- params: ["4180bfbe-54bd-4ac5-ac59-966bf5ec9760"]
+GET /api/payments/query/4180bfbe-54bd-4ac5-ac59-966bf5ec9760 200 in 1055ms :: {…
+🔍 [PAYMENT-QUERY] Consultando status de pagamento {
+  correlationId: 's5yuuw',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760',
+  userId: undefined
+}
+🔍 [Cielo] Consultando pagamento {
+  correlationId: 'decb9158-d306-4acb-b969-54500f5db0d5',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760'
+}
+🔗 [Cielo] URL de consulta: https://apiquery.cieloecommerce.cielo.com.br/1/sales/4180bfbe-54bd-4ac5-ac59-966bf5ec9760
+✅ [Cielo] Status interpretado corretamente: {
+  correlationId: 'decb9158-d306-4acb-b969-54500f5db0d5',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760',
+  cieloStatus: 12,
+  mappedStatus: 'pending',
+  capturedAmount: undefined,
+  capturedDate: undefined,
+  isApproved: false
+}
+Query: select "id", "client_id", "plan_id", "pet_id", "contract_number", "status", "start_date", "end_date", "billing_period", "monthly_amount", "annual_amount", "payment_method", "cielo_payment_id", "has_coparticipation", "proof_of_sale", "authorization_code", "tid", "received_date", "return_code", "return_message", "pix_qr_code", "pix_code", "created_at", "updated_at" from "contracts" where "contracts"."cielo_payment_id" = $1 -- params: ["4180bfbe-54bd-4ac5-ac59-966bf5ec9760"]
+GET /api/payments/query/4180bfbe-54bd-4ac5-ac59-966bf5ec9760 200 in 1035ms :: {…
+🔍 [PAYMENT-QUERY] Consultando status de pagamento {
+  correlationId: 'gpkzni',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760',
+  userId: undefined
+}
+🔍 [Cielo] Consultando pagamento {
+  correlationId: 'dc28ec5c-44d8-4c41-abe4-af8517e805c1',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760'
+}
+🔗 [Cielo] URL de consulta: https://apiquery.cieloecommerce.cielo.com.br/1/sales/4180bfbe-54bd-4ac5-ac59-966bf5ec9760
+✅ [Cielo] Status interpretado corretamente: {
+  correlationId: 'dc28ec5c-44d8-4c41-abe4-af8517e805c1',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760',
+  cieloStatus: 12,
+  mappedStatus: 'pending',
+  capturedAmount: undefined,
+  capturedDate: undefined,
+  isApproved: false
+}
+Query: select "id", "client_id", "plan_id", "pet_id", "contract_number", "status", "start_date", "end_date", "billing_period", "monthly_amount", "annual_amount", "payment_method", "cielo_payment_id", "has_coparticipation", "proof_of_sale", "authorization_code", "tid", "received_date", "return_code", "return_message", "pix_qr_code", "pix_code", "created_at", "updated_at" from "contracts" where "contracts"."cielo_payment_id" = $1 -- params: ["4180bfbe-54bd-4ac5-ac59-966bf5ec9760"]
+GET /api/payments/query/4180bfbe-54bd-4ac5-ac59-966bf5ec9760 200 in 1049ms :: {…
+🔍 [PAYMENT-QUERY] Consultando status de pagamento {
+  correlationId: 'evn6x',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760',
+  userId: undefined
+}
+🔍 [Cielo] Consultando pagamento {
+  correlationId: 'a13a2bcf-7062-4d52-96d5-d9451596d9a5',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760'
+}
+🔗 [Cielo] URL de consulta: https://apiquery.cieloecommerce.cielo.com.br/1/sales/4180bfbe-54bd-4ac5-ac59-966bf5ec9760
+✅ [Cielo] Status interpretado corretamente: {
+  correlationId: 'a13a2bcf-7062-4d52-96d5-d9451596d9a5',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760',
+  cieloStatus: 12,
+  mappedStatus: 'pending',
+  capturedAmount: undefined,
+  capturedDate: undefined,
+  isApproved: false
+}
+Query: select "id", "client_id", "plan_id", "pet_id", "contract_number", "status", "start_date", "end_date", "billing_period", "monthly_amount", "annual_amount", "payment_method", "cielo_payment_id", "has_coparticipation", "proof_of_sale", "authorization_code", "tid", "received_date", "return_code", "return_message", "pix_qr_code", "pix_code", "created_at", "updated_at" from "contracts" where "contracts"."cielo_payment_id" = $1 -- params: ["4180bfbe-54bd-4ac5-ac59-966bf5ec9760"]
+GET /api/payments/query/4180bfbe-54bd-4ac5-ac59-966bf5ec9760 200 in 1052ms :: {…
+🔍 [PAYMENT-QUERY] Consultando status de pagamento {
+  correlationId: '56jeq9',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760',
+  userId: undefined
+}
+🔍 [Cielo] Consultando pagamento {
+  correlationId: '4a815356-7a82-4ebc-b3ce-a00de12c9adb',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760'
+}
+🔗 [Cielo] URL de consulta: https://apiquery.cieloecommerce.cielo.com.br/1/sales/4180bfbe-54bd-4ac5-ac59-966bf5ec9760
+✅ [Cielo] Status interpretado corretamente: {
+  correlationId: '4a815356-7a82-4ebc-b3ce-a00de12c9adb',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760',
+  cieloStatus: 12,
+  mappedStatus: 'pending',
+  capturedAmount: undefined,
+  capturedDate: undefined,
+  isApproved: false
+}
+Query: select "id", "client_id", "plan_id", "pet_id", "contract_number", "status", "start_date", "end_date", "billing_period", "monthly_amount", "annual_amount", "payment_method", "cielo_payment_id", "has_coparticipation", "proof_of_sale", "authorization_code", "tid", "received_date", "return_code", "return_message", "pix_qr_code", "pix_code", "created_at", "updated_at" from "contracts" where "contracts"."cielo_payment_id" = $1 -- params: ["4180bfbe-54bd-4ac5-ac59-966bf5ec9760"]
+GET /api/payments/query/4180bfbe-54bd-4ac5-ac59-966bf5ec9760 200 in 1038ms :: {…
+🔍 [PAYMENT-QUERY] Consultando status de pagamento {
+  correlationId: '8liind',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760',
+  userId: undefined
+}
+🔍 [Cielo] Consultando pagamento {
+  correlationId: 'e22db378-c384-4d69-b8eb-bf96fc816dda',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760'
+}
+🔗 [Cielo] URL de consulta: https://apiquery.cieloecommerce.cielo.com.br/1/sales/4180bfbe-54bd-4ac5-ac59-966bf5ec9760
+✅ [Cielo] Status interpretado corretamente: {
+  correlationId: 'e22db378-c384-4d69-b8eb-bf96fc816dda',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760',
+  cieloStatus: 12,
+  mappedStatus: 'pending',
+  capturedAmount: undefined,
+  capturedDate: undefined,
+  isApproved: false
+}
+Query: select "id", "client_id", "plan_id", "pet_id", "contract_number", "status", "start_date", "end_date", "billing_period", "monthly_amount", "annual_amount", "payment_method", "cielo_payment_id", "has_coparticipation", "proof_of_sale", "authorization_code", "tid", "received_date", "return_code", "return_message", "pix_qr_code", "pix_code", "created_at", "updated_at" from "contracts" where "contracts"."cielo_payment_id" = $1 -- params: ["4180bfbe-54bd-4ac5-ac59-966bf5ec9760"]
+GET /api/payments/query/4180bfbe-54bd-4ac5-ac59-966bf5ec9760 200 in 1044ms :: {…
+🔍 [PAYMENT-QUERY] Consultando status de pagamento {
+  correlationId: 'kybas',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760',
+  userId: undefined
+}
+🔍 [Cielo] Consultando pagamento {
+  correlationId: '91c50e47-93d1-4e6c-9bff-54b52b14bf28',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760'
+}
+🔗 [Cielo] URL de consulta: https://apiquery.cieloecommerce.cielo.com.br/1/sales/4180bfbe-54bd-4ac5-ac59-966bf5ec9760
+✅ [Cielo] Status interpretado corretamente: {
+  correlationId: '91c50e47-93d1-4e6c-9bff-54b52b14bf28',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760',
+  cieloStatus: 2,
+  mappedStatus: 'approved',
+  capturedAmount: 100,
+  capturedDate: '2025-09-29 09:25:17',
+  isApproved: true
+}
+Query: select "id", "client_id", "plan_id", "pet_id", "contract_number", "status", "start_date", "end_date", "billing_period", "monthly_amount", "annual_amount", "payment_method", "cielo_payment_id", "has_coparticipation", "proof_of_sale", "authorization_code", "tid", "received_date", "return_code", "return_message", "pix_qr_code", "pix_code", "created_at", "updated_at" from "contracts" where "contracts"."cielo_payment_id" = $1 -- params: ["4180bfbe-54bd-4ac5-ac59-966bf5ec9760"]
+GET /api/payments/query/4180bfbe-54bd-4ac5-ac59-966bf5ec9760 200 in 1060ms :: {…
+🔍 [PAYMENT-QUERY] Consultando status de pagamento {
+  correlationId: 'zjv7wh',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760',
+  userId: undefined
+}
+🔍 [Cielo] Consultando pagamento {
+  correlationId: '40149a4e-14b5-4659-9cd7-96de62266693',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760'
+}
+🔗 [Cielo] URL de consulta: https://apiquery.cieloecommerce.cielo.com.br/1/sales/4180bfbe-54bd-4ac5-ac59-966bf5ec9760
+✅ [Cielo] Status interpretado corretamente: {
+  correlationId: '40149a4e-14b5-4659-9cd7-96de62266693',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760',
+  cieloStatus: 2,
+  mappedStatus: 'approved',
+  capturedAmount: 100,
+  capturedDate: '2025-09-29 09:25:17',
+  isApproved: true
+}
+Query: select "id", "client_id", "plan_id", "pet_id", "contract_number", "status", "start_date", "end_date", "billing_period", "monthly_amount", "annual_amount", "payment_method", "cielo_payment_id", "has_coparticipation", "proof_of_sale", "authorization_code", "tid", "received_date", "return_code", "return_message", "pix_qr_code", "pix_code", "created_at", "updated_at" from "contracts" where "contracts"."cielo_payment_id" = $1 -- params: ["4180bfbe-54bd-4ac5-ac59-966bf5ec9760"]
+GET /api/payments/query/4180bfbe-54bd-4ac5-ac59-966bf5ec9760 200 in 1043ms :: {…
+🔍 [PAYMENT-QUERY] Consultando status de pagamento {
+  correlationId: 'cqb55',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760',
+  userId: undefined
+}
+🔍 [Cielo] Consultando pagamento {
+  correlationId: '645cd875-bf0c-477f-b06b-f1239f39281a',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760'
+}
+🔗 [Cielo] URL de consulta: https://apiquery.cieloecommerce.cielo.com.br/1/sales/4180bfbe-54bd-4ac5-ac59-966bf5ec9760
+✅ [Cielo] Status interpretado corretamente: {
+  correlationId: '645cd875-bf0c-477f-b06b-f1239f39281a',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760',
+  cieloStatus: 2,
+  mappedStatus: 'approved',
+  capturedAmount: 100,
+  capturedDate: '2025-09-29 09:25:17',
+  isApproved: true
+}
+Query: select "id", "client_id", "plan_id", "pet_id", "contract_number", "status", "start_date", "end_date", "billing_period", "monthly_amount", "annual_amount", "payment_method", "cielo_payment_id", "has_coparticipation", "proof_of_sale", "authorization_code", "tid", "received_date", "return_code", "return_message", "pix_qr_code", "pix_code", "created_at", "updated_at" from "contracts" where "contracts"."cielo_payment_id" = $1 -- params: ["4180bfbe-54bd-4ac5-ac59-966bf5ec9760"]
+GET /api/payments/query/4180bfbe-54bd-4ac5-ac59-966bf5ec9760 200 in 1039ms :: {…
+🔍 [PAYMENT-QUERY] Consultando status de pagamento {
+  correlationId: 'fsiusn',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760',
+  userId: undefined
+}
+🔍 [Cielo] Consultando pagamento {
+  correlationId: 'a3099311-13cc-4a91-9346-05c1fe485df8',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760'
+}
+🔗 [Cielo] URL de consulta: https://apiquery.cieloecommerce.cielo.com.br/1/sales/4180bfbe-54bd-4ac5-ac59-966bf5ec9760
+✅ [Cielo] Status interpretado corretamente: {
+  correlationId: 'a3099311-13cc-4a91-9346-05c1fe485df8',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760',
+  cieloStatus: 2,
+  mappedStatus: 'approved',
+  capturedAmount: 100,
+  capturedDate: '2025-09-29 09:25:17',
+  isApproved: true
+}
+Query: select "id", "client_id", "plan_id", "pet_id", "contract_number", "status", "start_date", "end_date", "billing_period", "monthly_amount", "annual_amount", "payment_method", "cielo_payment_id", "has_coparticipation", "proof_of_sale", "authorization_code", "tid", "received_date", "return_code", "return_message", "pix_qr_code", "pix_code", "created_at", "updated_at" from "contracts" where "contracts"."cielo_payment_id" = $1 -- params: ["4180bfbe-54bd-4ac5-ac59-966bf5ec9760"]
+GET /api/payments/query/4180bfbe-54bd-4ac5-ac59-966bf5ec9760 200 in 1034ms :: {…
+🔍 [PAYMENT-QUERY] Consultando status de pagamento {
+  correlationId: 'clknck',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760',
+  userId: undefined
+}
+🔍 [Cielo] Consultando pagamento {
+  correlationId: '82f1d363-b05d-4baf-b6df-c88c7ed04049',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760'
+}
+🔗 [Cielo] URL de consulta: https://apiquery.cieloecommerce.cielo.com.br/1/sales/4180bfbe-54bd-4ac5-ac59-966bf5ec9760
+✅ [Cielo] Status interpretado corretamente: {
+  correlationId: '82f1d363-b05d-4baf-b6df-c88c7ed04049',
+  paymentId: '4180bfbe-54bd-4ac5-ac59-966bf5ec9760',
+  cieloStatus: 2,
+  mappedStatus: 'approved',
+  capturedAmount: 100,
+  capturedDate: '2025-09-29 09:25:17',
+  isApproved: true
+}
+Query: select "id", "client_id", "plan_id", "pet_id", "contract_number", "status", "start_date", "end_date", "billing_period", "monthly_amount", "annual_amount", "payment_method", "cielo_payment_id", "has_coparticipation", "proof_of_sale", "authorization_code", "tid", "received_date", "return_code", "return_message", "pix_qr_code", "pix_code", "created_at", "updated_at" from "contracts" where "contracts"."cielo_payment_id" = $1 -- params: ["4180bfbe-54bd-4ac5-ac59-966bf5ec9760"]
+GE
