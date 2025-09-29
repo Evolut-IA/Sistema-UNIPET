@@ -94,7 +94,7 @@ export default function AuthGuard({ children }: AuthGuardProps) {
   const getMemoryCachedAuth = (): AuthStatusResponse | null => {
     if (!memoryAuthCache) return null;
     
-    const age = Date.now() - memoryCache.timestamp;
+    const age = Date.now() - memoryAuthCache.timestamp;
     if (age > CACHE_DURATION) {
       memoryAuthCache = null;
       return null;
