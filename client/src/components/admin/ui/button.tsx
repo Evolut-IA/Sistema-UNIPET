@@ -18,6 +18,7 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground",
         ghost: "",
         link: "text-primary underline-offset-4",
+        "admin-action": "bg-[#277677] text-white hover:bg-[#1f5d5e] focus:bg-[#1f5d5e]",
       },
       size: {
         default: "h-10 px-4 py-2",
