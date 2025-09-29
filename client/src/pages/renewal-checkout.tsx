@@ -122,10 +122,8 @@ export default function RenewalCheckout() {
         console.log('📋 [RENEWAL] Buscando dados do contrato:', contractId);
         
         // Buscar dados do contrato para renovação
-        const response = await fetch(`/api/clients/contracts/${contractId}/renewal`, {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
+        const response = await fetch(`/api/contracts/${contractId}/renewal`, {
+          credentials: 'include' // Usar cookies de sessão ao invés de token JWT
         });
 
         if (!response.ok) {
@@ -135,22 +133,38 @@ export default function RenewalCheckout() {
         const data = await response.json();
         console.log('✅ [RENEWAL] Dados do contrato recebidos:', data);
         
-        setContractData(data);
+        // A API retorna os dados dentro de renewalData
+        const renewalData = data.renewalData || data;
+        
+        // Transformar os dados para o formato esperado
+        const contractInfo = {
+          id: renewalData.contractId || renewalData.id,
+          contractNumber: renewalData.contractNumber,
+          client: renewalData.client,
+          plan: renewalData.plan || renewalData.plan,
+          pet: renewalData.pet,
+          billingPeriod: renewalData.billingPeriod || 'monthly',
+          monthlyAmount: renewalData.amount?.toString() || renewalData.monthlyAmount || renewalData.plan?.price,
+          annualAmount: renewalData.annualAmount || (renewalData.amount * 12)?.toString(),
+          status: renewalData.status
+        };
+        
+        setContractData(contractInfo);
         
         // Se tem billing period configurado, usar ele
-        if (data.billingPeriod) {
-          setBillingPeriod(data.billingPeriod);
+        if (contractInfo.billingPeriod) {
+          setBillingPeriod(contractInfo.billingPeriod);
         }
 
         // Se tem dados do cliente, preencher endereço
-        if (data.client) {
+        if (contractInfo.client) {
           setAddress({
-            zipCode: data.client.zipCode || '',
-            city: data.client.city || '',
-            state: data.client.state || '',
-            district: data.client.district || '',
-            address: data.client.address || '',
-            cpf: data.client.cpf || ''
+            zipCode: contractInfo.client.zipCode || '',
+            city: contractInfo.client.city || '',
+            state: contractInfo.client.state || '',
+            district: contractInfo.client.district || '',
+            address: contractInfo.client.address || '',
+            cpf: contractInfo.client.cpf || ''
           });
         }
 
@@ -215,9 +229,9 @@ export default function RenewalCheckout() {
       const response = await fetch('/api/clients/contracts/renew', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Content-Type': 'application/json'
         },
+        credentials: 'include', // Usar cookies de sessão ao invés de token JWT
         body: JSON.stringify(payload)
       });
 
