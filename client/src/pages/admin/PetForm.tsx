@@ -158,6 +158,7 @@ export default function PetForm() {
         onClick={() => setLocation("/clientes")}
         data-testid="button-back-to-clients"
         className="w-full sm:w-auto"
+        style={{ backgroundColor: '#FFFFFF' }}
       >
         <ArrowLeft className="h-4 w-4 mr-2" />
         Voltar
@@ -166,7 +167,7 @@ export default function PetForm() {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           {/* Basic Information */}
-          <Card>
+          <Card style={{ backgroundColor: '#FFFFFF' }}>
             <CardHeader>
               <CardTitle className="text-foreground">Informações Básicas</CardTitle>
             </CardHeader>
@@ -388,7 +389,7 @@ export default function PetForm() {
           </Card>
 
           {/* Medical History */}
-          <Card>
+          <Card style={{ backgroundColor: '#FFFFFF' }}>
             <CardHeader>
               <CardTitle className="text-foreground">Histórico Médico</CardTitle>
             </CardHeader>
@@ -468,7 +469,7 @@ export default function PetForm() {
           </Card>
 
           {/* Preventive Care */}
-          <Card>
+          <Card style={{ backgroundColor: '#FFFFFF' }}>
             <CardHeader>
               <CardTitle className="text-foreground">Cuidados Preventivos</CardTitle>
             </CardHeader>
