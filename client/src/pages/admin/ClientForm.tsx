@@ -227,7 +227,7 @@ export default function ClientForm() {
       </Button>
 
       {/* Form */}
-      <Card>
+      <Card style={{ backgroundColor: '#FFFFFF' }}>
         <CardHeader>
           <CardTitle className="text-foreground">Informações do Cliente</CardTitle>
         </CardHeader>
@@ -436,7 +436,7 @@ export default function ClientForm() {
 
       {/* Pets Section - Only show when editing */}
       {isEdit && (
-        <Card>
+        <Card style={{ backgroundColor: '#FFFFFF' }}>
           <CardHeader>
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <CardTitle className="text-foreground">Pets do Cliente</CardTitle>
