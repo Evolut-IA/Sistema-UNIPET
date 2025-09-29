@@ -478,7 +478,7 @@ export default function ClientForm() {
                           <span>Nascimento: {new Date(pet.birthDate).toLocaleDateString('pt-BR')}</span>
                         )}
                         {pet.planId && (
-                          <span className="ml-4">Plano: {getPlanName(pet.planId)}</span>
+                          <span>Plano: {getPlanName(pet.planId)}</span>
                         )}
                       </div>
                     </div>
