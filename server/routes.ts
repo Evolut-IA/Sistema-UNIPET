@@ -3052,7 +3052,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         contractsWithDetails.push({
           id: contract.id,
           contractNumber: contract.contractNumber,
-          status: paymentStatus.calculatedStatus, // Use calculated status instead of static status
+          status: contract.status === 'inactive' ? 'inactive' : paymentStatus.calculatedStatus, // Respect inactive status from database
           originalStatus: contract.status, // Keep original for reference
           startDate: contract.startDate,
           endDate: contract.endDate,
