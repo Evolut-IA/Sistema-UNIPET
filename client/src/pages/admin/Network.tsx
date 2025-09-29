@@ -287,13 +287,13 @@ export default function Network() {
                 Colunas
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-48">
+            <DropdownMenuContent align="end" className="w-40">
               {allColumns.map((col) => (
                 <DropdownMenuCheckboxItem
                   key={col}
                   checked={visibleColumns.includes(col)}
                   onCheckedChange={() => toggleColumn(col)}
-                  className="data-[state=checked]:bg-transparent"
+                  className="mb-1"
                 >
                   {col}
                 </DropdownMenuCheckboxItem>

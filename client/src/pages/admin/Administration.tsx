@@ -794,12 +794,13 @@ export default function Administration() {
               Colunas
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end" className="w-40">
             {networkColumns.map((col) => (
               <DropdownMenuCheckboxItem
                 key={col}
                 checked={visibleNetworkColumns.includes(col)}
                 onCheckedChange={() => toggleNetworkColumn(col)}
+                className="mb-1"
               >
                 {col}
               </DropdownMenuCheckboxItem>

@@ -1182,12 +1182,13 @@ export default function Procedures() {
                 Colunas
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="w-40">
               {allColumns.map((col) => (
                 <DropdownMenuCheckboxItem
                   key={col}
                   checked={visibleColumns.includes(col)}
                   onCheckedChange={() => toggleColumn(col)}
+                  className="mb-1"
                 >
                   {col}
                 </DropdownMenuCheckboxItem>
