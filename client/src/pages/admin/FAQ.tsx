@@ -312,7 +312,14 @@ export default function FAQ() {
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
+              <Button 
+                variant="outline" 
+                size="sm"
+                style={{
+                  borderColor: 'var(--border-gray)',
+                  background: 'white'
+                }}
+              >
                 <MoreHorizontal className="h-4 w-4 mr-2" />
                 Colunas
               </Button>

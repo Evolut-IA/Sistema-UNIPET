@@ -415,7 +415,13 @@ export default function Administration() {
                         <FormLabel>Função *</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
-                            <SelectTrigger data-testid="select-user-role">
+                            <SelectTrigger 
+                              data-testid="select-user-role"
+                              style={{
+                                borderColor: 'var(--border-gray)',
+                                background: 'white'
+                              }}
+                            >
                               <SelectValue />
                             </SelectTrigger>
                           </FormControl>
@@ -550,7 +556,14 @@ export default function Administration() {
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
+              <Button 
+                variant="outline" 
+                size="sm"
+                style={{
+                  borderColor: 'var(--border-gray)',
+                  background: 'white'
+                }}
+              >
                 <MoreHorizontal className="h-4 w-4 mr-2" />
                 Colunas
               </Button>
@@ -769,7 +782,14 @@ export default function Administration() {
         {/* Controle de Colunas da Rede */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm">
+            <Button 
+              variant="outline" 
+              size="sm"
+              style={{
+                borderColor: 'var(--border-gray)',
+                background: 'white'
+              }}
+            >
               <MoreHorizontal className="h-4 w-4 mr-2" />
               Colunas
             </Button>

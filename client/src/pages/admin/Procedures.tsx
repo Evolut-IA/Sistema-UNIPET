@@ -761,7 +761,13 @@ export default function Procedures() {
                       <FormLabel>Tipo de Procedimento *</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
-                          <SelectTrigger data-testid="select-procedure-type">
+                          <SelectTrigger 
+                            data-testid="select-procedure-type"
+                            style={{
+                              borderColor: 'var(--border-gray)',
+                              background: 'white'
+                            }}
+                          >
                             <SelectValue placeholder="Selecione o tipo" />
                           </SelectTrigger>
                         </FormControl>
@@ -1164,7 +1170,14 @@ export default function Procedures() {
           {/* Controle de Colunas */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
+              <Button 
+                variant="outline" 
+                size="sm"
+                style={{
+                  borderColor: 'var(--border-gray)',
+                  background: 'white'
+                }}
+              >
                 <MoreHorizontal className="h-4 w-4 mr-2" />
                 Colunas
               </Button>

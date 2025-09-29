@@ -281,7 +281,14 @@ export default function Guides() {
             setTypeFilter(value);
             setCurrentPage(1); // Reset para página 1 ao filtrar
           }}>
-            <SelectTrigger className="w-48" data-testid="select-type-filter">
+            <SelectTrigger 
+              className="w-48" 
+              data-testid="select-type-filter"
+              style={{
+                borderColor: 'var(--border-gray)',
+                background: 'white'
+              }}
+            >
               <SelectValue placeholder="Filtrar por tipo" />
             </SelectTrigger>
             <SelectContent>
@@ -296,7 +303,14 @@ export default function Guides() {
             setStatusFilter(value);
             setCurrentPage(1); // Reset para página 1 ao filtrar
           }}>
-            <SelectTrigger className="w-48" data-testid="select-status-filter">
+            <SelectTrigger 
+              className="w-48" 
+              data-testid="select-status-filter"
+              style={{
+                borderColor: 'var(--border-gray)',
+                background: 'white'
+              }}
+            >
               <SelectValue placeholder="Filtrar por status" />
             </SelectTrigger>
             <SelectContent>
@@ -316,7 +330,14 @@ export default function Guides() {
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm">
+            <Button 
+              variant="outline" 
+              size="sm"
+              style={{
+                borderColor: 'var(--border-gray)',
+                background: 'white'
+              }}
+            >
               <MoreHorizontal className="h-4 w-4 mr-2" />
               Colunas
             </Button>

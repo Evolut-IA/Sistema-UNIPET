@@ -193,7 +193,13 @@ export default function GuideForm() {
                       <FormLabel>Tipo de Guia *</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
-                          <SelectTrigger data-testid="select-guide-type">
+                          <SelectTrigger 
+                            data-testid="select-guide-type"
+                            style={{
+                              borderColor: 'var(--border-gray)',
+                              background: 'white'
+                            }}
+                          >
                             <SelectValue placeholder="Selecione o tipo de guia" />
                           </SelectTrigger>
                         </FormControl>

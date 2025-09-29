@@ -289,7 +289,16 @@ export default function ContactSubmissions() {
         <div className="flex gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="gap-2" data-testid="button-columns">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="gap-2" 
+                data-testid="button-columns"
+                style={{
+                  borderColor: 'var(--border-gray)',
+                  background: 'white'
+                }}
+              >
                 <MoreHorizontal className="h-4 w-4" />
                 Colunas
               </Button>

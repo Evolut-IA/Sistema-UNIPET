@@ -225,7 +225,13 @@ export default function PlanForm() {
                       <FormLabel>Tipo do Plano *</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
-                          <SelectTrigger data-testid="select-plan-type">
+                          <SelectTrigger 
+                            data-testid="select-plan-type"
+                            style={{
+                              borderColor: 'var(--border-gray)',
+                              background: 'white'
+                            }}
+                          >
                             <SelectValue placeholder="Selecione o tipo" />
                           </SelectTrigger>
                         </FormControl>

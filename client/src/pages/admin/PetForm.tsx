@@ -194,7 +194,13 @@ export default function PetForm() {
                       <FormLabel>Espécie *</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
-                          <SelectTrigger data-testid="select-species">
+                          <SelectTrigger 
+                            data-testid="select-species"
+                            style={{
+                              borderColor: 'var(--border-gray)',
+                              background: 'white'
+                            }}
+                          >
                             <SelectValue placeholder="Selecione a espécie" />
                           </SelectTrigger>
                         </FormControl>
@@ -254,7 +260,13 @@ export default function PetForm() {
                       <FormLabel>Sexo *</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
-                          <SelectTrigger data-testid="select-sex">
+                          <SelectTrigger 
+                            data-testid="select-sex"
+                            style={{
+                              borderColor: 'var(--border-gray)',
+                              background: 'white'
+                            }}
+                          >
                             <SelectValue placeholder="Selecione o sexo" />
                           </SelectTrigger>
                         </FormControl>
@@ -341,7 +353,13 @@ export default function PetForm() {
                       <FormLabel>Plano de Saúde</FormLabel>
                       <Select onValueChange={(value) => field.onChange(value === "none" ? "" : value)} value={field.value || "none"}>
                         <FormControl>
-                          <SelectTrigger data-testid="select-plan">
+                          <SelectTrigger 
+                            data-testid="select-plan"
+                            style={{
+                              borderColor: 'var(--border-gray)',
+                              background: 'white'
+                            }}
+                          >
                             <SelectValue placeholder="Selecione um plano" />
                           </SelectTrigger>
                         </FormControl>
