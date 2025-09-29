@@ -46,7 +46,7 @@ export default function Sidebar() {
   const [location] = useLocation();
 
   return (
-    <div className="flex flex-col h-full bg-white border-r border-border">
+    <div className="flex flex-col h-full bg-white border-r border-[#f2f2f2]">
       <div className="p-6">
         <div className="flex items-center space-x-3">
           <Stethoscope className="h-8 w-8 text-primary" />
