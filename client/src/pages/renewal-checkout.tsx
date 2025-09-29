@@ -485,17 +485,24 @@ export default function RenewalCheckout() {
             {/* Status do polling de pagamento */}
             {isPollingPayment && (
               <motion.div 
-                className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6"
+                className="border rounded-lg p-4 mb-6"
+                style={{
+                  backgroundColor: 'rgba(39, 118, 119, 0.1)',
+                  borderColor: '#277677'
+                }}
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
               >
                 <div className="flex items-center justify-center space-x-3">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+                  <div 
+                    className="animate-spin rounded-full h-5 w-5 border-b-2"
+                    style={{borderBottomColor: '#277677'}}
+                  ></div>
                   <div className="text-center">
-                    <h4 className="font-medium text-blue-800 mb-1">
+                    <h4 className="font-medium mb-1" style={{color: '#277677'}}>
                       Verificando pagamento automaticamente
                     </h4>
-                    <p className="text-sm text-blue-600">
+                    <p className="text-sm" style={{color: '#277677', opacity: 0.8}}>
                       Após o pagamento, você será redirecionado automaticamente
                     </p>
                   </div>
