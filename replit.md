@@ -4,6 +4,16 @@
 UNIPET PLAN is a comprehensive pet health plan management system designed to streamline pet insurance plan management, customer relationships, and healthcare network unit administration. It features a customer-facing website for plan selection and quote requests, alongside an admin dashboard for content and business management. The system is built with a full-stack TypeScript solution, utilizing a React frontend, Express.js backend, and PostgreSQL database with Drizzle ORM. The project emphasizes security, performance, scalability, and aims to simplify pet healthcare administration.
 
 ## Recent Changes
+- **September 29, 2025**: Performance Optimization - Admin API Routes (/admin/api/*)
+  - Identified and fixed critical performance bottleneck in unified-server.ts (production server)
+  - Removed duplicate route registration that was processing /admin/api/* requests twice
+  - Eliminated unnecessary adminApp sub-application that was duplicating middleware execution
+  - Optimized logging middleware by removing heavy response body capture and JSON stringification
+  - Removed unused setupAdminProxy function (91 lines of dead code)
+  - Implemented efficient URL rewrite middleware to map /admin/api/* → /api/* without duplication
+  - Prevents false positive rewrites (e.g., /admin/api-keys) with precise path matching
+  - Result: Significantly improved response times for all admin API endpoints in production
+
 - **September 29, 2025**: Admin Client Form Validation Enhancement - Required Fields Implementation
   - Enhanced '/admin/clientes/novo' page with strict field validation for client creation
   - Made Name, Email, Phone, and CPF fields mandatory for client registration
