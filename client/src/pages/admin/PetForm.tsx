@@ -74,26 +74,26 @@ export default function PetForm() {
   useEffect(() => {
     if (pet) {
       form.reset({
-        clientId: pet.clientId,
+        clientId: pet.client_id || pet.clientId,
         name: pet.name || "",
         species: pet.species || "",
         breed: pet.breed || "",
-        birthDate: pet.birthDate ? new Date(pet.birthDate) : undefined,
+        birthDate: pet.birth_date ? new Date(pet.birth_date) : undefined,
         age: pet.age || "",
         sex: pet.sex || "",
         castrated: pet.castrated || false,
         color: pet.color || "",
         weight: pet.weight || "",
         microchip: pet.microchip || "",
-        previousDiseases: pet.previousDiseases || "",
+        previousDiseases: pet.previous_diseases || pet.previousDiseases || "",
         surgeries: pet.surgeries || "",
         allergies: pet.allergies || "",
-        currentMedications: pet.currentMedications || "",
-        hereditaryConditions: pet.hereditaryConditions || "",
-        vaccineData: pet.vaccineData || [],
-        lastCheckup: pet.lastCheckup ? new Date(pet.lastCheckup) : undefined,
+        currentMedications: pet.current_medications || pet.currentMedications || "",
+        hereditaryConditions: pet.hereditary_conditions || pet.hereditaryConditions || "",
+        vaccineData: pet.vaccine_data || pet.vaccineData || [],
+        lastCheckup: pet.last_checkup ? new Date(pet.last_checkup) : undefined,
         parasite_treatments: pet.parasite_treatments || "",
-        planId: pet.planId || "",
+        planId: pet.plan_id || pet.planId || "",
       });
     } else if (clientId) {
       form.setValue("clientId", clientId);
