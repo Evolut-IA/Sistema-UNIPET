@@ -114,16 +114,8 @@ input:-moz-placeholder, select:-moz-placeholder {
   color: rgb(var(--placeholder, var(--muted-foreground))) !important;
 }
 
-/* Prevenir mudanças de cor em todos os estados de input */
-input:focus, select:focus {
-  background-color: rgb(var(--input)) !important;
-  color: rgb(var(--input-foreground, var(--foreground))) !important;
-}
-
-input:active, select:active {
-  background-color: rgb(var(--input)) !important;
-  color: rgb(var(--input-foreground, var(--foreground))) !important;
-}
+/* Removido para não alterar cor de fundo quando clicar no input */
+/* As regras de focus e active foram removidas conforme solicitado */
 
 /* Prevenir autofill do navegador de mudar cores */
 input:-webkit-autofill,
