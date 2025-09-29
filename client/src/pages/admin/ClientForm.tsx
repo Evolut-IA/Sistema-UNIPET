@@ -221,6 +221,7 @@ export default function ClientForm() {
         onClick={() => setLocation("/clientes")}
         data-testid="button-back-to-clients"
         className="w-full sm:w-auto"
+        style={{ backgroundColor: '#FFFFFF' }}
       >
         <ArrowLeft className="h-4 w-4 mr-2" />
         Voltar
