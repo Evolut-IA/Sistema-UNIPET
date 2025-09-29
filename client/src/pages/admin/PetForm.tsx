@@ -66,7 +66,7 @@ export default function PetForm() {
       hereditaryConditions: "",
       vaccineData: [],
       lastCheckup: undefined as Date | undefined,
-      parasite_treatments: "",
+      parasiteTreatments: "",
       planId: "",
     },
   });
@@ -92,7 +92,7 @@ export default function PetForm() {
         hereditaryConditions: pet.hereditary_conditions || pet.hereditaryConditions || "",
         vaccineData: pet.vaccine_data || pet.vaccineData || [],
         lastCheckup: pet.last_checkup ? new Date(pet.last_checkup) : undefined,
-        parasite_treatments: pet.parasite_treatments || "",
+        parasiteTreatments: pet.parasite_treatments || pet.parasiteTreatments || "",
         planId: pet.plan_id || pet.planId || "",
       });
     } else if (clientId) {
@@ -480,7 +480,7 @@ export default function PetForm() {
               <div className="space-y-6">
                 <FormField
                   control={form.control}
-                  name="parasite_treatments"
+                  name="parasiteTreatments"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Tratamentos Antipulgas/Parasitas</FormLabel>
