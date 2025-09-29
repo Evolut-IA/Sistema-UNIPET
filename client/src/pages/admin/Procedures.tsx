@@ -1015,7 +1015,7 @@ export default function Procedures() {
                 </Button>
                 <Button
                   type="submit"
-                  variant="outline"
+                  variant="admin-action"
                   size="sm"
                   disabled={createMutation.isPending}
                   data-testid="button-save"

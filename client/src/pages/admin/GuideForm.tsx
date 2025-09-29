@@ -324,7 +324,7 @@ export default function GuideForm() {
             </Button>
             <Button
               type="submit"
-              variant="outline"
+              variant="admin-action"
               size="sm"
               className="md:w-auto w-full md:h-10 h-12 md:text-sm text-base"
               disabled={mutation.isPending}

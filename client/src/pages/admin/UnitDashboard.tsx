@@ -1265,7 +1265,7 @@ export default function UnitDashboard() {
                       </Button>
                       <Button 
                         type="submit" 
-                        variant="outline"
+                        variant="admin-action"
                         size="sm"
                         disabled={submittingGuide || !guideForm.clientId || !guideForm.petId || !guideForm.type || !guideForm.procedureId}
                       >

@@ -397,7 +397,7 @@ export default function NetworkForm() {
             </Button>
             <Button
               type="submit"
-              variant="outline"
+              variant="admin-action"
               size="sm"
               disabled={mutation.isPending}
               data-testid="button-save"

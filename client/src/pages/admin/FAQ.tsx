@@ -263,7 +263,7 @@ export default function FAQ() {
                   </Button>
                   <Button
                     type="submit"
-                    variant="outline"
+                    variant="admin-action"
                     size="sm"
                     disabled={createMutation.isPending}
                     data-testid="button-save"
