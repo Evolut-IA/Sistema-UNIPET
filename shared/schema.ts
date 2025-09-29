@@ -555,6 +555,22 @@ export const insertClientSchema = z.object({
   city: z.string().optional(),
 });
 
+// Schema específico para admin com CPF obrigatório
+export const insertClientAdminSchema = z.object({
+  full_name: z.string().min(1, "Nome é obrigatório"),
+  email: z.string().email("Email inválido").min(1, "Email é obrigatório"),
+  password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres").optional(), // Optional for Admin compatibility
+  phone: z.string().min(1, "Telefone é obrigatório"),
+  cpf: z.string().min(1, "CPF é obrigatório"), // Obrigatório no admin
+  cep: z.string().optional(),
+  address: z.string().optional(),
+  number: z.string().optional(),
+  complement: z.string().optional(),
+  district: z.string().optional(),
+  state: z.string().optional(),
+  city: z.string().optional(),
+});
+
 // Schema específico para Step 2 do checkout (sem CPF obrigatório)
 export const insertClientSchemaStep2 = z.object({
   full_name: z.string().min(1, "Nome é obrigatório"),

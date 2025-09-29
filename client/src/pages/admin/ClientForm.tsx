@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { InputMasked } from "@/components/ui/input-masked";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/admin/queryClient";
-import { insertClientSchema } from "@shared/schema";
+import { insertClientAdminSchema } from "@shared/schema";
 import { ArrowLeft, Plus, Edit, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { PasswordDialog } from "@/components/ui/password-dialog";
@@ -113,7 +113,7 @@ export default function ClientForm() {
   };
 
   const form = useForm({
-    resolver: zodResolver(insertClientSchema),
+    resolver: zodResolver(insertClientAdminSchema),
     defaultValues: {
       full_name: "",
       email: "",
@@ -240,7 +240,7 @@ export default function ClientForm() {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel>Email *</FormLabel>
                       <FormControl>
                         <InputMasked 
                           type="email" 
@@ -408,7 +408,7 @@ export default function ClientForm() {
                   type="submit"
                   variant="admin-action"
                   size="sm"
-                  disabled={mutation.isPending}
+                  disabled={mutation.isPending || !form.formState.isValid || (!form.watch('full_name') || !form.watch('email') || !form.watch('phone') || !form.watch('cpf'))}
                   data-testid="button-save"
                   className="md:w-auto w-full md:h-10 h-12 md:text-sm text-base"
                 >

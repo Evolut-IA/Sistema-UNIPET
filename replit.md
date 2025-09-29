@@ -4,6 +4,15 @@
 UNIPET PLAN is a comprehensive pet health plan management system designed to streamline pet insurance plan management, customer relationships, and healthcare network unit administration. It features a customer-facing website for plan selection and quote requests, alongside an admin dashboard for content and business management. The system is built with a full-stack TypeScript solution, utilizing a React frontend, Express.js backend, and PostgreSQL database with Drizzle ORM. The project emphasizes security, performance, scalability, and aims to simplify pet healthcare administration.
 
 ## Recent Changes
+- **September 29, 2025**: Admin Client Form Validation Enhancement - Required Fields Implementation
+  - Enhanced '/admin/clientes/novo' page with strict field validation for client creation
+  - Made Name, Email, Phone, and CPF fields mandatory for client registration
+  - Updated Email field label from "Email" to "Email *" to indicate required status
+  - Created specific admin validation schema (insertClientAdminSchema) with CPF as required field
+  - Implemented frontend validation that disables "Cadastrar" button until all required fields are filled
+  - Added real-time form validation using React Hook Form with Zod schema integration
+  - Maintains data integrity while ensuring complete client information for admin workflows
+
 - **September 29, 2025**: Copy Button Animation Enhancement - Replaced Toast with Smooth Button Animation
   - Enhanced the "Copiar" button in the admin procedures view dialog to show smooth in-button feedback instead of popup toast
   - Implemented 3-state animation system: idle (Copy icon + "Copiar"), copying (spinner + "Copiando..."), copied (check + "Copiado!" with green styling)
