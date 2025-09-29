@@ -756,9 +756,7 @@ export default function RenewalCheckout() {
                       Processando...
                     </span>
                   ) : (
-                    `Renovar Contrato - R$ ${billingPeriod === 'monthly' 
-                      ? contractData.monthlyAmount || contractData.plan.price
-                      : contractData.annualAmount || contractData.plan.price}`
+                    'Renovar Contrato'
                   )}
                 </button>
               </div>
