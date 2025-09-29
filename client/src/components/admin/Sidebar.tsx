@@ -70,7 +70,7 @@ export default function Sidebar() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-white border-r border-[#f2f2f2]">
+    <div className="flex flex-col h-full bg-white border-r border-[#eaeaea]">
       <div className="p-6">
         <div className="flex items-center space-x-3">
           <Stethoscope className="h-8 w-8 text-gray-700" />
