@@ -29,7 +29,7 @@
   --muted-foreground: 80 80 80; /* #505050 (text-dark-secondary) */
   
   /* Tokens de bordas e inputs */
-  --border: 229 231 235; /* #e5e7eb (border-gray) */
+  --border: 234 234 234; /* #eaeaea (border-gray) */
   --input: 226 226 226; /* #E2E2E2 (background dos campos) */
   --input-foreground: 30 30 30; /* #1e1e1e (texto escrito nos campos) */
   
@@ -92,7 +92,7 @@
   
   /* Admin: Input override */
   --admin-input: 226 226 226; /* #E2E2E2 (background dos campos) */
-  --admin-border: 225 234 239; /* #e1eaef */
+  --admin-border: 234 234 234; /* #eaeaea */
   
   /* Admin: Sidebar específico */
   --admin-sidebar: 255 255 255; /* #ffffff */
@@ -101,7 +101,7 @@
   --admin-sidebar-primary-foreground: 255 255 255; /* #ffffff */
   --admin-sidebar-accent: 227 236 246; /* #e3ecf6 */
   --admin-sidebar-accent-foreground: 39 118 119; /* #277677 */
-  --admin-sidebar-border: 225 234 239; /* #e1eaef */
+  --admin-sidebar-border: 234 234 234; /* #eaeaea */
   --admin-sidebar-ring: 39 118 119; /* #277677 */
   
   /* Admin: Charts (mantém do admin.css) */
@@ -158,7 +158,7 @@
   /* CONTORNOS */
   --border-teal: #3a9b9d;
   --border-teal-light: rgba(39, 118, 119, 0.3);
-  --border-gray: #e5e7eb;
+  --border-gray: #eaeaea;
   --border-beige: #c7c1b7;
 
   /* STATUS */
@@ -235,7 +235,7 @@
   
   /* ADDITIONAL TOKENS FOR VIOLATIONS */
   --success-foreground: 255 255 255; /* #ffffff */
-  --checkbox-border: 225 234 239; /* #e1eaef */
+  --checkbox-border: 234 234 234; /* #eaeaea */
   --checkbox-success: 34 197 94; /* #22c55e */
   --card-special: 39 118 119; /* #277677 */
   --card-special-dark: 31 94 95; /* #1f5e5f */

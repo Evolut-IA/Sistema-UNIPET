@@ -385,13 +385,13 @@ export default function Clients() {
       </div>
 
       {/* Modern Table Container */}
-      <div className="container my-10 space-y-4 border border-[#E5E7EB] rounded-lg bg-white shadow-sm">
+      <div className="container my-10 space-y-4 border border-[#eaeaea] rounded-lg bg-white shadow-sm">
 
         {/* Table */}
         <div className="rounded-lg overflow-hidden">
           <Table className="w-full">
           <TableHeader>
-            <TableRow className="bg-white border-b border-[#E5E7EB]">
+            <TableRow className="bg-white border-b border-[#eaeaea]">
               {visibleColumns.includes("Nome") && <TableHead className="w-[200px] bg-white">Nome</TableHead>}
               {visibleColumns.includes("Telefone") && <TableHead className="w-[140px] bg-white">Telefone</TableHead>}
               {visibleColumns.includes("Email") && <TableHead className="w-[180px] bg-white">Email</TableHead>}
@@ -412,7 +412,7 @@ export default function Clients() {
               ))
             ) : displayClients && displayClients.length > 0 ? (
               displayClients.map((client: Client) => (
-                <TableRow key={client.id} className="bg-white border-b border-[#E5E7EB]">
+                <TableRow key={client.id} className="bg-white border-b border-[#eaeaea]">
                   {visibleColumns.includes("Nome") && (
                     <TableCell className="font-medium whitespace-nowrap bg-white">
                       {client.fullName || client.full_name}
@@ -485,7 +485,7 @@ export default function Clients() {
                 </TableRow>
               ))
             ) : (
-              <TableRow className="bg-white border-b border-[#E5E7EB]">
+              <TableRow className="bg-white border-b border-[#eaeaea]">
                 <TableCell colSpan={visibleColumns.length} className="text-center py-12 bg-white">
                   <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                   <p className="text-muted-foreground">
