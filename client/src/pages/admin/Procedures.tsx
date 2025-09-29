@@ -28,7 +28,7 @@ import {
 } from "@/components/admin/ui/dropdown-menu";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Plus, Search, Edit, Trash2, Clipboard, Eye, X, MoreHorizontal, ChevronLeft, ChevronRight, Copy, FileText } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Clipboard, Eye, X, MoreHorizontal, ChevronLeft, ChevronRight, Copy, FileText, Check, Loader2 } from "lucide-react";
 import { apiRequest } from "@/lib/admin/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useColumnPreferences } from "@/hooks/admin/use-column-preferences";
@@ -64,6 +64,7 @@ export default function Procedures() {
   }[]>([]);
   const [planErrors, setPlanErrors] = useState<{[key: number]: string}>({});
   const [manuallyEditedFields, setManuallyEditedFields] = useState<{[key: number]: {[field: string]: boolean}}>({});
+  const [copyState, setCopyState] = useState<'idle' | 'copying' | 'copied'>('idle');
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -628,15 +629,22 @@ export default function Procedures() {
   };
 
   const handleCopyToClipboard = async () => {
+    if (copyState !== 'idle') return;
+    
     try {
+      setCopyState('copying');
       const text = generateProcedureText();
       await navigator.clipboard.writeText(text);
-      toast({
-        title: "Copiado!",
-        description: "Informações do procedimento copiadas para a área de transferência.",
-        variant: "default",
-      });
+      
+      // Mostrar estado "copiado" por um tempo
+      setCopyState('copied');
+      
+      // Voltar ao estado normal após 2 segundos
+      setTimeout(() => {
+        setCopyState('idle');
+      }, 2000);
     } catch (error) {
+      setCopyState('idle');
       toast({
         title: "Erro",
         description: "Não foi possível copiar as informações. Tente novamente.",
@@ -1047,11 +1055,14 @@ export default function Procedures() {
                 variant="outline"
                 size="sm"
                 onClick={handleCopyToClipboard}
-                className="gap-2 h-8"
+                disabled={copyState === 'copying'}
+                className={`gap-2 h-8 transition-all duration-300 ${copyState === 'copied' ? 'bg-green-50 border-green-200 text-green-700' : ''}`}
                 data-testid="button-copy-procedure"
               >
-                <Copy className="h-4 w-4" />
-                Copiar
+                {copyState === 'copying' && <Loader2 className="h-4 w-4 animate-spin" />}
+                {copyState === 'copied' && <Check className="h-4 w-4" />}
+                {copyState === 'idle' && <Copy className="h-4 w-4" />}
+                {copyState === 'copying' ? 'Copiando...' : copyState === 'copied' ? 'Copiado!' : 'Copiar'}
               </Button>
               <Button
                 variant="outline"
