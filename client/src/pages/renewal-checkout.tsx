@@ -580,7 +580,13 @@ export default function RenewalCheckout() {
                     <p className="text-sm font-medium mb-2" style={{color: 'var(--text-dark-secondary)'}}>
                       Período de Cobrança
                     </p>
-                    <div className="p-3 bg-blue-50 border border-blue-200 rounded">
+                    <div 
+                      className="p-3 border rounded"
+                      style={{
+                        backgroundColor: 'rgba(39, 118, 119, 0.1)',
+                        borderColor: '#277677'
+                      }}
+                    >
                       <p className="font-semibold" style={{color: 'var(--text-dark-primary)'}}>
                         {billingPeriod === 'monthly' ? 'Mensal' : 'Anual'}
                       </p>
