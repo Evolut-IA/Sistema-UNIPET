@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocation, useParams } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/admin/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,7 +14,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/admin/queryClient";
 import { insertPetSchema } from "@shared/schema";
-import { ArrowLeft, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useSpecies } from "@/hooks/use-species";
 
 export default function PetForm() {
@@ -511,7 +511,7 @@ export default function PetForm() {
               variant="admin-action"
               size="sm"
               className="md:w-auto w-full md:h-10 h-12 md:text-sm text-base"
-              disabled={mutation.isPending}
+              disabled={mutation.isPending || !form.formState.isValid || (!form.watch('name') || !form.watch('species') || !form.watch('sex'))}
               data-testid="button-save"
             >
               {mutation.isPending ? "Salvando..." : isEdit ? "Atualizar" : "Cadastrar"}

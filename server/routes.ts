@@ -630,7 +630,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/admin/api/pets", requireAdmin, async (req, res) => {
     try {
       const petData = req.body;
-      const newPet = await storage.createPet(petData);
+      
+      // Tratar campos vazios antes de salvar no banco
+      const processedPetData = {
+        ...petData,
+        weight: petData.weight && petData.weight !== "" ? petData.weight : null,
+        birthDate: petData.birthDate || null,
+        lastCheckup: petData.lastCheckup || null,
+        vaccineData: petData.vaccineData || [],
+        planId: petData.planId && petData.planId !== "" ? petData.planId : null,
+      };
+      
+      const newPet = await storage.createPet(processedPetData);
       res.status(201).json(newPet);
     } catch (error) {
       console.error("❌ [ADMIN] Error creating pet:", error);
@@ -642,7 +653,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put("/admin/api/pets/:id", requireAdmin, async (req, res) => {
     try {
       const petData = req.body;
-      const updatedPet = await storage.updatePet(req.params.id, petData);
+      
+      // Tratar campos vazios antes de salvar no banco
+      const processedPetData = {
+        ...petData,
+        weight: petData.weight && petData.weight !== "" ? petData.weight : null,
+        birthDate: petData.birthDate || null,
+        lastCheckup: petData.lastCheckup || null,
+        vaccineData: petData.vaccineData || [],
+        planId: petData.planId && petData.planId !== "" ? petData.planId : null,
+      };
+      
+      const updatedPet = await storage.updatePet(req.params.id, processedPetData);
       
       if (!updatedPet) {
         return res.status(404).json({ error: "Pet não encontrado" });
