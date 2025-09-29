@@ -4272,6 +4272,107 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
+      // ✅ ATUALIZAR CONTRATO SE PIX DE RENOVAÇÃO FOI APROVADO
+      const isPix = (queryResult as any).Payment?.Type === 'Pix' || queryResult.payment?.qrCodeBase64Image;
+      const isApproved = (queryResult as any).Payment?.Status === 2;
+      
+      if (contract && isPix && isApproved) {
+        // Verificar se o contrato não está ativo (renovação pendente)
+        // E se tem pixQrCode (indicador de que é uma renovação PIX)
+        if (contract.status !== 'active' && contract.pixQrCode) {
+          console.log('🔄 [PIX-RENEWAL-UPDATE] PIX de renovação aprovado - atualizando contrato', {
+            correlationId,
+            contractId: contract.id,
+            currentStatus: contract.status,
+            paymentId,
+            hasPIXCode: !!contract.pixQrCode
+          });
+          
+          try {
+            // Calcular novas datas de renovação
+            const now = new Date();
+            const billingPeriod = contract.billingPeriod || 'monthly';
+            const daysToAdd = billingPeriod === 'annual' ? 365 : 30;
+            
+            // Nova data de início é hoje
+            const newStartDate = now;
+            
+            // Nova data de término baseada no período de faturamento
+            const newEndDate = new Date(now);
+            newEndDate.setDate(newEndDate.getDate() + daysToAdd);
+            
+            // Atualizar o contrato para ativo e renovar as datas
+            const updateData = {
+              status: 'active' as const,
+              receivedDate: now,
+              startDate: newStartDate,
+              endDate: newEndDate,
+              returnCode: '0',
+              returnMessage: 'PIX Aprovado - Renovação confirmada',
+              updatedAt: now,
+              // Limpar dados do PIX após aprovação
+              pixQrCode: null,
+              pixCode: null
+            };
+            
+            const updatedContract = await storage.updateContract(contract.id, updateData);
+            
+            console.log('✅ [PIX-RENEWAL-UPDATE] Contrato renovado com sucesso', {
+              correlationId,
+              contractId: contract.id,
+              newStatus: updatedContract?.status,
+              receivedDate: updatedContract?.receivedDate
+            });
+            
+            // Atualizar o contrato local com os novos dados
+            if (updatedContract) {
+              contract = updatedContract;
+            }
+            
+            // Gerar comprovante de pagamento
+            try {
+              const { PaymentReceiptService } = await import('./services/payment-receipt-service.js');
+              const receiptService = new PaymentReceiptService();
+              
+              // Buscar dados do cliente e plano
+              const client = await storage.getClientById(contract.clientId);
+              const plan = await storage.getPlan(contract.planId);
+              const pet = await storage.getPet(contract.petId);
+              
+              if (client) {
+                const receiptResult = await receiptService.generateReceipt({
+                  contractId: contract.id,
+                  cieloPaymentId: paymentId,
+                  clientName: client.fullName || client.full_name || 'Cliente',
+                  clientEmail: client.email,
+                  clientCPF: client.cpf || '',
+                  petName: pet?.name || '',
+                  planName: plan?.name || '',
+                  paymentMethod: 'pix'
+                });
+                
+                if (receiptResult.success) {
+                  console.log('✅ [PIX-RENEWAL-RECEIPT] Comprovante gerado:', {
+                    correlationId,
+                    receiptId: receiptResult.receiptId,
+                    receiptNumber: receiptResult.receiptNumber
+                  });
+                }
+              }
+            } catch (receiptError) {
+              console.error('⚠️ [PIX-RENEWAL-RECEIPT] Erro ao gerar comprovante (não crítico):', receiptError);
+            }
+            
+          } catch (updateError) {
+            console.error('❌ [PIX-RENEWAL-UPDATE] Erro ao atualizar contrato:', {
+              correlationId,
+              contractId: contract.id,
+              error: updateError instanceof Error ? updateError.message : 'Erro desconhecido'
+            });
+          }
+        }
+      }
+      
       // Calculate payment status using PaymentStatusService if contract exists
       let contractStatus = null;
       if (contract) {
