@@ -430,7 +430,7 @@ export default function Plans() {
               </div>
               
               <Button
-                variant="outline"
+                variant="admin-action"
                 size="sm"
                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages || isLoading}

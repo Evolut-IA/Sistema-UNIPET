@@ -739,7 +739,7 @@ export default function Administration() {
               </div>
               
               <Button
-                variant="outline"
+                variant="admin-action"
                 size="sm"
                 onClick={() => setUserCurrentPage(prev => Math.min(prev + 1, totalUserPages))}
                 disabled={userCurrentPage === totalUserPages || isLoading}
@@ -953,7 +953,7 @@ export default function Administration() {
               </div>
               
               <Button
-                variant="outline"
+                variant="admin-action"
                 size="sm"
                 onClick={() => setNetworkCurrentPage(prev => Math.min(prev + 1, totalNetworkPages))}
                 disabled={networkCurrentPage === totalNetworkPages || isLoadingNetworkUnits}

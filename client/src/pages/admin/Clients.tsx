@@ -536,7 +536,7 @@ export default function Clients() {
                 </span>
               </div>
               <Button
-                variant="outline"
+                variant="admin-action"
                 size="sm"
                 onClick={() => setCurrentPage(currentPage + 1)}
                 disabled={currentPage >= totalPages}
