@@ -28,16 +28,19 @@ export default function PetForm() {
 
   const { data: pet, isLoading: petLoading } = useQuery<any>({
     queryKey: ["/admin/api/pets", params.id],
+    queryFn: () => apiRequest("GET", `/admin/api/pets/${params.id}`),
     enabled: isEdit,
   });
 
   const { data: client, isLoading: clientLoading } = useQuery<any>({
     queryKey: ["/admin/api/clients", clientId],
+    queryFn: () => apiRequest("GET", `/admin/api/clients/${clientId}`),
     enabled: Boolean(clientId),
   });
 
   const { data: plans } = useQuery<any[]>({
     queryKey: ["/admin/api/plans/active"],
+    queryFn: () => apiRequest("GET", "/admin/api/plans/active"),
   });
 
   const { data: species, isLoading: speciesLoading } = useSpecies();
