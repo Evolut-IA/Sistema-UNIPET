@@ -2046,7 +2046,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
         totalCents += petPriceCents;
       }
       
-      const correctAmountInCents = totalCents;
+      let correctAmountInCents = totalCents;
+      
+      // If this is a renewal/regularization, check for overdue periods
+      if (isRenewal && renewalContractId) {
+        // Get the contract to check for overdue periods
+        const contractToRenew = await storage.getContract(renewalContractId);
+        if (contractToRenew) {
+          const currentDate = new Date();
+          const originalStartDate = new Date(contractToRenew.startDate);
+          const lastPaymentDate = contractToRenew.receivedDate ? new Date(contractToRenew.receivedDate) : null;
+          const billingPeriod = contractToRenew.billingPeriod || 'monthly';
+          
+          // Calculate overdue periods
+          const overduePeriods = calculateOverduePeriods(
+            lastPaymentDate,
+            currentDate,
+            billingPeriod,
+            originalStartDate
+          );
+          
+          if (overduePeriods > 0) {
+            // Calculate total amount including overdue periods
+            const baseAmountDecimal = correctAmountInCents / 100;
+            const totalAmountWithOverdue = calculateRegularizationAmount(baseAmountDecimal, overduePeriods, true);
+            const adjustedAmountInCents = Math.round(totalAmountWithOverdue * 100);
+            
+            console.log("🔴 [REGULARIZATION-PRICING] Ajustando valor para incluir períodos em atraso:", {
+              contractNumber: contractToRenew.contractNumber,
+              overduePeriods,
+              baseAmount: `R$ ${baseAmountDecimal.toFixed(2)}`,
+              totalPeriods: overduePeriods + 1,
+              totalAmount: `R$ ${totalAmountWithOverdue.toFixed(2)}`,
+              originalAmountCents: correctAmountInCents,
+              adjustedAmountCents: adjustedAmountInCents,
+              message: `Cobrando ${overduePeriods} período(s) em atraso + período atual`
+            });
+            
+            correctAmountInCents = adjustedAmountInCents;
+          }
+        }
+      }
       
       console.log("💰 [PRICE-CALCULATION] Preço calculado no servidor:", {
         planName: selectedPlan.name,
@@ -2056,7 +2096,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         correctAmountInCents: correctAmountInCents,
         receivedAmountFromClient: planData.amount,
         priceMatch: correctAmountInCents === planData.amount,
-        isDiscountEligible: ['BASIC', 'INFINITY'].some(type => selectedPlan.name.toUpperCase().includes(type))
+        isDiscountEligible: ['BASIC', 'INFINITY'].some(type => selectedPlan.name.toUpperCase().includes(type)),
+        isRenewal: isRenewal || false,
+        hasOverduePayments: correctAmountInCents > totalCents
       });
 
       // ============================================
