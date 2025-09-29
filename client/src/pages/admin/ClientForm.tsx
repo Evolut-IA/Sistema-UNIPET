@@ -469,7 +469,7 @@ export default function ClientForm() {
                       {/* Mobile: Nome sozinho, Desktop: Nome + tags na linha */}
                       <div className="flex flex-col md:flex-row md:items-center md:gap-3">
                         <h3 className="font-semibold text-foreground mb-2 md:mb-0">{pet.name}</h3>
-                        <div className="flex flex-col md:flex-row gap-2 md:gap-3">
+                        <div className="flex gap-2 md:gap-3">
                           <Badge variant="neutral">{pet.species}</Badge>
                           {pet.breed && (
                             <Badge variant="neutral">{pet.breed}</Badge>
