@@ -4398,7 +4398,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 const receiptService = new PaymentReceiptService();
                 
                 // Get client, pet and plan data for receipt
-                const client = await storage.getClient(contract.clientId);
+                const client = await storage.getClientById(contract.clientId);
                 const pet = await storage.getPet(contract.petId);
                 const plan = await storage.getPlan(contract.planId);
                 
@@ -4839,7 +4839,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Get client and plan data
-      const client = await storage.getClient(clientId);
+      const client = await storage.getClientById(clientId);
       if (!client) {
         return res.status(404).json({ error: "Cliente não encontrado" });
       }
