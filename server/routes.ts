@@ -2291,6 +2291,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           if (isRenewal && renewalContractId) {
             console.log("🔄 [RENEWAL] Modo renovação detectado, atualizando contrato existente:", renewalContractId);
             
+            // CRITICAL FIX: Determine if payment is confirmed before marking as active
+            const isPaymentConfirmed = paymentMethod === 'credit_card' && paymentResult.payment?.status === 2;
+            const contractStatus = isPaymentConfirmed ? 'active' : 'pending';
+            const paymentReceived = isPaymentConfirmed ? new Date() : null;
+            
             // Get the existing contract to renew
             const existingContract = await storage.getContract(renewalContractId);
             if (!existingContract) {
@@ -2322,7 +2327,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             
             // Update the existing contract with renewal data
             const renewalData = {
-              status: 'active' as const,
+              status: contractStatus,
               startDate: newStartDate,
               monthlyAmount: (correctAmountInCents / 100).toString(), // Use server-calculated price
               paymentMethod: paymentMethod,
@@ -2331,7 +2336,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               proofOfSale: paymentResult.payment?.proofOfSale,
               authorizationCode: paymentResult.payment?.authorizationCode,
               tid: paymentResult.payment?.tid,
-              receivedDate: paymentResult.payment?.receivedDate ? new Date(paymentResult.payment.receivedDate) : new Date(),
+              receivedDate: paymentReceived,
               returnCode: paymentResult.payment?.returnCode,
               returnMessage: paymentResult.payment?.returnMessage,
               // PIX specific data
@@ -2349,10 +2354,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
             const updatedContract = await storage.updateContract(renewalContractId, renewalData);
             if (updatedContract) {
               contracts.push(updatedContract as any);
-              console.log("✅ [RENEWAL] Contrato renovado com sucesso:", {
+              if (contractStatus === 'active') {
+                console.log("✅ [RENEWAL] Contrato renovado com sucesso:", {
                 contractId: updatedContract.id,
                 contractNumber: updatedContract.contractNumber
               });
+              } else {
+                console.log("⏳ [RENEWAL] PIX gerado, aguardando confirmação de pagamento:", {
+                  contractId: updatedContract.id,
+                  contractNumber: updatedContract.contractNumber,
+                  status: contractStatus
+                });
+              }
             }
           } else {
             // Standard flow: Get client's pets to create contracts
