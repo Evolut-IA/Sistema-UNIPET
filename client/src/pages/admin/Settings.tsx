@@ -531,7 +531,7 @@ export default function Settings() {
                 <div className="flex justify-end pt-6">
                   <Button
                     type="submit"
-                    variant="outline"
+                    variant="admin-action"
                     size="sm"
                     disabled={saveSiteMutation.isPending}
                     data-testid="button-save-site"
@@ -614,7 +614,7 @@ export default function Settings() {
                     <div className="flex justify-end pt-6">
                       <Button
                         type="submit"
-                        variant="outline"
+                        variant="admin-action"
                         size="sm"
                         disabled={saveRulesMutation.isPending}
                         data-testid="button-save-rules"
