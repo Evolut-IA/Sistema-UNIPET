@@ -24,15 +24,41 @@ export default defineConfig({
         target: process.env.VITE_API_TARGET || 'http://localhost:3000',
         changeOrigin: true,
         secure: false,
-        timeout: 10000,
-        proxyTimeout: 10000
+        timeout: 60000,
+        proxyTimeout: 60000,
+        // Headers para keep-alive
+        headers: {
+          'Connection': 'keep-alive',
+          'Keep-Alive': 'timeout=60'
+        },
+        configure: (proxy, _options) => {
+          proxy.on('error', (err, _req, _res) => {
+            console.log('[PROXY] Erro:', err.message);
+          });
+          proxy.on('proxyReq', (proxyReq, req, _res) => {
+            proxyReq.setHeader('Connection', 'keep-alive');
+          });
+        }
       },
       '/admin/api': {
         target: process.env.VITE_API_TARGET || 'http://localhost:3000',
         changeOrigin: true,
         secure: false,
-        timeout: 10000,
-        proxyTimeout: 10000
+        timeout: 60000,
+        proxyTimeout: 60000,
+        // Headers para keep-alive
+        headers: {
+          'Connection': 'keep-alive',
+          'Keep-Alive': 'timeout=60'
+        },
+        configure: (proxy, _options) => {
+          proxy.on('error', (err, _req, _res) => {
+            console.log('[PROXY-ADMIN] Erro:', err.message);
+          });
+          proxy.on('proxyReq', (proxyReq, req, _res) => {
+            proxyReq.setHeader('Connection', 'keep-alive');
+          });
+        }
       }
     },
     

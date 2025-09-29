@@ -78,20 +78,41 @@ export async function apiRequest(
 export const getQueryFn: <T>() => QueryFunction<T> =
   () =>
   async ({ queryKey }) => {
-    // Handle queryKey format: [path] or [path, params]
-    const basePath = queryKey[0] as string;
-    const params = queryKey[1] as Record<string, any> | undefined;
+    // Handle different queryKey formats:
+    // [path] -> /path
+    // [path, id] -> /path/id (for detail views)
+    // [path, id, subpath] -> /path/id/subpath (for nested resources)
+    // [path, params] where params is object -> /path?key=value (for filters)
     
-    // Construct URL with parameters
+    const basePath = queryKey[0] as string;
     let url = basePath;
-    if (params && Object.keys(params).length > 0) {
-      const searchParams = new URLSearchParams();
-      Object.entries(params).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          searchParams.append(key, String(value));
+    
+    // Build URL based on queryKey structure
+    if (queryKey.length > 1) {
+      const secondParam = queryKey[1];
+      
+      // If it's an object, treat as query parameters
+      if (typeof secondParam === 'object' && secondParam !== null && !Array.isArray(secondParam)) {
+        const params = secondParam as Record<string, any>;
+        if (Object.keys(params).length > 0) {
+          const searchParams = new URLSearchParams();
+          Object.entries(params).forEach(([key, value]) => {
+            if (value !== undefined && value !== null) {
+              searchParams.append(key, String(value));
+            }
+          });
+          url = `${basePath}?${searchParams.toString()}`;
         }
-      });
-      url = `${basePath}?${searchParams.toString()}`;
+      }
+      // If it's a string or number, treat as path segment (ID)
+      else if (typeof secondParam === 'string' || typeof secondParam === 'number') {
+        url = `${basePath}/${secondParam}`;
+        
+        // Check for additional path segments (e.g., /clients/{id}/pets)
+        if (queryKey.length > 2 && typeof queryKey[2] === 'string') {
+          url = `${url}/${queryKey[2]}`;
+        }
+      }
     }
     
     const resolvedUrl = resolveApiUrl(url);
@@ -100,9 +121,7 @@ export const getQueryFn: <T>() => QueryFunction<T> =
     
     // Only disable cache for real-time data or when explicitly needed
     // Allow browser and React Query caching for better performance
-    const headers: HeadersInit = {
-      credentials: "include"
-    };
+    const headers: HeadersInit = {};
     
     // Only add no-cache headers for real-time endpoints
     const isRealtimeEndpoint = url.includes('/dashboard/') || 

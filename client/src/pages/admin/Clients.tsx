@@ -94,25 +94,20 @@ export default function Clients() {
   const endIndex = startIndex + pageSize;
   const displayClients = filteredClients.slice(startIndex, endIndex);
 
-  // Prefetch pets data for currently displayed clients
-  useEffect(() => {
-    if (clients.length > 0 && !isLoading && displayClients.length > 0) {
-      // Small delay to let the clients UI render first
-      const prefetchTimer = setTimeout(() => {
-        // Get the client IDs for the current page
-        const clientIds = displayClients.map(client => client.id);
-        
-        console.log(`📋 [PREFETCH] Prefetching pets for ${clientIds.length} visible clients`);
-        
-        // Prefetch pets data for visible clients (limit concurrent requests)
-        cacheManager.prefetchClientsPetsData(clientIds, 2).catch(error => {
-          console.warn("⚠️ [PREFETCH] Client pets prefetch failed:", error);
-        });
-      }, 800); // 800ms delay to prioritize current page loading
-
-      return () => clearTimeout(prefetchTimer);
-    }
-  }, [clients, currentPage, searchQuery, isLoading, cacheManager]);
+  // DESABILITADO: Prefetching de pets causava múltiplas requisições desnecessárias
+  // Pets agora são carregados on-demand quando o modal é aberto
+  // useEffect(() => {
+  //   if (clients.length > 0 && !isLoading && displayClients.length > 0) {
+  //     const prefetchTimer = setTimeout(() => {
+  //       const clientIds = displayClients.map(client => client.id);
+  //       console.log(`📋 [PREFETCH] Prefetching pets for ${clientIds.length} visible clients`);
+  //       cacheManager.prefetchClientsPetsData(clientIds, 2).catch(error => {
+  //         console.warn("⚠️ [PREFETCH] Client pets prefetch failed:", error);
+  //       });
+  //     }, 800);
+  //     return () => clearTimeout(prefetchTimer);
+  //   }
+  // }, [clients, currentPage, searchQuery, isLoading, cacheManager]);
 
   // Query para buscar pets do cliente selecionado
   const { data: clientPets = [], isLoading: petsLoading } = useQuery<Pet[]>({
