@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocation, useParams } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/admin/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { InputMasked } from "@/components/ui/input-masked";
@@ -115,7 +115,7 @@ export default function ClientForm() {
   const form = useForm({
     resolver: zodResolver(insertClientSchema),
     defaultValues: {
-      fullName: "",
+      full_name: "",
       email: "",
       phone: "",
       cpf: "",
@@ -132,7 +132,7 @@ export default function ClientForm() {
   useEffect(() => {
     if (client) {
       form.reset({
-        fullName: client.fullName || "",
+        full_name: client.fullName || "",
         email: client.email || "",
         phone: client.phone || "",
         cpf: client.cpf || "",
@@ -161,7 +161,7 @@ export default function ClientForm() {
         title: isEdit ? "Cliente atualizado" : "Cliente cadastrado",
         description: isEdit ? "Cliente foi atualizado com sucesso." : "Cliente foi cadastrado com sucesso.",
       });
-      setLocation("/clientes");
+      setLocation("/admin/clientes");
     },
     onError: () => {
       toast({
@@ -204,7 +204,7 @@ export default function ClientForm() {
       <Button
         variant="outline"
         size="sm"
-        onClick={() => setLocation("/clientes")}
+        onClick={() => setLocation("/admin/clientes")}
         data-testid="button-back-to-clients"
         className="w-full sm:w-auto"
       >
@@ -223,7 +223,7 @@ export default function ClientForm() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
-                  name="fullName"
+                  name="full_name"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Nome Completo *</FormLabel>
@@ -398,7 +398,7 @@ export default function ClientForm() {
                   type="button"
                   variant="outline"
                   size="sm"
-                  onClick={() => setLocation("/clientes")}
+                  onClick={() => setLocation("/admin/clientes")}
                   data-testid="button-cancel"
                   className="md:w-auto w-full md:h-10 h-12 md:text-sm text-base"
                 >
