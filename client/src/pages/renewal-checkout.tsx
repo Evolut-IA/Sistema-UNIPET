@@ -637,28 +637,64 @@ export default function RenewalCheckout() {
                     Forma de Pagamento
                   </h3>
 
-                  <div className="space-y-3 mb-4">
-                    <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
-                      <input
-                        type="radio"
-                        value="credit"
-                        checked={paymentMethod === 'credit'}
-                        onChange={(e) => setPaymentMethod(e.target.value as 'credit')}
-                        className="mr-3"
-                      />
-                      <span style={{color: 'var(--text-dark-primary)'}}>Cartão de Crédito</span>
-                    </label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div 
+                      className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                        paymentMethod === 'credit' 
+                          ? 'border-teal-600 bg-teal-50' 
+                          : 'border-gray-200 hover:border-teal-300'
+                      }`}
+                      onClick={() => setPaymentMethod('credit')}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <div 
+                          className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                            paymentMethod === 'credit' 
+                              ? 'border-gray-300' 
+                              : 'border-gray-300'
+                          }`}
+                          style={paymentMethod === 'credit' ? {
+                            borderColor: '#277677',
+                            backgroundColor: '#277677'
+                          } : {}}
+                        >
+                          {paymentMethod === 'credit' && <div className="w-3 h-3 bg-white rounded-full"></div>}
+                        </div>
+                        <div>
+                          <h3 className="font-medium">Cartão de Crédito</h3>
+                          <p className="text-sm text-gray-600">Visa, Mastercard, Elo</p>
+                        </div>
+                      </div>
+                    </div>
                     
-                    <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
-                      <input
-                        type="radio"
-                        value="pix"
-                        checked={paymentMethod === 'pix'}
-                        onChange={(e) => setPaymentMethod(e.target.value as 'pix')}
-                        className="mr-3"
-                      />
-                      <span style={{color: 'var(--text-dark-primary)'}}>PIX</span>
-                    </label>
+                    <div 
+                      className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                        paymentMethod === 'pix' 
+                          ? 'border-teal-600 bg-teal-50' 
+                          : 'border-gray-200 hover:border-teal-300'
+                      }`}
+                      onClick={() => setPaymentMethod('pix')}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <div 
+                          className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                            paymentMethod === 'pix' 
+                              ? 'border-gray-300' 
+                              : 'border-gray-300'
+                          }`}
+                          style={paymentMethod === 'pix' ? {
+                            borderColor: '#277677',
+                            backgroundColor: '#277677'
+                          } : {}}
+                        >
+                          {paymentMethod === 'pix' && <div className="w-3 h-3 bg-white rounded-full"></div>}
+                        </div>
+                        <div>
+                          <h3 className="font-medium">PIX</h3>
+                          <p className="text-sm text-gray-600">Pagamento instantâneo</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Campos do Cartão */}
