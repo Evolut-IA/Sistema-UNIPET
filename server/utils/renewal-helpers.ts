@@ -63,33 +63,23 @@ export function calculateOverduePeriods(
   // If never paid, calculate from original start date
   const referenceDate = lastPaidDate || originalStartDate;
   
+  // Calculate the actual days overdue
+  const daysOverdue = Math.floor((currentDate.getTime() - referenceDate.getTime()) / (1000 * 60 * 60 * 24));
+  
   if (billingPeriod === 'monthly') {
-    // Calculate months difference
-    const monthsDiff = 
-      (currentDate.getFullYear() - referenceDate.getFullYear()) * 12 +
-      (currentDate.getMonth() - referenceDate.getMonth());
+    // For monthly billing, only count complete 30-day periods as overdue
+    // This avoids charging multiple periods for partial month delays
+    const completePeriodsOverdue = Math.floor(daysOverdue / 30);
     
-    // Check if we've passed the billing day this month
-    const originalDay = originalStartDate.getDate();
-    const currentDay = currentDate.getDate();
-    
-    // If we haven't reached the billing day this month, subtract one
-    const periodsOverdue = currentDay >= originalDay ? monthsDiff : monthsDiff - 1;
-    
-    return Math.max(0, periodsOverdue);
+    // Don't count the current period as overdue - it will be added separately
+    // This ensures we only charge for truly overdue complete periods
+    return Math.max(0, completePeriodsOverdue - 1);
   } else { // annual
-    // Calculate years difference
-    const yearsDiff = currentDate.getFullYear() - referenceDate.getFullYear();
+    // For annual billing, only count complete 365-day periods as overdue
+    const completePeriodsOverdue = Math.floor(daysOverdue / 365);
     
-    // Check if we've passed the anniversary date this year
-    const hasPassedAnniversary = 
-      currentDate.getMonth() > originalStartDate.getMonth() ||
-      (currentDate.getMonth() === originalStartDate.getMonth() && 
-       currentDate.getDate() >= originalStartDate.getDate());
-    
-    const periodsOverdue = hasPassedAnniversary ? yearsDiff : yearsDiff - 1;
-    
-    return Math.max(0, periodsOverdue);
+    // Don't count the current period as overdue - it will be added separately
+    return Math.max(0, completePeriodsOverdue - 1);
   }
 }
 
@@ -140,6 +130,10 @@ export function calculateRegularizationAmount(
   overduePeriods: number,
   includeCurrentPeriod: boolean = true
 ): number {
+  // overduePeriods now represents only complete overdue periods (not including current)
+  // Add 1 for the current period if includeCurrentPeriod is true
   const totalPeriods = includeCurrentPeriod ? overduePeriods + 1 : overduePeriods;
+  
+  // Ensure we always charge at least 1 period
   return baseAmount * Math.max(1, totalPeriods);
 }
