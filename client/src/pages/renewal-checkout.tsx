@@ -427,7 +427,7 @@ export default function RenewalCheckout() {
         <Header />
         <div className="min-h-screen" style={{background: 'var(--bg-beige)'}}>
           <motion.div 
-            className="container mx-auto px-4 py-12 max-w-4xl"
+            className="container mx-auto px-4 pt-24 pb-12 max-w-4xl"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
