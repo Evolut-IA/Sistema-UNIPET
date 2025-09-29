@@ -478,11 +478,11 @@ export default function ClientForm() {
                         </div>
                       </div>
                       <div className="text-sm text-muted-foreground mt-2">
-                        {pet.birthDate && (
-                          <div className="mb-1">Nascimento: {new Date(pet.birthDate).toLocaleDateString('pt-BR')}</div>
+                        {pet.birth_date && (
+                          <div className="mb-1">Nascimento: {new Date(pet.birth_date).toLocaleDateString('pt-BR')}</div>
                         )}
-                        {pet.planId && (
-                          <div>Plano: {getPlanName(pet.planId)}</div>
+                        {pet.plan_id && (
+                          <div>Plano: {getPlanName(pet.plan_id)}</div>
                         )}
                       </div>
                     </div>
