@@ -4278,14 +4278,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (contract && isPix && isApproved) {
         // Verificar se o contrato não está ativo (renovação pendente)
-        // E se tem pixQrCode (indicador de que é uma renovação PIX)
-        if (contract.status !== 'active' && contract.pixQrCode) {
+        // E se ainda não foi processado (evita processamento duplicado)
+        const needsUpdate = contract.status !== 'active' && 
+                           contract.cieloPaymentId === paymentId &&
+                           (!contract.receivedDate || 
+                            new Date(contract.receivedDate).getTime() < Date.now() - 60000); // Não processar se já foi atualizado há menos de 1 minuto
+        
+        if (needsUpdate) {
           console.log('🔄 [PIX-RENEWAL-UPDATE] PIX de renovação aprovado - atualizando contrato', {
             correlationId,
             contractId: contract.id,
             currentStatus: contract.status,
             paymentId,
-            hasPIXCode: !!contract.pixQrCode
+            lastReceivedDate: contract.receivedDate
           });
           
           try {
@@ -4294,12 +4299,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
             const billingPeriod = contract.billingPeriod || 'monthly';
             const daysToAdd = billingPeriod === 'annual' ? 365 : 30;
             
-            // Nova data de início é hoje
-            const newStartDate = now;
+            // Se o contrato tem endDate futura, estender a partir dela
+            // Senão, iniciar do momento atual
+            let newStartDate = now;
+            let newEndDate = new Date(now);
             
-            // Nova data de término baseada no período de faturamento
-            const newEndDate = new Date(now);
-            newEndDate.setDate(newEndDate.getDate() + daysToAdd);
+            if (contract.endDate && new Date(contract.endDate) > now) {
+              // Estender a partir do fim do período atual
+              newStartDate = new Date(contract.endDate);
+              newEndDate = new Date(contract.endDate);
+              newEndDate.setDate(newEndDate.getDate() + daysToAdd);
+            } else {
+              // Iniciar novo período a partir de agora
+              newEndDate.setDate(newEndDate.getDate() + daysToAdd);
+            }
             
             // Atualizar o contrato para ativo e renovar as datas
             const updateData = {
