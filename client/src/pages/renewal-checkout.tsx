@@ -600,6 +600,30 @@ export default function RenewalCheckout() {
                       </p>
                     </div>
                   </div>
+
+                  {/* Valor a ser pago */}
+                  <div className="mb-4">
+                    <p className="text-sm font-medium mb-2" style={{color: 'var(--text-dark-secondary)'}}>
+                      Valor a ser pago
+                    </p>
+                    <div 
+                      className="p-3 border rounded"
+                      style={{
+                        backgroundColor: 'rgba(39, 118, 119, 0.05)',
+                        borderColor: '#277677'
+                      }}
+                    >
+                      <p className="text-2xl font-bold" style={{color: '#277677'}}>
+                        R$ {(billingPeriod === 'monthly' 
+                          ? parseFloat(contractData.monthlyAmount || contractData.plan.price)
+                          : parseFloat(contractData.annualAmount || contractData.plan.price)
+                        ).toFixed(2).replace('.', ',')}
+                      </p>
+                      <p className="text-xs mt-1" style={{color: 'var(--text-dark-tertiary)'}}>
+                        {billingPeriod === 'monthly' ? 'Pagamento mensal' : 'Pagamento anual'}
+                      </p>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Features do Plano */}
