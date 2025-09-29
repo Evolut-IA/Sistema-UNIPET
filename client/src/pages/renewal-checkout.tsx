@@ -83,47 +83,47 @@ export default function RenewalCheckout() {
   const [pixCode, setPixCode] = useState<string | null>(null);
   const [showPixResult, setShowPixResult] = useState(false);
   const [isPollingPayment, setIsPollingPayment] = useState(false);
+  const [paymentId, setPaymentId] = useState<string | null>(null);
 
   // Dados de endereço serão usados diretamente do cliente cadastrado
 
-  // Função para verificar status do contrato
-  const checkContractStatus = async () => {
+  // Função para verificar status do pagamento PIX (usando mesmo método do checkout)
+  const checkPixPaymentStatus = async (paymentId: string) => {
     try {
-      console.log('🔍 [PIX-POLLING] Verificando status do contrato:', contractId);
+      console.log('🔍 [PIX-POLLING] Verificando status do pagamento:', paymentId);
       
-      const response = await fetch(`/api/contracts/${contractId}/renewal`, {
-        credentials: 'include'
+      const response = await fetch(`/api/payments/query/${paymentId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Checkout-Polling': 'true' // Header especial para permitir polling sem autenticação
+        },
+        credentials: 'same-origin'
       });
-
-      if (!response.ok) {
-        console.error('❌ [PIX-POLLING] Erro ao verificar status:', response.status);
+      
+      if (response.ok) {
+        const result = await response.json();
+        console.log('📊 [PIX-POLLING] Status do pagamento:', result);
+        
+        // Verificar se o pagamento foi aprovado (status 2 = aprovado)
+        if (result.payment && result.payment.status === 2) {
+          console.log('✅ [PIX-POLLING] Pagamento PIX confirmado!');
+          setIsPollingPayment(false);
+          toast.success('Pagamento confirmado! Redirecionando para área financeira...');
+          
+          // Aguardar um pouco antes do redirecionamento para mostrar a mensagem
+          setTimeout(() => {
+            navigate('/customer/financial');
+          }, 2000);
+          
+          return true;
+        }
+        
+        return false;
+      } else {
+        console.error('❌ [PIX-POLLING] Erro na resposta:', response.status);
         return false;
       }
-
-      const data = await response.json();
-      const renewalData = data.renewalData || data;
-      
-      console.log('📊 [PIX-POLLING] Status atual:', {
-        contractId: renewalData.contractId || renewalData.id,
-        paymentStatus: renewalData.paymentStatus?.status,
-        contractStatus: renewalData.status
-      });
-
-      // Verificar se o pagamento foi confirmado (status mudou para 'active')
-      if (renewalData.paymentStatus?.status === 'active' || renewalData.status === 'active') {
-        console.log('✅ [PIX-POLLING] Pagamento confirmado! Redirecionando...');
-        setIsPollingPayment(false);
-        toast.success('Pagamento confirmado! Redirecionando para área financeira...');
-        
-        // Aguardar um pouco antes do redirecionamento para mostrar a mensagem
-        setTimeout(() => {
-          navigate('/customer/financial');
-        }, 2000);
-        
-        return true;
-      }
-
-      return false;
     } catch (error) {
       console.error('❌ [PIX-POLLING] Erro ao verificar status:', error);
       return false;
@@ -132,25 +132,62 @@ export default function RenewalCheckout() {
 
   // Sistema de polling para verificar status do pagamento PIX
   useEffect(() => {
-    let pollInterval: NodeJS.Timeout | null = null;
-
-    if (isPollingPayment && showPixResult) {
-      console.log('🔄 [PIX-POLLING] Iniciando polling de status do pagamento');
-      
-      // Verificar imediatamente
-      checkContractStatus();
-      
-      // Fazer polling a cada 5 segundos
-      pollInterval = setInterval(checkContractStatus, 5000);
+    if (!paymentId || !isPollingPayment || !showPixResult) {
+      return;
     }
 
-    return () => {
-      if (pollInterval) {
-        clearInterval(pollInterval);
-        console.log('⏹️ [PIX-POLLING] Polling interrompido');
+    console.log('🚀 Iniciando polling PIX para pagamento de renovação:', paymentId);
+    
+    // Captura o paymentId em uma variável local para evitar problemas de closure
+    const currentPaymentId = paymentId;
+    let checkCount = 0;
+    
+    const pollInterval = setInterval(async () => {
+      checkCount++;
+      console.log(`🔄 [${checkCount}] Verificando status do PIX para renovação: ${currentPaymentId}`);
+      
+      try {
+        const isConfirmed = await checkPixPaymentStatus(currentPaymentId);
+        console.log(`📊 [${checkCount}] Resultado da verificação PIX:`, isConfirmed);
+        
+        if (isConfirmed) {
+          console.log('🎉 PIX RENOVAÇÃO APROVADO! Redirecionando para área financeira...');
+          clearInterval(pollInterval);
+          return;
+        }
+      } catch (error) {
+        console.error('❌ Erro durante polling:', error);
       }
+    }, 3000);
+
+    // Verificação inicial
+    setTimeout(async () => {
+      try {
+        const isConfirmed = await checkPixPaymentStatus(currentPaymentId);
+        console.log('📊 Status inicial:', isConfirmed);
+        
+        if (isConfirmed) {
+          console.log('🎉 PIX JÁ ESTAVA APROVADO! Redirecionando imediatamente...');
+          clearInterval(pollInterval);
+          return;
+        }
+      } catch (error) {
+        console.error('❌ Erro na primeira verificação:', error);
+      }
+    }, 500);
+
+    // Limpar polling após 10 minutos (600 segundos) para evitar polling infinito
+    const timeout = setTimeout(() => {
+      console.log('⏰ Timeout do polling PIX após 10 minutos');
+      clearInterval(pollInterval);
+    }, 600000);
+
+    return () => {
+      console.log('🧹 Limpando polling PIX de renovação...');
+      clearInterval(pollInterval);
+      clearTimeout(timeout);
     };
-  }, [isPollingPayment, showPixResult, contractId, navigate]);
+  }, [paymentId, isPollingPayment, showPixResult]);
 
   // Buscar dados do contrato
   useEffect(() => {
@@ -323,6 +360,7 @@ export default function RenewalCheckout() {
       if (paymentMethod === 'pix') {
         setPixQrCode(result.payment.pixQrCode);
         setPixCode(result.payment.pixCode);
+        setPaymentId(result.payment.paymentId); // Salvar paymentId para o polling
         setShowPixResult(true);
         setIsPollingPayment(true); // Iniciar polling após gerar PIX
         toast.success('QR Code PIX gerado! Escaneie para pagar. Verificando pagamento automaticamente...');
