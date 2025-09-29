@@ -4391,6 +4391,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
             // Atualizar o contrato local com os novos dados
             if (updatedContract) {
               contract = updatedContract;
+              
+              // Generate payment receipt for PIX renewal
+              try {
+                const { PaymentReceiptService } = await import("./services/payment-receipt-service.js");
+                const receiptService = new PaymentReceiptService();
+                
+                // Get client, pet and plan data for receipt
+                const client = await storage.getClient(contract.clientId);
+                const pet = await storage.getPet(contract.petId);
+                const plan = await storage.getPlan(contract.planId);
+                
+                if (client && pet && plan) {
+                  const receiptData = {
+                    contractId: contract.id,
+                    cieloPaymentId: payment.paymentId,
+                    clientName: client.fullName,
+                    clientEmail: client.email,
+                    clientCPF: client.cpf,
+                    clientPhone: client.phone,
+                    pets: [{
+                      name: pet.name || 'Pet',
+                      species: pet.species || 'Cão',
+                      breed: pet.breed,
+                      age: pet.age,
+                      weight: pet.weight,
+                      sex: pet.sex,
+                      planName: plan.name || 'BASIC',
+                      planType: plan.planType || 'BASIC',
+                      value: contract.monthlyAmount,
+                      discount: 0,
+                      discountedValue: contract.monthlyAmount
+                    }],
+                    paymentMethod: 'pix',
+                    installments: 1,
+                    installmentValue: contract.monthlyAmount,
+                    totalDiscount: 0,
+                    finalAmount: contract.monthlyAmount
+                  };
+                  
+                  console.log(`📄 [PIX-RENEWAL-RECEIPT] Gerando comprovante de renovação para contrato ${contract.contractNumber}`);
+                  const receiptResult = await receiptService.generatePaymentReceipt(receiptData, `renewal_pix_${payment.paymentId}`);
+                  
+                  if (receiptResult.success) {
+                    console.log("✅ [PIX-RENEWAL-RECEIPT] Comprovante de renovação gerado com sucesso:", {
+                      receiptId: receiptResult.receiptId,
+                      receiptNumber: receiptResult.receiptNumber,
+                      contractNumber: contract.contractNumber
+                    });
+                  } else {
+                    console.error("⚠️ [PIX-RENEWAL-RECEIPT] Falha ao gerar comprovante de renovação:", receiptResult.error);
+                  }
+                }
+              } catch (receiptError) {
+                console.error("❌ [PIX-RENEWAL-RECEIPT] Erro ao gerar comprovante de renovação PIX:", {
+                  error: receiptError instanceof Error ? receiptError.message : 'Erro desconhecido',
+                  contractId: contract.id
+                });
+                // Continue even if receipt generation fails - don't block the renewal
+              }
             }
             
             // Gerar comprovante de pagamento
@@ -4860,18 +4919,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
           console.log(`✅ [RENEWAL] Contrato renovado: ${contractId}`);
           
-          // Generate payment receipt
-          const receiptService = new PaymentReceiptService();
-          const receiptResult = await receiptService.generateReceipt({
-            contractId: contractId,
-            cieloPaymentId: paymentResult.payment.paymentId,
-            clientName: client.fullName || client.full_name || 'Cliente',
-            clientEmail: client.email,
-            clientCPF: client.cpf,
-            petName: contract.petName || '',
-            planName: contract.planName || plan.name || '',
-            paymentMethod: 'credit_card'
-          });
+          // Generate payment receipt for credit card renewal
+          try {
+            const { PaymentReceiptService } = await import("./services/payment-receipt-service.js");
+            const receiptService = new PaymentReceiptService();
+            
+            // Get pet data for receipt
+            const pet = await storage.getPet(contract.petId);
+            
+            const receiptData = {
+              contractId: contract.id,
+              cieloPaymentId: paymentResult.payment.paymentId,
+              clientName: client.fullName || client.full_name || 'Cliente',
+              clientEmail: client.email,
+              clientCPF: client.cpf,
+              clientPhone: client.phone,
+              pets: [{
+                name: pet?.name || contract.petName || 'Pet',
+                species: pet?.species || 'Cão',
+                breed: pet?.breed,
+                age: pet?.age,
+                weight: pet?.weight,
+                sex: pet?.sex,
+                planName: plan.name || 'BASIC',
+                planType: plan.planType || 'BASIC',
+                value: amount,
+                discount: 0,
+                discountedValue: amount
+              }],
+              paymentMethod: 'credit_card',
+              installments: payment.installments || 1,
+              installmentValue: amount,
+              totalDiscount: 0,
+              finalAmount: amount
+            };
+            
+            console.log(`📄 [CC-RENEWAL-RECEIPT] Gerando comprovante de renovação para contrato ${contract.contractNumber}`);
+            const receiptResult = await receiptService.generatePaymentReceipt(receiptData, `renewal_cc_${paymentResult.payment.paymentId}`);
+            
+            if (receiptResult.success) {
+              console.log("✅ [CC-RENEWAL-RECEIPT] Comprovante de renovação gerado com sucesso:", {
+                receiptId: receiptResult.receiptId,
+                receiptNumber: receiptResult.receiptNumber,
+                contractNumber: contract.contractNumber
+              });
+            } else {
+              console.error("⚠️ [CC-RENEWAL-RECEIPT] Falha ao gerar comprovante de renovação:", receiptResult.error);
+            }
+          } catch (receiptError) {
+            console.error("❌ [CC-RENEWAL-RECEIPT] Erro ao gerar comprovante de renovação:", {
+              error: receiptError instanceof Error ? receiptError.message : 'Erro desconhecido',
+              contractId: contract.id
+            });
+            // Continue even if receipt generation fails - don't block the renewal
+          }
 
           return res.json({
             success: true,
