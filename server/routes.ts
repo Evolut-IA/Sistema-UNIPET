@@ -512,8 +512,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const query = req.params.query.toLowerCase();
       const clients = allClients.filter(client => 
         (client.fullName || '').toLowerCase().includes(query) || 
-        client.email.toLowerCase().includes(query) || 
-        client.phone.includes(query)
+        (client.email || '').toLowerCase().includes(query) || 
+        (client.phone || '').includes(query) ||
+        (client.cpf || '').includes(query)
       );
       res.json(clients);
     } catch (error) {

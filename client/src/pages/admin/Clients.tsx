@@ -74,14 +74,20 @@ export default function Clients() {
   });
 
   const { data: searchResults = [], isLoading: searchLoading } = useQuery<Client[]>({
-    queryKey: ["/admin/api/clients/search", { search: searchQuery }],
-    enabled: searchQuery.length > 2,
-    staleTime: 2 * 60 * 1000, // 2 minutos para resultados de busca
-    gcTime: 5 * 60 * 1000, // 5 minutos
+    queryKey: ["/admin/api/clients/search", searchQuery],
+    queryFn: async () => {
+      if (searchQuery.length < 2) return [];
+      const response = await fetch(`/admin/api/clients/search/${encodeURIComponent(searchQuery)}`);
+      if (!response.ok) throw new Error('Erro ao buscar clientes');
+      return response.json();
+    },
+    enabled: searchQuery.length >= 2,
+    staleTime: 2 * 60 * 1000,
+    gcTime: 5 * 60 * 1000,
   });
 
   // Calculate filtered and paginated clients first
-  const filteredClients = searchQuery.length > 2 ? searchResults : clients;
+  const filteredClients = searchQuery.length >= 2 ? searchResults : clients;
   const totalClients = filteredClients.length;
   const totalPages = Math.ceil(totalClients / pageSize);
   const startIndex = (currentPage - 1) * pageSize;
@@ -494,12 +500,12 @@ export default function Clients() {
                 <TableCell colSpan={visibleColumns.length} className="text-center py-12 bg-white">
                   <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                   <p className="text-muted-foreground">
-                    {searchQuery.length > 2
+                    {searchQuery.length >= 2
                       ? "Nenhum cliente encontrado para a busca."
                       : "Nenhum cliente cadastrado ainda."
                     }
                   </p>
-                  {searchQuery.length <= 2 && (
+                  {searchQuery.length < 2 && (
                     <Button 
                       variant="outline"
                       size="sm"
