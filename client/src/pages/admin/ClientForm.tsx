@@ -40,6 +40,18 @@ export default function ClientForm() {
     enabled: isEdit,
   });
 
+  const { data: plans = [] } = useQuery<any[]>({
+    queryKey: ["/admin/api/plans"],
+    queryFn: () => apiRequest("GET", "/admin/api/plans"),
+    enabled: isEdit,
+  });
+
+  // Function to get plan name by ID
+  const getPlanName = (planId: string): string => {
+    const plan = plans.find((p: any) => p.id === planId);
+    return plan ? plan.name : planId;
+  };
+
   const deletePetMutation = useMutation({
     mutationFn: (petId: string) => apiRequest("DELETE", `/admin/api/pets/${petId}`),
     onSuccess: () => {
@@ -466,7 +478,7 @@ export default function ClientForm() {
                           <span>Nascimento: {new Date(pet.birthDate).toLocaleDateString('pt-BR')}</span>
                         )}
                         {pet.planId && (
-                          <span className="ml-4">Plano: {pet.planId}</span>
+                          <span className="ml-4">Plano: {getPlanName(pet.planId)}</span>
                         )}
                       </div>
                     </div>
