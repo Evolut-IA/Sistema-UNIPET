@@ -27,11 +27,51 @@ let isInitialAuthCheck = true;
 // Componente de loading global - apenas para verificação inicial
 function AuthLoading() {
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50" style={{background: 'linear-gradient(to bottom right, var(--bg-teal), var(--bg-teal-dark))'}}>
+    <div className="fixed inset-0 flex items-center justify-center z-50" style={{background: 'linear-gradient(135deg, var(--bg-teal) 0%, var(--bg-teal-dark) 100%)'}}>
       <div className="text-center">
-        <div className="w-16 h-16 border-4 border-t-transparent border-white rounded-full animate-spin mx-auto mb-6"></div>
-        <div className="text-lg text-white">Verificando autenticação...</div>
+        {/* Modern animated dots loader */}
+        <div className="flex items-center justify-center space-x-3 mb-8">
+          <div 
+            className="w-4 h-4 bg-white rounded-full"
+            style={{
+              animation: 'pulse-scale 1.4s ease-in-out infinite',
+              animationDelay: '0s'
+            }}
+          ></div>
+          <div 
+            className="w-4 h-4 bg-white rounded-full"
+            style={{
+              animation: 'pulse-scale 1.4s ease-in-out infinite',
+              animationDelay: '0.2s'
+            }}
+          ></div>
+          <div 
+            className="w-4 h-4 bg-white rounded-full"
+            style={{
+              animation: 'pulse-scale 1.4s ease-in-out infinite',
+              animationDelay: '0.4s'
+            }}
+          ></div>
+        </div>
+        
+        <div className="text-lg text-white font-light tracking-wide opacity-90">
+          Verificando autenticação
+          <span className="inline-block animate-pulse">...</span>
+        </div>
       </div>
+      
+      <style>{`
+        @keyframes pulse-scale {
+          0%, 100% {
+            transform: scale(1);
+            opacity: 1;
+          }
+          50% {
+            transform: scale(1.5);
+            opacity: 0.6;
+          }
+        }
+      `}</style>
     </div>
   );
 }
