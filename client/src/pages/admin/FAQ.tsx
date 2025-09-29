@@ -303,7 +303,7 @@ export default function FAQ() {
             }
           }}>
             <DialogTrigger asChild>
-              <Button variant="outline" size="sm" data-testid="button-new-faq">
+              <Button variant="admin-action" size="sm" data-testid="button-new-faq">
                 <Plus className="h-4 w-4 mr-2" />
                 Adicionar
               </Button>

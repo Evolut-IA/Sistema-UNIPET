@@ -541,7 +541,7 @@ export default function Administration() {
             }
           }}>
             <DialogTrigger asChild>
-              <Button variant="outline" size="sm" data-testid="button-new-user">
+              <Button variant="admin-action" size="sm" data-testid="button-new-user">
                 <Plus className="h-4 w-4 mr-2" />
                 Adicionar
               </Button>

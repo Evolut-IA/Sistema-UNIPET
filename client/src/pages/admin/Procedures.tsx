@@ -1154,7 +1154,7 @@ export default function Procedures() {
             }
           }}>
             <DialogTrigger asChild>
-              <Button variant="outline" size="sm" data-testid="button-new-procedure">
+              <Button variant="admin-action" size="sm" data-testid="button-new-procedure">
                 <Plus className="h-4 w-4 mr-2" />
                 Adicionar
               </Button>

@@ -241,7 +241,7 @@ export default function Plans() {
 
         <div className="flex gap-2">
           <Button 
-            variant="outline"
+            variant="admin-action"
             size="sm"
             onClick={() => setLocation("/planos/novo")}
             data-testid="button-new-plan"
