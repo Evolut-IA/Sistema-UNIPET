@@ -493,22 +493,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Create new client - TEMPORARY: Bypassing auth for development
-  app.post("/admin/api/clients", async (req, res) => {
-    console.log("🔍 [ADMIN] POST /admin/api/clients endpoint reached");
-    console.log("🔍 [ADMIN] Request body:", req.body);
-    
+  // Create new client
+  app.post("/admin/api/clients", requireAdmin, async (req, res) => {
     try {
-      // TEMPORARY: Skip auth check for development testing
-      console.log("⚠️ [ADMIN] Creating client - auth bypassed for development");
-      
       const clientData = insertClientSchema.parse(req.body);
-      console.log("📊 [ADMIN] Validated client data:", clientData);
-      const newClient = await storage.createClient(clientData);
-      console.log("✅ [ADMIN] New client created:", newClient.id);
+      
+      // Map snake_case to camelCase for database
+      const dbClientData = {
+        fullName: clientData.full_name,
+        email: clientData.email,
+        phone: clientData.phone,
+        cpf: clientData.cpf,
+        cep: clientData.cep,
+        address: clientData.address,
+        number: clientData.number,
+        complement: clientData.complement,
+        district: clientData.district,
+        state: clientData.state,
+        city: clientData.city
+      };
+      
+      const newClient = await storage.createClient(dbClientData);
       res.status(201).json(newClient);
     } catch (error) {
-      console.error("❌ [ADMIN] Error creating client:", error);
       if (error instanceof z.ZodError) {
         return res.status(400).json({ 
           error: "Dados inválidos",
@@ -520,10 +527,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Update client
-  app.put("/admin/api/clients/:id", async (req, res) => {
+  app.put("/admin/api/clients/:id", requireAdmin, async (req, res) => {
     try {
       const clientData = insertClientSchema.partial().parse(req.body);
-      const updatedClient = await storage.updateClient(req.params.id, clientData);
+      
+      // Map snake_case to camelCase for database
+      const dbClientData: any = {};
+      if (clientData.full_name !== undefined) dbClientData.fullName = clientData.full_name;
+      if (clientData.email !== undefined) dbClientData.email = clientData.email;
+      if (clientData.phone !== undefined) dbClientData.phone = clientData.phone;
+      if (clientData.cpf !== undefined) dbClientData.cpf = clientData.cpf;
+      if (clientData.cep !== undefined) dbClientData.cep = clientData.cep;
+      if (clientData.address !== undefined) dbClientData.address = clientData.address;
+      if (clientData.number !== undefined) dbClientData.number = clientData.number;
+      if (clientData.complement !== undefined) dbClientData.complement = clientData.complement;
+      if (clientData.district !== undefined) dbClientData.district = clientData.district;
+      if (clientData.state !== undefined) dbClientData.state = clientData.state;
+      if (clientData.city !== undefined) dbClientData.city = clientData.city;
+      
+      const updatedClient = await storage.updateClient(req.params.id, dbClientData);
       
       if (!updatedClient) {
         return res.status(404).json({ error: "Cliente não encontrado" });
@@ -544,7 +566,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Delete client
-  app.delete("/admin/api/clients/:id", async (req, res) => {
+  app.delete("/admin/api/clients/:id", requireAdmin, async (req, res) => {
     try {
       const success = await storage.deleteClient(req.params.id);
       
