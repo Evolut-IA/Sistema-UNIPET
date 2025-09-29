@@ -82,9 +82,75 @@ export default function RenewalCheckout() {
   const [pixQrCode, setPixQrCode] = useState<string | null>(null);
   const [pixCode, setPixCode] = useState<string | null>(null);
   const [showPixResult, setShowPixResult] = useState(false);
+  const [isPollingPayment, setIsPollingPayment] = useState(false);
 
   // Dados de endereço serão usados diretamente do cliente cadastrado
 
+  // Função para verificar status do contrato
+  const checkContractStatus = async () => {
+    try {
+      console.log('🔍 [PIX-POLLING] Verificando status do contrato:', contractId);
+      
+      const response = await fetch(`/api/contracts/${contractId}/renewal`, {
+        credentials: 'include'
+      });
+
+      if (!response.ok) {
+        console.error('❌ [PIX-POLLING] Erro ao verificar status:', response.status);
+        return false;
+      }
+
+      const data = await response.json();
+      const renewalData = data.renewalData || data;
+      
+      console.log('📊 [PIX-POLLING] Status atual:', {
+        contractId: renewalData.contractId || renewalData.id,
+        paymentStatus: renewalData.paymentStatus?.status,
+        contractStatus: renewalData.status
+      });
+
+      // Verificar se o pagamento foi confirmado (status mudou para 'active')
+      if (renewalData.paymentStatus?.status === 'active' || renewalData.status === 'active') {
+        console.log('✅ [PIX-POLLING] Pagamento confirmado! Redirecionando...');
+        setIsPollingPayment(false);
+        toast.success('Pagamento confirmado! Redirecionando para área financeira...');
+        
+        // Aguardar um pouco antes do redirecionamento para mostrar a mensagem
+        setTimeout(() => {
+          navigate('/customer/financial');
+        }, 2000);
+        
+        return true;
+      }
+
+      return false;
+    } catch (error) {
+      console.error('❌ [PIX-POLLING] Erro ao verificar status:', error);
+      return false;
+    }
+  };
+
+  // Sistema de polling para verificar status do pagamento PIX
+  useEffect(() => {
+    let pollInterval: NodeJS.Timeout | null = null;
+
+    if (isPollingPayment && showPixResult) {
+      console.log('🔄 [PIX-POLLING] Iniciando polling de status do pagamento');
+      
+      // Verificar imediatamente
+      checkContractStatus();
+      
+      // Fazer polling a cada 5 segundos
+      pollInterval = setInterval(checkContractStatus, 5000);
+    }
+
+    return () => {
+      if (pollInterval) {
+        clearInterval(pollInterval);
+        console.log('⏹️ [PIX-POLLING] Polling interrompido');
+      }
+    };
+  }, [isPollingPayment, showPixResult, contractId, navigate]);
 
   // Buscar dados do contrato
   useEffect(() => {
@@ -258,7 +324,8 @@ export default function RenewalCheckout() {
         setPixQrCode(result.payment.pixQrCode);
         setPixCode(result.payment.pixCode);
         setShowPixResult(true);
-        toast.success('QR Code PIX gerado! Escaneie para pagar.');
+        setIsPollingPayment(true); // Iniciar polling após gerar PIX
+        toast.success('QR Code PIX gerado! Escaneie para pagar. Verificando pagamento automaticamente...');
       } else {
         // Pagamento com cartão aprovado
         // Redirecionar imediatamente para customer/login com parâmetro para mostrar popup
@@ -376,6 +443,27 @@ export default function RenewalCheckout() {
                 </div>
               </div>
             </div>
+
+            {/* Status do polling de pagamento */}
+            {isPollingPayment && (
+              <motion.div 
+                className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+              >
+                <div className="flex items-center justify-center space-x-3">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+                  <div className="text-center">
+                    <h4 className="font-medium text-blue-800 mb-1">
+                      Verificando pagamento automaticamente
+                    </h4>
+                    <p className="text-sm text-blue-600">
+                      Após o pagamento, você será redirecionado automaticamente
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
 
             <div className="text-center">
               <button
