@@ -1,10 +1,6 @@
 import express, { type Request, type NextFunction } from "express";
-import { createServer, type Server } from "http";
 import path from "path";
-import { fileURLToPath } from 'url';
 import cookieParser from "cookie-parser";
-import { spawn } from "child_process";
-import { createProxyMiddleware } from 'http-proxy-middleware';
 
 // Import UNIPET modules
 import { registerRoutes as registerUnipetRoutes } from "./server/routes.js";
@@ -40,28 +36,11 @@ app.use(cookieParser());
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
-  let capturedJsonResponse: Record<string, any> | undefined = undefined;
-
-  const originalResJson = res.json;
-  res.json = function (bodyJson, ...args) {
-    capturedJsonResponse = bodyJson;
-    return originalResJson.apply(res, [bodyJson, ...args]);
-  };
 
   res.on("finish", () => {
     const duration = Date.now() - start;
     if (path.startsWith("/api") || path.startsWith("/admin/api")) {
-      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-      // Only log response bodies in development
-      if (process.env.NODE_ENV !== 'production' && capturedJsonResponse) {
-        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
-      }
-
-      if (logLine.length > 80) {
-        logLine = logLine.slice(0, 79) + "…";
-      }
-
-      console.log(logLine);
+      console.log(`${req.method} ${path} ${res.statusCode} in ${duration}ms`);
     }
   });
 
@@ -101,30 +80,18 @@ async function initializeUnifiedServer(): Promise<void> {
     await initializeDatabase();
     console.log('✅ Banco de dados inicializado com sucesso');
 
-    // 2. Registrar rotas do UNIPET em /api/*
-    console.log('🛣️ Registrando rotas do UNIPET (/api/*)...');
-    const unipetServer = await registerUnipetRoutes(app);
-    console.log('✅ Rotas do UNIPET registradas');
+    // 2. Middleware para reescrever /admin/api/* para /api/* (sem duplicação)
+    app.use((req, res, next) => {
+      if (req.url === '/admin/api' || req.url.startsWith('/admin/api/')) {
+        req.url = '/api' + req.url.slice('/admin/api'.length);
+      }
+      next();
+    });
 
-    // 3. Registrar rotas do ADMIN em /admin/api/* (agora integrado)
-    console.log('🔧 Registrando rotas do ADMIN (/admin/api/*)...');
-    console.log('📝 Admin agora integrado no projeto principal - usando server/routes.js existente');
-    
-    // Create admin sub-app and mount existing routes at /admin/api/*
-    const adminApp = express();
-    
-    // Configure admin-specific middleware
-    adminApp.use(express.json({ limit: '50mb' }));
-    adminApp.use(express.urlencoded({ extended: false, limit: '50mb' }));
-    adminApp.use(cookieParser());
-    
-    // Re-use the existing UNIPET routes but mount them under /admin/api
-    await registerUnipetRoutes(adminApp);
-    
-    // Mount admin sub-app under /admin path (so /admin/api/* routes are accessible)
-    app.use('/admin', adminApp);
-    
-    console.log('✅ Admin APIs montadas usando rotas existentes em /admin/api/*');
+    // 3. Registrar rotas uma única vez em /api/* (compartilhadas com /admin/api/*)
+    console.log('🛣️ Registrando rotas compartilhadas (/api/* e /admin/api/*)...');
+    const unipetServer = await registerUnipetRoutes(app);
+    console.log('✅ Rotas registradas e compartilhadas com admin');
 
     // 4. Admin agora integrado no frontend principal - não precisa de arquivos separados
     console.log('📁 Admin integrado no cliente principal - usando dist/client para todas as rotas');
@@ -261,100 +228,6 @@ async function initializeUnifiedServer(): Promise<void> {
   }
 }
 
-/**
- * Configura proxy para o sistema admin rodando em processo separado
- */
-function setupAdminProxy(): void {
-  // Start admin server as separate process
-  const adminPort = 3002;
-  
-  // Spawn admin server
-  const adminProcess = spawn('npm', ['run', 'dev'], {
-    cwd: path.join(process.cwd(), 'admin'),
-    env: { ...process.env, PORT: adminPort.toString() },
-    stdio: 'inherit'
-  });
-
-  adminProcess.on('error', (error) => {
-    console.error('❌ Erro ao iniciar processo admin:', error);
-  });
-
-  adminProcess.on('exit', (code, signal) => {
-    console.log(`📦 Processo admin encerrado com código ${code} e sinal ${signal}`);
-  });
-
-  // Configure professional proxy middleware with full WebSocket and streaming support
-  const adminProxy = createProxyMiddleware({
-    target: `http://localhost:${adminPort}`,
-    changeOrigin: true,
-    ws: true, // Enable WebSocket proxying for HMR
-    pathRewrite: {
-      '^/admin/api': '/api', // Rewrite /admin/api/* to /api/*
-    },
-    // Enhanced logging for debugging
-    
-    // Advanced proxy options
-    secure: false,
-    xfwd: true,
-    
-    // Timeout configurations
-    timeout: 30000,
-    proxyTimeout: 30000,
-    
-    // Handle streaming and multipart data properly
-    
-    // Custom error handling
-    onError: (err, req, res) => {
-      console.error('❌ Erro detalhado no proxy admin:', {
-        error: err.message,
-        url: req.url,
-        method: req.method,
-        headers: req.headers
-      });
-      
-      if (res && typeof res.status === 'function' && !res.headersSent) {
-        res.status(503).json({ 
-          error: 'Admin service unavailable',
-          message: 'Please ensure admin server is running on port ' + adminPort,
-          details: process.env.NODE_ENV !== 'production' ? err.message : undefined
-        });
-      }
-    },
-    
-    // Custom request interceptor for debugging
-    onProxyReq: (proxyReq, req, res) => {
-      // Log API requests
-      if (req.url?.startsWith('/admin/api')) {
-        console.log(`🔄 Proxy Admin API: ${req.method} ${req.url} → http://localhost:${adminPort}${req.url.replace('/admin', '')}`);
-      }
-      
-      // Ensure proper headers for streaming and multipart
-      if (req.headers['content-type']?.includes('multipart/form-data')) {
-        // Don't modify content-type for multipart uploads
-        proxyReq.setHeader('content-type', req.headers['content-type']);
-      }
-    },
-    
-    // Custom response interceptor
-    onProxyRes: (proxyRes, req, res) => {
-      // Add custom headers for debugging
-      if (process.env.NODE_ENV !== 'production') {
-        res.setHeader('X-Proxy-Source', 'unified-admin-proxy');
-        res.setHeader('X-Admin-Port', adminPort.toString());
-      }
-      
-      // Log successful API responses
-      if (req.url?.startsWith('/admin/api') && proxyRes.statusCode && proxyRes.statusCode < 400) {
-        console.log(`✅ Admin API Success: ${req.method} ${req.url} → ${proxyRes.statusCode}`);
-      } else if (req.url?.startsWith('/admin/api') && proxyRes.statusCode && proxyRes.statusCode >= 400) {
-        console.log(`❌ Admin API Error: ${req.method} ${req.url} → ${proxyRes.statusCode}`);
-      }
-    }
-  });
-
-  // Apply proxy middleware only to /admin/api/* routes
-  app.use('/admin/api', adminProxy);
-}
 
 // Inicializar servidor unificado
 initializeUnifiedServer().catch((error) => {
