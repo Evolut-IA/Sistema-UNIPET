@@ -191,7 +191,7 @@ export default function Dashboard() {
 
       {/* Metrics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-        <Card>
+        <Card style={{ backgroundColor: '#FFFFFF' }}>
           <CardContent className="p-3 sm:p-4 lg:p-6">
             <div className="flex items-start justify-between gap-2">
               <div className="flex-1 min-w-0">
@@ -220,7 +220,7 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card style={{ backgroundColor: '#FFFFFF' }}>
           <CardContent className="p-3 sm:p-4 lg:p-6">
             <div className="flex items-start justify-between gap-2">
               <div className="flex-1 min-w-0">
@@ -265,7 +265,7 @@ export default function Dashboard() {
       {/* Charts Grid - Two columns */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         {/* Visão Geral em Gráficos */}
-        <Card>
+        <Card style={{ backgroundColor: '#FFFFFF' }}>
           <CardHeader>
             <CardTitle className="text-foreground min-w-0">Visão Geral em Gráficos</CardTitle>
             <p className="text-sm text-muted-foreground">Distribuição visual dos dados do sistema</p>
@@ -395,7 +395,7 @@ export default function Dashboard() {
         </Card>
 
         {/* Distribuição de Planos */}
-        <Card>
+        <Card style={{ backgroundColor: '#FFFFFF' }}>
           <CardHeader>
             <CardTitle className="text-foreground min-w-0">Distribuição de Planos</CardTitle>
           </CardHeader>
