@@ -544,7 +544,7 @@ export default function RenewalCheckout() {
 
             {/* Header */}
             <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold mb-2" style={{color: 'var(--text-dark-primary)'}}>
+              <h1 className="text-2xl font-bold mb-2" style={{color: 'var(--text-dark-primary)'}}>
                 Renovação de Contrato
               </h1>
               <p style={{color: 'var(--text-dark-secondary)'}}>
