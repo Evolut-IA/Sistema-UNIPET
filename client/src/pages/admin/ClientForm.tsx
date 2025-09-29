@@ -30,11 +30,13 @@ export default function ClientForm() {
 
   const { data: client, isLoading } = useQuery<any>({
     queryKey: ["/admin/api/clients", params.id],
+    queryFn: () => apiRequest("GET", `/admin/api/clients/${params.id}`),
     enabled: isEdit,
   });
 
   const { data: pets = [], isLoading: petsLoading } = useQuery<any[]>({
     queryKey: ["/admin/api/clients", params.id, "pets"],
+    queryFn: () => apiRequest("GET", `/admin/api/clients/${params.id}/pets`),
     enabled: isEdit,
   });
 
