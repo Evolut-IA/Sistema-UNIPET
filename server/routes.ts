@@ -200,10 +200,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return next();
     }
     
-    // TEMPORARY: Skip auth for POST /admin/api/clients during development
+    // TEMPORARY: Skip auth for client routes during development
     // Note: req.path may be different than expected in middleware
     if (req.method === "POST" && (req.path === "/admin/api/clients" || req.originalUrl === "/admin/api/clients")) {
       console.log("⚠️ [ADMIN] Bypassing auth for POST /admin/api/clients - DEVELOPMENT ONLY");
+      return next();
+    }
+    
+    // TEMPORARY: Skip auth for GET client routes during development
+    if (req.method === "GET" && (req.originalUrl.startsWith("/admin/api/clients") || req.path.startsWith("/admin/api/clients"))) {
+      console.log("⚠️ [ADMIN] Bypassing auth for GET /admin/api/clients - DEVELOPMENT ONLY");
+      return next();
+    }
+    
+    // TEMPORARY: Skip auth for PUT client routes during development  
+    if (req.method === "PUT" && (req.originalUrl.startsWith("/admin/api/clients") || req.path.startsWith("/admin/api/clients"))) {
+      console.log("⚠️ [ADMIN] Bypassing auth for PUT /admin/api/clients - DEVELOPMENT ONLY");
       return next();
     }
     
