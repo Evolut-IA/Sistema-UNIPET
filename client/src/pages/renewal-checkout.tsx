@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
 import { ArrowLeft } from 'lucide-react';
+import { CopyButton } from '@/components/ui/copy-button';
 
 // Reutilizar tipos e utilitários do checkout principal
 interface Plan {
@@ -359,7 +360,7 @@ export default function RenewalCheckout() {
         <Header />
         <div className="min-h-screen" style={{background: 'var(--bg-beige)'}}>
           <motion.div 
-            className="container mx-auto px-4 py-12 max-w-md"
+            className="container mx-auto px-4 py-12 max-w-4xl"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
@@ -372,28 +373,45 @@ export default function RenewalCheckout() {
               </p>
             </div>
 
-            <div className="bg-white rounded-lg p-6 shadow-lg mb-6">
-              <div className="mb-6 p-4 bg-gray-50 rounded">
-                <img src={pixQrCode} alt="QR Code PIX" className="mx-auto w-64 h-64" />
-              </div>
-
-              <div>
-                <p className="text-sm font-medium mb-2" style={{color: 'var(--text-dark-secondary)'}}>
-                  Código PIX:
-                </p>
-                <div className="p-3 bg-gray-50 rounded break-all text-xs">
-                  {pixCode}
+            {/* Container PIX igual ao checkout */}
+            <div 
+              className="p-4 md:p-6 rounded-lg mb-6"
+              style={{
+                backgroundColor: 'rgba(39, 118, 119, 0.1)',
+                border: '1px solid #277677'
+              }}
+            >
+              <div className="space-y-6 md:grid md:grid-cols-2 md:gap-6 md:space-y-0">
+                {/* QR Code */}
+                <div className="text-center">
+                  <h4 className="font-medium mb-3 text-gray-700">Escaneie o QR Code</h4>
+                  <div className="bg-white p-6 md:p-8 rounded-lg border shadow-sm inline-block">
+                    <img 
+                      src={`data:image/png;base64,${pixQrCode}`}
+                      alt="QR Code PIX" 
+                      className="w-56 h-56 md:w-72 md:h-72 mx-auto object-contain"
+                      style={{ imageRendering: 'crisp-edges' }}
+                    />
+                  </div>
                 </div>
-                <button
-                  onClick={() => {
-                    navigator.clipboard.writeText(pixCode || '');
-                    toast.success('Código PIX copiado!');
-                  }}
-                  className="mt-4 w-full py-3 rounded-lg font-semibold"
-                  style={{background: 'var(--btn-ver-planos-bg)', color: 'var(--text-light)'}}
-                >
-                  Copiar Código PIX
-                </button>
+                
+                {/* Código Copia e Cola */}
+                <div>
+                  <h4 className="font-medium mb-3 text-gray-700">Ou copie o código PIX</h4>
+                  <div className="bg-white p-3 md:p-4 rounded-lg border">
+                    <div className="text-sm text-gray-600 mb-2">Código PIX:</div>
+                    <div className="bg-gray-50 p-2 md:p-3 rounded text-xs font-mono break-all border max-h-24 md:max-h-none overflow-y-auto">
+                      {pixCode}
+                    </div>
+                    <CopyButton
+                      textToCopy={pixCode || ''}
+                      className="mt-3 w-full text-white py-2 px-4 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2"
+                      style={{
+                        background: 'var(--btn-cotacao-gratuita-bg)'
+                      }}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
 
