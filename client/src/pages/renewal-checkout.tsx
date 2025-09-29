@@ -55,7 +55,7 @@ interface ContractData {
 }
 
 export default function RenewalCheckout() {
-  const [location, navigate] = useLocation();
+  const [, navigate] = useLocation();
   // Usar window.location.search para capturar os query parameters corretamente
   const urlParams = new URLSearchParams(window.location.search);
   const contractId = urlParams.get('contractId');
@@ -195,8 +195,8 @@ export default function RenewalCheckout() {
         addressData: {
           cep: contractData.client.zipCode || '',
           address: contractData.client.address || '',
-          number: contractData.client.number || '',
-          complement: contractData.client.complement || '',
+          number: '',
+          complement: '',
           district: contractData.client.district || '',
           city: contractData.client.city || '',
           state: contractData.client.state || '',
@@ -255,8 +255,8 @@ export default function RenewalCheckout() {
       }
 
       if (paymentMethod === 'pix') {
-        setPixQrCode(result.qrCode);
-        setPixCode(result.pixCode);
+        setPixQrCode(result.payment.pixQrCode);
+        setPixCode(result.payment.pixCode);
         setShowPixResult(true);
         toast.success('QR Code PIX gerado! Escaneie para pagar.');
       } else {
