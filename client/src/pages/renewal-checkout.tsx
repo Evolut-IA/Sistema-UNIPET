@@ -105,8 +105,8 @@ export default function RenewalCheckout() {
         const result = await response.json();
         console.log('📊 [PIX-POLLING] Status do pagamento:', result);
         
-        // Verificar se o pagamento foi aprovado (status 2 = aprovado)
-        if (result.payment && result.payment.status === 2) {
+        // Verificar se o pagamento foi aprovado (status 'approved' = aprovado)
+        if (result.payment && result.payment.status === 'approved') {
           console.log('✅ [PIX-POLLING] Pagamento PIX confirmado!');
           setIsPollingPayment(false);
           toast.success('Pagamento confirmado! Redirecionando para área financeira...');
