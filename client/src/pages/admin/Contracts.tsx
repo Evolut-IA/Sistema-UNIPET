@@ -19,12 +19,13 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/admin/ui/dropdown-menu";
-import { Search, Eye, MoreHorizontal, ChevronLeft, ChevronRight, File } from "lucide-react";
+import { Search, Eye, MoreHorizontal, ChevronLeft, ChevronRight, File, Copy, Check, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { CalendarDate } from "@internationalized/date";
 import { useColumnPreferences } from "@/hooks/admin/use-column-preferences";
 import { DateFilterComponent } from "@/components/admin/DateFilterComponent";
+import { useToast } from "@/hooks/use-toast";
 
 interface ContractWithDetails {
   id: string;
@@ -83,9 +84,11 @@ export default function Contracts() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedContract, setSelectedContract] = useState<ContractWithDetails | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [copyState, setCopyState] = useState<'idle' | 'copying' | 'copied'>('idle');
   const { visibleColumns, toggleColumn } = useColumnPreferences('contracts.columns', allColumns);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
+  const { toast } = useToast();
 
   const [dateFilter, setDateFilter] = useState<{
     startDate: CalendarDate | null;
@@ -170,6 +173,59 @@ export default function Contracts() {
       style: 'currency',
       currency: 'BRL'
     }).format(numValue);
+  };
+
+  const generateContractText = () => {
+    if (!selectedContract) return "";
+    
+    let text = "DETALHES DO CONTRATO\n";
+    text += "=".repeat(50) + "\n\n";
+    
+    text += `Nº Contrato: ${selectedContract.contractNumber}\n`;
+    text += `Cliente: ${selectedContract.clientName || "N/A"}\n`;
+    text += `Email: ${selectedContract.clientEmail || "N/A"}\n`;
+    text += `Telefone: ${selectedContract.clientPhone || "N/A"}\n`;
+    text += `Pet: ${selectedContract.petName || "N/A"} (${selectedContract.petSpecies || "N/A"})\n`;
+    text += `Plano: ${selectedContract.planName || "N/A"}\n`;
+    text += `Status: ${statusLabels[selectedContract.status] || selectedContract.status}\n`;
+    text += `Período de Cobrança: ${billingPeriodLabels[selectedContract.billingPeriod] || selectedContract.billingPeriod}\n`;
+    text += `Valor Mensal: ${formatCurrency(selectedContract.monthlyAmount)}\n`;
+    if (selectedContract.annualAmount) {
+      text += `Valor Anual: ${formatCurrency(selectedContract.annualAmount)}\n`;
+    }
+    text += `Método de Pagamento: ${paymentMethodLabels[selectedContract.paymentMethod] || selectedContract.paymentMethod}\n`;
+    text += `Coparticipação: ${selectedContract.hasCoparticipation ? "Sim" : "Não"}\n`;
+    text += `Data de Início: ${format(new Date(selectedContract.startDate), "dd/MM/yyyy", { locale: ptBR })}\n`;
+    if (selectedContract.endDate) {
+      text += `Data de Término: ${format(new Date(selectedContract.endDate), "dd/MM/yyyy", { locale: ptBR })}\n`;
+    }
+    
+    text += "\n" + "=".repeat(50);
+    
+    return text;
+  };
+
+  const handleCopyToClipboard = async () => {
+    if (copyState !== 'idle') return;
+    
+    try {
+      setCopyState('copying');
+      const text = generateContractText();
+      await navigator.clipboard.writeText(text);
+      
+      setCopyState('copied');
+      
+      setTimeout(() => {
+        setCopyState('idle');
+      }, 2000);
+    } catch (error) {
+      setCopyState('idle');
+      toast({
+        title: "Erro",
+        description: "Não foi possível copiar as informações. Tente novamente.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -412,13 +468,28 @@ export default function Contracts() {
               <Eye className="h-5 w-5 text-primary" />
               <span>Detalhes do Contrato</span>
             </DialogTitle>
-            <Button
-              variant="outline" 
-              onClick={() => setDetailsOpen(false)}
-              className="h-8"
-            >
-              Fechar
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                onClick={handleCopyToClipboard}
+                disabled={copyState === 'copying'}
+                className={`gap-2 h-8 transition-all duration-300 ${
+                  copyState === 'copied' ? 'bg-[#e6f4f4] border-[#277677] text-[#277677]' : ''
+                }`}
+              >
+                {copyState === 'copying' && <Loader2 className="h-4 w-4 animate-spin" />}
+                {copyState === 'copied' && <Check className="h-4 w-4" />}
+                {copyState === 'idle' && <Copy className="h-4 w-4" />}
+                {copyState === 'copying' ? 'Copiando...' : copyState === 'copied' ? 'Copiado!' : 'Copiar'}
+              </Button>
+              <Button
+                variant="outline" 
+                onClick={() => setDetailsOpen(false)}
+                className="h-8"
+              >
+                Fechar
+              </Button>
+            </div>
           </DialogHeader>
           
           {selectedContract && (

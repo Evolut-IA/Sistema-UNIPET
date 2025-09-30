@@ -63,6 +63,7 @@ Preferred communication style: Simple, everyday language.
 -   **Brazilian Phone Formatting**: Consistent display formatting for all phone numbers across the admin interface (e.g., +55 (XX) XXXXX-XXXX).
 -   **Responsive Layouts**: Dynamic grid adjustments for plan displays and content sections, ensuring consistent card sizing and proper centering.
 -   **Image Conditional Rendering**: Public pages (hero, features, about) only display images when configured in admin settings - no hardcoded fallback images.
+-   **Copy to Clipboard**: Detail popups (Payments, Contracts, Network Units) include a "Copiar" button to copy formatted information to clipboard with visual feedback (idle → copying → copied states).
 
 ## External Dependencies
 

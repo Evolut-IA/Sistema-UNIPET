@@ -18,10 +18,11 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/admin/ui/dropdown-menu";
-import { Search, Eye, MoreHorizontal, ChevronLeft, ChevronRight, DollarSign } from "lucide-react";
+import { Search, Eye, MoreHorizontal, ChevronLeft, ChevronRight, DollarSign, Copy, Check, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useColumnPreferences } from "@/hooks/admin/use-column-preferences";
+import { useToast } from "@/hooks/use-toast";
 
 interface PaymentReceipt {
   id: string;
@@ -65,9 +66,11 @@ export default function Financial() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedReceipt, setSelectedReceipt] = useState<PaymentReceipt | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [copyState, setCopyState] = useState<'idle' | 'copying' | 'copied'>('idle');
   const { visibleColumns, toggleColumn } = useColumnPreferences('financial.columns', allColumns);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
+  const { toast } = useToast();
 
   const { data: receipts = [], isLoading } = useQuery<PaymentReceipt[]>({
     queryKey: ["/admin/api/payment-receipts"],
@@ -99,6 +102,49 @@ export default function Financial() {
       style: 'currency',
       currency: 'BRL'
     }).format(numValue);
+  };
+
+  const generatePaymentText = () => {
+    if (!selectedReceipt) return "";
+    
+    let text = "DETALHES DO PAGAMENTO\n";
+    text += "=".repeat(50) + "\n\n";
+    
+    text += `Nº Recibo: ${selectedReceipt.receiptNumber}\n`;
+    text += `Cliente: ${selectedReceipt.clientName}\n`;
+    text += `Email: ${selectedReceipt.clientEmail}\n`;
+    text += `Plano: ${selectedReceipt.planName || "N/A"}\n`;
+    text += `Valor: ${formatCurrency(selectedReceipt.paymentAmount)}\n`;
+    text += `Método de Pagamento: ${paymentMethodLabels[selectedReceipt.paymentMethod] || selectedReceipt.paymentMethod}\n`;
+    text += `Data do Pagamento: ${format(new Date(selectedReceipt.paymentDate), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}\n`;
+    text += `Status: ${statusLabels[selectedReceipt.status] || selectedReceipt.status}\n`;
+    
+    text += "\n" + "=".repeat(50);
+    
+    return text;
+  };
+
+  const handleCopyToClipboard = async () => {
+    if (copyState !== 'idle') return;
+    
+    try {
+      setCopyState('copying');
+      const text = generatePaymentText();
+      await navigator.clipboard.writeText(text);
+      
+      setCopyState('copied');
+      
+      setTimeout(() => {
+        setCopyState('idle');
+      }, 2000);
+    } catch (error) {
+      setCopyState('idle');
+      toast({
+        title: "Erro",
+        description: "Não foi possível copiar as informações. Tente novamente.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -306,13 +352,28 @@ export default function Financial() {
               <Eye className="h-5 w-5 text-primary" />
               <span>Detalhes do Pagamento</span>
             </DialogTitle>
-            <Button
-              variant="outline" 
-              onClick={() => setDetailsOpen(false)}
-              className="h-8"
-            >
-              Fechar
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                onClick={handleCopyToClipboard}
+                disabled={copyState === 'copying'}
+                className={`gap-2 h-8 transition-all duration-300 ${
+                  copyState === 'copied' ? 'bg-[#e6f4f4] border-[#277677] text-[#277677]' : ''
+                }`}
+              >
+                {copyState === 'copying' && <Loader2 className="h-4 w-4 animate-spin" />}
+                {copyState === 'copied' && <Check className="h-4 w-4" />}
+                {copyState === 'idle' && <Copy className="h-4 w-4" />}
+                {copyState === 'copying' ? 'Copiando...' : copyState === 'copied' ? 'Copiado!' : 'Copiar'}
+              </Button>
+              <Button
+                variant="outline" 
+                onClick={() => setDetailsOpen(false)}
+                className="h-8"
+              >
+                Fechar
+              </Button>
+            </div>
           </DialogHeader>
           
           {selectedReceipt && (
