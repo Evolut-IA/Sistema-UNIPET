@@ -311,7 +311,7 @@ export default function Contracts() {
                       </TableCell>
                     )}
                     {visibleColumns.includes("Valor Mensal") && (
-                      <TableCell className="whitespace-nowrap bg-white font-semibold text-green-600">
+                      <TableCell className="whitespace-nowrap bg-white font-bold text-foreground">
                         {formatCurrency(contract.monthlyAmount)}
                       </TableCell>
                     )}
@@ -470,11 +470,11 @@ export default function Contracts() {
                       <span><strong className="text-primary">Período de Cobrança:</strong> <span className="text-foreground">{billingPeriodLabels[selectedContract.billingPeriod] || selectedContract.billingPeriod}</span></span>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <span><strong className="text-primary">Valor Mensal:</strong> <span className="text-foreground font-semibold text-green-600">{formatCurrency(selectedContract.monthlyAmount)}</span></span>
+                      <span><strong className="text-primary">Valor Mensal:</strong> <span className="font-bold text-foreground">{formatCurrency(selectedContract.monthlyAmount)}</span></span>
                     </div>
                     {selectedContract.annualAmount && (
                       <div className="flex items-center space-x-2">
-                        <span><strong className="text-primary">Valor Anual:</strong> <span className="text-foreground font-semibold text-green-600">{formatCurrency(selectedContract.annualAmount)}</span></span>
+                        <span><strong className="text-primary">Valor Anual:</strong> <span className="font-bold text-foreground">{formatCurrency(selectedContract.annualAmount)}</span></span>
                       </div>
                     )}
                     <div className="flex items-center space-x-2">

@@ -184,8 +184,8 @@ export default function AuthGuard({ children }: AuthGuardProps) {
     gcTime: 5 * 60 * 1000, // 5 minutes - keep in cache for 5 minutes
     refetchOnWindowFocus: false, // Don't refetch when window regains focus
     refetchOnMount: true, // Do refetch on mount for security
-    initialData, // Use cached data as initial data
-    placeholderData: initialData, // Use cached data as placeholder while fetching
+    ...(initialData ? { initialData } : {}), // Use cached data as initial data only if available
+    ...(initialData ? { placeholderData: initialData } : {}), // Use cached data as placeholder while fetching only if available
   });
 
   // Handle loading state with intelligent timing

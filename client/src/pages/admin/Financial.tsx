@@ -204,7 +204,7 @@ export default function Financial() {
                       </TableCell>
                     )}
                     {visibleColumns.includes("Valor") && (
-                      <TableCell className="whitespace-nowrap bg-white font-semibold text-green-600">
+                      <TableCell className="whitespace-nowrap bg-white font-bold text-foreground">
                         {formatCurrency(receipt.paymentAmount)}
                       </TableCell>
                     )}
@@ -334,7 +334,7 @@ export default function Financial() {
                       <span><strong className="text-primary">Plano:</strong> <span className="text-foreground">{selectedReceipt.planName || "N/A"}</span></span>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <span><strong className="text-primary">Valor:</strong> <span className="text-foreground font-semibold text-green-600">{formatCurrency(selectedReceipt.paymentAmount)}</span></span>
+                      <span><strong className="text-primary">Valor:</strong> <span className="font-bold text-foreground">{formatCurrency(selectedReceipt.paymentAmount)}</span></span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <span><strong className="text-primary">Método de Pagamento:</strong> <span className="text-foreground">{paymentMethodLabels[selectedReceipt.paymentMethod] || selectedReceipt.paymentMethod}</span></span>
