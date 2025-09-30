@@ -941,19 +941,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Update plan (mainly for toggling isActive status)
+  // Update plan - accepts all plan fields
   app.put("/admin/api/plans/:id", async (req, res) => {
     try {
-      const { isActive } = req.body;
-      console.log(`📝 [ADMIN] Updating plan ${req.params.id} - isActive: ${isActive}`);
+      const planId = req.params.id;
+      const updateData = req.body;
       
-      const updatedPlan = await storage.updatePlan(req.params.id, { isActive });
+      console.log(`📝 [ADMIN] Updating plan ${planId} with data:`, updateData);
+      
+      // Converter price para decimal se estiver em centavos
+      if (updateData.price !== undefined) {
+        updateData.basePrice = (updateData.price / 100).toFixed(2);
+        delete updateData.price;
+      }
+      
+      // Garantir que campos opcionais sejam tratados corretamente
+      const planUpdateData = {
+        name: updateData.name,
+        description: updateData.description,
+        planType: updateData.planType,
+        image: updateData.image,
+        buttonText: updateData.buttonText,
+        displayOrder: updateData.displayOrder,
+        isActive: updateData.isActive,
+        basePrice: updateData.basePrice,
+        // Adicionar outros campos conforme necessário
+      };
+      
+      // Remover campos undefined
+      Object.keys(planUpdateData).forEach(key => {
+        if (planUpdateData[key] === undefined) {
+          delete planUpdateData[key];
+        }
+      });
+      
+      const updatedPlan = await storage.updatePlan(planId, planUpdateData);
       
       if (!updatedPlan) {
         return res.status(404).json({ error: "Plano não encontrado" });
       }
       
-      console.log(`✅ [ADMIN] Plan ${req.params.id} updated successfully`);
+      console.log(`✅ [ADMIN] Plan ${planId} updated successfully`);
       res.json(updatedPlan);
     } catch (error) {
       console.error("❌ [ADMIN] Error updating plan:", error);
