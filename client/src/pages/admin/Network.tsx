@@ -109,7 +109,7 @@ export default function Network() {
   const displayUnits = filteredUnits.slice(startIndex, endIndex);
 
 
-  const handleDelete = (id: string, unitName: string) => {
+  const handleDelete = (id: string) => {
     passwordDialog.openDialog({
       title: "Verificação de Senha",
       description: "Digite a senha do administrador para excluir esta unidade:",
@@ -129,15 +129,18 @@ export default function Network() {
           const result = await response.json();
           
           if (result.valid) {
-            // Senha correta, excluir unidade diretamente
-            passwordDialog.setLoading(true);
+            // Senha correta, excluir unidade
             deleteUnitMutation.mutate(id, {
-              onSettled: () => {
+              onSuccess: () => {
                 passwordDialog.setLoading(false);
                 passwordDialog.closeDialog();
+              },
+              onError: () => {
+                passwordDialog.setLoading(false);
               }
             });
           } else {
+            passwordDialog.setLoading(false);
             toast({
               title: "Senha incorreta",
               description: "A senha do administrador está incorreta.",
@@ -145,13 +148,12 @@ export default function Network() {
             });
           }
         } catch (error) {
+          passwordDialog.setLoading(false);
           toast({
             title: "Erro",
             description: "Erro ao verificar senha. Tente novamente.",
             variant: "destructive",
           });
-        } finally {
-          passwordDialog.setLoading(false);
         }
       },
     });
@@ -423,7 +425,7 @@ export default function Network() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => handleDelete(unit.id, unit.name)}
+                          onClick={() => handleDelete(unit.id)}
                           disabled={deleteUnitMutation.isPending}
                           data-testid={`button-delete-${unit.id}`}
                         >

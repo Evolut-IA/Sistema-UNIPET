@@ -31,8 +31,7 @@ export function usePasswordDialog() {
     if (state.onConfirm) {
       state.onConfirm(password);
     }
-    closeDialog();
-  }, [state.onConfirm, closeDialog]);
+  }, [state.onConfirm]);
 
   const setLoading = useCallback((loading: boolean) => {
     setState(prev => ({ ...prev, isLoading: loading }));
