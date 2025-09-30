@@ -8,6 +8,17 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (September 30, 2025)
 
+### Feature: Brazilian Phone Number Formatting
+- **Implementation**: Applied consistent Brazilian phone formatting across all admin interface pages.
+- **Scope**: All phone, contact, WhatsApp, and mobile number fields now display in format "+55 (XX) XXXXX-XXXX" or "+55 (XX) XXXX-XXXX".
+- **Function**: Uses existing `formatBrazilianPhoneForDisplay` utility from `@/hooks/use-site-settings`.
+- **Pages Updated**:
+  - `/admin/rede` (Network.tsx): Table column, detail modal (phone & WhatsApp), copy-to-clipboard text
+  - `/admin/clientes` (Clients.tsx): Table column, detail modal, generated client text
+  - `/admin/contatos` (ContactSubmissions.tsx): Table column, generated submission text
+  - `/admin/dashboard-unidade` (UnitDashboard.tsx): Client list, digital cards, guide details modal
+- **Database**: Phone numbers remain stored without formatting; formatting applied only on display.
+
 ### Bug Fix: Network Units Status Toggle
 - **Issue**: Status toggle button in /admin/rede page was not working correctly - when clicked to deactivate, units remained active.
 - **Root Cause**: 
