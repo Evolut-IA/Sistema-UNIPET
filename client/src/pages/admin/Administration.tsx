@@ -332,7 +332,7 @@ export default function Administration() {
 
   return (
     <>
-      <div className="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
+      <div className="space-y-4 sm:space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div className="flex-1">
@@ -521,7 +521,7 @@ export default function Administration() {
         </Dialog>
 
       {/* Search and Column Controls */}
-      <div className="flex flex-wrap gap-4 items-center justify-between mb-6">
+      <div className="flex flex-wrap gap-4 items-center justify-between">
         <div className="flex gap-2 flex-wrap">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -532,7 +532,7 @@ export default function Administration() {
                 setSearchQuery(e.target.value);
                 setUserCurrentPage(1); // Reset to page 1 when searching
               }}
-              className="pl-10 w-64"
+              className="pl-10 w-80"
               data-testid="input-search-users"
             />
           </div>
@@ -590,18 +590,18 @@ export default function Administration() {
       </h2>
 
       {/* Modern Table Container */}
-      <div className="container my-10 space-y-4 border border-border rounded-lg bg-accent shadow-sm">
+      <div className="container my-10 space-y-4 border border-[#eaeaea] rounded-lg bg-white shadow-sm">
 
         {/* Table */}
         <div className="rounded-lg overflow-hidden">
           <Table className="w-full">
             <TableHeader>
-              <TableRow className="bg-accent">
-                {visibleColumns.includes("Nome") && <TableHead className="w-[200px] bg-accent">Nome</TableHead>}
-                {visibleColumns.includes("Email") && <TableHead className="w-[250px] bg-accent">Email</TableHead>}
-                {visibleColumns.includes("Função") && <TableHead className="w-[120px] bg-accent">Função</TableHead>}
-                {visibleColumns.includes("Status") && <TableHead className="w-[100px] bg-accent">Status</TableHead>}
-                {visibleColumns.includes("Ações") && <TableHead className="w-[150px] bg-accent">Ações</TableHead>}
+              <TableRow className="bg-white border-b border-[#eaeaea]">
+                {visibleColumns.includes("Nome") && <TableHead className="w-[200px] bg-white">Nome</TableHead>}
+                {visibleColumns.includes("Email") && <TableHead className="w-[250px] bg-white">Email</TableHead>}
+                {visibleColumns.includes("Função") && <TableHead className="w-[120px] bg-white">Função</TableHead>}
+                {visibleColumns.includes("Status") && <TableHead className="w-[100px] bg-white">Status</TableHead>}
+                {visibleColumns.includes("Ações") && <TableHead className="w-[150px] bg-white">Ações</TableHead>}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -615,9 +615,9 @@ export default function Administration() {
                 ))
               ) : paginatedUsers?.length ? (
                 paginatedUsers.map((user: any) => (
-                  <TableRow key={user.id} className="bg-accent">
+                  <TableRow key={user.id} className="bg-white border-b border-[#eaeaea]">
                     {visibleColumns.includes("Nome") && (
-                      <TableCell className="font-medium whitespace-nowrap bg-accent" data-testid={`user-name-${user.id}`}>
+                      <TableCell className="font-medium whitespace-nowrap bg-white" data-testid={`user-name-${user.id}`}>
                         <div className="flex items-center space-x-2">
                           <User className="h-4 w-4 text-primary" />
                           <span>{user.username}</span>
@@ -625,19 +625,19 @@ export default function Administration() {
                       </TableCell>
                     )}
                     {visibleColumns.includes("Email") && (
-                      <TableCell className="whitespace-nowrap bg-accent">
+                      <TableCell className="whitespace-nowrap bg-white">
                         {user.email}
                       </TableCell>
                     )}
                     {visibleColumns.includes("Função") && (
-                      <TableCell className="whitespace-nowrap bg-accent">
+                      <TableCell className="whitespace-nowrap bg-white">
                         <Badge className={getRoleColor(user.role)}>
                           {getRoleLabel(user.role)}
                         </Badge>
                       </TableCell>
                     )}
                     {visibleColumns.includes("Status") && (
-                      <TableCell className="whitespace-nowrap bg-accent">
+                      <TableCell className="whitespace-nowrap bg-white">
                         <div className="flex items-center space-x-2">
                           <Switch
                             checked={user.isActive}
@@ -652,7 +652,7 @@ export default function Administration() {
                       </TableCell>
                     )}
                     {visibleColumns.includes("Ações") && (
-                      <TableCell className="whitespace-nowrap bg-accent">
+                      <TableCell className="whitespace-nowrap bg-white">
                         <div className="flex items-center space-x-1">
                           <Button
                             variant="outline"
@@ -677,8 +677,8 @@ export default function Administration() {
                   </TableRow>
                 ))
               ) : (
-                <TableRow className="bg-accent">
-                  <TableCell colSpan={visibleColumns.length} className="text-center py-12 bg-accent">
+                <TableRow className="bg-white border-b border-[#eaeaea]">
+                  <TableCell colSpan={visibleColumns.length} className="text-center py-12 bg-white">
                     <UserCheck className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                     <p className="text-muted-foreground mb-4">
                       {searchQuery 
@@ -706,65 +706,42 @@ export default function Administration() {
         
         {/* Users Pagination */}
         {totalUsers > 10 && (
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-border">
-            <div className="text-sm text-muted-foreground">
-              Mostrando {(userCurrentPage - 1) * userPageSize + 1} a {Math.min(userCurrentPage * userPageSize, totalUsers)} de {totalUsers} usuários
+          <div className="flex items-center justify-between py-4">
+            <div className="flex items-center space-x-6 lg:space-x-8">
+              <div className="flex items-center space-x-2">
+                <p className="text-sm font-medium">
+                  {totalUsers > 0 ? (
+                    <>Mostrando {(userCurrentPage - 1) * userPageSize + 1} a {Math.min(userCurrentPage * userPageSize, totalUsers)} de {totalUsers} usuário{totalUsers !== 1 ? 's' : ''}</>
+                  ) : (
+                    "Nenhum usuário encontrado"
+                  )}
+                </p>
+              </div>
             </div>
-            
             <div className="flex items-center space-x-2">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setUserCurrentPage(prev => Math.max(prev - 1, 1))}
-                disabled={userCurrentPage === 1 || isLoading}
-                data-testid="button-users-previous-page"
+                disabled={userCurrentPage === 1}
               >
                 <ChevronLeft className="h-4 w-4" />
                 Anterior
               </Button>
-              
               <div className="flex items-center space-x-1">
-                {[...Array(Math.min(5, totalUserPages))].map((_, i) => {
-                  let pageNumber;
-                  if (totalUserPages <= 5) {
-                    pageNumber = i + 1;
-                  } else {
-                    const start = Math.max(1, userCurrentPage - 2);
-                    const end = Math.min(totalUserPages, start + 4);
-                    pageNumber = start + i;
-                    if (pageNumber > end) return null;
-                  }
-                  
-                  return (
-                    <Button
-                      key={pageNumber}
-                      variant={userCurrentPage === pageNumber ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setUserCurrentPage(pageNumber)}
-                      disabled={isLoading}
-                      data-testid={`button-users-page-${pageNumber}`}
-                      className="w-10"
-                    >
-                      {pageNumber}
-                    </Button>
-                  );
-                })}
+                <span className="text-sm font-medium">
+                  Página {userCurrentPage} de {totalUserPages}
+                </span>
               </div>
-              
               <Button
                 variant="admin-action"
                 size="sm"
                 onClick={() => setUserCurrentPage(prev => Math.min(prev + 1, totalUserPages))}
-                disabled={userCurrentPage === totalUserPages || isLoading}
-                data-testid="button-users-next-page"
+                disabled={userCurrentPage === totalUserPages}
               >
                 Próximo
                 <ChevronRight className="h-4 w-4" />
               </Button>
-            </div>
-            
-            <div className="text-sm text-muted-foreground">
-              Página {userCurrentPage} de {totalUserPages}
             </div>
           </div>
         )}
@@ -810,7 +787,7 @@ export default function Administration() {
       </div>
 
       {/* Network Credentials Table Container */}
-      <div className="container my-10 space-y-4 border border-border rounded-lg bg-accent shadow-sm">
+      <div className="container my-10 space-y-4 border border-[#eaeaea] rounded-lg bg-white shadow-sm">
         
         {/* Table */}
         <div className="rounded-lg overflow-hidden">
@@ -831,21 +808,21 @@ export default function Administration() {
           ) : paginatedNetworkUnits?.length ? (
             <Table className="w-full">
               <TableHeader>
-                <TableRow className="bg-accent">
+                <TableRow className="bg-white border-b border-[#eaeaea]">
                   {visibleNetworkColumns.includes("Nome") && (
-                    <TableHead className="bg-accent">Nome</TableHead>
+                    <TableHead className="bg-white">Nome</TableHead>
                   )}
                   {visibleNetworkColumns.includes("Login") && (
-                    <TableHead className="bg-accent">Login</TableHead>
+                    <TableHead className="bg-white">Login</TableHead>
                   )}
                   {visibleNetworkColumns.includes("URL") && (
-                    <TableHead className="bg-accent">URL</TableHead>
+                    <TableHead className="bg-white">URL</TableHead>
                   )}
                   {visibleNetworkColumns.includes("Status") && (
-                    <TableHead className="bg-accent">Status</TableHead>
+                    <TableHead className="bg-white">Status</TableHead>
                   )}
                   {visibleNetworkColumns.includes("Ações") && (
-                    <TableHead className="bg-accent">Ações</TableHead>
+                    <TableHead className="bg-white">Ações</TableHead>
                   )}
                 </TableRow>
               </TableHeader>
@@ -853,9 +830,9 @@ export default function Administration() {
               {paginatedNetworkUnits.map((unit: any) => {
                 const status = getCredentialStatus(unit);
                 return (
-                  <TableRow key={unit.id} className="bg-accent">
+                  <TableRow key={unit.id} className="bg-white border-b border-[#eaeaea]">
                     {visibleNetworkColumns.includes("Nome") && (
-                      <TableCell className="font-medium whitespace-nowrap bg-accent">
+                      <TableCell className="font-medium whitespace-nowrap bg-white">
                         <div className="flex items-center space-x-2">
                           <Globe className="h-4 w-4 text-primary" />
                           <span>{unit.name}</span>
@@ -863,24 +840,24 @@ export default function Administration() {
                       </TableCell>
                     )}
                     {visibleNetworkColumns.includes("Login") && (
-                      <TableCell className="whitespace-nowrap bg-accent">
+                      <TableCell className="whitespace-nowrap bg-white">
                         {unit.login || "Não configurado"}
                       </TableCell>
                     )}
                     {visibleNetworkColumns.includes("URL") && (
-                      <TableCell className="whitespace-nowrap bg-accent">
+                      <TableCell className="whitespace-nowrap bg-white">
                         /{unit.urlSlug || "não-definido"}
                       </TableCell>
                     )}
                     {visibleNetworkColumns.includes("Status") && (
-                      <TableCell className="whitespace-nowrap bg-accent">
+                      <TableCell className="whitespace-nowrap bg-white">
                         <Badge className={status.color}>
                           {status.text}
                         </Badge>
                       </TableCell>
                     )}
                     {visibleNetworkColumns.includes("Ações") && (
-                      <TableCell className="whitespace-nowrap bg-accent">
+                      <TableCell className="whitespace-nowrap bg-white">
                         <div className="flex items-center space-x-1">
                           {unit.urlSlug && unit.isActive && (
                             <Button
@@ -913,8 +890,8 @@ export default function Administration() {
         ) : (
           <Table className="w-full">
             <TableBody>
-              <TableRow className="bg-accent">
-                <TableCell colSpan={visibleNetworkColumns.length} className="text-center py-12 bg-accent">
+              <TableRow className="bg-white border-b border-[#eaeaea]">
+                <TableCell colSpan={visibleNetworkColumns.length} className="text-center py-12 bg-white">
                   <Globe className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                   <p className="text-muted-foreground">
                     Nenhuma unidade da rede cadastrada ainda.
@@ -928,65 +905,42 @@ export default function Administration() {
         
         {/* Network Units Pagination */}
         {networkUnits?.length > 10 && (
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-border">
-            <div className="text-sm text-muted-foreground">
-              Mostrando {(networkCurrentPage - 1) * networkPageSize + 1} a {Math.min(networkCurrentPage * networkPageSize, totalNetworkUnits)} de {totalNetworkUnits} unidades
+          <div className="flex items-center justify-between py-4">
+            <div className="flex items-center space-x-6 lg:space-x-8">
+              <div className="flex items-center space-x-2">
+                <p className="text-sm font-medium">
+                  {totalNetworkUnits > 0 ? (
+                    <>Mostrando {(networkCurrentPage - 1) * networkPageSize + 1} a {Math.min(networkCurrentPage * networkPageSize, totalNetworkUnits)} de {totalNetworkUnits} unidade{totalNetworkUnits !== 1 ? 's' : ''}</>
+                  ) : (
+                    "Nenhuma unidade encontrada"
+                  )}
+                </p>
+              </div>
             </div>
-            
             <div className="flex items-center space-x-2">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setNetworkCurrentPage(prev => Math.max(prev - 1, 1))}
-                disabled={networkCurrentPage === 1 || isLoadingNetworkUnits}
-                data-testid="button-network-previous-page"
+                disabled={networkCurrentPage === 1}
               >
                 <ChevronLeft className="h-4 w-4" />
                 Anterior
               </Button>
-              
               <div className="flex items-center space-x-1">
-                {[...Array(Math.min(5, totalNetworkPages))].map((_, i) => {
-                  let pageNumber;
-                  if (totalNetworkPages <= 5) {
-                    pageNumber = i + 1;
-                  } else {
-                    const start = Math.max(1, networkCurrentPage - 2);
-                    const end = Math.min(totalNetworkPages, start + 4);
-                    pageNumber = start + i;
-                    if (pageNumber > end) return null;
-                  }
-                  
-                  return (
-                    <Button
-                      key={pageNumber}
-                      variant={networkCurrentPage === pageNumber ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setNetworkCurrentPage(pageNumber)}
-                      disabled={isLoadingNetworkUnits}
-                      data-testid={`button-network-page-${pageNumber}`}
-                      className="w-10"
-                    >
-                      {pageNumber}
-                    </Button>
-                  );
-                })}
+                <span className="text-sm font-medium">
+                  Página {networkCurrentPage} de {totalNetworkPages}
+                </span>
               </div>
-              
               <Button
                 variant="admin-action"
                 size="sm"
                 onClick={() => setNetworkCurrentPage(prev => Math.min(prev + 1, totalNetworkPages))}
-                disabled={networkCurrentPage === totalNetworkPages || isLoadingNetworkUnits}
-                data-testid="button-network-next-page"
+                disabled={networkCurrentPage === totalNetworkPages}
               >
                 Próximo
                 <ChevronRight className="h-4 w-4" />
               </Button>
-            </div>
-            
-            <div className="text-sm text-muted-foreground">
-              Página {networkCurrentPage} de {totalNetworkPages}
             </div>
           </div>
         )}
