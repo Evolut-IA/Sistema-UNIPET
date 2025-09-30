@@ -249,7 +249,7 @@ export default function Guides() {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div className="flex-1 min-w-0">
@@ -268,7 +268,7 @@ export default function Guides() {
       />
 
       {/* Filters and Column Controls */}
-      <div className="flex flex-wrap gap-4 items-center justify-between mb-6">
+      <div className="flex flex-wrap gap-4 items-center justify-between">
         <div className="flex gap-2 flex-wrap">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -279,7 +279,7 @@ export default function Guides() {
                 setSearchQuery(e.target.value);
                 setCurrentPage(1); // Reset para página 1 ao buscar
               }}
-              className="pl-10 w-64"
+              className="pl-10 w-80"
               data-testid="input-search-guides"
             />
           </div>
@@ -364,20 +364,20 @@ export default function Guides() {
       </div>
 
       {/* Modern Table Container */}
-      <div className="container my-10 space-y-4 border border-border rounded-lg bg-accent shadow-sm">
+      <div className="container my-10 space-y-4 border border-[#eaeaea] rounded-lg bg-white shadow-sm">
 
         {/* Table */}
         <div className="rounded-lg overflow-hidden">
           <Table className="w-full">
           <TableHeader>
-            <TableRow className="bg-accent">
-              {visibleColumns.includes("Procedimento") && <TableHead className="w-[200px] bg-accent">Procedimento</TableHead>}
-              {visibleColumns.includes("Unidade") && <TableHead className="w-[180px] bg-accent">Unidade</TableHead>}
-              {visibleColumns.includes("Tipo") && <TableHead className="w-[120px] bg-accent">Tipo</TableHead>}
-              {visibleColumns.includes("Valor") && <TableHead className="w-[120px] bg-accent">Valor</TableHead>}
-              {visibleColumns.includes("Status") && <TableHead className="w-[100px] bg-accent">Status</TableHead>}
-              {visibleColumns.includes("Data") && <TableHead className="w-[120px] bg-accent">Data</TableHead>}
-              {visibleColumns.includes("Ações") && <TableHead className="w-[150px] bg-accent">Ações</TableHead>}
+            <TableRow className="bg-white border-b border-[#eaeaea]">
+              {visibleColumns.includes("Procedimento") && <TableHead className="w-[200px] bg-white">Procedimento</TableHead>}
+              {visibleColumns.includes("Unidade") && <TableHead className="w-[180px] bg-white">Unidade</TableHead>}
+              {visibleColumns.includes("Tipo") && <TableHead className="w-[120px] bg-white">Tipo</TableHead>}
+              {visibleColumns.includes("Valor") && <TableHead className="w-[120px] bg-white">Valor</TableHead>}
+              {visibleColumns.includes("Status") && <TableHead className="w-[100px] bg-white">Status</TableHead>}
+              {visibleColumns.includes("Data") && <TableHead className="w-[120px] bg-white">Data</TableHead>}
+              {visibleColumns.includes("Ações") && <TableHead className="w-[150px] bg-white">Ações</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -391,41 +391,41 @@ export default function Guides() {
               ))
             ) : guidesData && guidesData.length > 0 ? (
               guidesData.map((guide: GuideWithNetworkUnit) => (
-                <TableRow key={guide.id} className="bg-accent">
+                <TableRow key={guide.id} className="bg-white border-b border-[#eaeaea]">
                   {visibleColumns.includes("Procedimento") && (
-                    <TableCell className="font-medium whitespace-nowrap bg-accent">
+                    <TableCell className="font-medium whitespace-nowrap bg-white">
                       {guide.procedure || 'Não informado'}
                     </TableCell>
                   )}
                   {visibleColumns.includes("Unidade") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
+                    <TableCell className="whitespace-nowrap bg-white">
                       {guide.networkUnit?.name || "Não informada"}
                     </TableCell>
                   )}
                   {visibleColumns.includes("Tipo") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
+                    <TableCell className="whitespace-nowrap bg-white">
                       {getTypeLabel(guide.type)}
                     </TableCell>
                   )}
                   {visibleColumns.includes("Valor") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
+                    <TableCell className="whitespace-nowrap bg-white">
                       R$ {parseFloat(guide.value || '0').toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </TableCell>
                   )}
                   {visibleColumns.includes("Status") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
+                    <TableCell className="whitespace-nowrap bg-white">
                       <Badge className={cn("whitespace-nowrap", getStatusColor())}>
                         {getStatusLabel(guide.status)}
                       </Badge>
                     </TableCell>
                   )}
                   {visibleColumns.includes("Data") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
+                    <TableCell className="whitespace-nowrap bg-white">
                       {guide.createdAt && format(new Date(guide.createdAt), "dd/MM/yyyy", { locale: ptBR })}
                     </TableCell>
                   )}
                   {visibleColumns.includes("Ações") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
+                    <TableCell className="whitespace-nowrap bg-white">
                       <div className="flex items-center space-x-1">
                         <Button
                           variant="outline"
@@ -441,8 +441,8 @@ export default function Guides() {
                 </TableRow>
               ))
             ) : (
-              <TableRow className="bg-accent">
-                <TableCell colSpan={visibleColumns.length} className="text-center py-12 bg-accent">
+              <TableRow className="bg-white border-b border-[#eaeaea]">
+                <TableCell colSpan={visibleColumns.length} className="text-center py-12 bg-white">
                   <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                   <p className="text-muted-foreground">
                     {searchQuery || typeFilter !== "all" || statusFilter !== "all" 
@@ -458,66 +458,43 @@ export default function Guides() {
         </div>
         
         {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-border">
-            <div className="text-sm text-muted-foreground">
-              Mostrando {(currentPage - 1) * pageSize + 1} a {Math.min(currentPage * pageSize, totalGuides)} de {totalGuides} guias
+        {totalGuides > 10 && (
+          <div className="flex items-center justify-between py-4">
+            <div className="flex items-center space-x-6 lg:space-x-8">
+              <div className="flex items-center space-x-2">
+                <p className="text-sm font-medium">
+                  {totalGuides > 0 ? (
+                    <>Mostrando {(currentPage - 1) * pageSize + 1} a {Math.min(currentPage * pageSize, totalGuides)} de {totalGuides} guias</>
+                  ) : (
+                    "Nenhuma guia encontrada"
+                  )}
+                </p>
+              </div>
             </div>
-            
             <div className="flex items-center space-x-2">
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1 || isLoading}
-                data-testid="button-previous-page"
+                onClick={() => setCurrentPage(currentPage - 1)}
+                disabled={currentPage <= 1}
               >
                 <ChevronLeft className="h-4 w-4" />
                 Anterior
               </Button>
-              
               <div className="flex items-center space-x-1">
-                {[...Array(Math.min(5, totalPages))].map((_, i) => {
-                  let pageNumber;
-                  if (totalPages <= 5) {
-                    pageNumber = i + 1;
-                  } else {
-                    const start = Math.max(1, currentPage - 2);
-                    const end = Math.min(totalPages, start + 4);
-                    pageNumber = start + i;
-                    if (pageNumber > end) return null;
-                  }
-                  
-                  return (
-                    <Button
-                      key={pageNumber}
-                      variant={currentPage === pageNumber ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setCurrentPage(pageNumber)}
-                      disabled={isLoading}
-                      data-testid={`button-page-${pageNumber}`}
-                      className="w-10"
-                    >
-                      {pageNumber}
-                    </Button>
-                  );
-                })}
+                <span className="text-sm font-medium">
+                  Página {currentPage} de {totalPages}
+                </span>
               </div>
-              
               <Button
                 variant="admin-action"
                 size="sm"
-                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                disabled={currentPage === totalPages || isLoading}
-                data-testid="button-next-page"
+                onClick={() => setCurrentPage(currentPage + 1)}
+                disabled={currentPage >= totalPages}
               >
                 Próximo
                 <ChevronRight className="h-4 w-4" />
               </Button>
-            </div>
-            
-            <div className="text-sm text-muted-foreground">
-              Página {currentPage} de {totalPages}
             </div>
           </div>
         )}
