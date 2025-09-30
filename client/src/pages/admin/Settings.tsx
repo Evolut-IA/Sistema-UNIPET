@@ -116,7 +116,6 @@ export default function Settings() {
   // Initialize form ONCE on first load only - never reset after that to preserve user changes
   useEffect(() => {
     if (siteSettings && typeof siteSettings === 'object' && !siteLoading && !hasInitializedRef.current) {
-      console.log('🔄 [EFFECT] Initial form load with server values');
       const mergedSettings = {
         whatsapp: (siteSettings as any).whatsapp || "",
         email: (siteSettings as any).email || "",
@@ -138,7 +137,6 @@ export default function Settings() {
       
       siteForm.reset(mergedSettings);
       hasInitializedRef.current = true;
-      console.log('🔄 [EFFECT] Form initialized, will not reset again');
     }
   }, [siteSettings, siteLoading, siteForm]);
 

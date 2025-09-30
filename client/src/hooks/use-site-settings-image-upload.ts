@@ -52,8 +52,6 @@ export function useSiteSettingsImageUpload({ onUpload, imageType }: UseSiteSetti
           }
 
           const data = await response.json();
-          console.log(`🖼️ [UPLOAD] ${imageType} image uploaded successfully:`, data.imageUrl);
-          console.log(`🖼️ [UPLOAD] Calling onUpload callback for ${imageType}`);
           onUpload?.(data.imageUrl);
         } catch (error) {
           console.error('Erro ao fazer upload:', error);
