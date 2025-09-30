@@ -24,10 +24,6 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { apiRequest } from "@/lib/admin/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
-import { PasswordDialog } from "@/components/ui/password-dialog";
-import { usePasswordDialog } from "@/hooks/use-password-dialog";
 import { useColumnPreferences } from "@/hooks/use-column-preferences";
 import { cn } from "@/lib/utils";
 import { formatBrazilianPhoneForDisplay } from "@/hooks/use-site-settings";
@@ -69,8 +65,6 @@ export default function ContactSubmissions() {
   const pageSize = 10;
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const confirmDialog = useConfirmDialog();
-  const passwordDialog = usePasswordDialog();
 
   const { data: submissions, isLoading } = useQuery({
     queryKey: ["/admin/api/contact-submissions"],
@@ -206,59 +200,8 @@ export default function ContactSubmissions() {
     window.open(whatsappUrl, '_blank');
   };
 
-  const handleDelete = (id: string, submissionName: string) => {
-    passwordDialog.openDialog({
-      title: "Verificação de Senha",
-      description: "Digite a senha do administrador para excluir este formulário:",
-      onConfirm: async (password) => {
-        try {
-          passwordDialog.setLoading(true);
-          
-          // Verificar senha
-          const response = await fetch("/admin/api/admin/verify-password", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ password }),
-          });
-          
-          const result = await response.json();
-          
-          if (result.valid) {
-            // Senha correta, mostrar confirmação de exclusão
-            confirmDialog.openDialog({
-              title: "Excluir Formulário",
-              description: `Tem certeza que deseja excluir o formulário de "${submissionName}"? Esta ação não pode ser desfeita.`,
-              confirmText: "Excluir Formulário",
-              cancelText: "Cancelar",
-              onConfirm: () => {
-                confirmDialog.setLoading(true);
-                deleteMutation.mutate(id, {
-                  onSettled: () => {
-                    confirmDialog.setLoading(false);
-                  }
-                });
-              },
-            });
-          } else {
-            toast({
-              title: "Senha incorreta",
-              description: "A senha do administrador está incorreta.",
-              variant: "destructive",
-            });
-          }
-        } catch (error) {
-          toast({
-            title: "Erro",
-            description: "Erro ao verificar senha. Tente novamente.",
-            variant: "destructive",
-          });
-        } finally {
-          passwordDialog.setLoading(false);
-        }
-      },
-    });
+  const handleDelete = (id: string) => {
+    deleteMutation.mutate(id);
   };
 
   const getPlanInterestColor = (plan: string) => {
@@ -430,7 +373,7 @@ export default function ContactSubmissions() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => handleDelete(submission.id, submission.name)}
+                          onClick={() => handleDelete(submission.id)}
                           disabled={deleteMutation.isPending}
                           data-testid={`button-delete-${submission.id}`}
                         >
@@ -593,27 +536,6 @@ export default function ContactSubmissions() {
         </DialogContent>
       </Dialog>
 
-      {/* Password Dialog */}
-      <PasswordDialog
-        open={passwordDialog.isOpen}
-        onOpenChange={passwordDialog.closeDialog}
-        onConfirm={passwordDialog.confirm}
-        title={passwordDialog.title ?? "Verificação de Senha"}
-        description={passwordDialog.description ?? "Digite a senha do administrador para continuar:"}
-        isLoading={passwordDialog.isLoading ?? false}
-      />
-
-      {/* Confirm Dialog */}
-      <ConfirmDialog
-        open={confirmDialog.isOpen}
-        onOpenChange={confirmDialog.closeDialog}
-        onConfirm={confirmDialog.confirm}
-        title={confirmDialog.title ?? "Confirmar exclusão"}
-        description={confirmDialog.description ?? "Tem certeza que deseja excluir este item? Esta ação não pode ser desfeita."}
-        confirmText={confirmDialog.confirmText ?? "Excluir"}
-        cancelText={confirmDialog.cancelText ?? "Cancelar"}
-        isLoading={confirmDialog.isLoading ?? false}
-      />
     </div>
   );
 }

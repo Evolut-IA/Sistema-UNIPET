@@ -152,9 +152,7 @@ export default function FAQ() {
   };
 
   const handleDelete = (id: string) => {
-    if (confirm("Tem certeza que deseja remover este item?")) {
-      deleteMutation.mutate(id);
-    }
+    deleteMutation.mutate(id);
   };
 
   const handleToggleStatus = (id: string, currentStatus: boolean) => {

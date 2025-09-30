@@ -24,10 +24,6 @@ import {
 import { Plus, Search, Edit, Trash2, Building, ExternalLink, Eye, Copy, Globe, MoreHorizontal, ChevronLeft, ChevronRight, Check, Loader2 } from "lucide-react";
 import { apiRequest } from "@/lib/admin/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { ConfirmDialog } from "@/components/admin/ui/confirm-dialog";
-import { useConfirmDialog } from "@/hooks/admin/use-confirm-dialog";
-import { PasswordDialog } from "@/components/admin/ui/password-dialog";
-import { usePasswordDialog } from "@/hooks/admin/use-password-dialog";
 import { useColumnPreferences } from "@/hooks/admin/use-column-preferences";
 import type { NetworkUnit } from "@shared/schema";
 import { formatBrazilianPhoneForDisplay } from "@/hooks/use-site-settings";
@@ -50,8 +46,6 @@ export default function Network() {
   const pageSize = 10;
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const confirmDialog = useConfirmDialog();
-  const passwordDialog = usePasswordDialog();
 
   const { data: units, isLoading } = useQuery<NetworkUnit[]>({
     queryKey: ["/admin/api/network-units"],
@@ -110,61 +104,7 @@ export default function Network() {
 
 
   const handleDelete = (id: string) => {
-    passwordDialog.openDialog({
-      title: "Verificação de Senha",
-      description: "Digite a senha do administrador para excluir esta unidade:",
-      onConfirm: async (password: string) => {
-        try {
-          // Verificar senha primeiro
-          const verifyResponse = await fetch("/admin/api/admin/verify-password", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ password }),
-          });
-          
-          if (!verifyResponse.ok) {
-            throw new Error("Erro ao verificar senha");
-          }
-          
-          const verifyResult = await verifyResponse.json();
-          
-          if (!verifyResult.valid) {
-            // Senha incorreta - manter o diálogo aberto
-            passwordDialog.setLoading(false);
-            toast({
-              title: "Senha incorreta",
-              description: "A senha do administrador está incorreta.",
-              variant: "destructive",
-            });
-            return; // Importante: retornar sem fechar o diálogo
-          }
-          
-          // Senha correta - prosseguir com a exclusão
-          await apiRequest("DELETE", `/admin/api/network-units/${id}`);
-          
-          // Sucesso - atualizar lista e fechar diálogo
-          queryClient.invalidateQueries({ queryKey: ["/admin/api/network-units"] });
-          toast({
-            title: "Unidade removida",
-            description: "A unidade foi removida com sucesso.",
-          });
-          
-          passwordDialog.setLoading(false);
-          passwordDialog.closeDialog();
-          
-        } catch (error) {
-          // Erro - manter o diálogo aberto
-          passwordDialog.setLoading(false);
-          toast({
-            title: "Erro",
-            description: error instanceof Error ? error.message : "Erro ao processar solicitação.",
-            variant: "destructive",
-          });
-        }
-      },
-    });
+    deleteUnitMutation.mutate(id);
   };
 
   const handleToggleStatus = (id: string, newStatus: boolean) => {
@@ -610,27 +550,6 @@ export default function Network() {
         </DialogContent>
       </Dialog>
 
-      {/* Password Dialog */}
-      <PasswordDialog
-        open={passwordDialog.isOpen}
-        onOpenChange={passwordDialog.closeDialog}
-        onConfirm={passwordDialog.confirm}
-        title={passwordDialog.title ?? "Verificação de Senha"}
-        description={passwordDialog.description ?? "Digite a senha do administrador para continuar:"}
-        isLoading={passwordDialog.isLoading ?? false}
-      />
-
-      {/* Confirm Dialog */}
-      <ConfirmDialog
-        open={confirmDialog.isOpen}
-        onOpenChange={confirmDialog.closeDialog}
-        onConfirm={confirmDialog.confirm}
-        title={confirmDialog.title ?? "Confirmar exclusão"}
-        description={confirmDialog.description ?? "Tem certeza que deseja excluir este item? Esta ação não pode ser desfeita."}
-        confirmText={confirmDialog.confirmText ?? "Excluir"}
-        cancelText={confirmDialog.cancelText ?? "Cancelar"}
-        isLoading={confirmDialog.isLoading ?? false}
-      />
     </div>
   );
 }
