@@ -76,8 +76,8 @@ export function useSiteSettings() {
     gcTime: 15 * 60 * 1000, // 15 minutos
     retry: 1, // Reduzir tentativas para carregamento mais rápido
     retryDelay: 300, // Delay ainda menor
-    refetchOnMount: false, // Evitar buscar sempre no mount
-    refetchOnWindowFocus: false, // Evitar buscar no foco da janela
+    refetchOnMount: true, // Buscar no mount para garantir dados atualizados
+    refetchOnWindowFocus: true, // Buscar no foco da janela para refletir mudanças do admin
     networkMode: 'always', // Sempre tentar buscar mesmo offline
   });
 }

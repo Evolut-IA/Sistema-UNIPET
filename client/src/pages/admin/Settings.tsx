@@ -73,7 +73,9 @@ export default function Settings() {
       await apiRequest("PUT", "/admin/api/settings/site", data);
     },
     onSuccess: () => {
+      // Invalidate both admin and public caches
       queryClient.invalidateQueries({ queryKey: ["/admin/api/settings/site"] });
+      queryClient.invalidateQueries({ queryKey: ["site-settings"] });
       toast({
         title: "Configurações salvas",
         description: "Configurações do site foram salvas com sucesso.",
