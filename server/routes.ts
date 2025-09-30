@@ -167,6 +167,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin password verification endpoint (for delete confirmations)
+  const passwordVerifyLimiter = rateLimit({
+    windowMs: 5 * 60 * 1000, // 5 minutes
+    max: 10, // limit each IP to 10 requests per windowMs
+    message: { error: "Muitas tentativas de verificação. Tente novamente em 5 minutos." },
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+
+  app.post("/admin/api/admin/verify-password", passwordVerifyLimiter, async (req, res) => {
+    try {
+      const { password } = req.body;
+
+      if (!password) {
+        return res.status(400).json({ valid: false, error: "Senha não fornecida" });
+      }
+
+      const adminPassword = process.env.SENHA;
+
+      if (!adminPassword) {
+        console.error("❌ [VERIFY-PASSWORD] Missing environment variable SENHA");
+        return res.status(500).json({ valid: false, error: "Configuração do servidor incorreta" });
+      }
+
+      let isValidPassword = false;
+
+      // Check if password is bcrypt hash or plain text (for backwards compatibility)
+      if (adminPassword.startsWith('$2a$') || adminPassword.startsWith('$2b$')) {
+        // It's a bcrypt hash
+        isValidPassword = await bcrypt.compare(password, adminPassword);
+      } else {
+        // Plain text comparison (less secure, for backwards compatibility)
+        isValidPassword = password === adminPassword;
+      }
+
+      res.json({ valid: isValidPassword });
+    } catch (error) {
+      console.error("❌ [VERIFY-PASSWORD] Error during password verification:", error);
+      res.status(500).json({ valid: false, error: "Erro interno do servidor" });
+    }
+  });
+
   // Admin authentication status endpoint
   app.get("/admin/api/auth/status", (req, res) => {
     try {
@@ -206,8 +248,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use("/admin/api/*", (req, res, next) => {
     console.log("🔍 [MIDDLEWARE] Path:", req.path, "Method:", req.method, "Original URL:", req.originalUrl);
     
-    // Skip authentication for login and auth status endpoints
-    if (req.path === "/admin/api/login" || req.path === "/admin/api/auth/status") {
+    // Skip authentication for login, auth status, and password verification endpoints
+    if (req.path === "/admin/api/login" || req.path === "/admin/api/auth/status" || req.path === "/admin/api/admin/verify-password") {
       return next();
     }
     
