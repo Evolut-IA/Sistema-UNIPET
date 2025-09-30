@@ -527,11 +527,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         };
       });
 
-      // Calculate plan revenue using filtered pets (basic calculation using base price)
+      // Calculate plan revenue from actual approved payments
       const planRevenue = plans.map(plan => {
+        // Sum all approved payments for this plan
+        const totalRevenue = allPaymentReceipts
+          .filter(receipt => receipt.planName === plan.name)
+          .reduce((sum, receipt) => {
+            const amount = parseFloat(receipt.paymentAmount || '0');
+            return sum + amount;
+          }, 0);
+        
         const petCount = filteredPets.filter(pet => pet.planId === plan.id).length;
         const monthlyPrice = parseFloat(plan.basePrice || '0');
-        const totalRevenue = petCount * monthlyPrice;
+        
         return {
           planId: plan.id,
           planName: plan.name,
