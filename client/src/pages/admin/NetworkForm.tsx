@@ -371,7 +371,7 @@ export default function NetworkForm() {
           {/* Services */}
           <Card style={{ backgroundColor: '#FFFFFF' }}>
             <CardHeader>
-              <CardTitle className="text-foreground">Serviços Oferecidos</CardTitle>
+              <CardTitle className="text-foreground">Serviços Oferecidos *</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -394,6 +394,11 @@ export default function NetworkForm() {
                     </div>
                   ))}
               </div>
+              {selectedServices.length === 0 && (
+                <p className="text-sm text-destructive mt-2">
+                  Selecione pelo menos um serviço
+                </p>
+              )}
               {selectedServices.length > 0 && (
                 <div className="mt-4 p-3 bg-accent border border-accent-foreground/20 rounded-lg">
                   <p className="text-sm font-medium text-accent-foreground mb-1">
