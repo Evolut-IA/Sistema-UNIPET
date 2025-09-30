@@ -176,7 +176,7 @@ export default function FAQ() {
   };
 
   return (
-    <div className="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div className="flex-1">
@@ -277,7 +277,7 @@ export default function FAQ() {
         </Dialog>
 
       {/* Filters and Column Controls */}
-      <div className="flex flex-wrap gap-4 items-center justify-between mb-6">
+      <div className="flex flex-wrap gap-4 items-center justify-between">
         <div className="flex gap-2 flex-wrap">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -288,7 +288,7 @@ export default function FAQ() {
                 setSearchQuery(e.target.value);
                 setCurrentPage(1); // Reset para página 1 ao buscar
               }}
-              className="pl-10 w-64"
+              className="pl-10 w-80"
               data-testid="input-search-faq"
             />
           </div>
@@ -341,17 +341,17 @@ export default function FAQ() {
       </div>
 
       {/* Modern Table Container */}
-      <div className="container my-10 space-y-4 border border-border rounded-lg bg-accent shadow-sm">
+      <div className="container my-10 space-y-4 border border-[#eaeaea] rounded-lg bg-white shadow-sm">
 
         {/* Table */}
         <div className="rounded-lg overflow-hidden">
           <Table className="w-full">
           <TableHeader>
-            <TableRow className="bg-accent">
-              {visibleColumns.includes("Pergunta") && <TableHead className="w-[300px] bg-accent">Pergunta</TableHead>}
-              {visibleColumns.includes("Status") && <TableHead className="w-[100px] bg-accent">Status</TableHead>}
-              {visibleColumns.includes("Data") && <TableHead className="w-[120px] bg-accent">Data</TableHead>}
-              {visibleColumns.includes("Ações") && <TableHead className="w-[200px] bg-accent">Ações</TableHead>}
+            <TableRow className="bg-white border-b border-[#eaeaea]">
+              {visibleColumns.includes("Pergunta") && <TableHead className="w-[300px] bg-white">Pergunta</TableHead>}
+              {visibleColumns.includes("Status") && <TableHead className="w-[100px] bg-white">Status</TableHead>}
+              {visibleColumns.includes("Data") && <TableHead className="w-[120px] bg-white">Data</TableHead>}
+              {visibleColumns.includes("Ações") && <TableHead className="w-[200px] bg-white">Ações</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -365,9 +365,9 @@ export default function FAQ() {
               ))
             ) : paginatedItems?.length ? (
               paginatedItems.map((item: any) => (
-                <TableRow key={item.id} className="bg-accent">
+                <TableRow key={item.id} className="bg-white border-b border-[#eaeaea]">
                   {visibleColumns.includes("Pergunta") && (
-                    <TableCell className="font-medium bg-accent">
+                    <TableCell className="font-medium bg-white">
                       <div className="max-w-[280px]">
                         <p className="truncate" title={item.question} data-testid={`faq-question-${item.id}`}>
                           {item.question}
@@ -379,19 +379,19 @@ export default function FAQ() {
                     </TableCell>
                   )}
                   {visibleColumns.includes("Status") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
+                    <TableCell className="whitespace-nowrap bg-white">
                       <Badge className={cn("whitespace-nowrap", getStatusColor(item.isActive))}>
                         {getStatusLabel(item.isActive)}
                       </Badge>
                     </TableCell>
                   )}
                   {visibleColumns.includes("Data") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
+                    <TableCell className="whitespace-nowrap bg-white">
                       {item.createdAt && format(new Date(item.createdAt), "dd/MM/yyyy", { locale: ptBR })}
                     </TableCell>
                   )}
                   {visibleColumns.includes("Ações") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
+                    <TableCell className="whitespace-nowrap bg-white">
                       <div className="flex items-center space-x-2">
                         <Switch
                           checked={item.isActive}
@@ -424,8 +424,8 @@ export default function FAQ() {
                 </TableRow>
               ))
             ) : (
-              <TableRow className="bg-accent">
-                <TableCell colSpan={visibleColumns.length} className="text-center py-12 bg-accent">
+              <TableRow className="bg-white border-b border-[#eaeaea]">
+                <TableCell colSpan={visibleColumns.length} className="text-center py-12 bg-white">
                   <HelpCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                   <p className="text-muted-foreground">
                     {searchQuery 
@@ -454,9 +454,17 @@ export default function FAQ() {
 
         {/* Pagination */}
         {totalItems > 10 && (
-          <div className="flex items-center justify-between px-4 py-3 border-t">
-            <div className="flex items-center text-sm text-muted-foreground">
-              <span>Mostrando {startIndex + 1} a {Math.min(startIndex + pageSize, totalItems)} de {totalItems} itens</span>
+          <div className="flex items-center justify-between py-4">
+            <div className="flex items-center space-x-6 lg:space-x-8">
+              <div className="flex items-center space-x-2">
+                <p className="text-sm font-medium">
+                  {totalItems > 0 ? (
+                    <>Mostrando {(currentPage - 1) * pageSize + 1} a {Math.min(currentPage * pageSize, totalItems)} de {totalItems} ite{totalItems !== 1 ? 'ns' : 'm'}</>
+                  ) : (
+                    "Nenhum item encontrado"
+                  )}
+                </p>
+              </div>
             </div>
             <div className="flex items-center space-x-2">
               <Button
@@ -464,22 +472,22 @@ export default function FAQ() {
                 size="sm"
                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
-                data-testid="button-prev-page"
               >
                 <ChevronLeft className="h-4 w-4" />
                 Anterior
               </Button>
               <div className="flex items-center space-x-1">
-                <span className="text-sm text-muted-foreground">Página {currentPage} de {totalPages}</span>
+                <span className="text-sm font-medium">
+                  Página {currentPage} de {totalPages}
+                </span>
               </div>
               <Button
-                variant="outline"
+                variant="admin-action"
                 size="sm"
                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
-                data-testid="button-next-page"
               >
-                Próxima
+                Próximo
                 <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
