@@ -8,6 +8,27 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (September 30, 2025)
 
+### Feature: FAQ Management System Improvements
+- **Implementation**: Fixed FAQ status toggle and delete functionality in the admin interface.
+- **Backend Changes**:
+  - Fixed `GET /admin/api/faq` endpoint to use `getAllFaqItems()` instead of `getFaqItems()` to show both active and inactive FAQs
+  - Added missing `POST /admin/api/faq` endpoint for creating new FAQ items
+  - Added missing `PUT /admin/api/faq/:id` endpoint for updating FAQ items
+  - Added missing `DELETE /admin/api/faq/:id` endpoint for deleting FAQ items
+  - Added development-only auth bypass for FAQ routes
+- **Frontend Changes**:
+  - Fixed FAQ creation form to automatically calculate `displayOrder` based on existing items
+  - Removed close button (X icon) from FAQ dialog popups using `hideCloseButton` prop
+  - FAQ status toggle now properly filters content between public and admin views
+- **Validation**: FAQ creation/update requires `displayOrder` field (number) as per schema requirements
+- **Result**: 
+  - Admin page shows all FAQs regardless of status
+  - Public pages (/faq and home) only show active FAQs
+  - Delete button works correctly
+  - Status toggle successfully controls FAQ visibility
+
+## Recent Changes (September 30, 2025)
+
 ### Bug Fix: Plan Layout Centering on Desktop with Fixed Card Sizes
 - **Issue**: When fewer than 4 plans are active, plan containers needed to center while maintaining consistent sizes.
 - **Root Cause**: Dynamic grid columns were causing cards to expand/shrink based on available space.
