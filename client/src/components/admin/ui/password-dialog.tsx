@@ -33,20 +33,22 @@ export function PasswordDialog({
   const [password, setPassword] = React.useState("");
   const { isMobile } = useMobileViewport()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (password.trim()) {
-      onConfirm(password);
+    if (password.trim() && !isLoading) {
+      await onConfirm(password);
     }
   };
 
-  const handleClose = () => {
-    setPassword("");
-    onOpenChange(false);
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      setPassword("");
+    }
+    onOpenChange(open);
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent 
         className="sm:max-w-md"
         maxHeightMobile="max-h-[60vh]"
@@ -103,7 +105,7 @@ export function PasswordDialog({
             <Button
               type="button"
               variant="outline"
-              onClick={handleClose}
+              onClick={() => handleOpenChange(false)}
               disabled={isLoading}
               className={isMobile ? "w-full h-12" : ""}
             >

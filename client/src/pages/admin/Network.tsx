@@ -113,12 +113,10 @@ export default function Network() {
     passwordDialog.openDialog({
       title: "Verificação de Senha",
       description: "Digite a senha do administrador para excluir esta unidade:",
-      onConfirm: async (password) => {
+      onConfirm: async (password: string) => {
         try {
-          passwordDialog.setLoading(true);
-          
-          // Verificar senha
-          const response = await fetch("/admin/api/admin/verify-password", {
+          // Verificar senha primeiro
+          const verifyResponse = await fetch("/admin/api/admin/verify-password", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -126,32 +124,42 @@ export default function Network() {
             body: JSON.stringify({ password }),
           });
           
-          const result = await response.json();
+          if (!verifyResponse.ok) {
+            throw new Error("Erro ao verificar senha");
+          }
           
-          if (result.valid) {
-            // Senha correta, excluir unidade
-            deleteUnitMutation.mutate(id, {
-              onSuccess: () => {
-                passwordDialog.setLoading(false);
-                passwordDialog.closeDialog();
-              },
-              onError: () => {
-                passwordDialog.setLoading(false);
-              }
-            });
-          } else {
+          const verifyResult = await verifyResponse.json();
+          
+          if (!verifyResult.valid) {
+            // Senha incorreta - manter o diálogo aberto
             passwordDialog.setLoading(false);
             toast({
               title: "Senha incorreta",
               description: "A senha do administrador está incorreta.",
               variant: "destructive",
             });
+            return; // Importante: retornar sem fechar o diálogo
           }
+          
+          // Senha correta - prosseguir com a exclusão
+          await apiRequest("DELETE", `/admin/api/network-units/${id}`);
+          
+          // Sucesso - atualizar lista e fechar diálogo
+          queryClient.invalidateQueries({ queryKey: ["/admin/api/network-units"] });
+          toast({
+            title: "Unidade removida",
+            description: "A unidade foi removida com sucesso.",
+          });
+          
+          passwordDialog.setLoading(false);
+          passwordDialog.closeDialog();
+          
         } catch (error) {
+          // Erro - manter o diálogo aberto
           passwordDialog.setLoading(false);
           toast({
             title: "Erro",
-            description: "Erro ao verificar senha. Tente novamente.",
+            description: error instanceof Error ? error.message : "Erro ao processar solicitação.",
             variant: "destructive",
           });
         }
