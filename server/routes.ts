@@ -854,7 +854,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin network units routes
   app.get("/admin/api/network-units", async (req, res) => {
     try {
-      const units = await storage.getNetworkUnits();
+      const units = await storage.getAllNetworkUnits();
       res.json(units);
     } catch (error) {
       console.error("❌ [ADMIN] Error fetching network units:", error);

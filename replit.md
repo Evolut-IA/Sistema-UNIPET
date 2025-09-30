@@ -13,10 +13,12 @@ Preferred communication style: Simple, everyday language.
 - **Root Cause**: 
   1. Frontend: Switch component was passing current value and inverting it, causing double-inversion with Radix UI
   2. Backend: Missing PUT route for updating network unit status
+  3. Backend: Admin route was filtering only active units, causing deactivated units to disappear from the page
 - **Solution**:
   1. Fixed Network.tsx: onCheckedChange now passes new value directly without manual inversion
   2. Added PUT /admin/api/network-units/:id route in server/routes.ts
   3. Route validates with updateNetworkUnitSchema and calls storage.updateNetworkUnit
+  4. Changed admin route to use getAllNetworkUnits() instead of getNetworkUnits() to show both active and inactive units
 
 ### Security Fix: Development Auth Bypass Protection
 - **Issue**: Development auth bypasses were not checking NODE_ENV, exposing admin routes in production.
