@@ -182,6 +182,15 @@ export default function Contracts() {
         </div>
       </div>
 
+      {/* Date Filter */}
+      <DateFilterComponent 
+        onDateRangeChange={handleDateRangeChange}
+        isLoading={isLoading ||
+          (dateFilter.startDate !== debouncedDateFilter.startDate ||
+            dateFilter.endDate !== debouncedDateFilter.endDate)}
+        initialRange={dateFilter}
+      />
+
       {/* Filters and Column Controls */}
       <div className="flex flex-wrap gap-4 items-center justify-between">
         <div className="flex gap-2 flex-wrap">
@@ -205,7 +214,13 @@ export default function Contracts() {
               setCurrentPage(1);
             }}
           >
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger 
+              className="w-48"
+              style={{
+                borderColor: 'var(--border-gray)',
+                background: 'white'
+              }}
+            >
               <SelectValue placeholder="Filtrar por status" />
             </SelectTrigger>
             <SelectContent>
@@ -217,10 +232,6 @@ export default function Contracts() {
               <SelectItem value="pending">Pendente</SelectItem>
             </SelectContent>
           </Select>
-
-          <DateFilterComponent 
-            onDateRangeChange={handleDateRangeChange}
-          />
         </div>
 
         <div className="flex gap-2">
