@@ -831,6 +831,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update contract (PATCH)
+  app.patch("/admin/api/contracts/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { monthlyAmount, status } = req.body;
+
+      // Validate input
+      if (!monthlyAmount || !status) {
+        return res.status(400).json({ error: "Valor mensal e status são obrigatórios" });
+      }
+
+      // Validate monthlyAmount is a valid number
+      const amount = parseFloat(monthlyAmount);
+      if (isNaN(amount) || amount <= 0) {
+        return res.status(400).json({ error: "Valor mensal inválido" });
+      }
+
+      // Validate status
+      const validStatuses = ['active', 'inactive', 'suspended', 'cancelled', 'pending'];
+      if (!validStatuses.includes(status)) {
+        return res.status(400).json({ error: "Status inválido" });
+      }
+
+      // Update contract
+      await storage.updateContract(id, {
+        monthlyAmount: amount.toString(),
+        status,
+      });
+
+      res.json({ 
+        success: true,
+        message: "Contrato atualizado com sucesso" 
+      });
+    } catch (error) {
+      console.error("❌ [ADMIN] Error updating contract:", error);
+      res.status(500).json({ error: "Erro ao atualizar contrato" });
+    }
+  });
+
   // ==== ADMIN PETS ROUTES ====
   // Get single pet by ID
   app.get("/admin/api/pets/:id", async (req, res) => {

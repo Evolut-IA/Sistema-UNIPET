@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/admin/ui/button";
 import { Input } from "@/components/admin/ui/input";
 import { Badge } from "@/components/admin/ui/badge";
@@ -19,13 +19,14 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/admin/ui/dropdown-menu";
-import { Search, Eye, MoreHorizontal, ChevronLeft, ChevronRight, File, Copy, Check, Loader2 } from "lucide-react";
+import { Search, Eye, MoreHorizontal, ChevronLeft, ChevronRight, File, Copy, Check, Loader2, Edit } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { CalendarDate } from "@internationalized/date";
 import { useColumnPreferences } from "@/hooks/admin/use-column-preferences";
 import { DateFilterComponent } from "@/components/admin/DateFilterComponent";
 import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/admin/queryClient";
 
 interface ContractWithDetails {
   id: string;
@@ -85,10 +86,15 @@ export default function Contracts() {
   const [selectedContract, setSelectedContract] = useState<ContractWithDetails | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [copyState, setCopyState] = useState<'idle' | 'copying' | 'copied'>('idle');
+  const [editOpen, setEditOpen] = useState(false);
+  const [editingContract, setEditingContract] = useState<ContractWithDetails | null>(null);
+  const [editMonthlyAmount, setEditMonthlyAmount] = useState("");
+  const [editStatus, setEditStatus] = useState("");
   const { visibleColumns, toggleColumn } = useColumnPreferences('contracts.columns', allColumns);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const [dateFilter, setDateFilter] = useState<{
     startDate: CalendarDate | null;
@@ -226,6 +232,60 @@ export default function Contracts() {
         variant: "destructive",
       });
     }
+  };
+
+  const handleEditContract = (contract: ContractWithDetails) => {
+    setEditingContract(contract);
+    setEditMonthlyAmount(contract.monthlyAmount);
+    setEditStatus(contract.status);
+    setEditOpen(true);
+  };
+
+  const updateContractMutation = useMutation({
+    mutationFn: async (data: { id: string; monthlyAmount: string; status: string }) => {
+      return await apiRequest(`/admin/api/contracts/${data.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          monthlyAmount: data.monthlyAmount,
+          status: data.status,
+        }),
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/admin/api/contracts'] });
+      toast({
+        title: "Sucesso",
+        description: "Contrato atualizado com sucesso!",
+      });
+      setEditOpen(false);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Erro",
+        description: error.message || "Erro ao atualizar o contrato.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleSaveEdit = () => {
+    if (!editingContract) return;
+    
+    if (!editMonthlyAmount || parseFloat(editMonthlyAmount) <= 0) {
+      toast({
+        title: "Erro",
+        description: "Por favor, insira um valor mensal válido.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    updateContractMutation.mutate({
+      id: editingContract.id,
+      monthlyAmount: editMonthlyAmount,
+      status: editStatus,
+    });
   };
 
   return (
@@ -389,13 +449,22 @@ export default function Contracts() {
                     )}
                     {visibleColumns.includes("Ações") && (
                       <TableCell className="whitespace-nowrap bg-white">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleViewDetails(contract)}
-                        >
-                          <Eye className="h-4 w-4" />
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleEditContract(contract)}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleViewDetails(contract)}
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </TableCell>
                     )}
                   </TableRow>
@@ -567,6 +636,73 @@ export default function Contracts() {
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Dialog */}
+      <Dialog open={editOpen} onOpenChange={setEditOpen}>
+        <DialogContent hideCloseButton>
+          <DialogHeader className="flex flex-row items-center justify-between pr-2">
+            <DialogTitle className="flex items-center space-x-2">
+              <Edit className="h-5 w-5 text-primary" />
+              <span>Editar Contrato</span>
+            </DialogTitle>
+            <Button
+              variant="outline" 
+              onClick={() => setEditOpen(false)}
+              className="h-8"
+            >
+              Fechar
+            </Button>
+          </DialogHeader>
+          
+          {editingContract && (
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">Valor Mensal</label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={editMonthlyAmount}
+                  onChange={(e) => setEditMonthlyAmount(e.target.value)}
+                  placeholder="0.00"
+                  className="w-full"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">Status</label>
+                <Select value={editStatus} onValueChange={setEditStatus}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Selecione o status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active">Ativo</SelectItem>
+                    <SelectItem value="inactive">Inativo</SelectItem>
+                    <SelectItem value="suspended">Suspenso</SelectItem>
+                    <SelectItem value="cancelled">Cancelado</SelectItem>
+                    <SelectItem value="pending">Pendente</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-4">
+                <Button
+                  variant="outline"
+                  onClick={() => setEditOpen(false)}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  onClick={handleSaveEdit}
+                  disabled={updateContractMutation.isPending}
+                >
+                  {updateContractMutation.isPending ? "Salvando..." : "Salvar"}
+                </Button>
               </div>
             </div>
           )}
