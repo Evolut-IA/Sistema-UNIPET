@@ -30,7 +30,6 @@ import { cn } from "@/lib/utils";
 const allColumns = [
   "Nome",
   "Preço",
-  "Faturamento",
   "Tipo",
   "Status",
   "Ações",
@@ -184,7 +183,6 @@ export default function Plans() {
             <TableRow className="bg-white border-b border-[#eaeaea]">
               {visibleColumns.includes("Nome") && <TableHead className="w-[200px] bg-white">Nome</TableHead>}
               {visibleColumns.includes("Preço") && <TableHead className="w-[150px] bg-white">Preço</TableHead>}
-              {visibleColumns.includes("Faturamento") && <TableHead className="w-[120px] bg-white">Faturamento</TableHead>}
               {visibleColumns.includes("Tipo") && <TableHead className="w-[180px] bg-white">Tipo</TableHead>}
               {visibleColumns.includes("Status") && <TableHead className="w-[100px] bg-white">Status</TableHead>}
               {visibleColumns.includes("Ações") && <TableHead className="w-[150px] bg-white">Ações</TableHead>}
@@ -212,13 +210,6 @@ export default function Plans() {
                       <span className="font-bold text-foreground">
                         R$ {parseFloat(plan.basePrice || '0').toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-xs text-muted-foreground">/mês</span>
                       </span>
-                    </TableCell>
-                  )}
-                  {visibleColumns.includes("Faturamento") && (
-                    <TableCell className="whitespace-nowrap bg-white">
-                      <Badge className="border border-border rounded-lg bg-background text-foreground">
-                        {plan.billingFrequency === 'annual' ? 'Anual' : 'Mensal'}
-                      </Badge>
                     </TableCell>
                   )}
                   {visibleColumns.includes("Tipo") && (
