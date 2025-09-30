@@ -143,7 +143,7 @@ export default function Hero() {
                   }}
                 >
                   <img
-                    src={settings.mainImageUrl || 'https://tkzzxsbwkgcdmcreducm.supabase.co/storage/v1/object/public/pet-images/site/main-image-family-pets.jpg'}
+                    src={settings.mainImageUrl || ''}
                     alt="Família feliz com seus pets"
                     className="w-full h-full object-cover object-center"
                     loading="lazy"

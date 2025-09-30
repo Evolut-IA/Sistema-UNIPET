@@ -99,7 +99,7 @@ export default function Features() {
                 }}
               >
                 <img
-                  src={settings.networkImageUrl || 'https://tkzzxsbwkgcdmcreducm.supabase.co/storage/v1/object/public/pet-images/site/network-veterinary-hospital.jpg'}
+                  src={settings.networkImageUrl || ''}
                   alt="Rede credenciada de hospitais veterinários"
                   className="w-full h-full object-cover object-center"
                   loading="lazy"

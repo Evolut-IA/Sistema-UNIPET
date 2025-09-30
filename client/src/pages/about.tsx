@@ -59,7 +59,7 @@ export default function About() {
                 }}
               >
                 <img
-                  src={settings?.aboutImageUrl || 'https://tkzzxsbwkgcdmcreducm.supabase.co/storage/v1/object/public/pet-images/site/about-veterinarian-exam.jpg'}
+                  src={settings?.aboutImageUrl || ''}
                   alt="Sobre a UNIPET PLAN"
                   className="w-full h-full object-cover object-center"
                   loading="lazy"
