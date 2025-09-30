@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/admin/ui/button";
 import { Input } from "@/components/admin/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/admin/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/admin/ui/dialog";
 import {
   Table,
@@ -20,7 +21,9 @@ import {
 import { Search, Eye, MoreHorizontal, ChevronLeft, ChevronRight, File } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { CalendarDate } from "@internationalized/date";
 import { useColumnPreferences } from "@/hooks/admin/use-column-preferences";
+import { DateFilterComponent } from "@/components/admin/DateFilterComponent";
 
 interface ContractWithDetails {
   id: string;
@@ -82,24 +85,78 @@ const paymentMethodLabels: Record<string, string> = {
 
 export default function Contracts() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [selectedContract, setSelectedContract] = useState<ContractWithDetails | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const { visibleColumns, toggleColumn } = useColumnPreferences('contracts.columns', allColumns);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
 
+  const [dateFilter, setDateFilter] = useState<{
+    startDate: CalendarDate | null;
+    endDate: CalendarDate | null;
+  }>({ startDate: null, endDate: null });
+
+  const [debouncedDateFilter, setDebouncedDateFilter] = useState<{
+    startDate: CalendarDate | null;
+    endDate: CalendarDate | null;
+  }>({ startDate: null, endDate: null });
+
+  // Debounce date filter changes
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedDateFilter(dateFilter);
+    }, 500); // 500ms debounce
+
+    return () => clearTimeout(timer);
+  }, [dateFilter]);
+
+  const handleDateRangeChange = (startDate: CalendarDate | null, endDate: CalendarDate | null) => {
+    setDateFilter({ startDate, endDate });
+    setCurrentPage(1); // Reset para página 1 ao filtrar por data
+  };
+
   const { data: contracts = [], isLoading } = useQuery<ContractWithDetails[]>({
     queryKey: ["/admin/api/contracts"],
   });
 
-  const filteredContracts = searchQuery
-    ? contracts.filter(
-        (contract) =>
-          contract.contractNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          contract.clientName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          contract.petName?.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : contracts;
+  const filteredContracts = contracts.filter((contract) => {
+    // Text search filter
+    const matchesSearch = !searchQuery || 
+      contract.contractNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      contract.clientName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      contract.petName?.toLowerCase().includes(searchQuery.toLowerCase());
+
+    // Status filter
+    const matchesStatus = statusFilter === "all" || contract.status === statusFilter;
+
+    // Date filter
+    let matchesDate = true;
+    if (debouncedDateFilter.startDate || debouncedDateFilter.endDate) {
+      const contractDate = new Date(contract.startDate);
+      
+      if (debouncedDateFilter.startDate) {
+        const startDate = new Date(
+          debouncedDateFilter.startDate.year,
+          debouncedDateFilter.startDate.month - 1,
+          debouncedDateFilter.startDate.day
+        );
+        if (contractDate < startDate) matchesDate = false;
+      }
+      
+      if (debouncedDateFilter.endDate) {
+        const endDate = new Date(
+          debouncedDateFilter.endDate.year,
+          debouncedDateFilter.endDate.month - 1,
+          debouncedDateFilter.endDate.day
+        );
+        endDate.setHours(23, 59, 59, 999);
+        if (contractDate > endDate) matchesDate = false;
+      }
+    }
+
+    return matchesSearch && matchesStatus && matchesDate;
+  });
 
   const totalContracts = filteredContracts.length;
   const totalPages = Math.ceil(totalContracts / pageSize);
@@ -145,6 +202,30 @@ export default function Contracts() {
               className="pl-10 w-80"
             />
           </div>
+          
+          <Select 
+            value={statusFilter} 
+            onValueChange={(value) => {
+              setStatusFilter(value);
+              setCurrentPage(1);
+            }}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Filtrar por status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos os status</SelectItem>
+              <SelectItem value="active">Ativo</SelectItem>
+              <SelectItem value="inactive">Inativo</SelectItem>
+              <SelectItem value="suspended">Suspenso</SelectItem>
+              <SelectItem value="cancelled">Cancelado</SelectItem>
+              <SelectItem value="pending">Pendente</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <DateFilterComponent 
+            onDateRangeChange={handleDateRangeChange}
+          />
         </div>
 
         <div className="flex gap-2">
