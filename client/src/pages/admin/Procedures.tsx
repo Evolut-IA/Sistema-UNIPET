@@ -156,7 +156,7 @@ export default function Procedures() {
           carencia: item.carencia ?? "",
           limitesAnuais: item.limitesAnuais ?? "",
           enableCarencia: Boolean(item.carencia && item.carencia.trim() !== ""),
-          enableLimitesAnuais: Boolean(item.limitesAnuais && item.limitesAnuais.trim() !== "" && item.limitesAnuais !== "ilimitado"),
+          enableLimitesAnuais: Boolean(item.limitesAnuais && item.limitesAnuais.trim() !== "" && item.limitesAnuais !== "0"),
           enableCoparticipacao: Boolean(item.coparticipacao && item.coparticipacao > 0)
         };
       });
@@ -184,7 +184,7 @@ export default function Procedures() {
           pagar: "0,00",
           coparticipacao: "0,00",
           carencia: "",
-          limitesAnuais: "ilimitado",
+          limitesAnuais: "0",
           enableCarencia: false,
           enableLimitesAnuais: false,
           enableCoparticipacao: false
@@ -323,7 +323,7 @@ export default function Procedures() {
       if (field === 'enableCarencia') {
         (updated[index] as any)['carencia'] = '';
       } else if (field === 'enableLimitesAnuais') {
-        (updated[index] as any)['limitesAnuais'] = 'ilimitado';
+        (updated[index] as any)['limitesAnuais'] = '0';
       } else if (field === 'enableCoparticipacao') {
         (updated[index] as any)['coparticipacao'] = '0,00';
       }
@@ -428,7 +428,7 @@ export default function Procedures() {
           const numericCoparticipacao = convertPriceToNumber(plan.coparticipacao);
           
           // Determinar o valor final dos limites anuais
-          let finalLimitesAnuais = "ilimitado";
+          let finalLimitesAnuais = "0";
           if ((plan as any).enableLimitesAnuais && plan.limitesAnuais && plan.limitesAnuais.trim() !== "") {
             finalLimitesAnuais = plan.limitesAnuais;
           }
@@ -685,7 +685,7 @@ export default function Procedures() {
       
       // Validate Limites Anuais when enabled
       if (plan.enableLimitesAnuais) {
-        if (!plan.limitesAnuais || plan.limitesAnuais.trim() === '' || plan.limitesAnuais.trim().toLowerCase() === 'ilimitado') {
+        if (!plan.limitesAnuais || plan.limitesAnuais.trim() === '' || plan.limitesAnuais.trim() === '0') {
           errors[index] = 'Limites anuais é obrigatório quando habilitado';
           hasErrors = true;
         } else {
