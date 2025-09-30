@@ -377,7 +377,7 @@ export default function PetForm() {
                               {plan.name} - {new Intl.NumberFormat('pt-BR', { 
                                 style: 'currency', 
                                 currency: 'BRL' 
-                              }).format(parseFloat(plan.price) / 100)}
+                              }).format(parseFloat(plan.basePrice || 0))}
                             </SelectItem>,
                             ...(index < (plans?.length ?? 0) - 1 ? [<Separator key={`separator-${plan.id}`} />] : [])
                           ])}
