@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -19,13 +18,11 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Mail, Search, Eye, Trash2, Calendar, User, Phone, MapPin, Heart, Copy, MoreHorizontal, ChevronLeft, ChevronRight, Check, Loader2 } from "lucide-react";
+import { Mail, Search, Eye, Copy, MoreHorizontal, ChevronLeft, ChevronRight, Check, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { apiRequest } from "@/lib/admin/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useColumnPreferences } from "@/hooks/use-column-preferences";
-import { cn } from "@/lib/utils";
 import { formatBrazilianPhoneForDisplay } from "@/hooks/use-site-settings";
 
 const allColumns = [
@@ -63,31 +60,10 @@ export default function ContactSubmissions() {
   const { visibleColumns, toggleColumn } = useColumnPreferences('contact-submissions.columns', allColumns);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
-  const queryClient = useQueryClient();
   const { toast } = useToast();
 
   const { data: submissions, isLoading } = useQuery({
     queryKey: ["/admin/api/contact-submissions"],
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: async (id: string) => {
-      await apiRequest("DELETE", `/admin/api/contact-submissions/${id}`);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/admin/api/contact-submissions"] });
-      toast({
-        title: "Formulário removido",
-        description: "Formulário foi removido com sucesso.",
-      });
-    },
-    onError: () => {
-      toast({
-        title: "Erro",
-        description: "Falha ao remover formulário.",
-        variant: "destructive",
-      });
-    },
   });
 
   const allFilteredSubmissions = Array.isArray(submissions) ? submissions?.filter((submission: any) =>
@@ -200,11 +176,7 @@ export default function ContactSubmissions() {
     window.open(whatsappUrl, '_blank');
   };
 
-  const handleDelete = (id: string) => {
-    deleteMutation.mutate(id);
-  };
-
-  const getPlanInterestColor = (plan: string) => {
+  const getPlanInterestColor = () => {
     return "border border-border rounded-lg bg-background text-foreground";
   };
 
@@ -338,7 +310,7 @@ export default function ContactSubmissions() {
                   )}
                   {visibleColumns.includes("Plano") && (
                     <TableCell className="whitespace-nowrap bg-white">
-                      <Badge className={getPlanInterestColor(submission.planInterest)} data-testid={`badge-plan-interest-${submission.id}`}>
+                      <Badge className={getPlanInterestColor()} data-testid={`badge-plan-interest-${submission.id}`}>
                         {submission.planInterest}
                       </Badge>
                     </TableCell>
@@ -426,7 +398,7 @@ export default function ContactSubmissions() {
               </span>
             </div>
             <Button
-              variant="admin-action"
+              variant="outline"
               size="sm"
               onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
@@ -501,7 +473,7 @@ export default function ContactSubmissions() {
                 <div>
                   <label className="text-sm font-medium text-primary">Plano de Interesse</label>
                   <div className="mt-1">
-                    <Badge className={getPlanInterestColor(selectedSubmission.planInterest)}>
+                    <Badge className={getPlanInterestColor()}>
                       {selectedSubmission.planInterest}
                     </Badge>
                   </div>
