@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Card, CardContent } from "@/components/admin/ui/card";
 import { Button } from "@/components/admin/ui/button";
 import { Input } from "@/components/admin/ui/input";
 import { Badge } from "@/components/admin/ui/badge";
@@ -20,7 +19,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/admin/ui/dropdown-menu";
 import { useLocation } from "wouter";
-import { Plus, Search, Edit, Trash2, CreditCard, MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, Search, Edit, CreditCard, MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
 import { apiRequest, getQueryOptions } from "@/lib/admin/queryClient";
 import { createSmartInvalidation } from "@/lib/admin/cacheUtils";
 import { useToast } from "@/hooks/use-toast";
@@ -49,41 +48,6 @@ export default function Plans() {
   const { data: plans, isLoading } = useQuery<Plan[]>({
     queryKey: ["/admin/api/plans"],
     ...getQueryOptions('plans'),
-  });
-
-  const deletePlanMutation = useMutation({
-    mutationFn: async (id: string) => {
-      await apiRequest("DELETE", `/admin/api/plans/${id}`);
-    },
-    onMutate: async (id: string) => {
-      // Optimistically remove plan from cache
-      await queryClient.cancelQueries({ queryKey: ["/admin/api/plans"] });
-      const previousPlans = queryClient.getQueryData(["/admin/api/plans"]);
-      
-      queryClient.setQueryData(["/admin/api/plans"], (old: any[]) => {
-        return old?.filter(plan => plan.id !== id) || [];
-      });
-      
-      return { previousPlans };
-    },
-    onSuccess: (_, id) => {
-      smartCache.invalidatePlanData(id);
-      toast({
-        title: "Plano removido",
-        description: "Plano foi removido com sucesso.",
-      });
-    },
-    onError: (_, __, context) => {
-      // Restore previous data on error
-      if (context?.previousPlans) {
-        queryClient.setQueryData(["/admin/api/plans"], context.previousPlans);
-      }
-      toast({
-        title: "Erro",
-        description: "Falha ao remover plano.",
-        variant: "destructive",
-      });
-    },
   });
 
   const togglePlanMutation = useMutation({
@@ -129,10 +93,6 @@ export default function Plans() {
   const endIndex = startIndex + pageSize;
   const filteredPlans = allFilteredPlans.slice(startIndex, endIndex);
 
-
-  const handleDelete = (id: string) => {
-    deletePlanMutation.mutate(id);
-  };
 
   const handleToggleStatus = (id: string, currentStatus: boolean) => {
     togglePlanMutation.mutate({ id, isActive: !currentStatus });
@@ -279,15 +239,6 @@ export default function Plans() {
                           data-testid={`button-edit-${plan.id}`}
                         >
                           <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleDelete(plan.id)}
-                          disabled={deletePlanMutation.isPending}
-                          data-testid={`button-delete-${plan.id}`}
-                        >
-                          <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                     </TableCell>
