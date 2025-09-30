@@ -392,7 +392,7 @@ export default function FAQ() {
                   )}
                   {visibleColumns.includes("Ações") && (
                     <TableCell className="whitespace-nowrap bg-white">
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-1">
                         <Switch
                           checked={item.isActive}
                           onCheckedChange={() => handleToggleStatus(item.id, item.isActive)}
