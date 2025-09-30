@@ -1007,6 +1007,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         name: updateData.name,
         description: updateData.description,
         planType: updateData.planType,
+        billingFrequency: updateData.billingFrequency,
         image: updateData.image,
         buttonText: updateData.buttonText,
         displayOrder: updateData.displayOrder,
