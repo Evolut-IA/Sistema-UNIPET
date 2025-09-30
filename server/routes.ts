@@ -1065,6 +1065,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.delete("/admin/api/network-units/:id", async (req, res) => {
+    // Development-only bypass
+    if (process.env.NODE_ENV === 'development' && !req.session?.user) {
+      console.warn("⚠️ [ADMIN] Bypassing auth for /admin/api/network-units - DEVELOPMENT ONLY");
+    } else if (!req.session?.user) {
+      return res.status(401).json({ error: "Não autenticado" });
+    }
+    
+    try {
+      const { id } = req.params;
+      
+      const deleted = await storage.deleteNetworkUnit(id);
+      
+      if (!deleted) {
+        return res.status(404).json({ error: "Unidade não encontrada" });
+      }
+      
+      res.status(204).send();
+    } catch (error) {
+      console.error("❌ [ADMIN] Error deleting network unit:", error);
+      res.status(500).json({ error: "Erro ao excluir unidade" });
+    }
+  });
+
   // Admin procedures routes
   app.get("/admin/api/procedures", async (req, res) => {
     try {
