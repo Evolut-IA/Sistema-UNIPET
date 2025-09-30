@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 
 interface PasswordDialogState {
   isOpen: boolean;
@@ -12,6 +12,12 @@ export function usePasswordDialog() {
   const [state, setState] = useState<PasswordDialogState>({
     isOpen: false,
   });
+  
+  const onConfirmRef = useRef<((password: string) => void) | undefined>();
+  
+  useEffect(() => {
+    onConfirmRef.current = state.onConfirm;
+  }, [state.onConfirm]);
 
   const openDialog = useCallback((options: Omit<PasswordDialogState, 'isOpen'>) => {
     setState({
@@ -28,10 +34,10 @@ export function usePasswordDialog() {
   }, []);
 
   const confirm = useCallback((password: string) => {
-    if (state.onConfirm) {
-      state.onConfirm(password);
+    if (onConfirmRef.current) {
+      onConfirmRef.current(password);
     }
-  }, [state.onConfirm]);
+  }, []);
 
   const setLoading = useCallback((loading: boolean) => {
     setState(prev => ({ ...prev, isLoading: loading }));
