@@ -979,7 +979,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         displayOrder: planData.displayOrder || 0,
         isActive: planData.isActive !== undefined ? planData.isActive : true,
         basePrice: planData.basePrice || '0.00',
-        billingFrequency: planData.billingFrequency || 'monthly',
         features: planData.features || [],
         installmentPrice: planData.installmentPrice || '0.00',
         installmentCount: planData.installmentCount || 1,
@@ -1022,7 +1021,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         name: updateData.name,
         description: updateData.description,
         planType: updateData.planType,
-        billingFrequency: updateData.billingFrequency,
         image: updateData.image,
         buttonText: updateData.buttonText,
         displayOrder: updateData.displayOrder,
@@ -3391,7 +3389,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 id: plan.id,
                 name: plan.name,
                 basePrice: plan.basePrice,
-                billingFrequency: plan.billingFrequency,
+
                 description: plan.description,
                 features: plan.features
               };
