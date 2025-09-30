@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,6 +19,7 @@ import { SiteSettingsImageUpload } from "@/components/admin/ui/site-settings-ima
 export default function Settings() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const hasInitializedRef = useRef(false);
 
   const { data: siteSettings, isLoading: siteLoading, error: siteError } = useQuery({
     queryKey: ["/admin/api/settings/site"],
@@ -72,10 +73,11 @@ export default function Settings() {
     mutationFn: async (data: any) => {
       await apiRequest("PUT", "/admin/api/settings/site", data);
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       // Invalidate both admin and public caches
-      queryClient.invalidateQueries({ queryKey: ["/admin/api/settings/site"] });
-      queryClient.invalidateQueries({ queryKey: ["site-settings"] });
+      await queryClient.invalidateQueries({ queryKey: ["/admin/api/settings/site"] });
+      await queryClient.invalidateQueries({ queryKey: ["site-settings"] });
+      
       toast({
         title: "Configurações salvas",
         description: "Configurações do site foram salvas com sucesso.",
@@ -111,10 +113,10 @@ export default function Settings() {
   });
 
 
-  // Update forms when data loads
+  // Initialize form ONCE on first load only - never reset after that to preserve user changes
   useEffect(() => {
-    if (siteSettings && typeof siteSettings === 'object' && !siteLoading) {
-      // Merge with default values to ensure all fields are present
+    if (siteSettings && typeof siteSettings === 'object' && !siteLoading && !hasInitializedRef.current) {
+      console.log('🔄 [EFFECT] Initial form load with server values');
       const mergedSettings = {
         whatsapp: (siteSettings as any).whatsapp || "",
         email: (siteSettings as any).email || "",
@@ -135,8 +137,10 @@ export default function Settings() {
       };
       
       siteForm.reset(mergedSettings);
+      hasInitializedRef.current = true;
+      console.log('🔄 [EFFECT] Form initialized, will not reset again');
     }
-  }, [siteSettings, siteLoading, siteError, siteForm]);
+  }, [siteSettings, siteLoading, siteForm]);
 
   useEffect(() => {
     if (rulesSettings && typeof rulesSettings === 'object' && !rulesLoading) {
@@ -151,7 +155,9 @@ export default function Settings() {
 
   const onSubmitSite = (data: any) => {
     console.log('💾 [FORM] onSubmitSite called with data:', data);
-    console.log('💾 [FORM] aboutImageUrl value:', data.aboutImageUrl);
+    console.log('💾 [FORM] mainImageUrl:', data.mainImageUrl);
+    console.log('💾 [FORM] networkImageUrl:', data.networkImageUrl);
+    console.log('💾 [FORM] aboutImageUrl:', data.aboutImageUrl);
     
     // Remove campos vazios antes de enviar
     const cleanData = Object.fromEntries(
@@ -161,7 +167,11 @@ export default function Settings() {
     );
     
     console.log('💾 [FORM] Clean data to be sent:', cleanData);
-    console.log('💾 [FORM] aboutImageUrl in clean data:', cleanData.aboutImageUrl);
+    console.log('💾 [FORM] Image URLs in clean data:', {
+      mainImageUrl: cleanData.mainImageUrl,
+      networkImageUrl: cleanData.networkImageUrl,
+      aboutImageUrl: cleanData.aboutImageUrl
+    });
     
     saveSiteMutation.mutate(cleanData);
   };
