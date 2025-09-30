@@ -124,6 +124,21 @@ export default function NetworkForm() {
   });
 
   const onSubmit = (data: any) => {
+    console.log("🔍 [NetworkForm] onSubmit called with data:", data);
+    console.log("🔍 [NetworkForm] Selected services:", selectedServices);
+    console.log("🔍 [NetworkForm] Generated slug:", generatedSlug);
+    
+    // Validate that services are selected
+    if (!selectedServices || selectedServices.length === 0) {
+      console.error("❌ [NetworkForm] No services selected!");
+      toast({
+        title: "Erro",
+        description: "Selecione pelo menos um serviço",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     const submissionData = {
       ...data,
       services: selectedServices,
@@ -149,6 +164,7 @@ export default function NetworkForm() {
       submissionData.urlSlug = generatedSlug;
     }
     
+    console.log("📤 [NetworkForm] Submitting data:", submissionData);
     mutation.mutate(submissionData);
   };
 
@@ -198,7 +214,18 @@ export default function NetworkForm() {
       </Button>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit, (errors) => {
+          console.error("❌ [NetworkForm] Validation errors:", errors);
+          // Show first validation error as toast
+          const firstError = Object.values(errors)[0] as any;
+          if (firstError?.message) {
+            toast({
+              title: "Erro de validação",
+              description: firstError.message,
+              variant: "destructive",
+            });
+          }
+        })} className="space-y-6">
           {/* Basic Information */}
           <Card style={{ backgroundColor: '#FFFFFF' }}>
             <CardHeader>
