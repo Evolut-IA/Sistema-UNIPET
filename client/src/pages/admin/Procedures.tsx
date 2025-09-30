@@ -716,7 +716,7 @@ export default function Procedures() {
   };
 
   return (
-    <div className="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div className="flex-1">
@@ -1136,11 +1136,11 @@ export default function Procedures() {
         </DialogContent>
       </Dialog>
 
-      {/* Search */}
-      <Card>
-        <CardContent className="p-6">
+      {/* Search and Column Control */}
+      <div className="flex flex-wrap gap-4 items-center justify-between">
+        <div className="flex gap-2 flex-wrap">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4" style={{color: 'var(--input-foreground)'}} />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Buscar procedimentos..."
               value={searchQuery}
@@ -1148,19 +1148,10 @@ export default function Procedures() {
                 setSearchQuery(e.target.value);
                 setCurrentPage(1); // Reset to page 1 when searching
               }}
-              className="pl-10"
+              className="pl-10 w-80"
               data-testid="input-search-procedures" 
             />
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Title and Column Control */}
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-        <div className="flex-1">
-          <h2 className="text-lg font-medium text-foreground">
-            Procedimentos ({totalItems || 0})
-          </h2>
         </div>
         
         <div className="flex gap-2">
@@ -1210,7 +1201,7 @@ export default function Procedures() {
       </div>
 
       {/* Table Container */}
-      <div className="container my-10 space-y-4 border border-border rounded-lg bg-accent shadow-sm">
+      <div className="container my-10 space-y-4 border border-[#eaeaea] rounded-lg bg-white shadow-sm">
         
         {isLoading ? (
           <div className="p-4">
@@ -1229,26 +1220,26 @@ export default function Procedures() {
         ) : paginatedItems?.length ? (
           <Table>
             <TableHeader>
-              <TableRow className="bg-accent">
+              <TableRow className="bg-white border-b border-[#eaeaea]">
                 {visibleColumns.includes("Nome") && (
-                  <TableHead className="bg-accent">Nome</TableHead>
+                  <TableHead className="bg-white">Nome</TableHead>
                 )}
                 {visibleColumns.includes("Tipo") && (
-                  <TableHead className="bg-accent">Tipo</TableHead>
+                  <TableHead className="bg-white">Tipo</TableHead>
                 )}
                 {visibleColumns.includes("Status") && (
-                  <TableHead className="bg-accent">Status</TableHead>
+                  <TableHead className="bg-white">Status</TableHead>
                 )}
                 {visibleColumns.includes("Ações") && (
-                  <TableHead className="bg-accent">Ações</TableHead>
+                  <TableHead className="bg-white">Ações</TableHead>
                 )}
               </TableRow>
             </TableHeader>
             <TableBody>
               {paginatedItems.map((item: any) => (
-                <TableRow key={item.id} className="bg-accent">
+                <TableRow key={item.id} className="bg-white border-b border-[#eaeaea]">
                   {visibleColumns.includes("Nome") && (
-                    <TableCell className="font-medium whitespace-nowrap bg-accent">
+                    <TableCell className="font-medium whitespace-nowrap bg-white">
                       <div className="font-medium" data-testid={`procedure-name-${item.id}`}>
                         {item.name ?? ''}
                       </div>
@@ -1260,14 +1251,14 @@ export default function Procedures() {
                     </TableCell>
                   )}
                   {visibleColumns.includes("Tipo") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
+                    <TableCell className="whitespace-nowrap bg-white">
                       <Badge variant="neutral" className="text-xs">
                         {PROCEDURE_TYPE_LABELS[item.procedureType as keyof typeof PROCEDURE_TYPE_LABELS] ?? (item.procedureType ?? '')}
                       </Badge>
                     </TableCell>
                   )}
                   {visibleColumns.includes("Status") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
+                    <TableCell className="whitespace-nowrap bg-white">
                       <Switch
                         checked={item.isActive}
                         onCheckedChange={() => handleToggleStatus(item.id, item.isActive)}
@@ -1275,7 +1266,7 @@ export default function Procedures() {
                     </TableCell>
                   )}
                   {visibleColumns.includes("Ações") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
+                    <TableCell className="whitespace-nowrap bg-white">
                       <div className="flex items-center space-x-1">
                         <Button
                           variant="outline"
@@ -1317,8 +1308,8 @@ export default function Procedures() {
         ) : (
           <Table>
             <TableBody>
-              <TableRow className="bg-accent">
-                <TableCell colSpan={visibleColumns.length} className="text-center py-12 bg-accent">
+              <TableRow className="bg-white border-b border-[#eaeaea]">
+                <TableCell colSpan={visibleColumns.length} className="text-center py-12 bg-white">
                   <Clipboard className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                   <p className="text-muted-foreground mb-4">
                     {searchQuery 
@@ -1342,12 +1333,21 @@ export default function Procedures() {
             </TableBody>
           </Table>
         )}
+
         
         {/* Pagination */}
         {totalItems > 10 && (
-          <div className="flex items-center justify-between px-4 py-3 border-t border-border">
-            <div className="flex items-center text-sm text-muted-foreground">
-              Mostrando {startIndex + 1} a {Math.min(endIndex, totalItems)} de {totalItems} resultados
+          <div className="flex items-center justify-between py-4">
+            <div className="flex items-center space-x-6 lg:space-x-8">
+              <div className="flex items-center space-x-2">
+                <p className="text-sm font-medium">
+                  {totalItems > 0 ? (
+                    <>Mostrando {(currentPage - 1) * pageSize + 1} a {Math.min(currentPage * pageSize, totalItems)} de {totalItems} procedimento{totalItems !== 1 ? 's' : ''}</>
+                  ) : (
+                    "Nenhum procedimento encontrado"
+                  )}
+                </p>
+              </div>
             </div>
             <div className="flex items-center space-x-2">
               <Button
@@ -1355,46 +1355,22 @@ export default function Procedures() {
                 size="sm"
                 onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
-                className="h-8 w-8 p-0"
               >
                 <ChevronLeft className="h-4 w-4" />
+                Anterior
               </Button>
-              
               <div className="flex items-center space-x-1">
-                {Array.from({ length: totalPages }, (_, i) => i + 1)
-                  .filter(page => {
-                    const distance = Math.abs(page - currentPage);
-                    return distance === 0 || distance === 1 || page === 1 || page === totalPages;
-                  })
-                  .map((page, index, filteredPages) => {
-                    const prevPage = filteredPages[index - 1];
-                    const showEllipsis = prevPage && page - prevPage > 1;
-                    
-                    return (
-                      <div key={page} className="flex items-center">
-                        {showEllipsis && (
-                          <span className="px-2 text-muted-foreground">...</span>
-                        )}
-                        <Button
-                          variant={currentPage === page ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => setCurrentPage(page)}
-                          className="h-8 w-8 p-0"
-                        >
-                          {page}
-                        </Button>
-                      </div>
-                    );
-                  })}
+                <span className="text-sm font-medium">
+                  Página {currentPage} de {totalPages}
+                </span>
               </div>
-              
               <Button
-                variant="outline"
+                variant="admin-action"
                 size="sm"
                 onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                 disabled={currentPage === totalPages}
-                className="h-8 w-8 p-0"
               >
+                Próximo
                 <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
