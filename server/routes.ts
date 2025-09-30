@@ -785,11 +785,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin FAQ routes
   app.get("/admin/api/faq", async (req, res) => {
     try {
-      const faqItems = await storage.getFaqItems();
+      const faqItems = await storage.getAllFaqItems();
       res.json(faqItems);
     } catch (error) {
       console.error("❌ [ADMIN] Error fetching FAQ items:", error);
       res.status(500).json({ error: "Erro ao buscar FAQ" });
+    }
+  });
+
+  app.post("/admin/api/faq", async (req, res) => {
+    try {
+      const validatedData = insertFaqItemSchema.parse(req.body);
+      const newItem = await storage.createFaqItem(validatedData);
+      console.log("✅ [ADMIN] FAQ item created:", newItem.id);
+      res.json(newItem);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error creating FAQ item:", error);
+      res.status(400).json({ error: "Erro ao criar item do FAQ" });
+    }
+  });
+
+  app.put("/admin/api/faq/:id", async (req, res) => {
+    try {
+      const updatedItem = await storage.updateFaqItem(req.params.id, req.body);
+      if (!updatedItem) {
+        return res.status(404).json({ error: "Item do FAQ não encontrado" });
+      }
+      console.log("✅ [ADMIN] FAQ item updated:", req.params.id);
+      res.json(updatedItem);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error updating FAQ item:", error);
+      res.status(400).json({ error: "Erro ao atualizar item do FAQ" });
+    }
+  });
+
+  app.delete("/admin/api/faq/:id", async (req, res) => {
+    try {
+      const success = await storage.deleteFaqItem(req.params.id);
+      if (!success) {
+        return res.status(404).json({ error: "Item do FAQ não encontrado" });
+      }
+      console.log("✅ [ADMIN] FAQ item deleted:", req.params.id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("❌ [ADMIN] Error deleting FAQ item:", error);
+      res.status(500).json({ error: "Erro ao deletar item do FAQ" });
     }
   });
 
