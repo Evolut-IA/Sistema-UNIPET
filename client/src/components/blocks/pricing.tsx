@@ -55,21 +55,10 @@ export function Pricing({
     return planType === "with_waiting_period" ? "Sem coparticipação" : "Com coparticipação";
   };
 
-  // Ajustar número de colunas baseado na quantidade de planos
-  const getGridCols = () => {
-    const planCount = plans.length;
-    if (planCount === 1) return "grid-cols-1";
-    if (planCount === 2) return "grid-cols-1 md:grid-cols-2";
-    if (planCount === 3) return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
-    return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
-  };
-
   return (
     <div>
       <div className="flex justify-center">
-
-
-        <div className={`grid ${getGridCols()} gap-6 perspective-1000 w-full max-w-7xl`}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 perspective-1000 w-fit">
           {plans.map((plan, index) => (
             <AnimatedSection
               key={plan.id}
@@ -77,7 +66,7 @@ export function Pricing({
               delay={index * 80}
               duration={400}
               className={cn(
-                "rounded-2xl border-[1px] bg-[var(--bg-cream-light)] text-center flex flex-col relative transform-style-preserve-3d backface-hidden transition-all duration-300",
+                "rounded-2xl border-[1px] bg-[var(--bg-cream-light)] text-center flex flex-col relative transform-style-preserve-3d backface-hidden transition-all duration-300 w-full max-w-[280px]",
                 plan.isPopular ? "border-[var(--text-gold)] border-2" : "border-[var(--border-teal-light)]",
                 // Apply 3D effects only on desktop and when there are exactly 3 plans visible
                 isDesktop && plans.length >= 3 && [
