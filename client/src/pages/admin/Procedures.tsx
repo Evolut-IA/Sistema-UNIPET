@@ -891,7 +891,7 @@ export default function Procedures() {
                     <h4 className="font-semibold text-foreground">Planos Vinculados</h4>
                     <Button
                       type="button"
-                      variant="outline"
+                      variant="admin-action"
                       size="sm"
                       onClick={addPlan}
                       disabled={!Array.isArray(plans) || plans.length === 0 || selectedPlans.length >= plans.length}
