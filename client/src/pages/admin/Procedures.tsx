@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Card, CardContent } from "@/components/admin/ui/card";
 import { Button } from "@/components/admin/ui/button";
 import { Input } from "@/components/admin/ui/input";
 import { InputMasked } from "@/components/admin/ui/input-masked";
@@ -32,8 +31,69 @@ import { Plus, Search, Edit, Trash2, Clipboard, Eye, X, MoreHorizontal, ChevronL
 import { apiRequest } from "@/lib/admin/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useColumnPreferences } from "@/hooks/admin/use-column-preferences";
-import { insertProcedureSchema, type Procedure, type Plan, type ProcedurePlan } from "@shared/schema";
 import { PROCEDURE_TYPES, PROCEDURE_TYPE_LABELS } from "@/lib/constants";
+import { z } from "zod";
+
+// Definir tipos locais
+type Procedure = {
+  id: string;
+  name: string;
+  description?: string | null;
+  category?: string | null;
+  procedureType?: string;
+  procedure_type?: string;
+  isActive: boolean;
+  displayOrder: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+type Plan = {
+  id: string;
+  name: string;
+  description: string;
+  features: string[];
+  image: string;
+  isActive: boolean;
+  displayOrder: number;
+  createdAt: string;
+  buttonText: string;
+  planType: string;
+  billingFrequency: string;
+  basePrice: string;
+  installmentPrice?: string;
+  installmentCount?: number;
+  perPetBilling: boolean;
+  petDiscounts?: any;
+  paymentDescription?: string;
+  availablePaymentMethods: string[];
+  availableBillingOptions: string[];
+  annualPrice?: string;
+  annualInstallmentPrice?: string;
+  annualInstallmentCount?: number;
+};
+
+type ProcedurePlan = {
+  id: string;
+  planId: string;
+  procedureId: string;
+  price: number;
+  payValue?: number | null;
+  coparticipacao?: number | null;
+  carencia?: string | null;
+  limitesAnuais?: string | null;
+  isIncluded?: boolean;
+  displayOrder?: number;
+  createdAt?: string;
+};
+
+// Criar schema local para validação
+const insertProcedureSchema = z.object({
+  name: z.string().min(1, "Nome é obrigatório"),
+  description: z.string().optional(),
+  procedureType: z.string().default("consultas"),
+  isActive: z.boolean().default(true),
+});
 
 const allColumns = [
   "Nome",
@@ -178,17 +238,20 @@ export default function Procedures() {
         !selectedPlans.some(sp => sp.planId === plan.id)
       );
       if (unselectedPlans.length > 0) {
-        setSelectedPlans([...selectedPlans, { 
-          planId: unselectedPlans[0].id, 
-          receber: "0,00",
-          pagar: "0,00",
-          coparticipacao: "0,00",
-          carencia: "",
-          limitesAnuais: "0",
-          enableCarencia: false,
-          enableLimitesAnuais: false,
-          enableCoparticipacao: false
-        }]);
+        const firstPlan = unselectedPlans[0];
+        if (firstPlan && firstPlan.id) {
+          setSelectedPlans([...selectedPlans, { 
+            planId: firstPlan.id, 
+            receber: "0,00",
+            pagar: "0,00",
+            coparticipacao: "0,00",
+            carencia: "",
+            limitesAnuais: "0",
+            enableCarencia: false,
+            enableLimitesAnuais: false,
+            enableCoparticipacao: false
+          }]);
+        }
       }
     }
   };
@@ -205,10 +268,13 @@ export default function Procedures() {
       const reindexedManualFields: {[key: number]: {[field: string]: boolean}} = {};
       Object.keys(updatedManualFields).forEach(key => {
         const numKey = parseInt(key);
-        if (numKey < index) {
-          reindexedManualFields[numKey] = updatedManualFields[numKey];
-        } else if (numKey > index) {
-          reindexedManualFields[numKey - 1] = updatedManualFields[numKey];
+        const fieldValue = updatedManualFields[numKey];
+        if (fieldValue) {
+          if (numKey < index) {
+            reindexedManualFields[numKey] = fieldValue;
+          } else if (numKey > index) {
+            reindexedManualFields[numKey - 1] = fieldValue;
+          }
         }
       });
       
@@ -224,10 +290,13 @@ export default function Procedures() {
       const reindexedErrors: {[key: number]: string} = {};
       Object.keys(updatedErrors).forEach(key => {
         const numKey = parseInt(key);
-        if (numKey < index) {
-          reindexedErrors[numKey] = updatedErrors[numKey];
-        } else if (numKey > index) {
-          reindexedErrors[numKey - 1] = updatedErrors[numKey];
+        const errorValue = updatedErrors[numKey];
+        if (errorValue) {
+          if (numKey < index) {
+            reindexedErrors[numKey] = errorValue;
+          } else if (numKey > index) {
+            reindexedErrors[numKey - 1] = errorValue;
+          }
         }
       });
       

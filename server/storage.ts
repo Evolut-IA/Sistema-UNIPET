@@ -1967,6 +1967,53 @@ export class DatabaseStorage implements IStorage {
     };
   }
 
+  // Get procedure plans (with plan details) - Admin specific
+  async getProcedurePlans(procedureId: string): Promise<any[]> {
+    try {
+      const result = await db.execute(sql`
+        SELECT 
+          pp.id,
+          pp.plan_id as "planId",
+          pp.procedure_id as "procedureId",
+          pp.price,
+          pp.pay_value as "payValue",
+          pp.coparticipacao,
+          pp.carencia,
+          pp.limites_anuais as "limitesAnuais",
+          pp.is_included as "isIncluded",
+          pp.display_order as "displayOrder",
+          pp.created_at as "createdAt",
+          p.name as "planName"
+        FROM procedure_plans pp
+        LEFT JOIN plans p ON pp.plan_id = p.id
+        WHERE pp.procedure_id = ${procedureId}
+        ORDER BY pp.display_order ASC, p.name ASC
+      `);
+      return result.rows;
+    } catch (error) {
+      console.error("❌ Error fetching procedure plans:", error);
+      return [];
+    }
+  }
+
+  // Update procedure plans atomically (delete and recreate) - Admin specific
+  async updateProcedurePlans(procedureId: string, plans: any[]): Promise<void> {
+    try {
+      await db.transaction(async (tx) => {
+        // Delete existing relations
+        await tx.delete(procedurePlans).where(eq(procedurePlans.procedureId, procedureId));
+        
+        // Insert new relations if any
+        if (plans.length > 0) {
+          await tx.insert(procedurePlans).values(plans);
+        }
+      });
+    } catch (error) {
+      console.error("❌ Error updating procedure plans:", error);
+      throw error;
+    }
+  }
+
   // Chat Conversations - Removed (table no longer exists)
 }
 

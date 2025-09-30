@@ -1387,6 +1387,115 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ error: "Erro ao buscar procedimentos" });
     }
   });
+  
+  // Create new procedure
+  app.post("/admin/api/procedures", async (req, res) => {
+    // DEVELOPMENT ONLY: Skip auth for procedures during development
+    if (process.env.NODE_ENV !== 'development' && (!req.session || !req.session.admin)) {
+      return res.status(401).json({ error: "Acesso administrativo não autorizado" });
+    }
+    
+    try {
+      console.log("📝 [ADMIN] Creating new procedure:", req.body);
+      const newProcedure = await storage.createProcedure(req.body);
+      console.log("✅ [ADMIN] Procedure created successfully:", newProcedure);
+      res.status(201).json(newProcedure);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error creating procedure:", error);
+      res.status(500).json({ error: "Erro ao criar procedimento" });
+    }
+  });
+
+  // Update procedure
+  app.put("/admin/api/procedures/:id", async (req, res) => {
+    // DEVELOPMENT ONLY: Skip auth for procedures during development
+    if (process.env.NODE_ENV !== 'development' && (!req.session || !req.session.admin)) {
+      return res.status(401).json({ error: "Acesso administrativo não autorizado" });
+    }
+    
+    try {
+      const { id } = req.params;
+      console.log(`📝 [ADMIN] Updating procedure ${id}:`, req.body);
+      const updatedProcedure = await storage.updateProcedure(id, req.body);
+      
+      if (!updatedProcedure) {
+        return res.status(404).json({ error: "Procedimento não encontrado" });
+      }
+      
+      console.log("✅ [ADMIN] Procedure updated successfully:", updatedProcedure);
+      res.json(updatedProcedure);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error updating procedure:", error);
+      res.status(500).json({ error: "Erro ao atualizar procedimento" });
+    }
+  });
+
+  // Delete procedure
+  app.delete("/admin/api/procedures/:id", async (req, res) => {
+    // DEVELOPMENT ONLY: Skip auth for procedures during development
+    if (process.env.NODE_ENV !== 'development' && (!req.session || !req.session.admin)) {
+      return res.status(401).json({ error: "Acesso administrativo não autorizado" });
+    }
+    
+    try {
+      const { id } = req.params;
+      console.log(`🗑️ [ADMIN] Deleting procedure ${id}`);
+      const deleted = await storage.deleteProcedure(id);
+      
+      if (!deleted) {
+        return res.status(404).json({ error: "Procedimento não encontrado" });
+      }
+      
+      console.log("✅ [ADMIN] Procedure deleted successfully");
+      res.status(204).send();
+    } catch (error) {
+      console.error("❌ [ADMIN] Error deleting procedure:", error);
+      res.status(500).json({ error: "Erro ao excluir procedimento" });
+    }
+  });
+
+  // Get procedure plans
+  app.get("/admin/api/procedures/:id/plans", async (req, res) => {
+    // DEVELOPMENT ONLY: Skip auth for procedures during development
+    if (process.env.NODE_ENV !== 'development' && (!req.session || !req.session.admin)) {
+      return res.status(401).json({ error: "Acesso administrativo não autorizado" });
+    }
+    
+    try {
+      const { id } = req.params;
+      console.log(`📋 [ADMIN] Getting plans for procedure ${id}`);
+      const procedurePlans = await storage.getProcedurePlans(id);
+      console.log(`✅ [ADMIN] Found ${procedurePlans.length} plans for procedure`);
+      res.json(procedurePlans);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error fetching procedure plans:", error);
+      res.status(500).json({ error: "Erro ao buscar planos do procedimento" });
+    }
+  });
+
+  // Update procedure plans (atomic operation)
+  app.put("/admin/api/procedures/:id/plans", async (req, res) => {
+    // DEVELOPMENT ONLY: Skip auth for procedures during development
+    if (process.env.NODE_ENV !== 'development' && (!req.session || !req.session.admin)) {
+      return res.status(401).json({ error: "Acesso administrativo não autorizado" });
+    }
+    
+    try {
+      const { id } = req.params;
+      const { procedurePlans } = req.body;
+      
+      console.log(`📝 [ADMIN] Updating plans for procedure ${id}:`, procedurePlans);
+      
+      // Delete existing relations and insert new ones atomically
+      await storage.updateProcedurePlans(id, procedurePlans);
+      
+      console.log("✅ [ADMIN] Procedure plans updated successfully");
+      res.json({ success: true });
+    } catch (error) {
+      console.error("❌ [ADMIN] Error updating procedure plans:", error);
+      res.status(500).json({ error: "Erro ao atualizar planos do procedimento" });
+    }
+  });
 
   // Admin users routes
   app.get("/admin/api/users", async (req, res) => {
