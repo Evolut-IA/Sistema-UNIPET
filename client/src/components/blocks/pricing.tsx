@@ -55,12 +55,21 @@ export function Pricing({
     return planType === "with_waiting_period" ? "Sem coparticipação" : "Com coparticipação";
   };
 
+  // Ajustar número de colunas baseado na quantidade de planos
+  const getGridCols = () => {
+    const planCount = plans.length;
+    if (planCount === 1) return "grid-cols-1";
+    if (planCount === 2) return "grid-cols-1 md:grid-cols-2";
+    if (planCount === 3) return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
+    return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
+  };
+
   return (
     <div>
-      <div>
+      <div className="flex justify-center">
 
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 perspective-1000 justify-items-center">
+        <div className={`grid ${getGridCols()} gap-6 perspective-1000 w-full max-w-7xl`}>
           {plans.map((plan, index) => (
             <AnimatedSection
               key={plan.id}
