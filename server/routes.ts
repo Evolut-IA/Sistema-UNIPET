@@ -1282,7 +1282,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // PUT site settings
   app.put("/admin/api/settings/site", async (req, res) => {
     try {
+      console.log("📝 [ADMIN] Received site settings update:", req.body);
+      console.log("📝 [ADMIN] aboutImageUrl field:", req.body.aboutImageUrl);
       const updatedSettings = await storage.updateSiteSettings(req.body);
+      console.log("✅ [ADMIN] Site settings updated successfully, aboutImageUrl:", updatedSettings?.aboutImageUrl);
       res.json(updatedSettings);
     } catch (error) {
       console.error("❌ [ADMIN] Error updating site settings:", error);
