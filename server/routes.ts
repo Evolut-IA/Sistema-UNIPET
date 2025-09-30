@@ -44,6 +44,22 @@ import express from "express";
 import chatRoutes from "./routes/chat.js";
 import rateLimit from "express-rate-limit";
 import { z } from "zod";
+import multer from "multer";
+
+// Configure multer for in-memory file upload
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB
+  },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed'));
+    }
+  }
+});
 
 
 
@@ -956,6 +972,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("❌ [ADMIN] Error updating network unit credentials:", error);
       res.status(400).json({ error: "Erro ao atualizar credenciais" });
+    }
+  });
+
+  app.post("/admin/api/network-units/upload-image", requireAdmin, upload.single('image'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "Nenhuma imagem foi enviada" });
+      }
+
+      const unitId = req.body.unitId || 'new';
+      const imageBuffer = req.file.buffer;
+      const mimeType = req.file.mimetype;
+
+      // Fazer upload usando o serviço de storage
+      const result = await supabaseStorage.uploadNetworkUnitImage(
+        unitId,
+        imageBuffer,
+        mimeType
+      );
+
+      if (!result.success) {
+        return res.status(500).json({ error: result.error });
+      }
+
+      res.json({ 
+        success: true,
+        imageUrl: result.publicUrl
+      });
+    } catch (error) {
+      console.error("❌ [ADMIN] Error uploading network unit image:", error);
+      res.status(500).json({ error: "Erro ao fazer upload da imagem" });
     }
   });
 

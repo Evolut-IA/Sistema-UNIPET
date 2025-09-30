@@ -14,7 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/admin/queryClient";
 import { insertNetworkUnitSchema } from "@shared/schema";
 import { ArrowLeft, ExternalLink } from "lucide-react";
-import { ImageUpload } from "@/components/ui/image-upload";
+import { NetworkUnitImageUpload } from "@/components/ui/network-unit-image-upload";
 import { generateSlug } from "@/lib/utils";
 
 export default function NetworkForm() {
@@ -301,9 +301,10 @@ export default function NetworkForm() {
                     <FormItem>
                       <FormLabel>Imagem da unidade *</FormLabel>
                       <FormControl>
-                        <ImageUpload 
+                        <NetworkUnitImageUpload 
                           value={field.value} 
                           onChange={field.onChange}
+                          unitId={params.id}
                           data-testid="input-image-url"
                         />
                       </FormControl>
