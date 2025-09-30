@@ -4,7 +4,6 @@ import { useLocation } from "wouter";
 import { AnimatedSection } from "@/components/ui/animated-section";
 import { useSiteSettingsWithDefaults } from "@/hooks/use-site-settings";
 import { cn } from "@/lib/utils";
-// ByteaImageDisplay removed - now using Supabase Storage images
 
 export default function Features() {
   const [, setLocation] = useLocation();
@@ -81,36 +80,34 @@ export default function Features() {
       {/* Network Information */}
       <div className="section-container">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center relative z-10">
-          <div className="order-2 lg:order-1">
-            <AnimatedSection animation="slideRight" delay={500}>
-              {/* Network credentialed image */}
-              <div 
-                className="relative rounded-2xl overflow-hidden shadow-xl"
-                style={{ 
-                  position: 'relative',
-                  aspectRatio: '7/6',
-                  width: '100%',
-                  height: 'auto',
-                  overflow: 'hidden',
-                  margin: '0',
-                  padding: '0',
-                  border: '0',
-                  boxSizing: 'border-box'
-                }}
-              >
-                <img
-                  src={settings.networkImageUrl || ''}
-                  alt="Rede credenciada de hospitais veterinários"
-                  className="w-full h-full object-cover object-center"
-                  loading="lazy"
-                  key={settings.networkImageUrl}
-                  onError={() => {
-                    console.warn('Features network image error');
+          {settings?.networkImageUrl && (
+            <div className="order-2 lg:order-1">
+              <AnimatedSection animation="slideRight" delay={500}>
+                <div 
+                  className="relative rounded-2xl overflow-hidden shadow-xl"
+                  style={{ 
+                    position: 'relative',
+                    aspectRatio: '7/6',
+                    width: '100%',
+                    height: 'auto',
+                    overflow: 'hidden',
+                    margin: '0',
+                    padding: '0',
+                    border: '0',
+                    boxSizing: 'border-box'
                   }}
-                />
-              </div>
-            </AnimatedSection>
-          </div>
+                >
+                  <img
+                    src={settings.networkImageUrl}
+                    alt="Rede credenciada de hospitais veterinários"
+                    className="w-full h-full object-cover object-center"
+                    loading="lazy"
+                    key={settings.networkImageUrl}
+                  />
+                </div>
+              </AnimatedSection>
+            </div>
+          )}
           <div className="order-1 lg:order-2">
             <AnimatedSection animation="slideLeft" delay={500}>
               <h3 className="sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 text-[var(--text-dark-primary)] text-[25px]">

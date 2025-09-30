@@ -5,7 +5,6 @@ import { useWhatsAppRedirect } from "@/hooks/use-whatsapp-redirect";
 import { AnimatedSection } from "@/components/ui/animated-section";
 import { useSiteSettingsWithDefaults } from "@/hooks/use-site-settings";
 import { Typewriter } from "@/components/ui/typewriter";
-// ByteaImageDisplay removed - now using Supabase Storage images
 
 export default function Hero() {
   const [, setLocation] = useLocation();
@@ -127,29 +126,30 @@ export default function Hero() {
 
             <div className="relative order-1 lg:order-2 mb-8 lg:mb-0">
               <AnimatedSection animation="slideLeft" delay={150}>
-                {/* Happy pets with owners image */}
-                <div 
-                  className="relative rounded-2xl overflow-hidden shadow-2xl"
-                  style={{ 
-                    position: 'relative',
-                    aspectRatio: '7/6',
-                    width: '100%',
-                    height: 'auto',
-                    overflow: 'hidden',
-                    margin: '0',
-                    padding: '0',
-                    border: '0',
-                    boxSizing: 'border-box'
-                  }}
-                >
-                  <img
-                    src={settings.mainImageUrl || ''}
-                    alt="Família feliz com seus pets"
-                    className="w-full h-full object-cover object-center"
-                    loading="lazy"
-                    key={settings.mainImageUrl}
-                  />
-                </div>
+                {settings?.mainImageUrl && (
+                  <div 
+                    className="relative rounded-2xl overflow-hidden shadow-2xl"
+                    style={{ 
+                      position: 'relative',
+                      aspectRatio: '7/6',
+                      width: '100%',
+                      height: 'auto',
+                      overflow: 'hidden',
+                      margin: '0',
+                      padding: '0',
+                      border: '0',
+                      boxSizing: 'border-box'
+                    }}
+                  >
+                    <img
+                      src={settings.mainImageUrl}
+                      alt="Família feliz com seus pets"
+                      className="w-full h-full object-cover object-center"
+                      loading="lazy"
+                      key={settings.mainImageUrl}
+                    />
+                  </div>
+                )}
               </AnimatedSection>
 
               <AnimatedSection animation="scale" delay={500}>

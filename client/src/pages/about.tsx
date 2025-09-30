@@ -6,13 +6,6 @@ import { AnimatedSection } from "@/components/ui/animated-section";
 export default function About() {
   const { settings, shouldShow } = useSiteSettingsWithDefaults();
 
-  // Debug logging
-  console.log('🔍 About page - Settings:', {
-    aboutImage: settings.aboutImage ? 'loaded' : 'missing'
-  });
-
-
-
   const values = [
     {
       title: "Missão",
@@ -45,27 +38,29 @@ export default function About() {
           <AnimatedSection animation="slideRight" delay={200}>
             <div>
               {/* About Image */}
-            <div className="relative w-full mx-auto lg:mx-0" style={{ padding: '0', margin: '0' }}>
-              <div 
-                className="relative rounded-2xl shadow-2xl overflow-hidden" 
-                style={{ 
-                  position: 'relative',
-                  aspectRatio: '7/6',
-                  width: '100%',
-                  height: 'auto',
-                  overflow: 'hidden',
-                  margin: '0',
-                  padding: '0'
-                }}
-              >
-                <img
-                  src={settings?.aboutImageUrl || ''}
-                  alt="Sobre a UNIPET PLAN"
-                  className="w-full h-full object-cover object-center"
-                  loading="lazy"
-                />
+            {settings?.aboutImageUrl && (
+              <div className="relative w-full mx-auto lg:mx-0" style={{ padding: '0', margin: '0' }}>
+                <div 
+                  className="relative rounded-2xl shadow-2xl overflow-hidden" 
+                  style={{ 
+                    position: 'relative',
+                    aspectRatio: '7/6',
+                    width: '100%',
+                    height: 'auto',
+                    overflow: 'hidden',
+                    margin: '0',
+                    padding: '0'
+                  }}
+                >
+                  <img
+                    src={settings.aboutImageUrl}
+                    alt="Sobre a UNIPET PLAN"
+                    className="w-full h-full object-cover object-center"
+                    loading="lazy"
+                  />
+                </div>
               </div>
-            </div>
+            )}
             </div>
           </AnimatedSection>
           <div>
