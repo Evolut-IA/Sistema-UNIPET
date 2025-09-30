@@ -8,6 +8,24 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (September 30, 2025)
 
+### Feature: Supabase Storage Integration for Site Settings Images
+- **Implementation**: Site configuration images (mainImage, networkImage, aboutImage) are now stored in and served from Supabase Storage instead of base64 encoding in the database.
+- **Backend Changes**:
+  - Added `uploadSiteSettingsImage` method to `SupabaseStorageService` in `server/supabase-storage.ts`
+  - Created POST `/admin/api/settings/upload-image` endpoint with development-only auth bypass
+  - Images are processed with Sharp (resize to 1200x800, JPEG conversion, 90% quality)
+  - Images stored in Supabase bucket `pet-images` under `site-settings/` path with imageType prefix
+  - Added development bypass in global admin middleware for settings upload endpoint
+- **Frontend Changes**:
+  - Created `SiteSettingsImageUpload` component in `client/src/components/admin/ui/site-settings-image-upload.tsx`
+  - Created `useSiteSettingsImageUpload` hook in `client/src/hooks/use-site-settings-image-upload.ts`
+  - Hook handles file validation, preview generation, and API upload via FormData
+  - Updated `Settings.tsx` to use new upload component with `imageType` parameter
+  - Changed form fields from bytea (`mainImage`, `networkImage`, `aboutImage`) to URL fields (`mainImageUrl`, `networkImageUrl`, `aboutImageUrl`)
+- **Security**: Upload endpoint requires admin authentication in production, file type/size validation, and Sharp re-encoding
+- **Storage**: Images are publicly accessible via Supabase CDN URLs
+- **Result**: Site settings images are now properly managed through Supabase Storage with consistent upload workflow across the admin interface
+
 ### Feature: FAQ Management System Improvements
 - **Implementation**: Fixed FAQ status toggle and delete functionality in the admin interface.
 - **Backend Changes**:
