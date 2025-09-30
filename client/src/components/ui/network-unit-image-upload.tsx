@@ -10,7 +10,7 @@ interface NetworkUnitImageUploadProps {
   onChange?: (value: string) => void;
   className?: string;
   placeholder?: string;
-  unitId?: string;
+  unitId?: string | undefined;
 }
 
 export function NetworkUnitImageUpload({ 

@@ -8,6 +8,15 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (September 30, 2025)
 
+### Bug Fix: Missing Cidade Field in Network Unit Form
+- **Issue**: Network units could not be created because the form was missing the required 'cidade' (city) field, causing validation to fail silently.
+- **Root Cause**: The schema requires 'cidade' as mandatory, but the form did not include this field in defaultValues or the UI.
+- **Solution**: 
+  - Added 'cidade' field to form defaultValues
+  - Added 'cidade' field to the form reset logic for edit mode
+  - Added visual input field for 'cidade' in the Basic Information section
+- **Impact**: Users can now successfully create and edit network units.
+
 ### Feature: Supabase Storage Integration for Network Unit Images
 - **Implementation**: Network unit images are now stored in and served from Supabase Storage instead of base64 encoding in the database.
 - **Backend Changes**:

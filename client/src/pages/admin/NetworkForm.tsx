@@ -43,6 +43,7 @@ export default function NetworkForm() {
     defaultValues: {
       name: "",
       address: "",
+      cidade: "",
       phone: "",
       services: [],
       imageUrl: "",
@@ -66,6 +67,7 @@ export default function NetworkForm() {
       form.reset({
         name: unitName,
         address: (unit as any).address || "",
+        cidade: (unit as any).cidade || "",
         phone: (unit as any).phone || "",
         services: services,
         imageUrl: (unit as any).imageUrl || "",
@@ -252,6 +254,20 @@ export default function NetworkForm() {
                       <FormLabel>Endereço *</FormLabel>
                       <FormControl>
                         <Input {...field} data-testid="input-address" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="cidade"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Cidade *</FormLabel>
+                      <FormControl>
+                        <Input {...field} data-testid="input-cidade" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
