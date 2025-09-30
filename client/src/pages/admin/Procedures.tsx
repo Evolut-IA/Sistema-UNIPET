@@ -799,73 +799,105 @@ export default function Procedures() {
           resetForm();
         }
       }}>
-        <DialogContent className="overflow-y-auto" maxHeightMobile="max-h-[80vh]">
-          <DialogHeader>
-            <DialogTitle className="text-foreground">
-              {editingItem ? "Editar Procedimento" : "Novo Procedimento"}
-            </DialogTitle>
-            <DialogDescription>
-              {editingItem 
-                ? "Atualize as informações do procedimento e configure os planos associados." 
-                : "Crie um novo procedimento médico e configure os planos que o cobrem."
-              }
-            </DialogDescription>
+        <DialogContent hideCloseButton maxHeightMobile="max-h-[80vh]">
+          <DialogHeader className="flex flex-row items-center justify-between pr-2">
+            <div>
+              <DialogTitle className="flex items-center space-x-2">
+                {editingItem ? (
+                  <>
+                    <Edit className="h-5 w-5 text-primary" />
+                    <span>Editar Procedimento</span>
+                  </>
+                ) : (
+                  <>
+                    <Plus className="h-5 w-5 text-primary" />
+                    <span>Novo Procedimento</span>
+                  </>
+                )}
+              </DialogTitle>
+              <DialogDescription>
+                {editingItem 
+                  ? "Atualize as informações do procedimento e configure os planos associados." 
+                  : "Crie um novo procedimento médico e configure os planos que o cobrem."
+                }
+              </DialogDescription>
+            </div>
+            <Button
+              variant="outline"
+              onClick={() => setDialogOpen(false)}
+              className="h-8"
+            >
+              <X className="h-4 w-4" />
+            </Button>
           </DialogHeader>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 overflow-y-auto flex-1 pr-2 custom-scrollbar">
               <div className="space-y-6">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Nome do Procedimento *</FormLabel>
-                      <FormControl>
-                        <Input {...field} data-testid="input-procedure-name" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {/* Informações Básicas */}
+                <div className="space-y-4">
+                  <h4 className="font-semibold text-foreground mb-2">Informações Básicas</h4>
+                  <div className="grid grid-cols-1 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-primary">Nome do Procedimento *</FormLabel>
+                          <FormControl>
+                            <Input 
+                              {...field} 
+                              data-testid="input-procedure-name"
+                              style={{
+                                borderColor: 'var(--border-gray)',
+                                backgroundColor: '#FFFFFF'
+                              }}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                <FormField
-                  control={form.control}
-                  name="procedureType"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Tipo de Procedimento *</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl>
-                          <SelectTrigger 
-                            data-testid="select-procedure-type"
-                            style={{
-                              borderColor: 'var(--border-gray)',
-                              background: 'white'
-                            }}
-                          >
-                            <SelectValue placeholder="Selecione o tipo" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {PROCEDURE_TYPES.map((type, index) => (
-                            <React.Fragment key={type}>
-                              <SelectItem value={type}>
-                                {PROCEDURE_TYPE_LABELS[type as keyof typeof PROCEDURE_TYPE_LABELS]}
-                              </SelectItem>
-                              {index < PROCEDURE_TYPES.length - 1 && <SelectSeparator />}
-                            </React.Fragment>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                    <FormField
+                      control={form.control}
+                      name="procedureType"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-primary">Tipo de Procedimento *</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger 
+                                data-testid="select-procedure-type"
+                                style={{
+                                  borderColor: 'var(--border-gray)',
+                                  backgroundColor: '#FFFFFF'
+                                }}
+                              >
+                                <SelectValue placeholder="Selecione o tipo" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {PROCEDURE_TYPES.map((type, index) => (
+                                <React.Fragment key={type}>
+                                  <SelectItem value={type}>
+                                    {PROCEDURE_TYPE_LABELS[type as keyof typeof PROCEDURE_TYPE_LABELS]}
+                                  </SelectItem>
+                                  {index < PROCEDURE_TYPES.length - 1 && <SelectSeparator />}
+                                </React.Fragment>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
 
                 {/* Seção de Seleção de Planos */}
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-medium">Planos Vinculados</h3>
+                    <h4 className="font-semibold text-foreground">Planos Vinculados</h4>
                     <Button
                       type="button"
                       variant="outline"
@@ -883,14 +915,14 @@ export default function Procedures() {
                       {selectedPlans.map((selectedPlan, index) => {
                         
                         return (
-                          <div key={selectedPlan.planId} className="p-4 border rounded-lg">
+                          <div key={selectedPlan.planId} className="p-4 border rounded-lg bg-white" style={{ borderColor: 'var(--border-gray)' }}>
                             {/* Layout organizado em 2 linhas: 3 campos em cima, 3 embaixo */}
                             <div className="space-y-4">
                               {/* Primeira linha: Plano, Receber, Pagar */}
                               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 {/* Plano */}
                                 <div>
-                                  <label className="text-sm font-medium">Plano</label>
+                                  <label className="text-sm font-medium text-primary">Plano</label>
                                   <Select
                                     value={selectedPlan.planId}
                                     onValueChange={(value) => updatePlanId(index, value)}
@@ -913,7 +945,7 @@ export default function Procedures() {
 
                                 {/* Receber */}
                                 <div>
-                                  <label className="text-sm font-medium">Receber (R$)</label>
+                                  <label className="text-sm font-medium text-primary">Receber (R$)</label>
                                   <InputMasked
                                     mask="price"
                                     value={selectedPlan.receber}
@@ -921,6 +953,10 @@ export default function Procedures() {
                                     placeholder="0,00"
                                     data-testid={`input-plan-receber-${index}`}
                                     className={planErrors[index] ? 'border-destructive' : ''}
+                                    style={{
+                                      borderColor: planErrors[index] ? undefined : 'var(--border-gray)',
+                                      backgroundColor: '#FFFFFF'
+                                    }}
                                   />
                                   {planErrors[index] && (
                                     <p className="text-xs text-destructive mt-1">{planErrors[index]}</p>
@@ -929,13 +965,17 @@ export default function Procedures() {
 
                                 {/* Pagar */}
                                 <div>
-                                  <label className="text-sm font-medium">Pagar (R$)</label>
+                                  <label className="text-sm font-medium text-primary">Pagar (R$)</label>
                                   <InputMasked
                                     mask="price"
                                     value={selectedPlan.pagar}
                                     onChange={(e) => updatePlanField(index, 'pagar', e.target.value)}
                                     placeholder="0,00"
                                     data-testid={`input-plan-pagar-${index}`}
+                                    style={{
+                                      borderColor: 'var(--border-gray)',
+                                      backgroundColor: '#FFFFFF'
+                                    }}
                                   />
                                 </div>
                               </div>
@@ -974,6 +1014,10 @@ export default function Procedures() {
                                     placeholder="0,00"
                                     className={!selectedPlan.enableCoparticipacao ? 'bg-muted text-muted-foreground cursor-pointer' : ''}
                                     data-testid={`input-plan-coparticipacao-${index}`}
+                                    style={{
+                                      borderColor: 'var(--border-gray)',
+                                      backgroundColor: !selectedPlan.enableCoparticipacao ? undefined : '#FFFFFF'
+                                    }}
                                   />
                                 </div>
 
@@ -1008,6 +1052,10 @@ export default function Procedures() {
                                     placeholder="Digite apenas números"
                                     className={!selectedPlan.enableCarencia ? 'bg-muted text-muted-foreground cursor-pointer' : ''}
                                     data-testid={`input-plan-carencia-${index}`}
+                                    style={{
+                                      borderColor: 'var(--border-gray)',
+                                      backgroundColor: !selectedPlan.enableCarencia ? undefined : '#FFFFFF'
+                                    }}
                                   />
                                 </div>
                                 
@@ -1042,6 +1090,10 @@ export default function Procedures() {
                                     placeholder="Ex: 2"
                                     className={!selectedPlan.enableLimitesAnuais ? 'bg-muted text-muted-foreground cursor-pointer' : ''}
                                     data-testid={`input-plan-limites-${index}`}
+                                    style={{
+                                      borderColor: 'var(--border-gray)',
+                                      backgroundColor: !selectedPlan.enableLimitesAnuais ? undefined : '#FFFFFF'
+                                    }}
                                   />
                                   {planErrors[index] && selectedPlan.enableLimitesAnuais && planErrors[index].includes('Limites anuais') && (
                                     <p className="text-xs text-destructive mt-1">{planErrors[index]}</p>
@@ -1084,21 +1136,25 @@ export default function Procedures() {
 
               </div>
 
-              <div className="flex justify-end space-x-4">
+              <div className="flex justify-end space-x-2 pt-4">
                 <Button
                   type="button"
                   variant="outline"
-                  size="sm"
                   onClick={() => setDialogOpen(false)}
+                  className="h-8"
                   data-testid="button-cancel"
+                  style={{
+                    borderColor: 'var(--border-gray)',
+                    background: 'white'
+                  }}
                 >
                   Cancelar
                 </Button>
                 <Button
                   type="submit"
                   variant="admin-action"
-                  size="sm"
                   disabled={createMutation.isPending}
+                  className="h-8"
                   data-testid="button-save"
                 >
                   {createMutation.isPending ? "Salvando..." : editingItem ? "Atualizar" : "Criar"}
