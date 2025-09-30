@@ -476,7 +476,11 @@ const baseNetworkUnitSchema = z.object({
   services: z.array(z.string()).min(1, "Serviços são obrigatórios"),
   imageUrl: z.string().min(1, "Imagem é obrigatória"),
   isActive: z.boolean().default(true),
-  whatsapp: z.string().optional().refine((val) => !val || /^\d{11}$/.test(val), {
+  whatsapp: z.string().optional().refine((val) => {
+    if (!val) return true;
+    const digitsOnly = val.replace(/\D/g, "");
+    return digitsOnly.length === 11;
+  }, {
     message: "WhatsApp deve conter exatamente 11 dígitos",
   }),
   googleMapsUrl: z.string().optional().refine((val) => !val || val.trim() === "" || /^https?:\/\/.+/.test(val), {

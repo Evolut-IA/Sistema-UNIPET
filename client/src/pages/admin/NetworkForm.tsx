@@ -127,6 +127,11 @@ export default function NetworkForm() {
       services: selectedServices,
     };
     
+    // Remove formatting from whatsapp field (keep only digits)
+    if (submissionData.whatsapp) {
+      submissionData.whatsapp = submissionData.whatsapp.replace(/\D/g, "");
+    }
+    
     // Handle URL slug logic:
     // - For new units: always include the generated slug
     // - For editing: only include urlSlug if the name hasn't changed
