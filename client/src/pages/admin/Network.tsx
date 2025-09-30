@@ -508,7 +508,7 @@ export default function Network() {
 
       {/* Details Dialog */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent hideCloseButton>
+        <DialogContent hideCloseButton className="overflow-y-auto max-h-[75vh]">
           <DialogHeader className="flex flex-row items-center justify-between pr-2">
             <DialogTitle className="flex items-center space-x-2">
               <Building className="h-5 w-5 text-primary" />

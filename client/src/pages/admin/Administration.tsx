@@ -1002,7 +1002,7 @@ export default function Administration() {
             setShowPasswordConfirm(false);
           }
         }}>
-          <DialogContent className="">
+          <DialogContent className="overflow-y-auto max-h-[75vh]">
             <DialogHeader>
               <DialogTitle className="text-foreground">
                 {editingNetworkUnit?.login ? "Editar" : "Definir"} Credenciais

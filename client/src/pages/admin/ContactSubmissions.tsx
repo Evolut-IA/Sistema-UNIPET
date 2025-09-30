@@ -497,7 +497,7 @@ export default function ContactSubmissions() {
 
       {/* Details Dialog */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent className="">
+        <DialogContent className="overflow-y-auto max-h-[75vh]">
           <DialogHeader className="flex flex-row items-center justify-between pr-2">
             <DialogTitle className="text-primary">Detalhes do Formulário</DialogTitle>
             <div className="flex items-center gap-2">
