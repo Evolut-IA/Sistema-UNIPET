@@ -449,37 +449,57 @@ textarea:-moz-placeholder {
    SCROLLBAR MODERNA E OTIMIZADA
 ======================================== */
 
-/* Scrollbar customizada para elementos com classe .custom-scrollbar */
+/* Scrollbar customizada moderna para elementos com classe .custom-scrollbar */
+.custom-scrollbar {
+  /* Firefox - scrollbar fino e moderno */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+/* Webkit browsers (Chrome, Safari, Edge) - Design moderno */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted-foreground) / 0.3);
-  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+  border: none;
   transition: background 0.2s ease;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--muted-foreground) / 0.5);
+  background: rgba(0, 0, 0, 0.3);
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:active {
-  background: hsl(var(--muted-foreground) / 0.6);
+  background: rgba(0, 0, 0, 0.4);
 }
 
+/* Remove setas/botões do scrollbar */
+.custom-scrollbar::-webkit-scrollbar-button {
+  display: none;
+  height: 0;
+  width: 0;
+}
+
+/* Remove cantos */
 .custom-scrollbar::-webkit-scrollbar-corner {
+  display: none;
   background: transparent;
 }
 
-/* Firefox scrollbar */
-.custom-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: hsl(var(--muted-foreground) / 0.3) transparent;
+/* Garantir que não apareçam decorações extras */
+.custom-scrollbar::-webkit-scrollbar:vertical {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar:horizontal {
+  height: 6px;
 }
