@@ -999,12 +999,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get procedures for a specific plan
   app.get("/admin/api/plans/:id/procedures", async (req, res) => {
     try {
-      // Por enquanto, retornar array vazio devido a incompatibilidade de schema com o banco
-      console.log(`📋 [ADMIN] Getting procedures for plan ${req.params.id} - returning empty array`);
-      res.json([]);
+      const planId = req.params.id;
+      console.log(`📋 [ADMIN] Getting procedures for plan ${planId}`);
+      
+      const procedures = await storage.getPlanProceduresWithDetails(planId);
+      console.log(`✅ [ADMIN] Found ${procedures.length} procedures for plan ${planId}`);
+      
+      res.json(procedures);
     } catch (error) {
       console.error("❌ [ADMIN] Error fetching plan procedures:", error);
-      res.json([]); // Retornar array vazio em caso de erro
+      res.status(500).json({ error: "Erro ao buscar procedimentos do plano" });
     }
   });
 

@@ -1997,6 +1997,56 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
+  // Get plan procedures with full details (procedure_plans table) - Admin specific
+  async getPlanProceduresWithDetails(planId: string): Promise<any[]> {
+    try {
+      const result = await db.execute(sql`
+        SELECT 
+          pp.id,
+          pp.plan_id as "planId",
+          pp.procedure_id as "procedureId",
+          pp.price,
+          pp.pay_value as "payValue",
+          pp.coparticipacao,
+          pp.carencia,
+          pp.limites_anuais as "limitesAnuais",
+          pp.is_included as "isIncluded",
+          pp.display_order as "displayOrder",
+          pp.created_at as "createdAt",
+          proc.name as "procedureName",
+          proc.description as "procedureDescription",
+          proc.procedure_type as "procedureType"
+        FROM procedure_plans pp
+        LEFT JOIN procedures proc ON pp.procedure_id = proc.id
+        WHERE pp.plan_id = ${planId}
+        ORDER BY pp.display_order ASC, proc.name ASC
+      `);
+      
+      // Transform the data to match the expected structure in the frontend
+      return result.rows.map((row: any) => ({
+        id: row.id,
+        planId: row.planId,
+        procedureId: row.procedureId,
+        price: row.price,
+        payValue: row.payValue,
+        coparticipacao: row.coparticipacao,
+        carencia: row.carencia,
+        limitesAnuais: row.limitesAnuais,
+        isIncluded: row.isIncluded,
+        displayOrder: row.displayOrder,
+        createdAt: row.createdAt,
+        procedure: {
+          name: row.procedureName,
+          description: row.procedureDescription,
+          procedureType: row.procedureType
+        }
+      }));
+    } catch (error) {
+      console.error("❌ Error fetching plan procedures:", error);
+      return [];
+    }
+  }
+
   // Update procedure plans atomically (delete and recreate) - Admin specific
   async updateProcedurePlans(procedureId: string, plans: any[]): Promise<void> {
     try {
