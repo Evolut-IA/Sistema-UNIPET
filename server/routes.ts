@@ -915,6 +915,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get single plan by ID
+  app.get("/admin/api/plans/:id", async (req, res) => {
+    try {
+      const plan = await storage.getPlan(req.params.id);
+      if (!plan) {
+        return res.status(404).json({ error: "Plano não encontrado" });
+      }
+      res.json(plan);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error fetching plan:", error);
+      res.status(500).json({ error: "Erro ao buscar plano" });
+    }
+  });
+
+  // Get procedures for a specific plan
+  app.get("/admin/api/plans/:id/procedures", async (req, res) => {
+    try {
+      // Por enquanto, retornar array vazio devido a incompatibilidade de schema com o banco
+      console.log(`📋 [ADMIN] Getting procedures for plan ${req.params.id} - returning empty array`);
+      res.json([]);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error fetching plan procedures:", error);
+      res.json([]); // Retornar array vazio em caso de erro
+    }
+  });
+
   // Update plan (mainly for toggling isActive status)
   app.put("/admin/api/plans/:id", async (req, res) => {
     try {

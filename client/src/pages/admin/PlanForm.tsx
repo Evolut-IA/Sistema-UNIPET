@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,15 +8,26 @@ import { Button } from "@/components/admin/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { InputMasked } from "@/components/ui/input-masked";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectSeparator, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/admin/queryClient";
-import { insertPlanSchema } from "@shared/schema";
 import { ArrowLeft } from "lucide-react";
 import { PLAN_TYPES, PROCEDURE_TYPE_LABELS } from "@/lib/constants";
+import { z } from "zod";
+
+// Schema de validação do formulário
+const planFormSchema = z.object({
+  name: z.string().min(1, "Nome é obrigatório"),
+  price: z.string().min(1, "Preço é obrigatório"),
+  planType: z.enum(["with_waiting_period", "without_waiting_period"]),
+  description: z.string().optional(),
+  image: z.string().optional(),
+  buttonText: z.string().optional(),
+  displayOrder: z.number().optional(),
+  isActive: z.boolean(),
+});
 
 export default function PlanForm() {
   const [, setLocation] = useLocation();
@@ -24,25 +35,33 @@ export default function PlanForm() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const isEdit = Boolean(params.id);
+  const planId = params['id'] as string | undefined;
+  const isEdit = Boolean(planId);
 
   const { data: plan, isLoading } = useQuery({
-    queryKey: ["/admin/api/plans", params.id],
-    enabled: isEdit,
+    queryKey: ["/admin/api/plans", planId],
+    enabled: isEdit && !!planId,
   });
 
   // Buscar procedimentos vinculados ao plano quando estiver editando
   const { data: planProcedures } = useQuery({
-    queryKey: ["/admin/api/plans", params.id, "procedures"],
-    enabled: isEdit && !!params.id,
+    queryKey: ["/admin/api/plans", planId, "procedures"],
+    enabled: isEdit && !!planId,
   });
 
+  // Log para debug
+  useEffect(() => {
+    if (plan) {
+      console.log("🔍 Plan loaded:", plan);
+    }
+  }, [plan]);
+
   const form = useForm({
-    resolver: zodResolver(insertPlanSchema),
+    resolver: zodResolver(planFormSchema),
     defaultValues: {
       name: "",
       price: "",
-      planType: "with_waiting_period",
+      planType: "with_waiting_period" as const,
       description: "",
       image: "",
       buttonText: "Contratar Plano",
@@ -67,15 +86,23 @@ export default function PlanForm() {
 
   useEffect(() => {
     if (plan && typeof plan === 'object') {
+      console.log("🔍 Resetting form with plan data:", plan);
+      
+      // Converter basePrice (string decimal) para valor do formulário
+      const planData = plan as any;
+      const formattedPrice = planData.basePrice ? 
+        parseFloat(planData.basePrice).toFixed(2).replace('.', ',') : 
+        "0,00";
+      
       form.reset({
-        name: (plan as any).name || "",
-        price: (plan as any).price ? ((plan as any).price / 100).toFixed(2) : "",
-        planType: (plan as any).planType || "with_waiting_period",
-        description: (plan as any).description || "",
-        image: (plan as any).image || "",
-        buttonText: (plan as any).buttonText || "Contratar Plano",
-        displayOrder: (plan as any).displayOrder || 0,
-        isActive: (plan as any).isActive ?? true,
+        name: planData.name || "",
+        price: formattedPrice,
+        planType: planData.planType || "with_waiting_period",
+        description: planData.description || "",
+        image: planData.image || "",
+        buttonText: planData.buttonText || "Contratar Plano",
+        displayOrder: planData.displayOrder || 0,
+        isActive: planData.isActive ?? true,
       });
     }
   }, [plan, form]);
@@ -83,7 +110,7 @@ export default function PlanForm() {
   const mutation = useMutation({
     mutationFn: async (data: any) => {
       if (isEdit) {
-        await apiRequest("PUT", `/admin/api/plans/${params.id}`, data);
+        await apiRequest("PUT", `/admin/api/plans/${planId}`, data);
       } else {
         await apiRequest("POST", "/admin/api/plans", data);
       }
@@ -107,19 +134,16 @@ export default function PlanForm() {
 
   const onSubmit = async (data: any) => {
     try {
-      // Primeiro, salva o plano
+      // Primeiro, salva o plano - converter preço com vírgula para número
       const planData = {
         ...data,
-        price: Math.round(parseFloat(data.price) * 100), // Convert to cents
+        price: Math.round(parseFloat(data.price.replace(',', '.')) * 100), // Convert to cents
       };
 
-      let planId;
       if (isEdit) {
-        await apiRequest("PUT", `/admin/api/plans/${params.id}`, planData);
-        planId = params.id;
+        await apiRequest("PUT", `/admin/api/plans/${planId}`, planData);
       } else {
-        const response = await apiRequest("POST", "/admin/api/plans", planData);
-        planId = response.id;
+        await apiRequest("POST", "/admin/api/plans", planData);
       }
 
 
