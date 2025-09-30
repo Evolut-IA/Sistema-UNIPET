@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocation, useParams } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/admin/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { InputMasked } from "@/components/ui/input-masked";
@@ -184,6 +184,7 @@ export default function NetworkForm() {
         onClick={() => setLocation("/rede")}
         data-testid="button-back-to-network"
         className="w-full sm:w-auto"
+        style={{ backgroundColor: '#FFFFFF' }}
       >
         <ArrowLeft className="h-4 w-4 mr-2" />
         Voltar
@@ -192,7 +193,7 @@ export default function NetworkForm() {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           {/* Basic Information */}
-          <Card>
+          <Card style={{ backgroundColor: '#FFFFFF' }}>
             <CardHeader>
               <CardTitle className="text-foreground">Informações Básicas</CardTitle>
             </CardHeader>
@@ -346,7 +347,7 @@ export default function NetworkForm() {
           </Card>
 
           {/* Services */}
-          <Card>
+          <Card style={{ backgroundColor: '#FFFFFF' }}>
             <CardHeader>
               <CardTitle className="text-foreground">Serviços Oferecidos</CardTitle>
             </CardHeader>
