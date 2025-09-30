@@ -183,16 +183,6 @@ export default function Plans() {
         </div>
 
         <div className="flex gap-2">
-          <Button 
-            variant="admin-action"
-            size="sm"
-            onClick={() => setLocation("/planos/novo")}
-            data-testid="button-new-plan"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Adicionar
-          </Button>
-          
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button 
@@ -258,7 +248,7 @@ export default function Plans() {
                   {visibleColumns.includes("Preço") && (
                     <TableCell className="whitespace-nowrap bg-white">
                       <span className="font-bold text-foreground">
-                        R$ {(parseFloat(plan.price || 0) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-xs text-muted-foreground">/mês</span>
+                        R$ {parseFloat(plan.basePrice || '0').toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-xs text-muted-foreground">/mês</span>
                       </span>
                     </TableCell>
                   )}
