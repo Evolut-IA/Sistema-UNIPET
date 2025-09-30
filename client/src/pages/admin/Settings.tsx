@@ -585,7 +585,10 @@ export default function Settings() {
               <form onSubmit={rulesForm.handleSubmit(onSubmitRules)} className="space-y-4 sm:space-y-6">
                 <Card className="border-[#eaeaea] bg-white shadow-sm">
                   <CardHeader>
-                    <CardTitle className="text-foreground">Configurações de Regras</CardTitle>
+                    <CardTitle className="text-foreground flex items-center space-x-2">
+                      <FileText className="h-5 w-5" />
+                      <span>Configurações de Regras</span>
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <Accordion type="single" collapsible className="w-full">
