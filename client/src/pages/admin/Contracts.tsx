@@ -645,18 +645,11 @@ export default function Contracts() {
       {/* Edit Dialog */}
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
         <DialogContent hideCloseButton>
-          <DialogHeader className="flex flex-row items-center justify-between pr-2">
+          <DialogHeader>
             <DialogTitle className="flex items-center space-x-2">
               <Edit className="h-5 w-5 text-primary" />
               <span>Editar Contrato</span>
             </DialogTitle>
-            <Button
-              variant="outline" 
-              onClick={() => setEditOpen(false)}
-              className="h-8"
-            >
-              Fechar
-            </Button>
           </DialogHeader>
           
           {editingContract && (
@@ -677,7 +670,13 @@ export default function Contracts() {
               <div className="space-y-2">
                 <label className="text-sm font-medium text-foreground">Status</label>
                 <Select value={editStatus} onValueChange={setEditStatus}>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger 
+                    className="w-full"
+                    style={{
+                      borderColor: 'var(--border-gray)',
+                      background: 'white'
+                    }}
+                  >
                     <SelectValue placeholder="Selecione o status" />
                   </SelectTrigger>
                   <SelectContent>
