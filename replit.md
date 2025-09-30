@@ -58,10 +58,11 @@ Preferred communication style: Simple, everyday language.
 
 ### Feature Specifications
 -   **FAQ Management**: Admin interface for creating, updating, deleting, and toggling status of FAQ items. Public pages only display active FAQs.
--   **Site Settings Management**: Admin configuration for site-wide settings, including image uploads (main, network, about) handled by Supabase Storage. Changes reflect immediately on public pages.
+-   **Site Settings Management**: Admin configuration for site-wide settings, including image uploads (main, network, about) handled by Supabase Storage. Form uses one-time initialization pattern to preserve user uploads - the form is initialized ONCE on page load and never auto-resets, preventing uploaded image URLs from being overwritten by cache invalidations. Changes reflect on public pages after save and page refresh.
 -   **Network Unit Management**: Admin interface for creating, editing, and toggling status of network units. Supports image uploads to Supabase Storage and includes a 'cidade' (city) field.
 -   **Brazilian Phone Formatting**: Consistent display formatting for all phone numbers across the admin interface (e.g., +55 (XX) XXXXX-XXXX).
 -   **Responsive Layouts**: Dynamic grid adjustments for plan displays and content sections, ensuring consistent card sizing and proper centering.
+-   **Image Conditional Rendering**: Public pages (hero, features, about) only display images when configured in admin settings - no hardcoded fallback images.
 
 ## External Dependencies
 
