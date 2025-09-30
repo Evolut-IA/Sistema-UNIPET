@@ -295,7 +295,19 @@ export default function FAQ() {
             }
           }}>
             <DialogTrigger asChild>
-              <Button variant="admin-action" size="sm" data-testid="button-new-faq">
+              <Button 
+                variant="admin-action" 
+                size="sm" 
+                data-testid="button-new-faq"
+                onClick={() => {
+                  setEditingItem(null);
+                  form.reset({
+                    question: "",
+                    answer: "",
+                    isActive: true,
+                  });
+                }}
+              >
                 <Plus className="h-4 w-4 mr-2" />
                 Adicionar
               </Button>
