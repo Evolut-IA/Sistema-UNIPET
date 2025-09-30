@@ -941,6 +941,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Create new plan
+  app.post("/admin/api/plans", async (req, res) => {
+    try {
+      const planData = req.body;
+      
+      console.log(`📝 [ADMIN] Creating new plan with data:`, planData);
+      
+      // Converter price para decimal se estiver em centavos
+      if (planData.price !== undefined) {
+        planData.basePrice = (planData.price / 100).toFixed(2);
+        delete planData.price;
+      }
+      
+      // Preparar dados para criação
+      const newPlanData = {
+        name: planData.name,
+        description: planData.description || '',
+        planType: planData.planType || 'standard',
+        image: planData.image || '/images/plan-default.jpg',
+        buttonText: planData.buttonText || 'Saiba mais',
+        displayOrder: planData.displayOrder || 0,
+        isActive: planData.isActive !== undefined ? planData.isActive : true,
+        basePrice: planData.basePrice || '0.00',
+        billingFrequency: planData.billingFrequency || 'monthly',
+        features: planData.features || [],
+        installmentPrice: planData.installmentPrice || '0.00',
+        installmentCount: planData.installmentCount || 1,
+        perPetBilling: planData.perPetBilling || false,
+        petDiscounts: planData.petDiscounts || {},
+        paymentDescription: planData.paymentDescription || '',
+        availablePaymentMethods: planData.availablePaymentMethods || ['credit_card', 'pix', 'bank_slip'],
+        availableBillingOptions: planData.availableBillingOptions || ['monthly', 'annual'],
+        annualPrice: planData.annualPrice || '0.00',
+        annualInstallmentPrice: planData.annualInstallmentPrice || '0.00',
+        annualInstallmentCount: planData.annualInstallmentCount || 1,
+      };
+      
+      const newPlan = await storage.createPlan(newPlanData);
+      
+      console.log(`✅ [ADMIN] New plan created successfully:`, newPlan.id);
+      res.status(201).json(newPlan);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error creating plan:", error);
+      res.status(500).json({ error: "Erro ao criar plano" });
+    }
+  });
+
   // Update plan - accepts all plan fields
   app.put("/admin/api/plans/:id", async (req, res) => {
     try {
