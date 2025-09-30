@@ -191,7 +191,7 @@ export default function Settings() {
 
       <Tabs defaultValue="site" className="space-y-4 sm:space-y-6">
         <TabsList 
-          className="grid w-full grid-cols-2 gap-1 bg-muted"
+          className="grid w-full grid-cols-2 gap-1 border border-[#eaeaea] bg-white shadow-sm rounded-md"
         >
           <TabsTrigger 
             value="site" 
