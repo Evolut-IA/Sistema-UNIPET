@@ -39,6 +39,14 @@ Preferred communication style: Simple, everyday language.
 - **Storage**: Images are publicly accessible via Supabase CDN URLs
 - **Result**: Site settings images are now properly managed through Supabase Storage with consistent upload workflow across the admin interface
 
+### Bug Fix: Site Settings Images Not Updating on Public Pages
+- **Issue**: When changing images in admin settings (/admin/configuracoes), the changes weren't reflected on public pages (home page).
+- **Root Cause**: Cache invalidation mismatch - admin saved settings only invalidated admin cache (["/admin/api/settings/site"]) but not public cache (["site-settings"]).
+- **Solution**:
+  - Modified `Settings.tsx` saveSiteMutation to invalidate both admin and public query caches
+  - Enabled `refetchOnMount: true` and `refetchOnWindowFocus: true` in `useSiteSettings` hook for automatic data refresh
+- **Impact**: Images changed in admin settings now immediately reflect on public pages after saving
+
 ### Feature: FAQ Management System Improvements
 - **Implementation**: Fixed FAQ status toggle and delete functionality in the admin interface.
 - **Backend Changes**:
