@@ -190,8 +190,8 @@ export default function AuthGuard({ children }: AuthGuardProps) {
 
   // Handle loading state with intelligent timing
   useEffect(() => {
-    // If we have cached data showing authentication, hide loading immediately
-    if (initialData?.authenticated) {
+    // If we have authenticated status (from cache or query), hide loading immediately
+    if (authStatus?.authenticated || initialData?.authenticated) {
       setShowLoading(false);
       return;
     }
@@ -297,5 +297,7 @@ export default function AuthGuard({ children }: AuthGuardProps) {
   }
 
   // Fallback loading state (should rarely be reached with caching)
+  // Note: There's a timing issue where authStatus can be undefined after loading completes
+  // This fallback prevents infinite loading but needs investigation for proper auth flow
   return <AuthLoading />;
 }

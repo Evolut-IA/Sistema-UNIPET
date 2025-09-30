@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Card, CardContent } from "@/components/admin/ui/card";
+import { useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/admin/ui/button";
 import { Input } from "@/components/admin/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/admin/ui/dialog";
@@ -20,7 +19,7 @@ import {
 } from "@/components/admin/ui/dropdown-menu";
 import { useLocation } from "wouter";
 import type { Client, Pet } from "@shared/schema";
-import { Plus, Search, Edit, Trash2, Eye, Copy, FileText, MoreHorizontal, ChevronLeft, ChevronRight, Check, Loader2 } from "lucide-react";
+import { Plus, Search, Edit, Eye, Copy, FileText, MoreHorizontal, ChevronLeft, ChevronRight, Check, Loader2 } from "lucide-react";
 
 // Componente do ícone de adicionar pet
 const AddPetIcon = ({ className }: { className?: string }) => (
@@ -37,13 +36,8 @@ const AddPetIcon = ({ className }: { className?: string }) => (
 );
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { apiRequest, getQueryOptions } from "@/lib/admin/queryClient";
-import { createSmartInvalidation, createCacheManager } from "@/lib/admin/cacheUtils";
+import { getQueryOptions } from "@/lib/admin/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { ConfirmDialog } from "@/components/admin/ui/confirm-dialog";
-import { useConfirmDialog } from "@/hooks/admin/use-confirm-dialog";
-import { PasswordDialog } from "@/components/admin/ui/password-dialog";
-import { usePasswordDialog } from "@/hooks/admin/use-password-dialog";
 import { useColumnPreferences } from "@/hooks/admin/use-column-preferences";
 
 const allColumns = [
@@ -63,11 +57,7 @@ export default function Clients() {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
   const queryClient = useQueryClient();
-  const smartCache = createSmartInvalidation(queryClient);
-  const cacheManager = createCacheManager(queryClient);
   const { toast } = useToast();
-  const confirmDialog = useConfirmDialog();
-  const passwordDialog = usePasswordDialog();
 
   const { data: clients = [], isLoading } = useQuery<Client[]>({
     queryKey: ["/admin/api/clients"],
@@ -117,96 +107,6 @@ export default function Clients() {
     ...getQueryOptions('pets'),
   });
 
-  const deleteClientMutation = useMutation({
-    mutationFn: async (id: string) => {
-      await apiRequest("DELETE", `/admin/api/clients/${id}`);
-    },
-    onMutate: async (id: string) => {
-      // Optimistically remove client from cache
-      await queryClient.cancelQueries({ queryKey: ["/admin/api/clients"] });
-      const previousClients = queryClient.getQueryData(["/admin/api/clients"]);
-      
-      queryClient.setQueryData(["/admin/api/clients"], (old: any[]) => {
-        return old?.filter(client => client.id !== id) || [];
-      });
-      
-      return { previousClients };
-    },
-    onSuccess: (_, id) => {
-      smartCache.invalidateClientData(id);
-      toast({
-        title: "Cliente removido",
-        description: "Cliente foi removido com sucesso.",
-      });
-    },
-    onError: (_, __, context) => {
-      // Restore previous data on error
-      if (context?.previousClients) {
-        queryClient.setQueryData(["/admin/api/clients"], context.previousClients);
-      }
-      toast({
-        title: "Erro",
-        description: "Falha ao remover cliente.",
-        variant: "destructive",
-      });
-    },
-  });
-
-
-  const handleDelete = (id: string, clientName: string) => {
-    passwordDialog.openDialog({
-      title: "Verificação de Senha",
-      description: "Digite a senha do administrador para excluir este cliente:",
-      onConfirm: async (password) => {
-        try {
-          passwordDialog.setLoading(true);
-          
-          // Verificar senha
-          const response = await fetch("/admin/api/admin/verify-password", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ password }),
-          });
-          
-          const result = await response.json();
-          
-          if (result.valid) {
-            // Senha correta, mostrar confirmação de exclusão
-            confirmDialog.openDialog({
-              title: "Excluir Cliente",
-              description: `Tem certeza que deseja excluir o cliente "${clientName}"? Esta ação não pode ser desfeita e todos os dados relacionados serão perdidos.`,
-              confirmText: "Excluir Cliente",
-              cancelText: "Cancelar",
-              onConfirm: () => {
-                confirmDialog.setLoading(true);
-                deleteClientMutation.mutate(id, {
-                  onSettled: () => {
-                    confirmDialog.setLoading(false);
-                  }
-                });
-              },
-            });
-          } else {
-            toast({
-              title: "Senha incorreta",
-              description: "A senha do administrador está incorreta.",
-              variant: "destructive",
-            });
-          }
-        } catch (error) {
-          toast({
-            title: "Erro",
-            description: "Erro ao verificar senha. Tente novamente.",
-            variant: "destructive",
-          });
-        } finally {
-          passwordDialog.setLoading(false);
-        }
-      },
-    });
-  };
 
   const handleViewDetails = (client: Client) => {
     setSelectedClient(client);
@@ -481,15 +381,6 @@ export default function Clients() {
                           data-testid={`button-edit-${client.id}`}
                         >
                           <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleDelete(client.id, client.fullName || client.full_name)}
-                          disabled={deleteClientMutation.isPending}
-                          data-testid={`button-delete-${client.id}`}
-                        >
-                          <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                     </TableCell>
@@ -813,28 +704,6 @@ export default function Clients() {
           )}
         </DialogContent>
       </Dialog>
-
-      {/* Password Dialog */}
-      <PasswordDialog
-        open={passwordDialog.isOpen}
-        onOpenChange={passwordDialog.closeDialog}
-        onConfirm={passwordDialog.confirm}
-        title={passwordDialog.title ?? "Verificação de Senha"}
-        description={passwordDialog.description ?? "Digite a senha do administrador para continuar:"}
-        isLoading={passwordDialog.isLoading ?? false}
-      />
-
-      {/* Confirm Dialog */}
-      <ConfirmDialog
-        open={confirmDialog.isOpen}
-        onOpenChange={confirmDialog.closeDialog}
-        onConfirm={confirmDialog.confirm}
-        title={confirmDialog.title ?? "Confirmar exclusão"}
-        description={confirmDialog.description ?? "Tem certeza que deseja excluir este item? Esta ação não pode ser desfeita."}
-        confirmText={confirmDialog.confirmText ?? "Excluir"}
-        cancelText={confirmDialog.cancelText ?? "Cancelar"}
-        isLoading={confirmDialog.isLoading ?? false}
-      />
     </div>
   );
 }
