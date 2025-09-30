@@ -241,7 +241,7 @@ export default function Network() {
   };
 
   return (
-    <div className="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div className="flex-1 min-w-0">
@@ -251,7 +251,7 @@ export default function Network() {
       </div>
 
       {/* Filters and Column Controls */}
-      <div className="flex flex-wrap gap-4 items-center justify-between mb-6">
+      <div className="flex flex-wrap gap-4 items-center justify-between">
         <div className="flex gap-2 flex-wrap">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -262,7 +262,7 @@ export default function Network() {
                 setSearchQuery(e.target.value);
                 setCurrentPage(1); // Reset para página 1 ao buscar
               }}
-              className="pl-10 w-64"
+              className="pl-10 w-80"
               data-testid="input-search-units"
             />
           </div>
@@ -310,19 +310,19 @@ export default function Network() {
       </div>
 
       {/* Modern Table Container */}
-      <div className="container my-10 space-y-4 border border-border rounded-lg bg-accent shadow-sm">
+      <div className="container my-10 space-y-4 border border-[#eaeaea] rounded-lg bg-white shadow-sm">
 
         {/* Table */}
         <div className="rounded-lg overflow-hidden">
           <Table className="w-full">
           <TableHeader>
-            <TableRow className="bg-accent">
-              {visibleColumns.includes("Nome") && <TableHead className="w-[200px] bg-accent">Nome</TableHead>}
-              {visibleColumns.includes("Endereço") && <TableHead className="w-[250px] bg-accent">Endereço</TableHead>}
-              {visibleColumns.includes("Telefone") && <TableHead className="w-[140px] bg-accent">Telefone</TableHead>}
-              {visibleColumns.includes("Serviços") && <TableHead className="w-[200px] bg-accent">Serviços</TableHead>}
-              {visibleColumns.includes("Status") && <TableHead className="w-[100px] bg-accent">Status</TableHead>}
-              {visibleColumns.includes("Ações") && <TableHead className="w-[200px] bg-accent">Ações</TableHead>}
+            <TableRow className="bg-white border-b border-[#eaeaea]">
+              {visibleColumns.includes("Nome") && <TableHead className="w-[200px] bg-white">Nome</TableHead>}
+              {visibleColumns.includes("Endereço") && <TableHead className="w-[250px] bg-white">Endereço</TableHead>}
+              {visibleColumns.includes("Telefone") && <TableHead className="w-[140px] bg-white">Telefone</TableHead>}
+              {visibleColumns.includes("Serviços") && <TableHead className="w-[200px] bg-white">Serviços</TableHead>}
+              {visibleColumns.includes("Status") && <TableHead className="w-[100px] bg-white">Status</TableHead>}
+              {visibleColumns.includes("Ações") && <TableHead className="w-[200px] bg-white">Ações</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -336,24 +336,24 @@ export default function Network() {
               ))
             ) : displayUnits && displayUnits.length > 0 ? (
               displayUnits.map((unit: NetworkUnit) => (
-                <TableRow key={unit.id} className="bg-accent">
+                <TableRow key={unit.id} className="bg-white border-b border-[#eaeaea]">
                   {visibleColumns.includes("Nome") && (
-                    <TableCell className="font-medium whitespace-nowrap bg-accent" data-testid={`unit-name-${unit.id}`}>
+                    <TableCell className="font-medium whitespace-nowrap bg-white" data-testid={`unit-name-${unit.id}`}>
                       {unit.name}
                     </TableCell>
                   )}
                   {visibleColumns.includes("Endereço") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
+                    <TableCell className="whitespace-nowrap bg-white">
                       {unit.address || "Não informado"}
                     </TableCell>
                   )}
                   {visibleColumns.includes("Telefone") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
+                    <TableCell className="whitespace-nowrap bg-white">
                       {unit.phone || "Não informado"}
                     </TableCell>
                   )}
                   {visibleColumns.includes("Serviços") && (
-                    <TableCell className="bg-accent">
+                    <TableCell className="bg-white">
                       {unit.services && Array.isArray(unit.services) && unit.services.length > 0 ? (
                         <div className="flex flex-wrap gap-1">
                           {unit.services.slice(0, 2).map((service: string, index: number) => (
@@ -373,7 +373,7 @@ export default function Network() {
                     </TableCell>
                   )}
                   {visibleColumns.includes("Status") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
+                    <TableCell className="whitespace-nowrap bg-white">
                       <Switch
                         checked={unit.isActive}
                         onCheckedChange={() => handleToggleStatus(unit.id, unit.isActive)}
@@ -383,7 +383,7 @@ export default function Network() {
                     </TableCell>
                   )}
                   {visibleColumns.includes("Ações") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
+                    <TableCell className="whitespace-nowrap bg-white">
                       <div className="flex items-center space-x-1">
                         {unit.urlSlug && unit.isActive && (
                           <Button
@@ -441,8 +441,8 @@ export default function Network() {
                 </TableRow>
               ))
             ) : (
-              <TableRow className="bg-accent">
-                <TableCell colSpan={visibleColumns.length} className="text-center py-12 bg-accent">
+              <TableRow className="bg-white border-b border-[#eaeaea]">
+                <TableCell colSpan={visibleColumns.length} className="text-center py-12 bg-white">
                   <Building className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                   <p className="text-muted-foreground mb-4">
                     {searchQuery 
@@ -470,12 +470,17 @@ export default function Network() {
 
         {/* Pagination Controls */}
         {totalUnits > 10 && (
-          <div className="flex items-center justify-between px-6 py-4 border-t border-border">
-            <div className="flex items-center text-sm text-muted-foreground">
-              <span>
-                Mostrando {Math.min((currentPage - 1) * pageSize + 1, totalUnits)} até{" "}
-                {Math.min(currentPage * pageSize, totalUnits)} de {totalUnits} unidade{totalUnits !== 1 ? 's' : ''}
-              </span>
+          <div className="flex items-center justify-between py-4">
+            <div className="flex items-center space-x-6 lg:space-x-8">
+              <div className="flex items-center space-x-2">
+                <p className="text-sm font-medium">
+                  {totalUnits > 0 ? (
+                    <>Mostrando {(currentPage - 1) * pageSize + 1} a {Math.min(currentPage * pageSize, totalUnits)} de {totalUnits} unidade{totalUnits !== 1 ? 's' : ''}</>
+                  ) : (
+                    "Nenhuma unidade encontrada"
+                  )}
+                </p>
+              </div>
             </div>
             <div className="flex items-center space-x-2">
               <Button
@@ -483,23 +488,23 @@ export default function Network() {
                 size="sm"
                 onClick={() => setCurrentPage(currentPage - 1)}
                 disabled={currentPage <= 1}
-                data-testid="button-previous-page"
               >
                 <ChevronLeft className="h-4 w-4" />
                 Anterior
               </Button>
-              <span className="flex items-center text-sm font-medium">
-                Página {currentPage} de {totalPages}
-              </span>
+              <div className="flex items-center space-x-1">
+                <span className="text-sm font-medium">
+                  Página {currentPage} de {totalPages}
+                </span>
+              </div>
               <Button
-                variant="outline"
+                variant="admin-action"
                 size="sm"
                 onClick={() => setCurrentPage(currentPage + 1)}
                 disabled={currentPage >= totalPages}
-                data-testid="button-next-page"
               >
-                Próxima
-                <ChevronRight className="h-4 w-4 ml-1" />
+                Próximo
+                <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
           </div>
