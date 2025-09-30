@@ -71,7 +71,9 @@ export default function FAQ() {
       if (editingItem) {
         await apiRequest("PUT", `/admin/api/faq/${editingItem.id}`, data);
       } else {
-        await apiRequest("POST", "/admin/api/faq", data);
+        // Calcular o próximo displayOrder baseado no número de itens existentes
+        const nextOrder = Array.isArray(faqItems) ? faqItems.length + 1 : 1;
+        await apiRequest("POST", "/admin/api/faq", { ...data, displayOrder: nextOrder });
       }
     },
     onSuccess: () => {
