@@ -1273,9 +1273,8 @@ export default function Procedures() {
                           size="sm"
                           onClick={() => handleView(item)}
                           data-testid={`button-view-${item.id}`}
-                          className="text-xs p-1 h-8 w-8"
                         >
-                          <Eye className="h-3 w-3" />
+                          <Eye className="h-4 w-4" />
                         </Button>
                         
                         <Button
@@ -1283,9 +1282,8 @@ export default function Procedures() {
                           size="sm"
                           onClick={() => handleEdit(item)}
                           data-testid={`button-edit-${item.id}`}
-                          className="text-xs p-1 h-8 w-8"
                         >
-                          <Edit className="h-3 w-3" />
+                          <Edit className="h-4 w-4" />
                         </Button>
                         
                         <Button
@@ -1294,9 +1292,8 @@ export default function Procedures() {
                           onClick={() => handleDelete(item.id)}
                           disabled={deleteMutation.isPending}
                           data-testid={`button-delete-${item.id}`}
-                          className="text-xs p-1 h-8 w-8"
                         >
-                          <Trash2 className="h-3 w-3" />
+                          <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                     </TableCell>
