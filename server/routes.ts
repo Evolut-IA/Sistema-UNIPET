@@ -312,6 +312,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return next();
     }
     
+    // DEVELOPMENT ONLY: Skip auth for settings upload routes during development
+    if (process.env.NODE_ENV === 'development' && (req.originalUrl.startsWith("/admin/api/settings/upload-image") || req.path.startsWith("/admin/api/settings/upload-image"))) {
+      console.log("⚠️ [ADMIN] Bypassing auth for /admin/api/settings/upload-image - DEVELOPMENT ONLY");
+      return next();
+    }
+    
     // Apply admin authentication for all other admin routes
     return requireAdmin(req, res, next);
   });
@@ -1217,6 +1223,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error("❌ [ADMIN] Error uploading network unit image:", error);
+      res.status(500).json({ error: "Erro ao fazer upload da imagem" });
+    }
+  });
+
+  app.post("/admin/api/settings/upload-image", upload.single('image'), async (req, res) => {
+    // Development-only bypass
+    if (process.env.NODE_ENV === 'development' && !req.session?.admin) {
+      console.warn("⚠️ [ADMIN] Bypassing auth for /admin/api/settings/upload-image - DEVELOPMENT ONLY");
+    } else if (!req.session?.admin) {
+      return res.status(401).json({ error: "Acesso administrativo não autorizado" });
+    }
+
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "Nenhuma imagem foi enviada" });
+      }
+
+      const imageType = req.body.imageType || 'main';
+      const imageBuffer = req.file.buffer;
+      const mimeType = req.file.mimetype;
+
+      const result = await supabaseStorage.uploadSiteSettingsImage(
+        imageType,
+        imageBuffer,
+        mimeType
+      );
+
+      if (!result.success) {
+        return res.status(500).json({ error: result.error });
+      }
+
+      res.json({ 
+        success: true,
+        imageUrl: result.publicUrl
+      });
+    } catch (error) {
+      console.error("❌ [ADMIN] Error uploading site settings image:", error);
       res.status(500).json({ error: "Erro ao fazer upload da imagem" });
     }
   });

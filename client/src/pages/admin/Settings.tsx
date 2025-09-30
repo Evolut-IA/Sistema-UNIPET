@@ -14,7 +14,7 @@ import { apiRequest } from "@/lib/admin/queryClient";
 import { insertSiteSettingsSchema, insertRulesSettingsSchema } from "@shared/schema";
 import { Globe, Save, FileText, Share, Image } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { ImageUpload } from "@/components/ui/image-upload";
+import { SiteSettingsImageUpload } from "@/components/admin/ui/site-settings-image-upload";
 
 export default function Settings() {
   const { toast } = useToast();
@@ -54,9 +54,9 @@ export default function Settings() {
       privacyPolicy: "",
       termsOfUse: "",
       address: "",
-      mainImage: "",
-      networkImage: "",
-      aboutImage: "",
+      mainImageUrl: "",
+      networkImageUrl: "",
+      aboutImageUrl: "",
     },
   });
 
@@ -127,9 +127,9 @@ export default function Settings() {
         privacyPolicy: (siteSettings as any).privacyPolicy || "",
         termsOfUse: (siteSettings as any).termsOfUse || "",
         address: (siteSettings as any).address || "",
-        mainImage: (siteSettings as any).mainImage || "",
-        networkImage: (siteSettings as any).networkImage || "",
-        aboutImage: (siteSettings as any).aboutImage || ""
+        mainImageUrl: (siteSettings as any).mainImageUrl || "",
+        networkImageUrl: (siteSettings as any).networkImageUrl || "",
+        aboutImageUrl: (siteSettings as any).aboutImageUrl || ""
       };
       
       siteForm.reset(mergedSettings);
@@ -470,14 +470,15 @@ export default function Settings() {
                       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
                         <FormField
                           control={siteForm.control}
-                          name="mainImage"
+                          name="mainImageUrl"
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Imagem Principal</FormLabel>
                               <FormControl>
-                                <ImageUpload 
+                                <SiteSettingsImageUpload 
                                   value={field.value} 
                                   onChange={field.onChange}
+                                  imageType="main"
                                   data-testid="input-main-image"
                                 />
                               </FormControl>
@@ -488,14 +489,15 @@ export default function Settings() {
 
                         <FormField
                           control={siteForm.control}
-                          name="networkImage"
+                          name="networkImageUrl"
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Imagem da Rede</FormLabel>
                               <FormControl>
-                                <ImageUpload 
+                                <SiteSettingsImageUpload 
                                   value={field.value} 
                                   onChange={field.onChange}
+                                  imageType="network"
                                   data-testid="input-network-image"
                                 />
                               </FormControl>
@@ -506,14 +508,15 @@ export default function Settings() {
 
                         <FormField
                           control={siteForm.control}
-                          name="aboutImage"
+                          name="aboutImageUrl"
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Imagem Sobre Nós</FormLabel>
                               <FormControl>
-                                <ImageUpload 
+                                <SiteSettingsImageUpload 
                                   value={field.value} 
                                   onChange={field.onChange}
+                                  imageType="about"
                                   data-testid="input-about-image"
                                 />
                               </FormControl>
