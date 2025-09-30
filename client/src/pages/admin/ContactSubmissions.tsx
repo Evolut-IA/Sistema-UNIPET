@@ -30,6 +30,7 @@ import { PasswordDialog } from "@/components/ui/password-dialog";
 import { usePasswordDialog } from "@/hooks/use-password-dialog";
 import { useColumnPreferences } from "@/hooks/use-column-preferences";
 import { cn } from "@/lib/utils";
+import { formatBrazilianPhoneForDisplay } from "@/hooks/use-site-settings";
 
 const allColumns = [
   "Nome",
@@ -131,7 +132,7 @@ export default function ContactSubmissions() {
     text += "-".repeat(25) + "\n";
     text += `Nome: ${selectedSubmission.name}\n`;
     text += `Email: ${selectedSubmission.email}\n`;
-    text += `Telefone: ${selectedSubmission.phone}\n\n`;
+    text += `Telefone: ${formatBrazilianPhoneForDisplay(selectedSubmission.phone)}\n\n`;
 
     // Informações do Pet
     text += "INFORMAÇÕES DO PET:\n";
@@ -376,7 +377,7 @@ export default function ContactSubmissions() {
                   )}
                   {visibleColumns.includes("Telefone") && (
                     <TableCell className="whitespace-nowrap bg-white">
-                      <div className="text-sm text-foreground">{submission.phone}</div>
+                      <div className="text-sm text-foreground">{formatBrazilianPhoneForDisplay(submission.phone)}</div>
                     </TableCell>
                   )}
                   {visibleColumns.includes("Email") && (

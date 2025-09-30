@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { FileText, User, Heart, MapPin, Clock, DollarSign, CheckCircle, XCircle, Eye, Users, CreditCard, Plus, Settings, Search, AlertCircle, Info } from "lucide-react";
 import { Link } from "wouter";
 import DigitalCard from "@/components/DigitalCard";
+import { formatBrazilianPhoneForDisplay } from "@/hooks/use-site-settings";
 
 interface NetworkUnit {
   id: string;
@@ -932,7 +933,7 @@ export default function UnitDashboard() {
                                 </div>
                                 <div className="flex items-center space-x-2">
                                   <span>📞</span>
-                                  <span>{client.phone}</span>
+                                  <span>{formatBrazilianPhoneForDisplay(client.phone)}</span>
                                 </div>
                                 {client.email && (
                                   <div className="flex items-center space-x-2">
@@ -1372,14 +1373,14 @@ export default function UnitDashboard() {
                           client={{
                             id: pet.client.id,
                             fullName: pet.client.fullName,
-                            phone: pet.client.phone,
+                            phone: formatBrazilianPhoneForDisplay(pet.client.phone),
                             city: pet.client.city
                           }}
                           plan={pet.plan}
                           unit={{
                             id: authState.unit!.id,
                             name: authState.unit!.name,
-                            phone: authState.unit!.phone || 'N/A',
+                            phone: formatBrazilianPhoneForDisplay(authState.unit!.phone) || 'N/A',
                             address: authState.unit!.address
                           }}
                           cardNumber={pet.id.replace(/-/g, '').substring(0, 9)}
@@ -1697,7 +1698,7 @@ export default function UnitDashboard() {
                     <Label className="text-sm font-medium text-primary">Cliente</Label>
                     <p className="text-sm text-foreground">{selectedGuide.client?.name}</p>
                     <p className="text-sm text-foreground">{selectedGuide.client?.email}</p>
-                    <p className="text-sm text-foreground">{selectedGuide.client?.phone}</p>
+                    <p className="text-sm text-foreground">{formatBrazilianPhoneForDisplay(selectedGuide.client?.phone)}</p>
                   </div>
                   <div>
                     <Label className="text-sm font-medium text-primary">Pet</Label>

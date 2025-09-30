@@ -30,6 +30,7 @@ import { PasswordDialog } from "@/components/admin/ui/password-dialog";
 import { usePasswordDialog } from "@/hooks/admin/use-password-dialog";
 import { useColumnPreferences } from "@/hooks/admin/use-column-preferences";
 import type { NetworkUnit } from "@shared/schema";
+import { formatBrazilianPhoneForDisplay } from "@/hooks/use-site-settings";
 
 const allColumns = [
   "Nome",
@@ -187,9 +188,9 @@ export default function Network() {
     text += "-".repeat(25) + "\n";
     text += `Nome: ${selectedUnit.name}\n`;
     text += `Endereço: ${selectedUnit.address}\n`;
-    text += `Telefone: ${selectedUnit.phone}\n`;
+    text += `Telefone: ${formatBrazilianPhoneForDisplay(selectedUnit.phone)}\n`;
     if (selectedUnit.whatsapp) {
-      text += `WhatsApp: ${selectedUnit.whatsapp}\n`;
+      text += `WhatsApp: ${formatBrazilianPhoneForDisplay(selectedUnit.whatsapp)}\n`;
     }
     text += `Status: ${selectedUnit.isActive ? 'Ativo' : 'Inativo'}\n\n`;
 
@@ -349,7 +350,7 @@ export default function Network() {
                   )}
                   {visibleColumns.includes("Telefone") && (
                     <TableCell className="whitespace-nowrap bg-white">
-                      {unit.phone || "Não informado"}
+                      {formatBrazilianPhoneForDisplay(unit.phone) || "Não informado"}
                     </TableCell>
                   )}
                   {visibleColumns.includes("Serviços") && (
@@ -557,11 +558,11 @@ export default function Network() {
                       <span><strong className="text-primary">Endereço:</strong> <span className="text-foreground">{selectedUnit.address}</span></span>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <span><strong className="text-primary">Telefone:</strong> <span className="text-foreground">{selectedUnit.phone}</span></span>
+                      <span><strong className="text-primary">Telefone:</strong> <span className="text-foreground">{formatBrazilianPhoneForDisplay(selectedUnit.phone)}</span></span>
                     </div>
                     {selectedUnit.whatsapp && (
                       <div className="flex items-center space-x-2">
-                        <span><strong className="text-primary">WhatsApp:</strong> <span className="text-foreground">{selectedUnit.whatsapp}</span></span>
+                        <span><strong className="text-primary">WhatsApp:</strong> <span className="text-foreground">{formatBrazilianPhoneForDisplay(selectedUnit.whatsapp)}</span></span>
                       </div>
                     )}
                     <div className="flex items-center space-x-2">

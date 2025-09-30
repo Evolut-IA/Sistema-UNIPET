@@ -39,6 +39,7 @@ import { ptBR } from "date-fns/locale";
 import { getQueryOptions } from "@/lib/admin/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useColumnPreferences } from "@/hooks/admin/use-column-preferences";
+import { formatBrazilianPhoneForDisplay } from "@/hooks/use-site-settings";
 
 const allColumns = [
   "Nome",
@@ -128,7 +129,7 @@ export default function Clients() {
     text += "-".repeat(25) + "\n";
     text += `Nome Completo: ${selectedClient.fullName}\n`;
     text += `Email: ${selectedClient.email || "Não informado"}\n`;
-    text += `Telefone: ${selectedClient.phone}\n`;
+    text += `Telefone: ${formatBrazilianPhoneForDisplay(selectedClient.phone)}\n`;
     text += `CPF: ${selectedClient.cpf}\n\n`;
 
     // Informações de Localização
@@ -332,7 +333,7 @@ export default function Clients() {
                   )}
                   {visibleColumns.includes("Telefone") && (
                     <TableCell className="whitespace-nowrap bg-white">
-                      {client.phone}
+                      {formatBrazilianPhoneForDisplay(client.phone)}
                     </TableCell>
                   )}
                   {visibleColumns.includes("Email") && (
@@ -507,7 +508,7 @@ export default function Clients() {
                       <span><strong className="text-primary">Email:</strong> <span className="text-foreground">{selectedClient.email || "Não informado"}</span></span>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <span><strong className="text-primary">Telefone:</strong> <span className="text-foreground">{selectedClient.phone}</span></span>
+                      <span><strong className="text-primary">Telefone:</strong> <span className="text-foreground">{formatBrazilianPhoneForDisplay(selectedClient.phone)}</span></span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <span><strong className="text-primary">CPF:</strong> <span className="text-foreground">{selectedClient.cpf}</span></span>
