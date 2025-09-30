@@ -203,13 +203,13 @@ export default function Dashboard() {
                   </div>
                 ) : (
                   <>
-                    <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground truncate" data-testid="metric-monthly-revenue">
-                      R$ {(stats?.monthlyRevenue || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground truncate" data-testid="metric-total-revenue">
+                      R$ {(stats?.totalRevenue || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </p>
                     <div className="mt-2 pt-2 border-t border-border">
-                      <p className="text-xs text-muted-foreground">Receita geral</p>
-                      <p className="text-sm sm:text-base font-semibold text-foreground" data-testid="metric-total-revenue">
-                        R$ {(stats?.totalRevenue || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      <p className="text-xs text-muted-foreground">Total de pagamentos aprovados</p>
+                      <p className="text-sm sm:text-base font-semibold text-foreground">
+                        Histórico completo
                       </p>
                     </div>
                   </>
