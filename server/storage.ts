@@ -59,7 +59,7 @@ import {
   users
 } from "../shared/schema.js";
 import { db } from "./db.js";
-import { eq, desc, asc, and, sql, like, gte, lte } from "drizzle-orm";
+import { eq, desc, asc, and, or, sql, like, gte, lte, inArray } from "drizzle-orm";
 import { autoConfig } from "./config.js";
 
 export interface IStorage {
@@ -1740,7 +1740,9 @@ export class DatabaseStorage implements IStorage {
 
   // Payment Receipts
   async getAllPaymentReceipts(): Promise<any[]> {
-    return await db.select().from(paymentReceipts).orderBy(desc(paymentReceipts.createdAt));
+    return await db.select().from(paymentReceipts)
+      .where(inArray(paymentReceipts.returnCode, ['0', '00']))
+      .orderBy(desc(paymentReceipts.createdAt));
   }
 
   async createPaymentReceipt(receipt: any): Promise<any> {
