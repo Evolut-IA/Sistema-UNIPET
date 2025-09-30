@@ -183,7 +183,7 @@ export default function FAQ() {
           form.reset();
         }
       }}>
-        <DialogContent className="overflow-y-auto max-h-[75vh]">
+        <DialogContent className="overflow-y-auto max-h-[75vh]" hideCloseButton={true}>
             <DialogHeader>
               <DialogTitle className="text-foreground">
                 {editingItem ? "Editar Item" : "Novo Item FAQ"}
