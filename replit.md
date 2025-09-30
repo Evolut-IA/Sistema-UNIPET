@@ -8,6 +8,19 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (September 30, 2025)
 
+### Bug Fix: Settings Page - Values Not Displaying
+- **Issue**: Settings values were not being displayed in the '/admin/configuracoes' page (General and Rules tabs).
+- **Root Cause**: Missing GET endpoints for `/admin/api/settings/site` and `/admin/api/settings/rules` - frontend was trying to fetch from non-existent endpoints.
+- **Solution**:
+  - Added `getRulesSettings()` and `updateRulesSettings()` methods to IStorage interface and implementations
+  - Added imports for `RulesSettings` and `InsertRulesSettings` types in storage.ts
+  - Created GET `/admin/api/settings/site` endpoint to retrieve site settings
+  - Created PUT `/admin/api/settings/site` endpoint to update site settings  
+  - Created GET `/admin/api/settings/rules` endpoint to retrieve rules settings
+  - Created PUT `/admin/api/settings/rules` endpoint to update rules settings
+  - Added development-only auth bypass for all `/admin/api/settings` routes in global middleware
+- **Impact**: Settings page now properly loads and displays all existing values from the database for both General and Rules tabs
+
 ### Feature: Supabase Storage Integration for Site Settings Images
 - **Implementation**: Site configuration images (mainImage, networkImage, aboutImage) are now stored in and served from Supabase Storage instead of base64 encoding in the database.
 - **Backend Changes**:

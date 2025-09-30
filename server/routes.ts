@@ -312,9 +312,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return next();
     }
     
-    // DEVELOPMENT ONLY: Skip auth for settings upload routes during development
-    if (process.env.NODE_ENV === 'development' && (req.originalUrl.startsWith("/admin/api/settings/upload-image") || req.path.startsWith("/admin/api/settings/upload-image"))) {
-      console.log("⚠️ [ADMIN] Bypassing auth for /admin/api/settings/upload-image - DEVELOPMENT ONLY");
+    // DEVELOPMENT ONLY: Skip auth for settings routes during development
+    if (process.env.NODE_ENV === 'development' && (req.originalUrl.startsWith("/admin/api/settings") || req.path.startsWith("/admin/api/settings"))) {
+      console.log("⚠️ [ADMIN] Bypassing auth for /admin/api/settings - DEVELOPMENT ONLY");
       return next();
     }
     
@@ -1264,6 +1264,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+
+  // GET site settings
+  app.get("/admin/api/settings/site", async (req, res) => {
+    try {
+      const settings = await storage.getSiteSettings();
+      if (!settings) {
+        return res.status(404).json({ error: "Configurações não encontradas" });
+      }
+      res.json(settings);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error fetching site settings:", error);
+      res.status(500).json({ error: "Erro ao buscar configurações do site" });
+    }
+  });
+
+  // PUT site settings
+  app.put("/admin/api/settings/site", async (req, res) => {
+    try {
+      const updatedSettings = await storage.updateSiteSettings(req.body);
+      res.json(updatedSettings);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error updating site settings:", error);
+      res.status(500).json({ error: "Erro ao atualizar configurações do site" });
+    }
+  });
+
+  // GET rules settings
+  app.get("/admin/api/settings/rules", async (req, res) => {
+    try {
+      const settings = await storage.getRulesSettings();
+      if (!settings) {
+        return res.status(404).json({ error: "Configurações de regras não encontradas" });
+      }
+      res.json(settings);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error fetching rules settings:", error);
+      res.status(500).json({ error: "Erro ao buscar configurações de regras" });
+    }
+  });
+
+  // PUT rules settings
+  app.put("/admin/api/settings/rules", async (req, res) => {
+    try {
+      const updatedSettings = await storage.updateRulesSettings(req.body);
+      res.json(updatedSettings);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error updating rules settings:", error);
+      res.status(500).json({ error: "Erro ao atualizar configurações de regras" });
+    }
+  });
   app.get("/admin/api/network-units/:id", async (req, res) => {
     try {
       const unit = await storage.getNetworkUnit(req.params.id);

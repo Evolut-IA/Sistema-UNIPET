@@ -35,12 +35,15 @@ import {
   type InsertPaymentReceipt,
   type User,
   type InsertUser,
+  type RulesSettings,
+  type InsertRulesSettings,
   contactSubmissions,
   plans,
   networkUnits,
   faqItems,
   siteSettings,
   chatSettings,
+  rulesSettings,
   clients,
   species,
   pets,
@@ -95,6 +98,10 @@ export interface IStorage {
   // Site Settings
   getSiteSettings(): Promise<SiteSettings | undefined>;
   updateSiteSettings(settings: Partial<InsertSiteSettings>): Promise<SiteSettings | undefined>;
+
+  // Rules Settings
+  getRulesSettings(): Promise<RulesSettings | undefined>;
+  updateRulesSettings(settings: Partial<InsertRulesSettings>): Promise<RulesSettings | undefined>;
 
   // Chat Settings
   getChatSettings(): Promise<ChatSettings | undefined>;
@@ -502,6 +509,15 @@ export class InMemoryStorage implements IStorage {
     return undefined;
   }
 
+
+  // Rules Settings methods
+  async getRulesSettings(): Promise<RulesSettings | undefined> {
+    return undefined; // InMemoryStorage não suporta Rules Settings
+  }
+
+  async updateRulesSettings(settings: Partial<InsertRulesSettings>): Promise<RulesSettings | undefined> {
+    return undefined; // InMemoryStorage não suporta Rules Settings
+  }
   // Chat Settings methods
   async getChatSettings(): Promise<ChatSettings | undefined> {
     return this.chatSettings;
@@ -509,7 +525,8 @@ export class InMemoryStorage implements IStorage {
 
   async updateChatSettings(settings: Partial<InsertChatSettings>): Promise<ChatSettings | undefined> {
     if (this.chatSettings) {
-      const updatedSettings = { ...this.chatSettings, ...settings, updatedAt: new Date() };
+      const updatedSettings = { ...this.chatSettings,
+  rulesSettings, ...settings, updatedAt: new Date() };
       // Ensure Buffer types are preserved
       if (settings.botIcon !== undefined) updatedSettings.botIcon = settings.botIcon || Buffer.alloc(0);
       if (settings.userIcon !== undefined) updatedSettings.userIcon = settings.userIcon || Buffer.alloc(0);
@@ -1179,6 +1196,33 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
+
+  // Rules Settings
+  async getRulesSettings(): Promise<RulesSettings | undefined> {
+    const [settings] = await db.select().from(rulesSettings).limit(1);
+    return settings || undefined;
+  }
+
+  async updateRulesSettings(updateData: Partial<InsertRulesSettings>): Promise<RulesSettings | undefined> {
+    if (!updateData || Object.keys(updateData).length === 0) {
+      throw new Error('Update data cannot be empty');
+    }
+
+    const existingSettings = await this.getRulesSettings();
+
+    if (existingSettings) {
+      const [settings] = await db.update(rulesSettings)
+        .set({ ...updateData, updatedAt: new Date() })
+        .where(eq(rulesSettings.id, existingSettings.id))
+        .returning();
+      return settings || undefined;
+    } else {
+      const [settings] = await db.insert(rulesSettings)
+        .values({ ...updateData, createdAt: new Date(), updatedAt: new Date() })
+        .returning();
+      return settings;
+    }
+  }
   // Chat Settings
   async getChatSettings(): Promise<ChatSettings | undefined> {
     try {
