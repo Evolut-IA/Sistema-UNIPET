@@ -208,6 +208,7 @@ export interface IStorage {
   deleteSpecies(id: string): Promise<boolean>;
 
   // Payment Receipts methods - NEW: Now in interface
+  getAllPaymentReceipts(): Promise<any[]>;
   getPaymentReceiptsByClientEmail(email: string): Promise<any[]>;
   getPaymentReceiptsByContractId(contractId: string): Promise<any[]>;
   getPaymentReceiptById(id: string): Promise<any | undefined>;
@@ -799,6 +800,10 @@ export class InMemoryStorage implements IStorage {
   }
 
   // Payment Receipts methods
+  async getAllPaymentReceipts(): Promise<any[]> {
+    throw new Error('InMemoryStorage: Payment receipts not implemented');
+  }
+
   async getPaymentReceiptsByClientEmail(email: string): Promise<any[]> {
     throw new Error('InMemoryStorage: Payment receipts not implemented');
   }
@@ -1734,6 +1739,10 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Payment Receipts
+  async getAllPaymentReceipts(): Promise<any[]> {
+    return await db.select().from(paymentReceipts).orderBy(desc(paymentReceipts.createdAt));
+  }
+
   async createPaymentReceipt(receipt: any): Promise<any> {
     const [newReceipt] = await db.insert(paymentReceipts).values(receipt as any).returning();
     return newReceipt;
