@@ -50,6 +50,7 @@ import {
   contracts,
   procedures,
   planProcedures,
+  procedurePlans,
   serviceHistory,
   protocols,
   guides,
