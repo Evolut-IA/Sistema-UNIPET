@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/admin/ui/button";
 import { Input } from "@/components/admin/ui/input";
+import { Badge } from "@/components/admin/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/admin/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/admin/ui/dialog";
 import {
@@ -64,13 +65,7 @@ const statusLabels: Record<string, string> = {
   pending: "Pendente",
 };
 
-const statusColors: Record<string, string> = {
-  active: "bg-green-100 text-green-800",
-  inactive: "bg-gray-100 text-gray-800",
-  suspended: "bg-yellow-100 text-yellow-800",
-  cancelled: "bg-red-100 text-red-800",
-  pending: "bg-blue-100 text-blue-800",
-};
+const statusStyle = "border border-border rounded-lg bg-background text-foreground";
 
 const billingPeriodLabels: Record<string, string> = {
   monthly: "Mensal",
@@ -310,9 +305,9 @@ export default function Contracts() {
                     )}
                     {visibleColumns.includes("Status") && (
                       <TableCell className="whitespace-nowrap bg-white">
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${statusColors[contract.status] || 'bg-gray-100 text-gray-800'}`}>
+                        <Badge className={statusStyle}>
                           {statusLabels[contract.status] || contract.status}
-                        </span>
+                        </Badge>
                       </TableCell>
                     )}
                     {visibleColumns.includes("Valor Mensal") && (
@@ -425,7 +420,7 @@ export default function Contracts() {
                       <span><strong className="text-primary">Nº Contrato:</strong> <span className="text-foreground">{selectedContract.contractNumber}</span></span>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <span><strong className="text-primary">Status:</strong> <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${statusColors[selectedContract.status]}`}>{statusLabels[selectedContract.status] || selectedContract.status}</span></span>
+                      <span><strong className="text-primary">Status:</strong> <Badge className={statusStyle}>{statusLabels[selectedContract.status] || selectedContract.status}</Badge></span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <span><strong className="text-primary">Data de Início:</strong> <span className="text-foreground">{format(new Date(selectedContract.startDate), "dd/MM/yyyy", { locale: ptBR })}</span></span>

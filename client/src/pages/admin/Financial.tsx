@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/admin/ui/button";
 import { Input } from "@/components/admin/ui/input";
+import { Badge } from "@/components/admin/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/admin/ui/dialog";
 import {
   Table,
@@ -57,6 +58,8 @@ const statusLabels: Record<string, string> = {
   downloaded: "Baixado",
   sent: "Enviado",
 };
+
+const statusStyle = "border border-border rounded-lg bg-background text-foreground";
 
 export default function Financial() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -217,9 +220,9 @@ export default function Financial() {
                     )}
                     {visibleColumns.includes("Status") && (
                       <TableCell className="whitespace-nowrap bg-white">
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        <Badge className={statusStyle}>
                           {statusLabels[receipt.status] || receipt.status}
-                        </span>
+                        </Badge>
                       </TableCell>
                     )}
                     {visibleColumns.includes("Ações") && (
@@ -340,7 +343,7 @@ export default function Financial() {
                       <span><strong className="text-primary">Data do Pagamento:</strong> <span className="text-foreground">{format(new Date(selectedReceipt.paymentDate), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}</span></span>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <span><strong className="text-primary">Status:</strong> <span className="text-foreground">{statusLabels[selectedReceipt.status] || selectedReceipt.status}</span></span>
+                      <span><strong className="text-primary">Status:</strong> <Badge className={statusStyle}>{statusLabels[selectedReceipt.status] || selectedReceipt.status}</Badge></span>
                     </div>
                   </div>
                 </div>
