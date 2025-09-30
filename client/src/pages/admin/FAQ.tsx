@@ -2,15 +2,12 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/admin/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import {
   Table,
   TableBody,
@@ -29,10 +26,15 @@ import { Plus, Search, Edit, Trash2, HelpCircle, MoreHorizontal, ChevronLeft, Ch
 import { apiRequest } from "@/lib/admin/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useColumnPreferences } from "@/hooks/use-column-preferences";
-import { insertFaqItemSchema } from "@shared/schema";
-import { cn } from "@/lib/utils";
+import { z } from "zod";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+
+const faqItemSchema = z.object({
+  question: z.string().min(1, "Pergunta é obrigatória"),
+  answer: z.string().min(1, "Resposta é obrigatória"),
+  isActive: z.boolean().default(true),
+});
 
 const allColumns = [
   "Pergunta",
@@ -56,7 +58,7 @@ export default function FAQ() {
   });
 
   const form = useForm({
-    resolver: zodResolver(insertFaqItemSchema),
+    resolver: zodResolver(faqItemSchema),
     defaultValues: {
       question: "",
       answer: "",
@@ -161,16 +163,6 @@ export default function FAQ() {
 
   const onSubmit = (data: any) => {
     createMutation.mutate(data);
-  };
-
-  const activeItems = filteredItems?.filter((item: any) => item.isActive) || [];
-
-  const getStatusColor = (isActive: boolean) => {
-    return "border border-border rounded-lg bg-background text-foreground";
-  };
-
-  const getStatusLabel = (isActive: boolean) => {
-    return isActive ? "Ativo" : "Inativo";
   };
 
   return (
@@ -378,9 +370,12 @@ export default function FAQ() {
                   )}
                   {visibleColumns.includes("Status") && (
                     <TableCell className="whitespace-nowrap bg-white">
-                      <Badge className={cn("whitespace-nowrap", getStatusColor(item.isActive))}>
-                        {getStatusLabel(item.isActive)}
-                      </Badge>
+                      <Switch
+                        checked={item.isActive}
+                        onCheckedChange={() => handleToggleStatus(item.id, item.isActive)}
+                        disabled={toggleMutation.isPending}
+                        data-testid={`switch-faq-status-${item.id}`}
+                      />
                     </TableCell>
                   )}
                   {visibleColumns.includes("Data") && (
@@ -391,13 +386,6 @@ export default function FAQ() {
                   {visibleColumns.includes("Ações") && (
                     <TableCell className="whitespace-nowrap bg-white">
                       <div className="flex items-center space-x-1">
-                        <Switch
-                          checked={item.isActive}
-                          onCheckedChange={() => handleToggleStatus(item.id, item.isActive)}
-                          disabled={toggleMutation.isPending}
-                          data-testid={`switch-faq-status-${item.id}`}
-                        />
-                        
                         <Button
                           variant="outline"
                           size="sm"
