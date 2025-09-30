@@ -76,6 +76,8 @@ export default function NetworkForm() {
         googleMapsUrl: (unit as any).googleMapsUrl || "",
         urlSlug: slug,
       });
+      // Make sure form state is synced
+      form.setValue("services", services);
     }
   }, [unit, form]);
 
@@ -169,11 +171,15 @@ export default function NetworkForm() {
   };
 
   const handleServiceChange = (service: string, checked: boolean) => {
+    let newServices: string[];
     if (checked) {
-      setSelectedServices([...selectedServices, service]);
+      newServices = [...selectedServices, service];
     } else {
-      setSelectedServices(selectedServices.filter(s => s !== service));
+      newServices = selectedServices.filter(s => s !== service);
     }
+    setSelectedServices(newServices);
+    // Sync with form state
+    form.setValue("services", newServices);
   };
 
   if (isEdit && isLoading) {
