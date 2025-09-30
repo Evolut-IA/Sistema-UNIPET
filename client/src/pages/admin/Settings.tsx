@@ -157,10 +157,10 @@ export default function Settings() {
     console.log('💾 [FORM] networkImageUrl:', data.networkImageUrl);
     console.log('💾 [FORM] aboutImageUrl:', data.aboutImageUrl);
     
-    // Remove campos vazios antes de enviar
+    // Remove apenas valores null e undefined, mas MANTER strings vazias para permitir limpeza de campos
     const cleanData = Object.fromEntries(
       Object.entries(data).filter(([_, value]) => 
-        value !== "" && value !== null && value !== undefined
+        value !== null && value !== undefined
       )
     );
     
