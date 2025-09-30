@@ -337,7 +337,7 @@ export default function Network() {
                             data-testid={`button-access-unit-${unit.id}`}
                             title={`Acessar página da unidade: ${unit.name}`}
                           >
-                            <a href={`/${unit.urlSlug}`} target="_blank" rel="noopener noreferrer">
+                            <a href={`https://${window.location.hostname}/${unit.urlSlug}`} target="_blank" rel="noopener noreferrer">
                               <Globe className="h-4 w-4" />
                             </a>
                           </Button>

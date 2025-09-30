@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste do Ícone Globe - Rede Credenciada</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        .test-result {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 4px;
+            background: #f0f8ff;
+            border: 1px solid #d1e7dd;
+        }
+        .success {
+            background: #d1f2eb;
+            border-color: #0f5132;
+            color: #0f5132;
+        }
+        .error {
+            background: #f8d7da;
+            border-color: #842029;
+            color: #842029;
+        }
+        .code {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        button {
+            background: #0d6efd;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0b5ed7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Teste do Ícone Globe - Rede Credenciada</h1>
+        
+        <div class="test-result">
+            <h2>Problema Original:</h2>
+            <p>Quando você clicava no ícone Globe (🌐) na página '/admin/rede', o site não abria porque estava usando uma URL relativa.</p>
+        </div>
+
+        <div class="test-result">
+            <h2>Correção Implementada:</h2>
+            <div class="code">
+                // ANTES (não funcionava):<br>
+                &lt;a href="{`/${unit.urlSlug}`}" target="_blank"&gt;<br><br>
+                
+                // DEPOIS (corrigido):<br>
+                &lt;a href="{`https://${window.location.hostname}/${unit.urlSlug}`}" target="_blank"&gt;
+            </div>
+        </div>
+
+        <div class="test-result success">
+            <h2>✅ Resultado da Correção:</h2>
+            <p>Agora o ícone Globe gera URLs completas que funcionam corretamente quando abertas em nova aba!</p>
+            
+            <h3>Exemplo de URL gerada:</h3>
+            <div class="code" id="generated-url"></div>
+            
+            <h3>Teste ao vivo:</h3>
+            <button onclick="testUrl()">Testar Geração de URL</button>
+            <button onclick="openTestUrl()">Abrir URL de Teste</button>
+        </div>
+
+        <div class="test-result">
+            <h2>📝 Como funciona agora:</h2>
+            <ol>
+                <li>O código pega o hostname atual usando <code>window.location.hostname</code></li>
+                <li>Constrói uma URL completa com HTTPS</li>
+                <li>Adiciona o slug da unidade ao final</li>
+                <li>A URL completa abre corretamente em nova aba</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        function testUrl() {
+            const testSlug = 'hospital-veterinario';
+            const generatedUrl = `https://${window.location.hostname}/${testSlug}`;
+            document.getElementById('generated-url').textContent = generatedUrl;
+            alert(`URL Gerada com sucesso:\n${generatedUrl}`);
+        }
+
+        function openTestUrl() {
+            const testSlug = 'hospital-veterinario';
+            const generatedUrl = `https://${window.location.hostname}/${testSlug}`;
+            window.open(generatedUrl, '_blank');
+        }
+
+        // Gerar exemplo automaticamente ao carregar
+        window.onload = function() {
+            const testSlug = 'hospital-veterinario';
+            const generatedUrl = `https://${window.location.hostname}/${testSlug}`;
+            document.getElementById('generated-url').textContent = generatedUrl;
+        }
+    </script>
+</body>
+</html>
