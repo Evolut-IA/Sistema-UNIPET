@@ -248,7 +248,7 @@ export default function PlanForm() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Tipo do Plano *</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value} disabled={isEdit}>
                         <FormControl>
                           <SelectTrigger 
                             data-testid="select-plan-type"
