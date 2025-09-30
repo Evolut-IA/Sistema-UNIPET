@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/admin/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { InputMasked } from "@/components/ui/input-masked";
@@ -167,27 +167,26 @@ export default function Settings() {
     <div className="space-y-4 sm:space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-        <div className="flex-1">
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[var(--text-teal)] break-words">Configurações</h1>
-          <p className="text-sm text-[var(--text-dark-secondary)]">Gerencie as configurações do sistema</p>
+        <div className="flex-1 min-w-0">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground break-words">Configurações</h1>
+          <p className="text-sm text-muted-foreground">Gerencie as configurações do sistema</p>
         </div>
       </div>
 
       <Tabs defaultValue="site" className="space-y-4 sm:space-y-6">
         <TabsList 
-          className="grid w-full grid-cols-2 gap-1" 
-          style={{ backgroundColor: 'var(--bg-teal-light)' }}
+          className="grid w-full grid-cols-2 gap-1 bg-muted"
         >
           <TabsTrigger 
             value="site" 
-            className="flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm data-[state=active]:bg-[var(--bg-teal)] data-[state=active]:text-[var(--text-light)]"
+            className="flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
           >
             <Globe className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
             <span className="truncate">Geral</span>
           </TabsTrigger>
           <TabsTrigger 
             value="rules" 
-            className="flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm data-[state=active]:bg-[var(--bg-teal)] data-[state=active]:text-[var(--text-light)]"
+            className="flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
           >
             <FileText className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
             <span className="truncate">Regras</span>
@@ -211,9 +210,9 @@ export default function Settings() {
               ))}
             </div>
           ) : (
-            <Card>
+            <Card className="border-[#eaeaea] bg-white shadow-sm">
               <CardHeader>
-                <CardTitle className="text-[var(--text-teal)] flex items-center space-x-2">
+                <CardTitle className="text-foreground flex items-center space-x-2">
                   <Globe className="h-5 w-5" />
                   <span>Configurações Gerais</span>
                 </CardTitle>
@@ -565,7 +564,7 @@ export default function Settings() {
           ) : (
             <Form {...rulesForm}>
               <form onSubmit={rulesForm.handleSubmit(onSubmitRules)} className="space-y-4 sm:space-y-6">
-                <Card>
+                <Card className="border-[#eaeaea] bg-white shadow-sm">
                   <CardHeader>
                     <CardTitle className="text-foreground">Configurações de Regras</CardTitle>
                   </CardHeader>
