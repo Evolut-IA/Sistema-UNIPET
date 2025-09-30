@@ -150,12 +150,18 @@ export default function Settings() {
 
 
   const onSubmitSite = (data: any) => {
+    console.log('💾 [FORM] onSubmitSite called with data:', data);
+    console.log('💾 [FORM] aboutImageUrl value:', data.aboutImageUrl);
+    
     // Remove campos vazios antes de enviar
     const cleanData = Object.fromEntries(
       Object.entries(data).filter(([_, value]) => 
         value !== "" && value !== null && value !== undefined
       )
     );
+    
+    console.log('💾 [FORM] Clean data to be sent:', cleanData);
+    console.log('💾 [FORM] aboutImageUrl in clean data:', cleanData.aboutImageUrl);
     
     saveSiteMutation.mutate(cleanData);
   };

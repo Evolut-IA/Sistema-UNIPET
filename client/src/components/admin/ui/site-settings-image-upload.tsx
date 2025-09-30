@@ -30,6 +30,7 @@ export function SiteSettingsImageUpload({
     handleRemove,
   } = useSiteSettingsImageUpload({
     onUpload: (url) => {
+      console.log(`📝 [FORM] Calling onChange with URL for ${imageType}:`, url);
       onChange?.(url);
     },
     imageType
