@@ -446,68 +446,109 @@ textarea:-moz-placeholder {
 }
 
 /* ========================================
-   SCROLLBAR MODERNA E OTIMIZADA
+   SCROLLBAR MODERNA E OTIMIZADA - REFATORADA
 ======================================== */
 
-/* Scrollbar customizada moderna para elementos com classe .custom-scrollbar */
-.custom-scrollbar {
+/* Aplicar scrollbar moderna em TODOS os elementos de scroll incluindo Radix Dialog */
+.custom-scrollbar,
+[data-radix-dialog-content],
+[data-radix-dialog-content] > *,
+.overflow-y-auto,
+.overflow-x-auto,
+.overflow-auto {
   /* Firefox - scrollbar fino e moderno */
   scrollbar-width: thin !important;
-  scrollbar-color: rgba(0, 0, 0, 0.2) transparent !important;
+  scrollbar-color: rgba(0, 0, 0, 0.3) transparent !important;
 }
 
-/* Webkit browsers (Chrome, Safari, Edge) - Design moderno */
-.custom-scrollbar::-webkit-scrollbar {
+/* Webkit browsers (Chrome, Safari, Edge) - Design moderno e MINIMALISTA */
+.custom-scrollbar::-webkit-scrollbar,
+[data-radix-dialog-content]::-webkit-scrollbar,
+[data-radix-dialog-content] *::-webkit-scrollbar,
+.overflow-y-auto::-webkit-scrollbar,
+.overflow-x-auto::-webkit-scrollbar,
+.overflow-auto::-webkit-scrollbar {
   width: 6px !important;
   height: 6px !important;
 }
 
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.05) !important;
-  border-radius: 3px !important;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.2) !important;
-  border-radius: 3px !important;
-  border: none !important;
-  transition: background 0.2s ease !important;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.3) !important;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:active {
-  background: rgba(0, 0, 0, 0.4) !important;
-}
-
-/* Remove setas/botões do scrollbar - FORÇADO */
-.custom-scrollbar::-webkit-scrollbar-button {
-  display: none !important;
-  height: 0 !important;
-  width: 0 !important;
+.custom-scrollbar::-webkit-scrollbar-track,
+[data-radix-dialog-content]::-webkit-scrollbar-track,
+[data-radix-dialog-content] *::-webkit-scrollbar-track,
+.overflow-y-auto::-webkit-scrollbar-track,
+.overflow-x-auto::-webkit-scrollbar-track,
+.overflow-auto::-webkit-scrollbar-track {
   background: transparent !important;
+  border-radius: 9999px !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb,
+[data-radix-dialog-content]::-webkit-scrollbar-thumb,
+[data-radix-dialog-content] *::-webkit-scrollbar-thumb,
+.overflow-y-auto::-webkit-scrollbar-thumb,
+.overflow-x-auto::-webkit-scrollbar-thumb,
+.overflow-auto::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border-radius: 9999px !important;
+  border: none !important;
+  transition: background 0.15s ease !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover,
+[data-radix-dialog-content]::-webkit-scrollbar-thumb:hover,
+[data-radix-dialog-content] *::-webkit-scrollbar-thumb:hover,
+.overflow-y-auto::-webkit-scrollbar-thumb:hover,
+.overflow-x-auto::-webkit-scrollbar-thumb:hover,
+.overflow-auto::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.45) !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:active,
+[data-radix-dialog-content]::-webkit-scrollbar-thumb:active,
+[data-radix-dialog-content] *::-webkit-scrollbar-thumb:active,
+.overflow-y-auto::-webkit-scrollbar-thumb:active,
+.overflow-x-auto::-webkit-scrollbar-thumb:active,
+.overflow-auto::-webkit-scrollbar-thumb:active {
+  background: rgba(0, 0, 0, 0.6) !important;
+}
+
+/* REMOVER COMPLETAMENTE as setas/botões - TODAS as variações */
+.custom-scrollbar::-webkit-scrollbar-button,
+[data-radix-dialog-content]::-webkit-scrollbar-button,
+[data-radix-dialog-content] *::-webkit-scrollbar-button,
+.overflow-y-auto::-webkit-scrollbar-button,
+.overflow-x-auto::-webkit-scrollbar-button,
+.overflow-auto::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: none !important;
 }
 
 .custom-scrollbar::-webkit-scrollbar-button:start:decrement,
-.custom-scrollbar::-webkit-scrollbar-button:end:increment {
+.custom-scrollbar::-webkit-scrollbar-button:end:increment,
+[data-radix-dialog-content]::-webkit-scrollbar-button:start:decrement,
+[data-radix-dialog-content]::-webkit-scrollbar-button:end:increment,
+[data-radix-dialog-content] *::-webkit-scrollbar-button:start:decrement,
+[data-radix-dialog-content] *::-webkit-scrollbar-button:end:increment,
+.overflow-y-auto::-webkit-scrollbar-button:start:decrement,
+.overflow-y-auto::-webkit-scrollbar-button:end:increment,
+.overflow-x-auto::-webkit-scrollbar-button:start:decrement,
+.overflow-x-auto::-webkit-scrollbar-button:end:increment,
+.overflow-auto::-webkit-scrollbar-button:start:decrement,
+.overflow-auto::-webkit-scrollbar-button:end:increment {
   display: none !important;
-  height: 0 !important;
   width: 0 !important;
+  height: 0 !important;
 }
 
 /* Remove cantos */
-.custom-scrollbar::-webkit-scrollbar-corner {
+.custom-scrollbar::-webkit-scrollbar-corner,
+[data-radix-dialog-content]::-webkit-scrollbar-corner,
+[data-radix-dialog-content] *::-webkit-scrollbar-corner,
+.overflow-y-auto::-webkit-scrollbar-corner,
+.overflow-x-auto::-webkit-scrollbar-corner,
+.overflow-auto::-webkit-scrollbar-corner {
   display: none !important;
   background: transparent !important;
-}
-
-/* Garantir que não apareçam decorações extras */
-.custom-scrollbar::-webkit-scrollbar:vertical {
-  width: 6px !important;
-}
-
-.custom-scrollbar::-webkit-scrollbar:horizontal {
-  height: 6px !important;
 }
