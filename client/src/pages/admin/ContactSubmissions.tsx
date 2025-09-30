@@ -370,15 +370,6 @@ export default function ContactSubmissions() {
                         >
                           <Eye className="h-4 w-4" />
                         </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleDelete(submission.id)}
-                          disabled={deleteMutation.isPending}
-                          data-testid={`button-delete-${submission.id}`}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
                       </div>
                     </TableCell>
                   )}
