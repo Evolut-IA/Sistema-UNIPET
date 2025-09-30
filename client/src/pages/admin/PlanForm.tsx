@@ -22,7 +22,6 @@ const planFormSchema = z.object({
   name: z.string().min(1, "Nome é obrigatório"),
   price: z.string().min(1, "Preço é obrigatório"),
   planType: z.enum(["with_waiting_period", "without_waiting_period"]),
-  billingFrequency: z.enum(["monthly", "annual"]),
   description: z.string().optional(),
   image: z.string().optional(),
   buttonText: z.string().optional(),
@@ -63,7 +62,6 @@ export default function PlanForm() {
       name: "",
       price: "",
       planType: "with_waiting_period" as const,
-      billingFrequency: "monthly" as const,
       description: "",
       image: "",
       buttonText: "Contratar Plano",
@@ -100,7 +98,6 @@ export default function PlanForm() {
         name: planData.name || "",
         price: formattedPrice,
         planType: planData.planType || "with_waiting_period",
-        billingFrequency: planData.billingFrequency || "monthly",
         description: planData.description || "",
         image: planData.image || "",
         buttonText: planData.buttonText || "Contratar Plano",
@@ -270,39 +267,6 @@ export default function PlanForm() {
                             </SelectItem>,
                             ...(index < PLAN_TYPES.length - 1 ? [<Separator key={`separator-${type}`} />] : [])
                           ])}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="billingFrequency"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Tipo de Faturamento *</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl>
-                          <SelectTrigger 
-                            data-testid="select-billing-frequency"
-                            style={{
-                              borderColor: 'var(--border-gray)',
-                              background: 'white'
-                            }}
-                          >
-                            <SelectValue placeholder="Selecione o faturamento" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="monthly" className="py-3 pl-10 pr-4 data-[state=selected]:bg-primary data-[state=selected]:text-primary-foreground">
-                            Mensal
-                          </SelectItem>
-                          <Separator />
-                          <SelectItem value="annual" className="py-3 pl-10 pr-4 data-[state=selected]:bg-primary data-[state=selected]:text-primary-foreground">
-                            Anual
-                          </SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
