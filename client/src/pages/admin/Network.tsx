@@ -21,7 +21,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/admin/ui/dropdown-menu";
-import { Plus, Search, Edit, Trash2, Building, ExternalLink, Eye, Copy, Globe, MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Building, ExternalLink, Eye, Copy, Globe, MoreHorizontal, ChevronLeft, ChevronRight, Check, Loader2 } from "lucide-react";
 import { apiRequest } from "@/lib/admin/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { ConfirmDialog } from "@/components/admin/ui/confirm-dialog";
@@ -42,6 +42,7 @@ export default function Network() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedUnit, setSelectedUnit] = useState<NetworkUnit | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [copyState, setCopyState] = useState<'idle' | 'copying' | 'copied'>('idle');
   const [location, setLocation] = useLocation();
   const { visibleColumns, toggleColumn } = useColumnPreferences('network.columns', allColumns);
   const [currentPage, setCurrentPage] = useState(1);
@@ -217,15 +218,20 @@ export default function Network() {
   };
 
   const handleCopyToClipboard = async () => {
+    if (copyState !== 'idle') return;
+    
     try {
+      setCopyState('copying');
       const text = generateUnitText();
       await navigator.clipboard.writeText(text);
-      toast({
-        title: "Copiado!",
-        description: "Informações da unidade copiadas para a área de transferência.",
-        variant: "default",
-      });
+      
+      setCopyState('copied');
+      
+      setTimeout(() => {
+        setCopyState('idle');
+      }, 2000);
     } catch (error) {
+      setCopyState('idle');
       toast({
         title: "Erro",
         description: "Não foi possível copiar as informações. Tente novamente.",
@@ -512,11 +518,16 @@ export default function Network() {
               <Button
                 variant="outline"
                 onClick={handleCopyToClipboard}
-                className="gap-2 h-8"
+                disabled={copyState === 'copying'}
+                className={`gap-2 h-8 transition-all duration-300 ${
+                  copyState === 'copied' ? 'bg-[#e6f4f4] border-[#277677] text-[#277677]' : ''
+                }`}
                 data-testid="button-copy-details"
               >
-                <Copy className="h-4 w-4" />
-                Copiar
+                {copyState === 'copying' && <Loader2 className="h-4 w-4 animate-spin" />}
+                {copyState === 'copied' && <Check className="h-4 w-4" />}
+                {copyState === 'idle' && <Copy className="h-4 w-4" />}
+                {copyState === 'copying' ? 'Copiando...' : copyState === 'copied' ? 'Copiado!' : 'Copiar'}
               </Button>
               <Button
                 variant="outline" 
