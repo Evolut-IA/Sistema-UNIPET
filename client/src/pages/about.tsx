@@ -34,11 +34,9 @@ export default function About() {
         </div>
 
         {/* Company Story */}
-        <div className="grid lg:grid-cols-2 gap-12 md:gap-16 lg:gap-20 items-center mb-20">
-          <AnimatedSection animation="slideRight" delay={200}>
-            <div>
-              {/* About Image */}
-            {settings?.aboutImageUrl && (
+        <div className={`grid ${settings?.aboutImageUrl ? 'lg:grid-cols-2' : 'lg:grid-cols-1'} gap-12 md:gap-16 lg:gap-20 items-center mb-20`}>
+          {settings?.aboutImageUrl && (
+            <AnimatedSection animation="slideRight" delay={200}>
               <div className="relative w-full mx-auto lg:mx-0" style={{ padding: '0', margin: '0' }}>
                 <div 
                   className="relative rounded-2xl shadow-2xl overflow-hidden" 
@@ -60,10 +58,9 @@ export default function About() {
                   />
                 </div>
               </div>
-            )}
-            </div>
-          </AnimatedSection>
-          <div>
+            </AnimatedSection>
+          )}
+          <div className={settings?.aboutImageUrl ? '' : 'max-w-4xl mx-auto'}>
             <AnimatedSection animation="slideLeft" delay={200}>
               <h2 className="section-title text-gold mb-6">Nossa História</h2>
             </AnimatedSection>
