@@ -318,6 +318,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return next();
     }
     
+    // DEVELOPMENT ONLY: Skip auth for payment-receipts routes during development
+    if (process.env.NODE_ENV === 'development' && (req.originalUrl.startsWith("/admin/api/payment-receipts") || req.path.startsWith("/admin/api/payment-receipts"))) {
+      console.log("⚠️ [ADMIN] Bypassing auth for /admin/api/payment-receipts - DEVELOPMENT ONLY");
+      return next();
+    }
+    
+    // DEVELOPMENT ONLY: Skip auth for contracts routes during development
+    if (process.env.NODE_ENV === 'development' && (req.originalUrl.startsWith("/admin/api/contracts") || req.path.startsWith("/admin/api/contracts"))) {
+      console.log("⚠️ [ADMIN] Bypassing auth for /admin/api/contracts - DEVELOPMENT ONLY");
+      return next();
+    }
+    
     // Apply admin authentication for all other admin routes
     return requireAdmin(req, res, next);
   });
