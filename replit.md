@@ -8,6 +8,22 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (September 30, 2025)
 
+### Feature: Supabase Storage Integration for Network Unit Images
+- **Implementation**: Network unit images are now stored in and served from Supabase Storage instead of base64 encoding in the database.
+- **Backend Changes**:
+  - Added `uploadNetworkUnitImage` method to `SupabaseStorageService` in `server/supabase-storage.ts`
+  - Created POST `/admin/api/network-units/upload-image` endpoint protected with `requireAdmin` middleware
+  - Configured multer for in-memory file upload (5MB limit, image-only filter)
+  - Images are processed with Sharp (resize to 1200x800, JPEG conversion, 90% quality)
+  - Images stored in Supabase bucket `pet-images` under `network-units/` path
+- **Frontend Changes**:
+  - Created `NetworkUnitImageUpload` component in `client/src/components/ui/network-unit-image-upload.tsx`
+  - Created `useNetworkUnitImageUpload` hook in `client/src/hooks/use-network-unit-image-upload.ts`
+  - Hook handles file validation, preview generation, and API upload via FormData
+  - Updated `NetworkForm.tsx` to use new upload component with `unitId` parameter
+- **Security**: Upload endpoint requires admin authentication, file type/size validation, and Sharp re-encoding
+- **Storage**: Images are publicly accessible via Supabase CDN URLs
+
 ### Feature: Brazilian Phone Number Formatting
 - **Implementation**: Applied consistent Brazilian phone formatting across all admin interface pages.
 - **Scope**: All phone, contact, WhatsApp, and mobile number fields now display in format "+55 (XX) XXXXX-XXXX" or "+55 (XX) XXXX-XXXX".
