@@ -129,20 +129,13 @@ export default function Network() {
           const result = await response.json();
           
           if (result.valid) {
-            // Senha correta, mostrar confirmação de exclusão
-            confirmDialog.openDialog({
-              title: "Excluir Unidade",
-              description: `Tem certeza que deseja excluir a unidade "${unitName}"? Esta ação não pode ser desfeita e todos os dados relacionados serão perdidos.`,
-              confirmText: "Excluir Unidade",
-              cancelText: "Cancelar",
-              onConfirm: () => {
-                confirmDialog.setLoading(true);
-                deleteUnitMutation.mutate(id, {
-                  onSettled: () => {
-                    confirmDialog.setLoading(false);
-                  }
-                });
-              },
+            // Senha correta, excluir unidade diretamente
+            passwordDialog.setLoading(true);
+            deleteUnitMutation.mutate(id, {
+              onSettled: () => {
+                passwordDialog.setLoading(false);
+                passwordDialog.closeDialog();
+              }
             });
           } else {
             toast({
