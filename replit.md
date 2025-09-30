@@ -8,11 +8,14 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (September 30, 2025)
 
-### Bug Fix: Plan Layout Centering on Desktop
-- **Issue**: When fewer than 4 plans are active, plan containers remain left-aligned leaving empty space on the right side in desktop view.
-- **Root Cause**: Grid layout uses fixed columns (xl:grid-cols-4) but doesn't center items when fewer plans exist.
-- **Solution**: Added `justify-items-center` class to grid container in `client/src/components/blocks/pricing.tsx`
-- **Impact**: Plans now automatically center when less than 4 plans are active, improving visual balance on both homepage and /planos page.
+### Bug Fix: Plan Layout Centering on Desktop with Fixed Card Sizes
+- **Issue**: When fewer than 4 plans are active, plan containers needed to center while maintaining consistent sizes.
+- **Root Cause**: Dynamic grid columns were causing cards to expand/shrink based on available space.
+- **Solution**: 
+  - Set fixed max-width (max-w-[280px]) on plan cards to maintain consistent sizing
+  - Used w-fit on grid container with flex wrapper for proper centering
+  - Kept grid-cols-4 fixed to preserve layout structure
+- **Impact**: Plans now center automatically when fewer than 4 are active, while maintaining their original size across all configurations.
 
 ### Bug Fix: Missing Cidade Field in Network Unit Form
 - **Issue**: Network units could not be created because the form was missing the required 'cidade' (city) field, causing validation to fail silently.
