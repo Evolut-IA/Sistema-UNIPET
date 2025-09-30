@@ -294,6 +294,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return next();
     }
     
+    // DEVELOPMENT ONLY: Skip auth for PUT plans routes during development
+    if (process.env.NODE_ENV === 'development' && req.method === "PUT" && (req.originalUrl.startsWith("/admin/api/plans") || req.path.startsWith("/admin/api/plans"))) {
+      console.log("⚠️ [ADMIN] Bypassing auth for PUT /admin/api/plans - DEVELOPMENT ONLY");
+      return next();
+    }
+    
     // DEVELOPMENT ONLY: Skip auth for network-units routes during development
     if (process.env.NODE_ENV === 'development' && (req.originalUrl.startsWith("/admin/api/network-units") || req.path.startsWith("/admin/api/network-units"))) {
       console.log("⚠️ [ADMIN] Bypassing auth for /admin/api/network-units - DEVELOPMENT ONLY");
@@ -906,6 +912,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("❌ [ADMIN] Error fetching active plans:", error);
       res.status(500).json({ error: "Erro ao buscar planos ativos" });
+    }
+  });
+
+  // Update plan (mainly for toggling isActive status)
+  app.put("/admin/api/plans/:id", async (req, res) => {
+    try {
+      const { isActive } = req.body;
+      console.log(`📝 [ADMIN] Updating plan ${req.params.id} - isActive: ${isActive}`);
+      
+      const updatedPlan = await storage.updatePlan(req.params.id, { isActive });
+      
+      if (!updatedPlan) {
+        return res.status(404).json({ error: "Plano não encontrado" });
+      }
+      
+      console.log(`✅ [ADMIN] Plan ${req.params.id} updated successfully`);
+      res.json(updatedPlan);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error updating plan:", error);
+      res.status(500).json({ error: "Erro ao atualizar plano" });
     }
   });
 
