@@ -1,0 +1,42 @@
+🛡️ Error Handler inicializado com sucesso
+⚙️ Inicializando configuração da aplicação...
+✅ Configuração válida e completa
+🌍 Ambiente: development
+🔗 API: http://localhost:3000
+📧 Contato: contato@unipetplan.com.br
+🎨 Tema: var(--bg-teal-dark)
+🔄 [AUTH-GUARD] Status indefinido, tentando novamente...
+⚠️ Erro vazio ou inválido ignorado: 
+Error {}
+🔍 [AUTH-GUARD] Verificando autenticação - tentativa 1
+⏳ [AUTH-GUARD] Aguardando verificação de autenticação...
+📋 [AUTH-GUARD] Resultado da autenticação: 
+Object {authenticated: true, admin: {…}}
+✅ [AUTH-GUARD] Usuário autenticado com sucesso
+🔍 [ADMIN-CLIENT] Fetching: /admin/api/procedures
+🔍 [ADMIN-CLIENT] Response status for /admin/api/procedures: 200
+🔍 [NetworkForm] onSubmit called with data: 
+Object {name: "Gabriel Alves Marques dos Santos", address: "Rua Manoel Marcelino de Mattos, 21", cidade: "São Sebastião", phone: "(12) 97404-1539", services: Array(6), …}
+🔍 [NetworkForm] Selected services: 
+(6) ["ECG Canino/Felino", "Orquiectomia (gato)", "Drenagem de Abscesso/Hematoma", "Consulta Ortopedista", "NT PROBNP CANINO", "ELISA (LEISHMANIOSE CANINA) LEISH IDEXX"]
+🔍 [NetworkForm] Generated slug: gabriel-alves-marques-dos-santos
+📤 [NetworkForm] Submitting data: 
+Object {name: "Gabriel Alves Marques dos Santos", address: "Rua Manoel Marcelino de Mattos, 21", cidade: "São Sebastião", phone: "(12) 97404-1539", services: Array(6), …}
+🔍 [NetworkForm] onSubmit called with data: 
+Object {name: "Gabriel Alves Marques dos Santos", address: "Rua Manoel Marcelino de Mattos, 21", cidade: "São Sebastião", phone: "(12) 97404-1539", services: Array(8), …}
+🔍 [NetworkForm] Selected services: 
+(8) ["ECG Canino/Felino", "Orquiectomia (gato)", "Drenagem de Abscesso/Hematoma", "Consulta Ortopedista", "NT PROBNP CANINO", "ELISA (LEISHMANIOSE CANINA) LEISH IDEXX", "Análise de líquor (LCR)", "Compatibilidade sanguínea (doador adicional)"]
+🔍 [NetworkForm] Generated slug: gabriel-alves-marques-dos-santos
+📤 [NetworkForm] Submitting data: 
+Object {name: "Gabriel Alves Marques dos Santos", address: "Rua Manoel Marcelino de Mattos, 21", cidade: "São Sebastião", phone: "(12) 97404-1539", services: Array(8), …}
+address: "Rua Manoel Marcelino de Mattos, 21"
+cidade: "São Sebastião"
+googleMapsUrl: "https://replit.com/"
+imageUrl: "https://tkzzxsbwkgcdmcreducm.supabase.co/storage/v1/object/public/pet-images/network-units/unit-new-1759236564796.jpg"
+isActive: true
+name: "Gabriel Alves Marques dos Santos"
+phone: "(12) 97404-1539"
+services: Array(8)
+urlSlug: "gabriel-alves-marques-dos-santos"
+whatsapp: "12974041539"
+[[Prototype]]: Object

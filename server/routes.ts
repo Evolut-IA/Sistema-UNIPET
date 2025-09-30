@@ -920,6 +920,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Create new network unit
+  app.post("/admin/api/network-units", async (req, res) => {
+    try {
+      console.log("📝 [ADMIN] Creating new network unit...");
+      console.log("📦 [ADMIN] Received data:", req.body);
+      
+      // Validate the request body
+      const validatedData = insertNetworkUnitSchema.parse(req.body);
+      console.log("✅ [ADMIN] Data validated successfully");
+      
+      // Create the network unit
+      const newUnit = await storage.createNetworkUnit(validatedData);
+      console.log("✨ [ADMIN] Network unit created successfully:", newUnit.id);
+      
+      res.status(201).json(newUnit);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error creating network unit:", error);
+      if (error instanceof z.ZodError) {
+        console.error("📋 [ADMIN] Validation errors:", error.errors);
+        return res.status(400).json({ 
+          error: "Dados inválidos", 
+          details: error.errors 
+        });
+      }
+      res.status(500).json({ error: "Erro ao criar unidade" });
+    }
+  });
+
   // Network units with credentials route (must come before :id route)
   app.get("/admin/api/network-units/credentials", async (req, res) => {
     try {
