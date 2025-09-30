@@ -452,54 +452,62 @@ textarea:-moz-placeholder {
 /* Scrollbar customizada moderna para elementos com classe .custom-scrollbar */
 .custom-scrollbar {
   /* Firefox - scrollbar fino e moderno */
-  scrollbar-width: thin;
-  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent !important;
 }
 
 /* Webkit browsers (Chrome, Safari, Edge) - Design moderno */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 6px !important;
+  height: 6px !important;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.05);
-  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-radius: 3px !important;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 3px;
-  border: none;
-  transition: background 0.2s ease;
+  background: rgba(0, 0, 0, 0.2) !important;
+  border-radius: 3px !important;
+  border: none !important;
+  transition: background 0.2s ease !important;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.3) !important;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:active {
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.4) !important;
 }
 
-/* Remove setas/botões do scrollbar */
+/* Remove setas/botões do scrollbar - FORÇADO */
 .custom-scrollbar::-webkit-scrollbar-button {
-  display: none;
-  height: 0;
-  width: 0;
+  display: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  background: transparent !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar-button:start:decrement,
+.custom-scrollbar::-webkit-scrollbar-button:end:increment {
+  display: none !important;
+  height: 0 !important;
+  width: 0 !important;
 }
 
 /* Remove cantos */
 .custom-scrollbar::-webkit-scrollbar-corner {
-  display: none;
-  background: transparent;
+  display: none !important;
+  background: transparent !important;
 }
 
 /* Garantir que não apareçam decorações extras */
 .custom-scrollbar::-webkit-scrollbar:vertical {
-  width: 6px;
+  width: 6px !important;
 }
 
 .custom-scrollbar::-webkit-scrollbar:horizontal {
-  height: 6px;
+  height: 6px !important;
 }
