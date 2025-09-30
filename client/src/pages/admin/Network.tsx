@@ -163,8 +163,8 @@ export default function Network() {
     });
   };
 
-  const handleToggleStatus = (id: string, currentStatus: boolean) => {
-    toggleUnitMutation.mutate({ id, isActive: !currentStatus });
+  const handleToggleStatus = (id: string, newStatus: boolean) => {
+    toggleUnitMutation.mutate({ id, isActive: newStatus });
   };
 
   const handleViewDetails = (unit: NetworkUnit) => {
@@ -376,7 +376,7 @@ export default function Network() {
                     <TableCell className="whitespace-nowrap bg-white">
                       <Switch
                         checked={unit.isActive}
-                        onCheckedChange={() => handleToggleStatus(unit.id, unit.isActive)}
+                        onCheckedChange={(checked) => handleToggleStatus(unit.id, checked)}
                         disabled={toggleUnitMutation.isPending}
                         data-testid={`switch-unit-status-${unit.id}`}
                       />

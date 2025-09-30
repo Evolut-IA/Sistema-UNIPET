@@ -211,28 +211,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return next();
     }
     
-    // TEMPORARY: Skip auth for client routes during development
+    // DEVELOPMENT ONLY: Skip auth for client routes during development
     // Note: req.path may be different than expected in middleware
-    if (req.method === "POST" && (req.path === "/admin/api/clients" || req.originalUrl === "/admin/api/clients")) {
+    if (process.env.NODE_ENV === 'development' && req.method === "POST" && (req.path === "/admin/api/clients" || req.originalUrl === "/admin/api/clients")) {
       console.log("⚠️ [ADMIN] Bypassing auth for POST /admin/api/clients - DEVELOPMENT ONLY");
       return next();
     }
     
-    // TEMPORARY: Skip auth for GET client routes during development
-    if (req.method === "GET" && (req.originalUrl.startsWith("/admin/api/clients") || req.path.startsWith("/admin/api/clients"))) {
+    // DEVELOPMENT ONLY: Skip auth for GET client routes during development
+    if (process.env.NODE_ENV === 'development' && req.method === "GET" && (req.originalUrl.startsWith("/admin/api/clients") || req.path.startsWith("/admin/api/clients"))) {
       console.log("⚠️ [ADMIN] Bypassing auth for GET /admin/api/clients - DEVELOPMENT ONLY");
       return next();
     }
     
-    // TEMPORARY: Skip auth for PUT client routes during development  
-    if (req.method === "PUT" && (req.originalUrl.startsWith("/admin/api/clients") || req.path.startsWith("/admin/api/clients"))) {
+    // DEVELOPMENT ONLY: Skip auth for PUT client routes during development  
+    if (process.env.NODE_ENV === 'development' && req.method === "PUT" && (req.originalUrl.startsWith("/admin/api/clients") || req.path.startsWith("/admin/api/clients"))) {
       console.log("⚠️ [ADMIN] Bypassing auth for PUT /admin/api/clients - DEVELOPMENT ONLY");
       return next();
     }
     
-    // TEMPORARY: Skip auth for GET plans routes during development
-    if (req.method === "GET" && (req.originalUrl.startsWith("/admin/api/plans") || req.path.startsWith("/admin/api/plans"))) {
+    // DEVELOPMENT ONLY: Skip auth for GET plans routes during development
+    if (process.env.NODE_ENV === 'development' && req.method === "GET" && (req.originalUrl.startsWith("/admin/api/plans") || req.path.startsWith("/admin/api/plans"))) {
       console.log("⚠️ [ADMIN] Bypassing auth for GET /admin/api/plans - DEVELOPMENT ONLY");
+      return next();
+    }
+    
+    // DEVELOPMENT ONLY: Skip auth for network-units routes during development
+    if (process.env.NODE_ENV === 'development' && (req.originalUrl.startsWith("/admin/api/network-units") || req.path.startsWith("/admin/api/network-units"))) {
+      console.log("⚠️ [ADMIN] Bypassing auth for /admin/api/network-units - DEVELOPMENT ONLY");
       return next();
     }
     
@@ -921,6 +927,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("❌ [ADMIN] Error fetching network unit:", error);
       res.status(500).json({ error: "Erro ao buscar unidade" });
+    }
+  });
+
+  app.put("/admin/api/network-units/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const updateData = updateNetworkUnitSchema.partial().parse(req.body);
+      
+      const updatedUnit = await storage.updateNetworkUnit(id, updateData);
+      
+      if (!updatedUnit) {
+        return res.status(404).json({ error: "Unidade não encontrada" });
+      }
+      
+      res.json(updatedUnit);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error updating network unit:", error);
+      res.status(400).json({ error: "Erro ao atualizar unidade" });
     }
   });
 

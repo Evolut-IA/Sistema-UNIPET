@@ -190,23 +190,29 @@ export default function AuthGuard({ children }: AuthGuardProps) {
 
   // Handle loading state with intelligent timing
   useEffect(() => {
-    // If we have authenticated status (from cache or query), hide loading immediately
-    if (authStatus?.authenticated || initialData?.authenticated) {
-      setShowLoading(false);
+    // Priority 1: If authenticated, always hide loading
+    if (authStatus?.authenticated) {
+      if (showLoading) {
+        setShowLoading(false);
+      }
       return;
     }
     
-    // Show loading during initial checks
-    if (isLoading || isFetching) {
-      setShowLoading(true);
+    // Priority 2: If we have any auth data (even if not authenticated), hide loading
+    if (authStatus !== undefined && authStatus !== null) {
+      if (showLoading) {
+        setShowLoading(false);
+      }
       return;
     }
     
-    // Hide loading when we have data
-    if (authStatus !== undefined) {
-      setShowLoading(false);
+    // Priority 3: Show loading only if actively loading and no data
+    if ((isLoading || isFetching) && !authStatus) {
+      if (!showLoading) {
+        setShowLoading(true);
+      }
     }
-  }, [isLoading, isFetching, authStatus, initialData]);
+  }, [isLoading, isFetching, authStatus, showLoading]);
 
   // Handle authentication status with delayed redirect
   useEffect(() => {

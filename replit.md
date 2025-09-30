@@ -6,6 +6,29 @@ UNIPET PLAN is a comprehensive pet health plan management system designed to str
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes (September 30, 2025)
+
+### Bug Fix: Network Units Status Toggle
+- **Issue**: Status toggle button in /admin/rede page was not working correctly - when clicked to deactivate, units remained active.
+- **Root Cause**: 
+  1. Frontend: Switch component was passing current value and inverting it, causing double-inversion with Radix UI
+  2. Backend: Missing PUT route for updating network unit status
+- **Solution**:
+  1. Fixed Network.tsx: onCheckedChange now passes new value directly without manual inversion
+  2. Added PUT /admin/api/network-units/:id route in server/routes.ts
+  3. Route validates with updateNetworkUnitSchema and calls storage.updateNetworkUnit
+
+### Security Fix: Development Auth Bypass Protection
+- **Issue**: Development auth bypasses were not checking NODE_ENV, exposing admin routes in production.
+- **Impact**: Critical security vulnerability - all admin bypasses would work in production.
+- **Solution**: Added `process.env.NODE_ENV === 'development'` check to ALL auth bypasses:
+  - POST /admin/api/clients
+  - GET /admin/api/clients  
+  - PUT /admin/api/clients
+  - GET /admin/api/plans
+  - All /admin/api/network-units routes
+- **Result**: In production, all admin routes now require proper authentication.
+
 ## System Architecture
 
 ### Frontend
