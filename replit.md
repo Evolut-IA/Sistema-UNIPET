@@ -8,20 +8,6 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (September 30, 2025)
 
-### Feature: Billing Frequency Field in Plan Management
-- **Implementation**: Added the ability to edit billing frequency (monthly/annual) in plan creation and editing.
-- **Frontend Changes**:
-  - Updated `PlanForm.tsx` schema to include `billingFrequency` field with enum validation
-  - Added `billingFrequency` to form defaultValues and reset logic
-  - Created new Select field in the UI for choosing between "Mensal" (monthly) and "Anual" (annual) billing
-  - Field positioned after plan type selection in the Basic Information section
-- **Backend Changes**:  
-  - Updated PUT `/admin/api/plans/:id` endpoint to accept and save `billingFrequency` field
-  - Field properly persisted to database `plans` table
-- **Testing**: Verified API correctly saves and retrieves billingFrequency values
-
-## Recent Changes (September 30, 2025)
-
 ### Bug Fix: Plan Layout Centering on Desktop with Fixed Card Sizes
 - **Issue**: When fewer than 4 plans are active, plan containers needed to center while maintaining consistent sizes.
 - **Root Cause**: Dynamic grid columns were causing cards to expand/shrink based on available space.
