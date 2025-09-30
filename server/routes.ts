@@ -361,6 +361,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   // CRITICAL: Dashboard aggregated data endpoint (required by admin dashboard)
   app.get("/admin/api/dashboard/all", async (req, res) => {
+    // DEVELOPMENT ONLY: Skip auth for dashboard during development
+    if (process.env.NODE_ENV !== 'development' && (!req.session || !req.session.admin)) {
+      return res.status(401).json({ error: "Acesso administrativo não autorizado" });
+    }
+    
     try {
       console.log("📊 [DASHBOARD] Processing dashboard data request");
       
@@ -790,6 +795,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Admin guides routes
   app.get("/admin/api/guides", async (req, res) => {
+    // DEVELOPMENT ONLY: Skip auth for guides during development
+    if (process.env.NODE_ENV !== 'development' && (!req.session || !req.session.admin)) {
+      return res.status(401).json({ error: "Acesso administrativo não autorizado" });
+    }
+    
     try {
       const guides = await storage.getAllGuides();
       res.json(guides);
@@ -800,6 +810,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.get("/admin/api/guides/with-network-units", async (req, res) => {
+    // DEVELOPMENT ONLY: Skip auth for guides during development
+    if (process.env.NODE_ENV !== 'development' && (!req.session || !req.session.admin)) {
+      return res.status(401).json({ error: "Acesso administrativo não autorizado" });
+    }
+    
     try {
       // Parse query parameters
       const page = parseInt(req.query.page as string) || 1;
@@ -1219,6 +1234,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Admin procedures routes
   app.get("/admin/api/procedures", async (req, res) => {
+    // DEVELOPMENT ONLY: Skip auth for procedures during development
+    if (process.env.NODE_ENV !== 'development' && (!req.session || !req.session.admin)) {
+      return res.status(401).json({ error: "Acesso administrativo não autorizado" });
+    }
+    
     try {
       const procedures = await storage.getAllProcedures();
       res.json(procedures);
