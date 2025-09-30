@@ -265,7 +265,7 @@ export default function ContactSubmissions() {
   };
 
   return (
-    <div className="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div className="flex-1 min-w-0">
@@ -275,7 +275,7 @@ export default function ContactSubmissions() {
       </div>
 
       {/* Filters and Column Controls */}
-      <div className="flex flex-wrap gap-4 items-center justify-between mb-6">
+      <div className="flex flex-wrap gap-4 items-center justify-between">
         <div className="flex gap-2 flex-wrap">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -286,7 +286,7 @@ export default function ContactSubmissions() {
                 setSearchQuery(e.target.value);
                 setCurrentPage(1); // Reset para página 1 ao buscar
               }}
-              className="pl-10 w-64"
+              className="pl-10 w-80"
               data-testid="input-search-submissions"
             />
           </div>
@@ -326,7 +326,7 @@ export default function ContactSubmissions() {
       </div>
 
       {/* Submissions Table */}
-      <div className="container my-10 space-y-4 border border-border rounded-lg bg-accent shadow-sm overflow-hidden">
+      <div className="container my-10 space-y-4 border border-[#eaeaea] rounded-lg bg-white shadow-sm overflow-hidden">
         {isLoading ? (
           <div className="p-6 space-y-4">
             {[...Array(5)].map((_, i) => (
@@ -340,52 +340,52 @@ export default function ContactSubmissions() {
         ) : filteredSubmissions?.length ? (
           <Table>
             <TableHeader>
-              <TableRow className="bg-accent">
+              <TableRow className="bg-white border-b border-[#eaeaea]">
                 {visibleColumns.includes("Nome") && (
-                  <TableHead className="bg-accent">Nome</TableHead>
+                  <TableHead className="bg-white">Nome</TableHead>
                 )}
                 {visibleColumns.includes("Telefone") && (
-                  <TableHead className="bg-accent">Telefone</TableHead>
+                  <TableHead className="bg-white">Telefone</TableHead>
                 )}
                 {visibleColumns.includes("Email") && (
-                  <TableHead className="bg-accent">Email</TableHead>
+                  <TableHead className="bg-white">Email</TableHead>
                 )}
                 {visibleColumns.includes("Pet") && (
-                  <TableHead className="bg-accent">Pet</TableHead>
+                  <TableHead className="bg-white">Pet</TableHead>
                 )}
                 {visibleColumns.includes("Plano") && (
-                  <TableHead className="bg-accent">Plano</TableHead>
+                  <TableHead className="bg-white">Plano</TableHead>
                 )}
                 {visibleColumns.includes("Data") && (
-                  <TableHead className="bg-accent">Data</TableHead>
+                  <TableHead className="bg-white">Data</TableHead>
                 )}
                 {visibleColumns.includes("Ações") && (
-                  <TableHead className="bg-accent">Ações</TableHead>
+                  <TableHead className="bg-white">Ações</TableHead>
                 )}
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredSubmissions.map((submission: any) => (
-                <TableRow key={submission.id} className="bg-accent">
+                <TableRow key={submission.id} className="bg-white border-b border-[#eaeaea]">
                   {visibleColumns.includes("Nome") && (
-                    <TableCell className="font-medium whitespace-nowrap bg-accent">
+                    <TableCell className="font-medium whitespace-nowrap bg-white">
                       <div className="font-medium text-foreground" data-testid={`submission-name-${submission.id}`}>
                         {submission.name}
                       </div>
                     </TableCell>
                   )}
                   {visibleColumns.includes("Telefone") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
+                    <TableCell className="whitespace-nowrap bg-white">
                       <div className="text-sm text-foreground">{submission.phone}</div>
                     </TableCell>
                   )}
                   {visibleColumns.includes("Email") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
+                    <TableCell className="whitespace-nowrap bg-white">
                       <div className="text-sm text-foreground">{submission.email}</div>
                     </TableCell>
                   )}
                   {visibleColumns.includes("Pet") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
+                    <TableCell className="whitespace-nowrap bg-white">
                       <div>
                         <div className="font-medium text-foreground">{submission.petName}</div>
                         <div className="text-sm text-muted-foreground">{submission.animalType}, {submission.petAge}</div>
@@ -393,21 +393,21 @@ export default function ContactSubmissions() {
                     </TableCell>
                   )}
                   {visibleColumns.includes("Plano") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
+                    <TableCell className="whitespace-nowrap bg-white">
                       <Badge className={getPlanInterestColor(submission.planInterest)} data-testid={`badge-plan-interest-${submission.id}`}>
                         {submission.planInterest}
                       </Badge>
                     </TableCell>
                   )}
                   {visibleColumns.includes("Data") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
+                    <TableCell className="whitespace-nowrap bg-white">
                       <div className="text-sm text-foreground">
                         {submission.createdAt && format(new Date(submission.createdAt), "dd/MM/yyyy", { locale: ptBR })} {submission.createdAt && format(new Date(submission.createdAt), "HH:mm", { locale: ptBR })}
                       </div>
                     </TableCell>
                   )}
                   {visibleColumns.includes("Ações") && (
-                    <TableCell className="whitespace-nowrap bg-accent">
+                    <TableCell className="whitespace-nowrap bg-white">
                       <div className="flex items-center justify-center space-x-1">
                         <Button
                           variant="outline"
@@ -445,8 +445,8 @@ export default function ContactSubmissions() {
         ) : (
           <Table>
             <TableBody>
-              <TableRow className="bg-accent">
-                <TableCell colSpan={visibleColumns.length} className="text-center py-12 bg-accent">
+              <TableRow className="bg-white border-b border-[#eaeaea]">
+                <TableCell colSpan={visibleColumns.length} className="text-center py-12 bg-white">
                   <Mail className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                   <p className="text-muted-foreground">
                     {searchQuery 
@@ -463,32 +463,40 @@ export default function ContactSubmissions() {
 
       {/* Pagination */}
       {totalSubmissions > 10 && (
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">
-            Mostrando {startIndex + 1} a {Math.min(endIndex, totalSubmissions)} de {totalSubmissions} formulários
-          </p>
+        <div className="flex items-center justify-between py-4">
+          <div className="flex items-center space-x-6 lg:space-x-8">
+            <div className="flex items-center space-x-2">
+              <p className="text-sm font-medium">
+                {totalSubmissions > 0 ? (
+                  <>Mostrando {(currentPage - 1) * pageSize + 1} a {Math.min(currentPage * pageSize, totalSubmissions)} de {totalSubmissions} formulário{totalSubmissions !== 1 ? 's' : ''}</>
+                ) : (
+                  "Nenhum formulário encontrado"
+                )}
+              </p>
+            </div>
+          </div>
           <div className="flex items-center space-x-2">
             <Button
               variant="outline"
               size="sm"
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              data-testid="button-previous-page"
             >
               <ChevronLeft className="h-4 w-4" />
               Anterior
             </Button>
-            <span className="text-sm font-medium">
-              Página {currentPage} de {totalPages}
-            </span>
+            <div className="flex items-center space-x-1">
+              <span className="text-sm font-medium">
+                Página {currentPage} de {totalPages}
+              </span>
+            </div>
             <Button
-              variant="outline"
+              variant="admin-action"
               size="sm"
               onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
-              data-testid="button-next-page"
             >
-              Próxima
+              Próximo
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
