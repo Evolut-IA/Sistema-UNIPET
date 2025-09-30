@@ -56,9 +56,9 @@ export function Pricing({
   };
 
   return (
-    <div>
-      <div className="flex justify-center">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 perspective-1000 w-fit">
+    <div className="w-full flex justify-center">
+      <div className="w-full max-w-[1200px]">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 perspective-1000 place-items-center">
           {plans.map((plan, index) => (
             <AnimatedSection
               key={plan.id}
