@@ -800,35 +800,26 @@ export default function Procedures() {
         }
       }}>
         <DialogContent hideCloseButton maxHeightMobile="max-h-[80vh]">
-          <DialogHeader className="flex flex-row items-center justify-between pr-2">
-            <div>
-              <DialogTitle className="flex items-center space-x-2">
-                {editingItem ? (
-                  <>
-                    <Edit className="h-5 w-5 text-primary" />
-                    <span>Editar Procedimento</span>
-                  </>
-                ) : (
-                  <>
-                    <Plus className="h-5 w-5 text-primary" />
-                    <span>Novo Procedimento</span>
-                  </>
-                )}
-              </DialogTitle>
-              <DialogDescription>
-                {editingItem 
-                  ? "Atualize as informações do procedimento e configure os planos associados." 
-                  : "Crie um novo procedimento médico e configure os planos que o cobrem."
-                }
-              </DialogDescription>
-            </div>
-            <Button
-              variant="outline"
-              onClick={() => setDialogOpen(false)}
-              className="h-8"
-            >
-              <X className="h-4 w-4" />
-            </Button>
+          <DialogHeader>
+            <DialogTitle className="flex items-center space-x-2">
+              {editingItem ? (
+                <>
+                  <Edit className="h-5 w-5 text-primary" />
+                  <span>Editar Procedimento</span>
+                </>
+              ) : (
+                <>
+                  <Plus className="h-5 w-5 text-primary" />
+                  <span>Novo Procedimento</span>
+                </>
+              )}
+            </DialogTitle>
+            <DialogDescription>
+              {editingItem 
+                ? "Atualize as informações do procedimento e configure os planos associados." 
+                : "Crie um novo procedimento médico e configure os planos que o cobrem."
+              }
+            </DialogDescription>
           </DialogHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 overflow-y-auto flex-1 pr-2 custom-scrollbar">
@@ -927,7 +918,13 @@ export default function Procedures() {
                                     value={selectedPlan.planId}
                                     onValueChange={(value) => updatePlanId(index, value)}
                                   >
-                                    <SelectTrigger className={planErrors[index] && !selectedPlan.planId ? 'border-destructive' : ''}>
+                                    <SelectTrigger 
+                                      className={planErrors[index] && !selectedPlan.planId ? 'border-destructive' : ''}
+                                      style={{
+                                        borderColor: planErrors[index] && !selectedPlan.planId ? undefined : 'var(--border-gray)',
+                                        backgroundColor: '#FFFFFF'
+                                      }}
+                                    >
                                       <SelectValue placeholder="Selecione um plano" />
                                     </SelectTrigger>
                                     <SelectContent>
