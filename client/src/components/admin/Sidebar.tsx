@@ -2,17 +2,19 @@ import { Link, useLocation } from "wouter";
 import { useQueryClient } from "@tanstack/react-query";
 import { cn } from "@/lib/admin/utils";
 import {
-  LayoutDashboard,
+  Home,
   Users,
   FileText,
   CreditCard,
-  Building2,
+  Building,
   HelpCircle,
   Mail,
-  UserCog,
+  User,
   Settings,
   Stethoscope,
-  ClipboardList
+  Clipboard,
+  DollarSign,
+  File
 } from "lucide-react";
 import { createCacheManager } from "@/lib/admin/cacheUtils";
 
@@ -20,7 +22,7 @@ const navigation = [
   {
     name: "Principal",
     items: [
-      { name: "Dashboard", href: "/", icon: LayoutDashboard }
+      { name: "Dashboard", href: "/", icon: Home }
     ]
   },
   {
@@ -28,7 +30,9 @@ const navigation = [
     items: [
       { name: "Clientes & Pets", href: "/clientes", icon: Users },
       { name: "Guias de Atendimento", href: "/guias", icon: FileText },
-      { name: "Rede Credenciada", href: "/rede", icon: Building2 },
+      { name: "Rede Credenciada", href: "/rede", icon: Building },
+      { name: "Financeiro", href: "/financeiro", icon: DollarSign },
+      { name: "Contratos", href: "/contratos", icon: File },
       { name: "Formulários", href: "/formularios", icon: Mail }
     ]
   },
@@ -36,9 +40,9 @@ const navigation = [
     name: "Sistema",
     items: [
       { name: "Planos de Saúde", href: "/planos", icon: CreditCard },
-      { name: "Procedimentos", href: "/procedimentos", icon: ClipboardList },
+      { name: "Procedimentos", href: "/procedimentos", icon: Clipboard },
       { name: "FAQ", href: "/perguntas-frequentes", icon: HelpCircle },
-      { name: "Administração", href: "/administracao", icon: UserCog },
+      { name: "Administração", href: "/administracao", icon: User },
       { name: "Configurações", href: "/configuracoes", icon: Settings }
     ]
   }

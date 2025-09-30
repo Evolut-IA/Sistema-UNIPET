@@ -64,6 +64,8 @@ import AdminContactSubmissions from './pages/admin/ContactSubmissions';
 import AdminSettings from './pages/admin/Settings';
 import AdminAdministration from './pages/admin/Administration';
 import AdminUnitDashboard from './pages/admin/UnitDashboard';
+import AdminFinancial from './pages/admin/Financial';
+import AdminContracts from './pages/admin/Contracts';
 import AdminNotFound from './pages/admin/not-found';
 
 // AdminRouter - handles all admin routes with base="/admin"
@@ -100,6 +102,10 @@ function AdminRouter() {
             <Route path="/rede" component={AdminNetwork} />
             <Route path="/rede/novo" component={AdminNetworkForm} />
             <Route path="/rede/:id/editar" component={AdminNetworkForm} />
+            
+            {/* Financial and Contracts routes */}
+            <Route path="/financeiro" component={AdminFinancial} />
+            <Route path="/contratos" component={AdminContracts} />
             
             {/* Other admin routes */}
             <Route path="/procedimentos" component={AdminProcedures} />

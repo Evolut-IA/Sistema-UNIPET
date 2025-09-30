@@ -699,6 +699,102 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ==== ADMIN PAYMENT RECEIPTS ROUTES ====
+  // Get all payment receipts
+  app.get("/admin/api/payment-receipts", async (req, res) => {
+    try {
+      const receipts = await storage.getAllPaymentReceipts();
+      res.json(receipts);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error fetching payment receipts:", error);
+      res.status(500).json({ error: "Erro ao buscar comprovantes de pagamento" });
+    }
+  });
+
+  // Get single payment receipt by ID
+  app.get("/admin/api/payment-receipts/:id", async (req, res) => {
+    try {
+      const receipt = await storage.getPaymentReceiptById(req.params.id);
+      if (!receipt) {
+        return res.status(404).json({ error: "Comprovante não encontrado" });
+      }
+      res.json(receipt);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error fetching payment receipt:", error);
+      res.status(500).json({ error: "Erro ao buscar comprovante" });
+    }
+  });
+
+  // ==== ADMIN CONTRACTS ROUTES ====
+  // Get all contracts with client and pet details
+  app.get("/admin/api/contracts", async (req, res) => {
+    try {
+      const contracts = await storage.getAllContracts();
+      
+      // Enrich contracts with client, pet, and plan details
+      const enrichedContracts = await Promise.all(
+        contracts.map(async (contract) => {
+          try {
+            const client = await storage.getClientById(contract.clientId);
+            const pet = await storage.getPet(contract.petId);
+            const plan = await storage.getPlan(contract.planId);
+            
+            return {
+              ...contract,
+              clientName: client?.fullName || 'N/A',
+              clientEmail: client?.email || 'N/A',
+              clientPhone: client?.phone || 'N/A',
+              petName: pet?.name || 'N/A',
+              petSpecies: pet?.species || 'N/A',
+              planName: plan?.name || 'N/A',
+            };
+          } catch (error) {
+            console.error(`❌ Error enriching contract ${contract.id}:`, error);
+            return contract;
+          }
+        })
+      );
+      
+      res.json(enrichedContracts);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error fetching contracts:", error);
+      res.status(500).json({ error: "Erro ao buscar contratos" });
+    }
+  });
+
+  // Get single contract by ID
+  app.get("/admin/api/contracts/:id", async (req, res) => {
+    try {
+      const contract = await storage.getContract(req.params.id);
+      if (!contract) {
+        return res.status(404).json({ error: "Contrato não encontrado" });
+      }
+      
+      // Enrich with client, pet, and plan details
+      try {
+        const client = await storage.getClientById(contract.clientId);
+        const pet = await storage.getPet(contract.petId);
+        const plan = await storage.getPlan(contract.planId);
+        
+        res.json({
+          ...contract,
+          clientName: client?.fullName || 'N/A',
+          clientEmail: client?.email || 'N/A',
+          clientPhone: client?.phone || 'N/A',
+          petName: pet?.name || 'N/A',
+          petSpecies: pet?.species || 'N/A',
+          planName: plan?.name || 'N/A',
+        });
+      } catch (error) {
+        console.error(`❌ Error enriching contract ${contract.id}:`, error);
+        res.json(contract);
+      }
+    } catch (error) {
+      console.error("❌ [ADMIN] Error fetching contract:", error);
+      res.status(500).json({ error: "Erro ao buscar contrato" });
+    }
+  });
+
   // ==== ADMIN PETS ROUTES ====
   // Get single pet by ID
   app.get("/admin/api/pets/:id", async (req, res) => {
