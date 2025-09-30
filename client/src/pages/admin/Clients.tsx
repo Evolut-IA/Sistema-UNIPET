@@ -582,7 +582,7 @@ export default function Clients() {
                 onClick={handleCopyToClipboard}
                 disabled={copyState === 'copying'}
                 className={`gap-2 h-8 transition-all duration-300 ${
-                  copyState === 'copied' ? 'bg-green-50 border-green-200 text-green-700' : ''
+                  copyState === 'copied' ? 'bg-[#e6f4f4] border-[#277677] text-[#277677]' : ''
                 }`}
                 data-testid="button-copy-details"
               >
