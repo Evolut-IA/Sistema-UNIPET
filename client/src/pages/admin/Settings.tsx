@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/admin/queryClient";
 import { insertSiteSettingsSchema, insertRulesSettingsSchema, insertChatSettingsSchema } from "@shared/schema";
-import { Globe, Save, FileText, Share, Image, MessageCircle } from "lucide-react";
+import { Globe, Save, FileText, Share, Image, MessageSquare } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { SiteSettingsImageUpload } from "@/components/admin/ui/site-settings-image-upload";
 
@@ -265,7 +265,7 @@ export default function Settings() {
             value="chat" 
             className="flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
           >
-            <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+            <MessageSquare className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
             <span className="truncate">Chat</span>
           </TabsTrigger>
           <TabsTrigger 
@@ -651,7 +651,7 @@ export default function Settings() {
             <Card className="border-[#eaeaea] bg-white shadow-sm">
               <CardHeader>
                 <CardTitle className="text-foreground flex items-center space-x-2">
-                  <MessageCircle className="h-5 w-5" />
+                  <MessageSquare className="h-5 w-5" />
                   <span>Configurações do Chat</span>
                 </CardTitle>
               </CardHeader>
