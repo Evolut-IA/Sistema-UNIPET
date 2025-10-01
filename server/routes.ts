@@ -944,7 +944,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/admin/api/faq", async (req, res) => {
     try {
       const validatedData = insertFaqItemSchema.parse(req.body);
-      const newItem = await storage.createFaqItem(validatedData);
+      // Ensure required properties are present
+      const faqData = {
+        displayOrder: validatedData.displayOrder!,
+        question: validatedData.question!,
+        answer: validatedData.answer!,
+        isActive: validatedData.isActive
+      };
+      const newItem = await storage.createFaqItem(faqData);
       console.log("✅ [ADMIN] FAQ item created:", newItem.id);
       res.json(newItem);
     } catch (error) {
@@ -955,7 +962,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/admin/api/faq/:id", async (req, res) => {
     try {
-      const updatedItem = await storage.updateFaqItem(req.params.id, req.body);
+      const validatedData = insertFaqItemSchema.parse(req.body);
+      // Ensure required properties are present for update
+      const updateData = {
+        displayOrder: validatedData.displayOrder!,
+        question: validatedData.question!,
+        answer: validatedData.answer!,
+        isActive: validatedData.isActive
+      };
+      const updatedItem = await storage.updateFaqItem(req.params.id, updateData);
       if (!updatedItem) {
         return res.status(404).json({ error: "Item do FAQ não encontrado" });
       }
@@ -1263,8 +1278,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validatedData = insertNetworkUnitSchema.parse(req.body);
       console.log("✅ [ADMIN] Data validated successfully");
       
+      // Ensure required properties are present
+      const unitData = {
+        name: validatedData.name!,
+        phone: validatedData.phone!,
+        address: validatedData.address!,
+        cidade: validatedData.cidade!,
+        services: validatedData.services!,
+        imageUrl: validatedData.imageUrl!,
+        isActive: validatedData.isActive,
+        whatsapp: validatedData.whatsapp,
+        googleMapsUrl: validatedData.googleMapsUrl,
+        imageData: validatedData.imageData,
+        urlSlug: validatedData.urlSlug
+      };
+      
       // Create the network unit
-      const newUnit = await storage.createNetworkUnit(validatedData);
+      const newUnit = await storage.createNetworkUnit(unitData);
       console.log("✨ [ADMIN] Network unit created successfully:", newUnit.id);
       
       res.status(201).json(newUnit);
@@ -3263,7 +3293,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             
             // CRITICAL FIX: Determine if payment is confirmed before marking as active
             const isPaymentConfirmed = paymentMethod === 'credit_card' && paymentResult.payment?.status === 2;
-            const contractStatus = isPaymentConfirmed ? 'active' : 'pending';
+            const contractStatus: 'active' | 'pending' = isPaymentConfirmed ? 'active' : 'pending';
             
             // Get the existing contract to renew
             const existingContract = await storage.getContract(renewalContractId);
@@ -5330,26 +5360,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
                     cieloPaymentId: paymentId,
                     clientName: client.fullName,
                     clientEmail: client.email,
-                    clientCPF: client.cpf,
+                    clientCPF: client.cpf || undefined,
                     clientPhone: client.phone,
                     pets: [{
                       name: pet.name || 'Pet',
                       species: pet.species || 'Cão',
-                      breed: pet.breed,
-                      age: typeof pet.age === 'string' ? parseFloat(pet.age) || 0 : pet.age,
-                      weight: typeof pet.weight === 'string' ? parseFloat(pet.weight) || 0 : pet.weight,
-                      sex: pet.sex,
+                      breed: pet.breed || undefined,
+                      age: typeof pet.age === 'string' ? parseFloat(pet.age) || undefined : pet.age || undefined,
+                      weight: typeof pet.weight === 'string' ? parseFloat(pet.weight) || undefined : pet.weight || undefined,
+                      sex: pet.sex || undefined,
                       planName: plan.name || 'BASIC',
                       planType: plan.planType || 'BASIC',
-                      value: contract.monthlyAmount,
+                      value: parseFloat(contract.monthlyAmount || '0'),
                       discount: 0,
-                      discountedValue: contract.monthlyAmount
+                      discountedValue: parseFloat(contract.monthlyAmount || '0')
                     }],
                     paymentMethod: 'pix',
                     installments: 1,
-                    installmentValue: contract.monthlyAmount,
+                    installmentValue: parseFloat(contract.monthlyAmount || '0'),
                     totalDiscount: 0,
-                    finalAmount: contract.monthlyAmount
+                    finalAmount: parseFloat(contract.monthlyAmount || '0')
                   };
                   
                   console.log(`📄 [PIX-RENEWAL-RECEIPT] Gerando comprovante de renovação para contrato ${contract.contractNumber}`);
@@ -5385,12 +5415,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
               const pet = await storage.getPet(contract.petId);
               
               if (client) {
-                const receiptResult = await receiptService.generateReceipt({
+                const receiptResult = await receiptService.generatePaymentReceipt({
                   contractId: contract.id,
                   cieloPaymentId: paymentId,
-                  clientName: client.fullName || client.full_name || 'Cliente',
+                  clientName: client.fullName || 'Cliente',
                   clientEmail: client.email,
-                  clientCPF: client.cpf || '',
+                  clientCPF: client.cpf || undefined,
                   petName: pet?.name || '',
                   planName: plan?.name || '',
                   paymentMethod: 'pix'
@@ -5419,7 +5449,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Calculate payment status using PaymentStatusService if contract exists
-      let contractStatus = null;
+      let contractStatus: {
+        calculatedStatus: 'active' | 'inactive' | 'suspended' | 'cancelled';
+        isOverdue: boolean;
+        daysPastDue: number;
+        nextDueDate: Date | null;
+        statusReason: string;
+        actionRequired: string | null;
+      } | null = null;
       if (contract) {
         const paymentStatus = PaymentStatusService.evaluateContractPaymentStatus(contract);
         contractStatus = {
@@ -5790,15 +5827,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const creditCardRequest = {
           merchantOrderId: orderId,
           customer: {
-            name: client.fullName || client.full_name || 'Cliente',
+            name: client.fullName || 'Cliente',
             email: client.email,
-            identity: client.cpf,
+            identity: client.cpf || undefined,
             identityType: 'CPF' as const,
             address: {
               street: client.address || '',
               number: client.number || 'S/N',
               complement: client.complement || '',
-              zipCode: client.cep || client.zipCode || '',
+              zipCode: client.cep || '',
               city: client.city || '',
               state: client.state || '',
               country: 'BRA'
@@ -5852,17 +5889,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
             const receiptData = {
               contractId: contract.id,
               cieloPaymentId: paymentResult.payment.paymentId,
-              clientName: client.fullName || client.full_name || 'Cliente',
+              clientName: client.fullName || 'Cliente',
               clientEmail: client.email,
-              clientCPF: client.cpf,
+              clientCPF: client.cpf || undefined,
               clientPhone: client.phone,
               pets: [{
-                name: pet?.name || contract.petName || 'Pet',
+                name: pet?.name || 'Pet',
                 species: pet?.species || 'Cão',
-                breed: pet?.breed,
-                age: pet?.age,
-                weight: pet?.weight,
-                sex: pet?.sex,
+                breed: pet?.breed || undefined,
+                age: typeof pet?.age === 'string' ? parseFloat(pet.age) || undefined : pet?.age || undefined,
+                weight: typeof pet?.weight === 'string' ? parseFloat(pet.weight) || undefined : pet?.weight || undefined,
+                sex: pet?.sex || undefined,
                 planName: plan.name || 'BASIC',
                 planType: plan.planType || 'BASIC',
                 value: amount,
@@ -5915,14 +5952,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Generate PIX payment
         const cieloService = new CieloService();
         const pixRequest = {
-          merchantOrderId: orderId,
-          customer: {
-            name: client.fullName || client.full_name || 'Cliente',
-            identity: client.cpf || ''
+          MerchantOrderId: orderId,
+          Customer: {
+            Name: client.fullName || 'Cliente',
+            Identity: client.cpf || ''
           },
-          payment: {
-            type: 'Pix' as const,
-            amount: amount
+          Payment: {
+            Type: 'Pix' as const,
+            Amount: amount
           }
         };
         
