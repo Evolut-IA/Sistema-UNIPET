@@ -41,6 +41,9 @@ import { UserCheck, Plus, Search, Edit, Trash2, Eye, EyeOff, ChevronLeft, Chevro
 const AVAILABLE_PERMISSIONS = [
   { id: "clients", label: "Clientes", description: "Acesso à seção de clientes" },
   { id: "pets", label: "Pets", description: "Acesso à seção de pets" },
+  { id: "contracts", label: "Contratos", description: "Acesso à seção de contratos de planos" },
+  { id: "payments", label: "Financeiro", description: "Acesso à seção de pagamentos e transações" },
+  { id: "procedures", label: "Procedimentos", description: "Acesso à seção de procedimentos médicos" },
   { id: "guides", label: "Guias", description: "Acesso à seção de guias de atendimento" },
   { id: "plans", label: "Planos", description: "Acesso à seção de planos de saúde" },
   { id: "network", label: "Rede", description: "Acesso à seção de rede credenciada" },
