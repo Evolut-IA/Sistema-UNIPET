@@ -3,7 +3,6 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/admin/ui/card";
 import { Skeleton } from "@/components/admin/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/admin/ui/alert";
-import { ChartContainer, ChartTooltip } from "@/components/admin/ui/chart";
 import { DateFilterComponent } from "@/components/admin/DateFilterComponent";
 import type { Client, Guide, NetworkUnit, ContactSubmission } from "../../../../shared/schema";
 import {
@@ -11,7 +10,7 @@ import {
   DollarSign,
   Users
 } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip } from "recharts";
 import { CalendarDate } from "@internationalized/date";
 import { getDateRangeParams } from "@/lib/admin/date-utils";
 import { createCacheManager } from "@/lib/admin/cacheUtils";
@@ -275,120 +274,25 @@ export default function Dashboard() {
               <div className="flex items-center justify-center h-64 w-full">
                 <Skeleton className="h-full w-full" />
               </div>
-            ) : (
-              <div className="w-full max-w-4xl">
-                <ChartContainer
-                config={{
-                  formularios: {
-                    label: "Formulários",
-                    color: "var(--chart-1)",
-                  },
-                  rede: {
-                    label: "Unidades de Rede",
-                    color: "var(--chart-1)",
-                  },
-                  clientes: {
-                    label: "Clientes",
-                    color: "var(--chart-1)",
-                  },
-                  pets: {
-                    label: "Pets",
-                    color: "var(--chart-1)",
-                  },
-                  guias: {
-                    label: "Guias",
-                    color: "var(--chart-1)",
-                  },
-                }}
-                className="h-72 w-full"
-              >
+            ) : planRevenue && planRevenue.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
                 <BarChart
-                  data={[
-                    {
-                      categoria: "Formulários",
-                      categoriaShort: "Formulários",
-                      total: contactSubmissions?.length || 0,
-                      fill: "var(--color-formularios)",
-                    },
-                    {
-                      categoria: "Unidades",
-                      categoriaShort: "Unidades",
-                      total: networkUnits?.length || 0,
-                      fill: "var(--color-rede)",
-                    },
-                    {
-                      categoria: "Clientes",
-                      categoriaShort: "Clientes",
-                      total: clients?.length || 0,
-                      fill: "var(--color-clientes)",
-                    },
-                    {
-                      categoria: "Pets",
-                      categoriaShort: "Pets",
-                      total: stats?.registeredPets || 0,
-                      fill: "var(--color-pets)",
-                    },
-                    {
-                      categoria: "Guias",
-                      categoriaShort: "Guias",
-                      total: allGuides?.length || 0,
-                      fill: "var(--color-guias)",
-                    },
-                  ]}
-                  margin={{
-                    top: 20,
-                    right: 20,
-                    left: 20,
-                    bottom: 60,
-                  }}
+                  data={planRevenue.map(plan => ({
+                    name: plan.planName,
+                    receita: plan.totalRevenue / 100,
+                  }))}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis
-                    dataKey="categoriaShort"
-                    tick={{ fontSize: 9 }}
-                    tickLine={false}
-                    axisLine={false}
-                    interval={0}
-                    angle={-45}
-                    textAnchor="end"
-                    height={55}
-                  />
-                  <YAxis
-                    tick={{ fontSize: 10 }}
-                    tickLine={false}
-                    axisLine={false}
-                  />
-                  <ChartTooltip
-                    content={({ active, payload }: {
-                      active?: boolean;
-                      payload?: Array<{
-                        payload: {
-                          categoria: string;
-                          total: number;
-                        };
-                      }>;
-                    }) => {
-                      if (active && payload && payload.length && payload[0]?.payload) {
-                        const data = payload[0].payload;
-                        return (
-                          <div className="bg-background border border-border rounded-lg shadow-lg p-3">
-                            <p className="font-medium text-foreground">{data.categoria}</p>
-                            <p className="text-sm text-muted-foreground">
-                              Total: <span className="font-medium text-foreground">{data.total}</span>
-                            </p>
-                          </div>
-                        );
-                      }
-                      return null;
-                    }}
-                    cursor={{ fill: 'rgba(0, 0, 0, 0.1)' }}
-                  />
-                  <Bar
-                    dataKey="total"
-                    radius={[4, 4, 0, 0]}
-                  />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="receita" fill="#0088FE" />
                 </BarChart>
-              </ChartContainer>
+              </ResponsiveContainer>
+            ) : (
+              <div className="flex items-center justify-center h-64 w-full">
+                <p className="text-sm text-muted-foreground">Nenhum dado de receita disponível</p>
               </div>
             )}
           </CardContent>
