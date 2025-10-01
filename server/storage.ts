@@ -1750,7 +1750,6 @@ export class DatabaseStorage implements IStorage {
   // Payment Receipts
   async getAllPaymentReceipts(): Promise<any[]> {
     return await db.select().from(paymentReceipts)
-      .where(inArray(paymentReceipts.returnCode, ['0', '00']))
       .orderBy(desc(paymentReceipts.createdAt));
   }
 
