@@ -9,7 +9,7 @@ import { InputMasked } from "@/components/admin/ui/input-masked";
 import { Badge } from "@/components/admin/ui/badge";
 import { Switch } from "@/components/admin/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/admin/ui/dialog";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/admin/ui/alert-dialog";
+import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/admin/ui/alert-dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/admin/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/admin/ui/select";
 import { Separator } from "@/components/admin/ui/separator";
@@ -1144,29 +1144,26 @@ export default function Administration() {
           <AlertDialogHeader>
             <AlertDialogTitle>Confirmar Exclusão</AlertDialogTitle>
             <AlertDialogDescription>
-              Você está prestes a excluir o usuário <strong>{userToDelete?.username}</strong>.
-              Esta ação não pode ser desfeita. Por favor, insira sua senha de administrador para confirmar.
+              Esta ação não pode ser desfeita. Isso excluirá permanentemente o 
+              usuário selecionado e todas as suas informações.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <div className="space-y-4 py-4">
+          
+          <div className="space-y-4">
             <div className="space-y-2">
               <label htmlFor="delete-password" className="text-sm font-medium">
-                Senha de Administrador *
+                Digite sua senha para confirmar
               </label>
               <Input
                 id="delete-password"
                 type="password"
-                placeholder="Digite sua senha"
                 value={deletePassword}
                 onChange={(e) => {
                   setDeletePassword(e.target.value);
                   setDeletePasswordError("");
                 }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    confirmDelete();
-                  }
-                }}
+                placeholder="Senha de administrador"
+                className={deletePasswordError ? "border-red-500" : ""}
                 data-testid="input-delete-password"
               />
               {deletePasswordError && (
@@ -1174,22 +1171,26 @@ export default function Administration() {
               )}
             </div>
           </div>
+
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => {
-              setDeleteDialogOpen(false);
-              setDeletePassword("");
-              setDeletePasswordError("");
-              setUserToDelete(null);
-            }}>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setDeleteDialogOpen(false);
+                setDeletePassword("");
+                setDeletePasswordError("");
+                setUserToDelete(null);
+              }}
+            >
               Cancelar
-            </AlertDialogCancel>
-            <AlertDialogAction
+            </Button>
+            <Button
               onClick={confirmDelete}
-              className="bg-red-600 hover:bg-red-700"
+              disabled={!deletePassword || deleteMutation.isPending}
               data-testid="button-confirm-delete"
             >
-              Excluir Usuário
-            </AlertDialogAction>
+              {deleteMutation.isPending ? "Excluindo..." : "Excluir Usuário"}
+            </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
