@@ -382,11 +382,16 @@ export default function Administration() {
           form.reset();
         }
       }}>
-        <DialogContent className="overflow-y-auto" maxHeightMobile="max-h-[90vh]">
+        <DialogContent className="overflow-y-auto max-h-[75vh]">
             <DialogHeader>
               <DialogTitle className="text-foreground">
                 {editingUser ? "Editar Usuário" : "Novo Usuário"}
               </DialogTitle>
+              {editingUser && (
+                <p className="text-sm text-muted-foreground">
+                  {editingUser.username}
+                </p>
+              )}
             </DialogHeader>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
