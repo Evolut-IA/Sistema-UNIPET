@@ -7,6 +7,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/admin/ui/alert-dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import {
   Table,
@@ -47,6 +55,10 @@ export default function FAQ() {
   const [searchQuery, setSearchQuery] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<string>("");
+  const [deletePassword, setDeletePassword] = useState("");
+  const [deletePasswordError, setDeletePasswordError] = useState("");
   const { visibleColumns, toggleColumn } = useColumnPreferences('faq.columns', allColumns);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
@@ -156,7 +168,33 @@ export default function FAQ() {
   };
 
   const handleDelete = (id: string) => {
-    deleteMutation.mutate(id);
+    setItemToDelete(id);
+    setDeletePassword("");
+    setDeletePasswordError("");
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      // Verificar senha
+      const response = await apiRequest("POST", "/admin/api/admin/verify-password", {
+        password: deletePassword,
+      });
+      
+      if (!response) {
+        setDeletePasswordError("Senha incorreta");
+        return;
+      }
+
+      // Deletar item
+      deleteMutation.mutate(itemToDelete);
+      setDeleteDialogOpen(false);
+      setDeletePassword("");
+      setDeletePasswordError("");
+      setItemToDelete("");
+    } catch (error) {
+      setDeletePasswordError("Senha incorreta");
+    }
   };
 
   const handleToggleStatus = (id: string, currentStatus: boolean) => {
@@ -494,6 +532,61 @@ export default function FAQ() {
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar Exclusão</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta ação não pode ser desfeita. Isso excluirá permanentemente a 
+              pergunta frequente selecionada.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label htmlFor="delete-password" className="text-sm font-medium">
+                Digite sua senha para confirmar
+              </label>
+              <Input
+                id="delete-password"
+                type="password"
+                value={deletePassword}
+                onChange={(e) => {
+                  setDeletePassword(e.target.value);
+                  setDeletePasswordError("");
+                }}
+                placeholder="Senha de administrador"
+                className={deletePasswordError ? "border-red-500" : ""}
+              />
+              {deletePasswordError && (
+                <p className="text-sm text-red-600">{deletePasswordError}</p>
+              )}
+            </div>
+          </div>
+
+          <AlertDialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setDeleteDialogOpen(false);
+                setDeletePassword("");
+                setDeletePasswordError("");
+                setItemToDelete("");
+              }}
+            >
+              Cancelar
+            </Button>
+            <Button
+              onClick={confirmDelete}
+              disabled={!deletePassword || deleteMutation.isPending}
+            >
+              {deleteMutation.isPending ? "Excluindo..." : "Excluir Pergunta"}
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
     </div>
   );
