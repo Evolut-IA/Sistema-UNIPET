@@ -34,7 +34,7 @@ import {
   type User as UserType, 
   type NetworkUnitWithCredentialStatus, 
   insertUserSchema 
-} from "@shared/schema";
+} from "@shared/schema.js";
 import { UserCheck, Plus, Search, Edit, Trash2, Eye, EyeOff, ChevronLeft, ChevronRight, Globe, User, MoreHorizontal } from "lucide-react";
 
 const AVAILABLE_PERMISSIONS = [
