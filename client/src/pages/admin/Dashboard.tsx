@@ -292,35 +292,86 @@ export default function Dashboard() {
               const maxValue = Math.max(...chartData.map(d => d.quantidade), 1);
               
               return (
-                <div className="w-full py-4">
-                  <div className="h-[320px] flex items-end justify-around gap-3 px-4 pb-12 relative">
-                    {chartData.map((item) => {
-                      const heightPercent = (item.quantidade / maxValue) * 100;
-                      
-                      return (
-                        <div key={item.name} className="flex flex-col items-center flex-1 max-w-[120px]">
-                          <div className="w-full flex flex-col items-center" style={{ height: '100%' }}>
-                            <div className="w-full h-full flex flex-col justify-end items-center">
-                              <div className="text-sm font-bold text-gray-900 mb-2">
-                                {item.quantidade}
+                <div className="w-full">
+                  {/* Container principal com grid lines e escala */}
+                  <div className="relative h-[320px]">
+                    {/* Grid Lines horizontais com valores de escala */}
+                    <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
+                      {[100, 75, 50, 25, 0].map((percent) => {
+                        const value = Math.round((maxValue * percent) / 100);
+                        return (
+                          <div key={percent} className="relative w-full">
+                            <div 
+                              className="absolute left-0 right-0 border-t border-gray-200"
+                              style={{ opacity: percent === 0 ? 0.5 : 0.3 }}
+                            />
+                            <span className="absolute -left-8 -top-2 text-[10px] text-gray-500 font-medium">
+                              {value}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    
+                    {/* Container das barras */}
+                    <div className="relative h-full flex items-end justify-around gap-2 px-10">
+                      {chartData.map((item, index) => {
+                        const heightPercent = (item.quantidade / maxValue) * 100;
+                        
+                        return (
+                          <div 
+                            key={item.name} 
+                            className="group relative flex flex-col items-center flex-1 max-w-[80px] cursor-pointer"
+                            style={{ 
+                              animation: `slideUp ${0.5 + index * 0.1}s ease-out`
+                            }}
+                          >
+                            {/* Container da barra */}
+                            <div className="w-full h-full flex flex-col justify-end items-center relative">
+                              {/* Tooltip on hover */}
+                              <div className="absolute -top-12 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-gray-900 text-white text-xs px-2 py-1 rounded whitespace-nowrap pointer-events-none z-10">
+                                <div className="font-bold">{item.name}</div>
+                                <div className="text-center">{item.quantidade.toLocaleString('pt-BR')} unidades</div>
+                                <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
                               </div>
+                              
+                              {/* Valor no topo da barra */}
+                              <div className="absolute -top-6 text-sm font-bold text-gray-900 transition-all duration-200 group-hover:text-[#277677]">
+                                {item.quantidade.toLocaleString('pt-BR')}
+                              </div>
+                              
+                              {/* Barra com gradiente e sombra */}
                               <div 
-                                className="w-full rounded-t-md transition-all duration-500"
+                                className="w-full rounded-t-md transition-all duration-300 relative overflow-hidden hover:shadow-lg"
                                 style={{ 
-                                  height: `${Math.max(heightPercent, item.quantidade > 0 ? 5 : 0)}%`,
-                                  backgroundColor: '#277677',
-                                  minHeight: item.quantidade > 0 ? '30px' : '0px'
+                                  height: `${Math.max(heightPercent, item.quantidade > 0 ? 2 : 0)}%`,
+                                  background: `linear-gradient(to top, #1e5758, #277677)`,
+                                  minHeight: item.quantidade > 0 ? '8px' : '0px',
+                                  boxShadow: '0 -2px 10px rgba(39, 118, 119, 0.2)',
+                                  transform: 'scaleY(1)',
+                                  transformOrigin: 'bottom'
                                 }}
-                              />
+                              >
+                                {/* Efeito de brilho interno */}
+                                <div 
+                                  className="absolute inset-0 opacity-30"
+                                  style={{
+                                    background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.3) 50%, transparent)'
+                                  }}
+                                />
+                              </div>
+                            </div>
+                            
+                            {/* Label embaixo */}
+                            <div className="mt-3 text-[11px] font-semibold text-gray-600 text-center w-full transition-colors duration-200 group-hover:text-[#277677]">
+                              {item.name}
                             </div>
                           </div>
-                          <div className="mt-3 text-xs font-medium text-gray-700 text-center w-full">
-                            {item.name}
-                          </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
+                    </div>
                   </div>
+                  
                 </div>
               );
             })()}
