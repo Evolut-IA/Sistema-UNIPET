@@ -11,20 +11,14 @@ import { InputMasked } from "@/components/ui/input-masked";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/admin/queryClient";
 import { insertClientAdminSchema } from "@shared/schema";
-import { ArrowLeft, Plus, Edit, Trash2 } from "lucide-react";
+import { ArrowLeft, Plus, Edit } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { PasswordDialog } from "@/components/ui/password-dialog";
-import { usePasswordDialog } from "@/hooks/use-password-dialog";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
 
 export default function ClientForm() {
   const [, setLocation] = useLocation();
   const params = useParams();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const passwordDialog = usePasswordDialog();
-  const confirmDialog = useConfirmDialog();
 
   const isEdit = Boolean(params.id);
 
@@ -34,7 +28,7 @@ export default function ClientForm() {
     enabled: isEdit,
   });
 
-  const { data: pets = [], isLoading: petsLoading, refetch: refetchPets } = useQuery<any[]>({
+  const { data: pets = [], isLoading: petsLoading } = useQuery<any[]>({
     queryKey: ["/admin/api/clients", params.id, "pets"],
     queryFn: () => apiRequest("GET", `/admin/api/clients/${params.id}/pets`),
     enabled: !!params.id && !!client,
@@ -52,80 +46,6 @@ export default function ClientForm() {
   const getPlanName = (planId: string): string => {
     const plan = plans.find((p: any) => p.id === planId);
     return plan ? plan.name : planId;
-  };
-
-  const deletePetMutation = useMutation({
-    mutationFn: (petId: string) => apiRequest("DELETE", `/admin/api/pets/${petId}`),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/admin/api/clients", params.id, "pets"] });
-      toast({
-        title: "Pet excluído",
-        description: "O pet foi excluído com sucesso.",
-        variant: "default",
-      });
-    },
-    onError: () => {
-      toast({
-        title: "Erro",
-        description: "Não foi possível excluir o pet. Tente novamente.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const handleDeletePet = (petId: string, petName: string) => {
-    passwordDialog.openDialog({
-      title: "Verificação de Senha",
-      description: "Digite a senha do administrador para excluir este pet:",
-      onConfirm: async (password) => {
-        try {
-          passwordDialog.setLoading(true);
-          
-          // Verificar senha
-          const response = await fetch("/admin/api/admin/verify-password", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ password }),
-          });
-          
-          const result = await response.json();
-          
-          if (result.valid) {
-            // Senha correta, mostrar confirmação de exclusão
-            confirmDialog.openDialog({
-              title: "Excluir Pet",
-              description: `Tem certeza que deseja excluir o pet "${petName}"? Esta ação não pode ser desfeita.`,
-              confirmText: "Excluir Pet",
-              cancelText: "Cancelar",
-              onConfirm: () => {
-                confirmDialog.setLoading(true);
-                deletePetMutation.mutate(petId, {
-                  onSettled: () => {
-                    confirmDialog.setLoading(false);
-                  }
-                });
-              },
-            });
-          } else {
-            toast({
-              title: "Senha incorreta",
-              description: "A senha do administrador está incorreta.",
-              variant: "destructive",
-            });
-          }
-        } catch (error) {
-          toast({
-            title: "Erro",
-            description: "Erro ao verificar senha. Tente novamente.",
-            variant: "destructive",
-          });
-        } finally {
-          passwordDialog.setLoading(false);
-        }
-      },
-    });
   };
 
   const form = useForm({
@@ -497,15 +417,6 @@ export default function ClientForm() {
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDeletePet(pet.id, pet.name)}
-                        disabled={deletePetMutation.isPending}
-                        data-testid={`button-delete-pet-${pet.id}`}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
                     </div>
                   </div>
                 ))}
@@ -529,28 +440,6 @@ export default function ClientForm() {
           </CardContent>
         </Card>
       )}
-
-      {/* Password Dialog */}
-      <PasswordDialog
-        open={passwordDialog.isOpen}
-        onOpenChange={passwordDialog.closeDialog}
-        onConfirm={passwordDialog.confirm}
-        title={passwordDialog.title ?? "Verificação de Senha"}
-        description={passwordDialog.description ?? "Digite a senha do administrador para continuar:"}
-        isLoading={passwordDialog.isLoading ?? false}
-      />
-
-      {/* Confirm Dialog */}
-      <ConfirmDialog
-        open={confirmDialog.isOpen}
-        onOpenChange={confirmDialog.closeDialog}
-        onConfirm={confirmDialog.confirm}
-        title={confirmDialog.title ?? "Confirmar exclusão"}
-        description={confirmDialog.description ?? "Tem certeza que deseja excluir este item? Esta ação não pode ser desfeita."}
-        confirmText={confirmDialog.confirmText ?? "Excluir"}
-        cancelText={confirmDialog.cancelText ?? "Cancelar"}
-        isLoading={confirmDialog.isLoading ?? false}
-      />
     </div>
   );
 }
