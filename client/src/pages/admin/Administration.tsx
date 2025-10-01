@@ -9,6 +9,7 @@ import { InputMasked } from "@/components/admin/ui/input-masked";
 import { Badge } from "@/components/admin/ui/badge";
 import { Switch } from "@/components/admin/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/admin/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/admin/ui/alert-dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/admin/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/admin/ui/select";
 import { Separator } from "@/components/admin/ui/separator";
@@ -73,6 +74,10 @@ export default function Administration() {
   const [editingNetworkUnit, setEditingNetworkUnit] = useState<NetworkUnitWithCredentialStatus | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<{ id: string; username: string } | null>(null);
+  const [deletePassword, setDeletePassword] = useState("");
+  const [deletePasswordError, setDeletePasswordError] = useState("");
   const { visibleColumns, toggleColumn } = useColumnPreferences('administration.users.columns', allColumns);
   const { visibleColumns: visibleNetworkColumns, toggleColumn: toggleNetworkColumn } = useColumnPreferences('administration.network.columns', networkColumns);
   const [userCurrentPage, setUserCurrentPage] = useState(1);
@@ -254,8 +259,38 @@ export default function Administration() {
     setDialogOpen(true);
   };
 
-  const handleDelete = (id: string) => {
-    deleteMutation.mutate(id);
+  const handleDelete = (user: { id: string; username: string }) => {
+    setUserToDelete(user);
+    setDeletePassword("");
+    setDeletePasswordError("");
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!userToDelete || !deletePassword) {
+      setDeletePasswordError("Por favor, insira sua senha");
+      return;
+    }
+
+    try {
+      // Verify password
+      const response = await apiRequest("POST", "/admin/api/admin/verify-password", {
+        password: deletePassword
+      });
+
+      if (!response.valid) {
+        setDeletePasswordError("Senha incorreta");
+        return;
+      }
+
+      // Password is correct, proceed with deletion
+      deleteMutation.mutate(userToDelete.id);
+      setDeleteDialogOpen(false);
+      setDeletePassword("");
+      setUserToDelete(null);
+    } catch (error) {
+      setDeletePasswordError("Erro ao verificar senha");
+    }
   };
 
   const handleToggleStatus = (id: string, currentStatus: boolean) => {
@@ -293,7 +328,7 @@ export default function Administration() {
   };
 
   const getCredentialStatus = (unit: any) => {
-    if (unit.hasCredentials) {
+    if (unit.credentialStatus === 'configured') {
       return { text: "Configurado", color: "border border-border rounded-lg bg-background text-foreground" };
     }
     return { text: "Não configurado", color: "border border-border rounded-lg bg-background text-foreground" };
@@ -663,7 +698,7 @@ export default function Administration() {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => handleDelete(user.id)}
+                            onClick={() => handleDelete({ id: user.id, username: user.username })}
                             disabled={deleteMutation.isPending}
                             data-testid={`button-delete-${user.id}`}
                           >
@@ -1065,6 +1100,62 @@ export default function Administration() {
             </Form>
           </DialogContent>
       </Dialog>
+
+      {/* Delete Confirmation Dialog with Password */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar Exclusão</AlertDialogTitle>
+            <AlertDialogDescription>
+              Você está prestes a excluir o usuário <strong>{userToDelete?.username}</strong>.
+              Esta ação não pode ser desfeita. Por favor, insira sua senha de administrador para confirmar.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <label htmlFor="delete-password" className="text-sm font-medium">
+                Senha de Administrador *
+              </label>
+              <Input
+                id="delete-password"
+                type="password"
+                placeholder="Digite sua senha"
+                value={deletePassword}
+                onChange={(e) => {
+                  setDeletePassword(e.target.value);
+                  setDeletePasswordError("");
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    confirmDelete();
+                  }
+                }}
+                data-testid="input-delete-password"
+              />
+              {deletePasswordError && (
+                <p className="text-sm text-red-600">{deletePasswordError}</p>
+              )}
+            </div>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => {
+              setDeleteDialogOpen(false);
+              setDeletePassword("");
+              setDeletePasswordError("");
+              setUserToDelete(null);
+            }}>
+              Cancelar
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDelete}
+              className="bg-red-600 hover:bg-red-700"
+              data-testid="button-confirm-delete"
+            >
+              Excluir Usuário
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       </div>
     </>

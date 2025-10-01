@@ -192,6 +192,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     legacyHeaders: false,
   });
 
+  // Rate limiting for admin CRUD operations
+  const adminCRUDLimiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minute
+    max: 50, // limit each IP to 50 requests per minute
+    message: { error: "Muitas requisições. Tente novamente em breve." },
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+
   app.post("/admin/api/admin/verify-password", passwordVerifyLimiter, async (req, res) => {
     try {
       const { password } = req.body;
@@ -228,17 +237,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin authentication status endpoint
   app.get("/admin/api/auth/status", (req, res) => {
     try {
-      // In development, auto-authenticate
-      if (process.env.NODE_ENV === "development" || !process.env.NODE_ENV) {
-        res.json({ 
-          authenticated: true, 
-          admin: { 
-            login: "admin" 
-          } 
-        });
-        return;
-      }
-      
       if (req.session && req.session.admin && req.session.admin.authenticated) {
         res.json({ 
           authenticated: true, 
@@ -264,85 +262,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use("/admin/api/*", (req, res, next) => {
     console.log("🔍 [MIDDLEWARE] Path:", req.path, "Method:", req.method, "Original URL:", req.originalUrl);
     
-    // Skip authentication for login, auth status, and password verification endpoints
-    if (req.path === "/admin/api/login" || req.path === "/admin/api/auth/status" || req.path === "/admin/api/admin/verify-password") {
+    // Skip authentication only for login and auth status endpoints
+    if (req.path === "/admin/api/login" || req.path === "/admin/api/auth/status") {
       return next();
     }
     
-    // DEVELOPMENT ONLY: Skip auth for dashboard during development
-    if (process.env.NODE_ENV === 'development' && req.originalUrl === "/admin/api/dashboard/all") {
-      console.log("⚠️ [ADMIN] Bypassing auth for /admin/api/dashboard/all - DEVELOPMENT ONLY");
-      return next();
-    }
-    
-    // DEVELOPMENT ONLY: Skip auth for client routes during development
-    // Note: req.path may be different than expected in middleware
-    if (process.env.NODE_ENV === 'development' && req.method === "POST" && (req.path === "/admin/api/clients" || req.originalUrl === "/admin/api/clients")) {
-      console.log("⚠️ [ADMIN] Bypassing auth for POST /admin/api/clients - DEVELOPMENT ONLY");
-      return next();
-    }
-    
-    // DEVELOPMENT ONLY: Skip auth for GET client routes during development
-    if (process.env.NODE_ENV === 'development' && req.method === "GET" && (req.originalUrl.startsWith("/admin/api/clients") || req.path.startsWith("/admin/api/clients"))) {
-      console.log("⚠️ [ADMIN] Bypassing auth for GET /admin/api/clients - DEVELOPMENT ONLY");
-      return next();
-    }
-    
-    // DEVELOPMENT ONLY: Skip auth for PUT client routes during development  
-    if (process.env.NODE_ENV === 'development' && req.method === "PUT" && (req.originalUrl.startsWith("/admin/api/clients") || req.path.startsWith("/admin/api/clients"))) {
-      console.log("⚠️ [ADMIN] Bypassing auth for PUT /admin/api/clients - DEVELOPMENT ONLY");
-      return next();
-    }
-    
-    // DEVELOPMENT ONLY: Skip auth for GET plans routes during development
-    if (process.env.NODE_ENV === 'development' && req.method === "GET" && (req.originalUrl.startsWith("/admin/api/plans") || req.path.startsWith("/admin/api/plans"))) {
-      console.log("⚠️ [ADMIN] Bypassing auth for GET /admin/api/plans - DEVELOPMENT ONLY");
-      return next();
-    }
-    
-    // DEVELOPMENT ONLY: Skip auth for PUT plans routes during development
-    if (process.env.NODE_ENV === 'development' && req.method === "PUT" && (req.originalUrl.startsWith("/admin/api/plans") || req.path.startsWith("/admin/api/plans"))) {
-      console.log("⚠️ [ADMIN] Bypassing auth for PUT /admin/api/plans - DEVELOPMENT ONLY");
-      return next();
-    }
-    
-    // DEVELOPMENT ONLY: Skip auth for network-units routes during development
-    if (process.env.NODE_ENV === 'development' && (req.originalUrl.startsWith("/admin/api/network-units") || req.path.startsWith("/admin/api/network-units"))) {
-      console.log("⚠️ [ADMIN] Bypassing auth for /admin/api/network-units - DEVELOPMENT ONLY");
-      return next();
-    }
-    
-    // DEVELOPMENT ONLY: Skip auth for FAQ routes during development
-    if (process.env.NODE_ENV === 'development' && (req.originalUrl.startsWith("/admin/api/faq") || req.path.startsWith("/admin/api/faq"))) {
-      console.log("⚠️ [ADMIN] Bypassing auth for /admin/api/faq - DEVELOPMENT ONLY");
-      return next();
-    }
-    
-    // DEVELOPMENT ONLY: Skip auth for settings routes during development
-    if (process.env.NODE_ENV === 'development' && (req.originalUrl.startsWith("/admin/api/settings") || req.path.startsWith("/admin/api/settings"))) {
-      console.log("⚠️ [ADMIN] Bypassing auth for /admin/api/settings - DEVELOPMENT ONLY");
-      return next();
-    }
-    
-    // DEVELOPMENT ONLY: Skip auth for payment-receipts routes during development
-    if (process.env.NODE_ENV === 'development' && (req.originalUrl.startsWith("/admin/api/payment-receipts") || req.path.startsWith("/admin/api/payment-receipts"))) {
-      console.log("⚠️ [ADMIN] Bypassing auth for /admin/api/payment-receipts - DEVELOPMENT ONLY");
-      return next();
-    }
-    
-    // DEVELOPMENT ONLY: Skip auth for contracts routes during development
-    if (process.env.NODE_ENV === 'development' && (req.originalUrl.startsWith("/admin/api/contracts") || req.path.startsWith("/admin/api/contracts"))) {
-      console.log("⚠️ [ADMIN] Bypassing auth for /admin/api/contracts - DEVELOPMENT ONLY");
-      return next();
-    }
-    
-    // DEVELOPMENT ONLY: Skip auth for procedures routes during development
-    if (process.env.NODE_ENV === 'development' && (req.originalUrl.startsWith("/admin/api/procedures") || req.path.startsWith("/admin/api/procedures"))) {
-      console.log("⚠️ [ADMIN] Bypassing auth for /admin/api/procedures - DEVELOPMENT ONLY");
-      return next();
-    }
-    
-    // Apply admin authentication for all other admin routes
+    // Apply admin authentication for all admin routes
     return requireAdmin(req, res, next);
   });
 
@@ -1308,7 +1233,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin network units routes
-  app.get("/admin/api/network-units", async (req, res) => {
+  app.get("/admin/api/network-units", adminCRUDLimiter, async (req, res) => {
     try {
       const units = await storage.getAllNetworkUnits();
       res.json(units);
@@ -1319,7 +1244,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Create new network unit
-  app.post("/admin/api/network-units", async (req, res) => {
+  app.post("/admin/api/network-units", adminCRUDLimiter, async (req, res) => {
     try {
       console.log("📝 [ADMIN] Creating new network unit...");
       console.log("📦 [ADMIN] Received data:", req.body);
@@ -1347,15 +1272,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Network units with credentials route (must come before :id route)
-  app.get("/admin/api/network-units/credentials", async (req, res) => {
+  app.get("/admin/api/network-units/credentials", adminCRUDLimiter, async (req, res) => {
     try {
       const units = await storage.getAllNetworkUnits();
       
-      // Map units to include credential status
+      // Map units to include only credential status (don't expose hasLogin/hasPassword)
       const unitsWithCredentials = units.map(unit => ({
         ...unit,
-        hasLogin: !!unit.login,
-        hasPassword: !!unit.senhaHash,
+        hasCredentials: (unit.login && unit.senhaHash) ? true : false,
         credentialStatus: (unit.login && unit.senhaHash) ? 'configured' : 'pending'
       }));
       
@@ -1366,7 +1290,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/admin/api/network-units/:id/credentials", async (req, res) => {
+  app.put("/admin/api/network-units/:id/credentials", adminCRUDLimiter, async (req, res) => {
     try {
       const { id } = req.params;
       const { login, password } = req.body;
@@ -1391,8 +1315,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { senhaHash, ...unitResponse } = updatedUnit;
       res.json({
         ...unitResponse,
-        hasLogin: !!updatedUnit.login,
-        hasPassword: !!updatedUnit.senhaHash,
+        hasCredentials: true,
         credentialStatus: 'configured'
       });
     } catch (error) {
@@ -1703,7 +1626,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin users routes
-  app.get("/admin/api/users", async (req, res) => {
+  app.get("/admin/api/users", adminCRUDLimiter, async (req, res) => {
     try {
       const users = await storage.getAllUsers();
       res.json(users);
@@ -1713,7 +1636,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/admin/api/users", async (req, res) => {
+  app.post("/admin/api/users", adminCRUDLimiter, async (req, res) => {
     try {
       const validatedData = insertUserSchema.parse(req.body);
       
@@ -1737,17 +1660,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/admin/api/users/:id", async (req, res) => {
+  app.put("/admin/api/users/:id", adminCRUDLimiter, async (req, res) => {
     try {
       const { id } = req.params;
-      const updateData = req.body;
+      
+      // Validate update data with Zod schema
+      const validatedData = updateUserSchema.parse(req.body);
       
       // Hash password if provided
-      if (updateData.password) {
-        updateData.password = await bcrypt.hash(updateData.password, 10);
+      if (validatedData.password) {
+        validatedData.password = await bcrypt.hash(validatedData.password, 10);
       }
       
-      const updatedUser = await storage.updateUser(id, updateData);
+      const updatedUser = await storage.updateUser(id, validatedData);
       if (!updatedUser) {
         return res.status(404).json({ error: "Usuário não encontrado" });
       }
@@ -1757,11 +1682,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(userResponse);
     } catch (error) {
       console.error("❌ [ADMIN] Error updating user:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ 
+          error: "Dados inválidos", 
+          details: error.errors 
+        });
+      }
       res.status(400).json({ error: "Erro ao atualizar usuário" });
     }
   });
 
-  app.delete("/admin/api/users/:id", async (req, res) => {
+  app.delete("/admin/api/users/:id", adminCRUDLimiter, async (req, res) => {
     try {
       const { id } = req.params;
       const deleted = await storage.deleteUser(id);
