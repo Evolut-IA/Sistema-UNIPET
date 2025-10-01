@@ -546,10 +546,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         };
       });
 
-      // Calculate plan revenue from actual approved payments (using filtered receipts)
+      // Filter only approved payments (returnCode '00' or '0')
+      const approvedPaymentReceipts = filteredPaymentReceipts.filter(receipt => 
+        receipt.returnCode && ['00', '0'].includes(receipt.returnCode)
+      );
+
+      // Calculate plan revenue from actual approved payments (using filtered and approved receipts)
       const planRevenue = plans.map(plan => {
         // Sum all approved payments for this plan from filtered receipts
-        const totalRevenue = filteredPaymentReceipts
+        const totalRevenue = approvedPaymentReceipts
           .filter(receipt => receipt.planName === plan.name)
           .reduce((sum, receipt) => {
             const amount = parseFloat(receipt.paymentAmount || '0');
@@ -571,17 +576,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Calculate total revenue from all plans
       const totalMonthlyRevenue = planRevenue.reduce((sum, plan) => sum + plan.totalRevenue, 0);
       
-      // Calculate total from approved payments (using filtered receipts)
-      const totalApprovedPayments = filteredPaymentReceipts.reduce((sum, receipt) => {
+      // Calculate total from approved payments (using filtered and approved receipts)
+      const totalApprovedPayments = approvedPaymentReceipts.reduce((sum, receipt) => {
         const amount = parseFloat(receipt.paymentAmount || '0');
         return sum + amount;
       }, 0);
       
-      console.log("📊 [DASHBOARD] Total approved payments (filtered):", totalApprovedPayments, hasDateFilter ? `(period: ${startDate} to ${endDate})` : '(all time)');
+      console.log("📊 [DASHBOARD] Payment receipts breakdown:", {
+        total: allPaymentReceipts.length,
+        afterDateFilter: filteredPaymentReceipts.length,
+        approved: approvedPaymentReceipts.length,
+        totalRevenue: totalApprovedPayments,
+        period: hasDateFilter ? `${startDate} to ${endDate}` : 'all time'
+      });
       
       // Update stats with calculated revenue
       stats.monthlyRevenue = totalMonthlyRevenue;
-      stats.totalRevenue = totalApprovedPayments; // Total from filtered approved payments
+      stats.totalRevenue = totalApprovedPayments; // Total from filtered approved payments only
 
       const dashboardData = {
         stats,
