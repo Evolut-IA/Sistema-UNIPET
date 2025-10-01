@@ -591,7 +591,22 @@ export default function Administration() {
             }
           }}>
             <DialogTrigger asChild>
-              <Button variant="admin-action" size="sm" data-testid="button-new-user">
+              <Button 
+                variant="admin-action" 
+                size="sm" 
+                data-testid="button-new-user"
+                onClick={() => {
+                  setEditingUser(null);
+                  form.reset({
+                    username: "",
+                    email: "",
+                    password: "",
+                    role: "view",
+                    permissions: [],
+                    isActive: true,
+                  });
+                }}
+              >
                 <Plus className="h-4 w-4 mr-2" />
                 Adicionar
               </Button>
