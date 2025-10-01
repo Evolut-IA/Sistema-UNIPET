@@ -243,6 +243,7 @@ export default function Settings() {
   };
 
   const onSubmitChat = (data: any) => {
+    console.log('💾 [CHAT] Submitting chat settings:', data);
     saveChatMutation.mutate(data);
   };
 
@@ -819,7 +820,11 @@ export default function Settings() {
                               <FormControl>
                                 <ChatImageUpload 
                                   value={field.value} 
-                                  onChange={field.onChange}
+                                  onChange={(url) => {
+                                    console.log('📷 [CHAT] User icon URL changed:', url);
+                                    console.log('📷 [CHAT] Current field value:', field.value);
+                                    field.onChange(url);
+                                  }}
                                   imageType="user"
                                   placeholder="Selecione a imagem do usuário"
                                 />
