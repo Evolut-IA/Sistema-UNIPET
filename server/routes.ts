@@ -435,6 +435,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let filteredClients = clients;
       let filteredContactSubmissions = contactSubmissions;
       let filteredPets = allPets;
+      let filteredPaymentReceipts = allPaymentReceipts;
 
       if (hasDateFilter) {
         const startDateTime = startDate ? new Date(startDate as string) : null;
@@ -488,11 +489,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
         }
 
+        // Filter payment receipts by paymentDate
+        if (startDateTime || endDateTime) {
+          filteredPaymentReceipts = allPaymentReceipts.filter(receipt => {
+            if (!receipt.paymentDate) return false;
+            const paymentDate = new Date(receipt.paymentDate);
+            if (startDateTime && paymentDate < startDateTime) return false;
+            if (endDateTime && paymentDate > endDateTime) return false;
+            return true;
+          });
+        }
+
         console.log("📊 [DASHBOARD] After date filtering:", {
           guides: `${filteredGuides.length}/${allGuides.length}`,
           clients: `${filteredClients.length}/${clients.length}`,
           contactSubmissions: `${filteredContactSubmissions.length}/${contactSubmissions.length}`,
-          pets: `${filteredPets.length}/${allPets.length}`
+          pets: `${filteredPets.length}/${allPets.length}`,
+          paymentReceipts: `${filteredPaymentReceipts.length}/${allPaymentReceipts.length}`
         });
       }
 
@@ -533,10 +546,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         };
       });
 
-      // Calculate plan revenue from actual approved payments
+      // Calculate plan revenue from actual approved payments (using filtered receipts)
       const planRevenue = plans.map(plan => {
-        // Sum all approved payments for this plan
-        const totalRevenue = allPaymentReceipts
+        // Sum all approved payments for this plan from filtered receipts
+        const totalRevenue = filteredPaymentReceipts
           .filter(receipt => receipt.planName === plan.name)
           .reduce((sum, receipt) => {
             const amount = parseFloat(receipt.paymentAmount || '0');
@@ -558,17 +571,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Calculate total revenue from all plans
       const totalMonthlyRevenue = planRevenue.reduce((sum, plan) => sum + plan.totalRevenue, 0);
       
-      // Calculate total from approved payments (returnCode '0' or '00')
-      const totalApprovedPayments = allPaymentReceipts.reduce((sum, receipt) => {
+      // Calculate total from approved payments (using filtered receipts)
+      const totalApprovedPayments = filteredPaymentReceipts.reduce((sum, receipt) => {
         const amount = parseFloat(receipt.paymentAmount || '0');
         return sum + amount;
       }, 0);
       
-      console.log("📊 [DASHBOARD] Total approved payments:", totalApprovedPayments);
+      console.log("📊 [DASHBOARD] Total approved payments (filtered):", totalApprovedPayments, hasDateFilter ? `(period: ${startDate} to ${endDate})` : '(all time)');
       
       // Update stats with calculated revenue
       stats.monthlyRevenue = totalMonthlyRevenue;
-      stats.totalRevenue = totalApprovedPayments; // Total from all approved payments
+      stats.totalRevenue = totalApprovedPayments; // Total from filtered approved payments
 
       const dashboardData = {
         stats,
