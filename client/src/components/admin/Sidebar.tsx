@@ -11,7 +11,6 @@ import {
   Mail,
   User,
   Settings,
-  Stethoscope,
   Clipboard,
   DollarSign,
   File
@@ -76,12 +75,9 @@ export default function Sidebar() {
   return (
     <div className="flex flex-col h-full bg-white border-r border-[#eaeaea]">
       <div className="p-6">
-        <div className="flex items-center space-x-3">
-          <Stethoscope className="h-8 w-8 text-gray-700" />
-          <div>
-            <h1 className="text-xl font-bold text-gray-900">CRM UNIPET</h1>
-            <p className="text-sm text-gray-600">Plano de Saúde Pet</p>
-          </div>
+        <div>
+          <h1 className="text-xl font-bold text-gray-900">SISTEMA UNIPET</h1>
+          <p className="text-sm text-gray-600">Plano de Saúde Pet</p>
         </div>
       </div>
 
