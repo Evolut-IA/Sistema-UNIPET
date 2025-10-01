@@ -47,6 +47,15 @@ import rateLimit from "express-rate-limit";
 import { z } from "zod";
 import multer from "multer";
 
+// Extend express-session types
+declare module 'express-session' {
+  interface SessionData {
+    user?: any;
+    userId?: string;
+    client?: any;
+  }
+}
+
 // Configure multer for in-memory file upload
 const upload = multer({
   storage: multer.memoryStorage(),

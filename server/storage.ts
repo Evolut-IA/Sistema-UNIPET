@@ -699,6 +699,15 @@ export class InMemoryStorage implements IStorage {
   async getAllPlanProcedures(): Promise<PlanProcedure[]> {
     throw new Error('InMemoryStorage: PlanProcedures not implemented');
   }
+  async getPlanProceduresWithDetails(planId: string): Promise<any[]> {
+    throw new Error('InMemoryStorage: PlanProcedures not implemented');
+  }
+  async getProcedurePlans(procedureId: string): Promise<any[]> {
+    throw new Error('InMemoryStorage: PlanProcedures not implemented');
+  }
+  async updateProcedurePlans(procedureId: string, planIds: string[]): Promise<boolean> {
+    throw new Error('InMemoryStorage: PlanProcedures not implemented');
+  }
 
   // Service History
   async createServiceHistory(serviceHistoryData: InsertServiceHistory): Promise<ServiceHistory> {
