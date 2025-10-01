@@ -342,6 +342,10 @@ export default function Administration() {
 
   const getRoleLabel = (role: string) => {
     switch (role) {
+      case "view": return "Visualizador";
+      case "add": return "Criador";
+      case "edit": return "Editor";
+      case "delete": return "Administrador";
       case "admin": return "Administrador";
       case "manager": return "Gerente";
       case "user": return "Usuário";
