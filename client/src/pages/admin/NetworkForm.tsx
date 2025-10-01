@@ -208,6 +208,7 @@ export default function NetworkForm() {
 
       {/* Back Button */}
       <Button
+        type="button"
         variant="outline"
         size="sm"
         onClick={() => setLocation("/rede")}

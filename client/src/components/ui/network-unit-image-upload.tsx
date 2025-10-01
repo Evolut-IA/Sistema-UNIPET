@@ -137,6 +137,7 @@ export function NetworkUnitImageUpload({
                 <div className="absolute inset-0 bg-[rgb(var(--overlay-black)/0.4)] opacity-0 transition-opacity" />
                 <div className="absolute inset-0 flex items-center justify-center gap-2 opacity-0 transition-opacity">
                   <Button
+                    type="button"
                     size="sm"
                     variant="secondary"
                     onClick={handleThumbnailClick}
