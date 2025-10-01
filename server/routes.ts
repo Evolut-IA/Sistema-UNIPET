@@ -1485,6 +1485,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ error: "Erro ao atualizar configurações de regras" });
     }
   });
+
+  // GET chat settings
+  app.get("/admin/api/settings/chat", async (req, res) => {
+    try {
+      let settings = await storage.getChatSettings();
+      if (!settings) {
+        // Criar configurações padrão se não existirem
+        settings = await storage.createDefaultChatSettings();
+      }
+      res.json(settings);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error fetching chat settings:", error);
+      res.status(500).json({ error: "Erro ao buscar configurações do chat" });
+    }
+  });
+
+  // PUT chat settings
+  app.put("/admin/api/settings/chat", async (req, res) => {
+    try {
+      console.log("📝 [ADMIN] Received chat settings update:", req.body);
+      const updatedSettings = await storage.updateChatSettings(req.body);
+      console.log("✅ [ADMIN] Chat settings updated successfully");
+      res.json(updatedSettings);
+    } catch (error) {
+      console.error("❌ [ADMIN] Error updating chat settings:", error);
+      res.status(500).json({ error: "Erro ao atualizar configurações do chat" });
+    }
+  });
+
   app.get("/admin/api/network-units/:id", async (req, res) => {
     try {
       const unit = await storage.getNetworkUnit(req.params.id);
