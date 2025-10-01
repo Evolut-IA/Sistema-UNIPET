@@ -633,7 +633,168 @@ export default function Settings() {
           )}
         </TabsContent>
 
+        {/* Chat Settings */}
+        <TabsContent value="chat" className="space-y-6" data-testid="tab-content-chat">
+          {chatLoading ? (
+            <div className="space-y-4">
+              <Card className="animate-pulse">
+                <CardContent className="p-6">
+                  <div className="h-4 bg-muted rounded w-1/4 mb-4"></div>
+                  <div className="space-y-3">
+                    <div className="h-10 bg-muted rounded"></div>
+                    <div className="h-10 bg-muted rounded"></div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          ) : (
+            <Card className="border-[#eaeaea] bg-white shadow-sm">
+              <CardHeader>
+                <CardTitle className="text-foreground flex items-center space-x-2">
+                  <MessageCircle className="h-5 w-5" />
+                  <span>Configurações do Chat</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Form {...chatForm}>
+                  <form onSubmit={chatForm.handleSubmit(onSubmitChat)} className="space-y-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      <FormField
+                        control={chatForm.control}
+                        name="chatTitle"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Título do Chat</FormLabel>
+                            <FormControl>
+                              <Input {...field} placeholder="Atendimento Virtual" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
+                      <FormField
+                        control={chatForm.control}
+                        name="welcomeMessage"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Mensagem de Boas-vindas</FormLabel>
+                            <FormControl>
+                              <Input {...field} placeholder="Olá! Como posso te ajudar hoje?" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={chatForm.control}
+                        name="placeholderText"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Texto do Placeholder</FormLabel>
+                            <FormControl>
+                              <Input {...field} placeholder="Digite sua mensagem..." />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={chatForm.control}
+                        name="buttonIcon"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Ícone do Botão</FormLabel>
+                            <FormControl>
+                              <Input {...field} placeholder="MessageCircle" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={chatForm.control}
+                        name="chatPosition"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Posição do Chat</FormLabel>
+                            <FormControl>
+                              <select 
+                                {...field}
+                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                              >
+                                <option value="bottom-right">Inferior Direito</option>
+                                <option value="bottom-left">Inferior Esquerdo</option>
+                              </select>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={chatForm.control}
+                        name="chatSize"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Tamanho do Chat</FormLabel>
+                            <FormControl>
+                              <select 
+                                {...field}
+                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                              >
+                                <option value="sm">Pequeno</option>
+                                <option value="md">Médio</option>
+                                <option value="lg">Grande</option>
+                                <option value="xl">Extra Grande</option>
+                                <option value="full">Tela Cheia</option>
+                              </select>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={chatForm.control}
+                        name="isEnabled"
+                        render={({ field }) => (
+                          <FormItem className="flex items-center space-x-2">
+                            <FormControl>
+                              <input
+                                type="checkbox"
+                                checked={field.value}
+                                onChange={field.onChange}
+                                className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                              />
+                            </FormControl>
+                            <FormLabel className="!mt-0">Chat Ativo</FormLabel>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="flex justify-end pt-6">
+                      <Button
+                        type="submit"
+                        variant="admin-action"
+                        size="sm"
+                        disabled={saveChatMutation.isPending}
+                      >
+                        <Save className="h-4 w-4 mr-2" />
+                        {saveChatMutation.isPending ? "Salvando..." : "Salvar Alterações"}
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
 
         {/* Rules Settings */}
         <TabsContent value="rules" className="space-y-6" data-testid="tab-content-rules">
