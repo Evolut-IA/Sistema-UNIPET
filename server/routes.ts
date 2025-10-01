@@ -201,7 +201,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     legacyHeaders: false,
   });
 
-  app.post("/admin/api/admin/verify-password", passwordVerifyLimiter, async (req, res) => {
+  app.post("/admin/api/admin/verify-password", passwordVerifyLimiter, requireAdmin, async (req, res) => {
     try {
       const { password } = req.body;
 
