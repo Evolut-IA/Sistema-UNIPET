@@ -30,7 +30,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Plus, Search, Edit, Trash2, HelpCircle, MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, Search, Edit, Trash2, HelpCircle, MoreHorizontal, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { apiRequest } from "@/lib/admin/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useColumnPreferences } from "@/hooks/use-column-preferences";
@@ -181,7 +181,7 @@ export default function FAQ() {
         password: deletePassword,
       });
       
-      if (!response) {
+      if (!response.valid) {
         setDeletePasswordError("Senha incorreta");
         return;
       }
@@ -581,8 +581,16 @@ export default function FAQ() {
             <Button
               onClick={confirmDelete}
               disabled={!deletePassword || deleteMutation.isPending}
+              className="min-w-[140px]"
             >
-              {deleteMutation.isPending ? "Excluindo..." : "Excluir Pergunta"}
+              {deleteMutation.isPending ? (
+                <div className="flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Excluindo...
+                </div>
+              ) : (
+                "Excluir Pergunta"
+              )}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

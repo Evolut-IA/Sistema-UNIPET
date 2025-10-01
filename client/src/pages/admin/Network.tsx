@@ -129,7 +129,7 @@ export default function Network() {
         password: deletePassword,
       });
       
-      if (!response) {
+      if (!response.valid) {
         setDeletePasswordError("Senha incorreta");
         return;
       }
@@ -636,8 +636,16 @@ export default function Network() {
             <Button
               onClick={confirmDelete}
               disabled={!deletePassword || deleteUnitMutation.isPending}
+              className="min-w-[140px]"
             >
-              {deleteUnitMutation.isPending ? "Excluindo..." : "Excluir Unidade"}
+              {deleteUnitMutation.isPending ? (
+                <div className="flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Excluindo...
+                </div>
+              ) : (
+                "Excluir Unidade"
+              )}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

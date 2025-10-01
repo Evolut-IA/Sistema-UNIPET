@@ -36,7 +36,7 @@ import {
   type NetworkUnitWithCredentialStatus, 
   insertUserSchema 
 } from "@shared/schema.js";
-import { UserCheck, Plus, Search, Edit, Trash2, Eye, EyeOff, ChevronLeft, ChevronRight, Globe, User, MoreHorizontal } from "lucide-react";
+import { UserCheck, Plus, Search, Edit, Trash2, Eye, EyeOff, ChevronLeft, ChevronRight, Globe, User, MoreHorizontal, Loader2 } from "lucide-react";
 
 const AVAILABLE_PERMISSIONS = [
   { id: "clients", label: "Clientes", description: "Acesso à seção de clientes" },
@@ -1188,8 +1188,16 @@ export default function Administration() {
               onClick={confirmDelete}
               disabled={!deletePassword || deleteMutation.isPending}
               data-testid="button-confirm-delete"
+              className="min-w-[140px]"
             >
-              {deleteMutation.isPending ? "Excluindo..." : "Excluir Usuário"}
+              {deleteMutation.isPending ? (
+                <div className="flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Excluindo...
+                </div>
+              ) : (
+                "Excluir Usuário"
+              )}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

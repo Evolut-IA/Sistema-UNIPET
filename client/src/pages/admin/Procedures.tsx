@@ -748,7 +748,7 @@ export default function Procedures() {
         password: deletePassword,
       });
       
-      if (!response) {
+      if (!response.valid) {
         setDeletePasswordError("Senha incorreta");
         return;
       }
@@ -1581,8 +1581,16 @@ export default function Procedures() {
             <Button
               onClick={confirmDelete}
               disabled={!deletePassword || deleteMutation.isPending}
+              className="min-w-[140px]"
             >
-              {deleteMutation.isPending ? "Excluindo..." : "Excluir Procedimento"}
+              {deleteMutation.isPending ? (
+                <div className="flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Excluindo...
+                </div>
+              ) : (
+                "Excluir Procedimento"
+              )}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
