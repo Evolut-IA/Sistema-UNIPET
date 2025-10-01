@@ -80,13 +80,8 @@ async function initializeUnifiedServer(): Promise<void> {
     await initializeDatabase();
     console.log('✅ Banco de dados inicializado com sucesso');
 
-    // 2. Middleware para reescrever /admin/api/* para /api/* (sem duplicação)
-    app.use((req, res, next) => {
-      if (req.url === '/admin/api' || req.url.startsWith('/admin/api/')) {
-        req.url = '/api' + req.url.slice('/admin/api'.length);
-      }
-      next();
-    });
+    // 2. Middleware removido - rotas admin já estão definidas em server/routes.ts
+    // As rotas /admin/api/* são registradas diretamente, não precisam ser reescritas
 
     // 3. Registrar rotas uma única vez em /api/* (compartilhadas com /admin/api/*)
     console.log('🛣️ Registrando rotas compartilhadas (/api/* e /admin/api/*)...');
