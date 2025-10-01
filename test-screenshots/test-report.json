@@ -1,0 +1,17 @@
+{
+  "success": false,
+  "steps": [
+    {
+      "step": 1,
+      "description": "Navigate to login page",
+      "status": "success"
+    }
+  ],
+  "errors": [
+    "page.waitForTimeout is not a function"
+  ],
+  "screenshots": [
+    "01-login-page.png",
+    "02-credentials-entered.png"
+  ]
+}

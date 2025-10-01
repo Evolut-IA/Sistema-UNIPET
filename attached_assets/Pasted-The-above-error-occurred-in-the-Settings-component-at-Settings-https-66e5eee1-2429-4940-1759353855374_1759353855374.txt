@@ -1,0 +1,99 @@
+The above error occurred in the <Settings> component:
+
+    at Settings (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/src/pages/admin/Settings.tsx:37:21)
+    at Route (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/node_modules/.vite/deps/wouter.js?v=e33a0f9e:183:16)
+    at Switch (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/node_modules/.vite/deps/wouter.js?v=e33a0f9e:223:17)
+    at div
+    at main
+    at div
+    at div
+    at Layout (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/src/components/admin/Layout.tsx:23:19)
+    at AuthGuard (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/src/components/admin/AuthGuard.tsx:164:37)
+    at QueryClientProvider (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/node_modules/.vite/deps/chunk-H52AMIMM.js?v=e33a0f9e:3081:3)
+    at Router (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/node_modules/.vite/deps/wouter.js?v=e33a0f9e:144:3)
+    at AdminRouter
+    at Route (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/node_modules/.vite/deps/wouter.js?v=e33a0f9e:183:16)
+    at Switch (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/node_modules/.vite/deps/wouter.js?v=e33a0f9e:223:17)
+    at Router
+    at Provider (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/node_modules/.vite/deps/chunk-FWJQSFS4.js?v=e33a0f9e:38:15)
+    at TooltipProvider (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=e33a0f9e:58:5)
+    at QueryClientProvider (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/node_modules/.vite/deps/chunk-H52AMIMM.js?v=e33a0f9e:3081:3)
+    at ErrorBoundary (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/src/components/error-boundary.tsx:10:5)
+    at App
+
+React will try to recreate this component tree from scratch using the error boundary you provided, ErrorBoundary.
+ErrorBoundary caught an error: 
+ReferenceError {}
+ 
+Object {componentStack: "↵    at Settings…"}
+
+🚨 Detalhes do erro: 
+Object {message: "MessageSquare is not defined", stack: "ReferenceError: MessageSquare is not defined↵    at Settings…", componentStack: "↵    at Settings…", timestamp: "2025-10-01T21:23:40.229Z", url: "https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/admin/configuracoes"}
+
+MessageSquare is not defined
+MessageSquare is not defined
+The above error occurred in the <Settings> component:
+
+    at Settings (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/src/pages/admin/Settings.tsx:37:21)
+    at Route (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/node_modules/.vite/deps/wouter.js?v=e33a0f9e:183:16)
+    at Switch (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/node_modules/.vite/deps/wouter.js?v=e33a0f9e:223:17)
+    at div
+    at main
+    at div
+    at div
+    at Layout (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/src/components/admin/Layout.tsx:23:19)
+    at AuthGuard (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/src/components/admin/AuthGuard.tsx:164:37)
+    at QueryClientProvider (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/node_modules/.vite/deps/chunk-H52AMIMM.js?v=e33a0f9e:3081:3)
+    at Router (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/node_modules/.vite/deps/wouter.js?v=e33a0f9e:144:3)
+    at AdminRouter
+    at Route (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/node_modules/.vite/deps/wouter.js?v=e33a0f9e:183:16)
+    at Switch (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/node_modules/.vite/deps/wouter.js?v=e33a0f9e:223:17)
+    at Router
+    at Provider (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/node_modules/.vite/deps/chunk-FWJQSFS4.js?v=e33a0f9e:38:15)
+    at TooltipProvider (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=e33a0f9e:58:5)
+    at QueryClientProvider (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/node_modules/.vite/deps/chunk-H52AMIMM.js?v=e33a0f9e:3081:3)
+    at ErrorBoundary (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/src/components/error-boundary.tsx:10:5)
+    at App
+
+React will try to recreate this component tree from scratch using the error boundary you provided, ErrorBoundary.
+ErrorBoundary caught an error: 
+ReferenceError {}
+ 
+Object {componentStack: "↵    at Settings…"}
+
+🚨 Detalhes do erro: 
+Object {message: "MessageSquare is not defined", stack: "ReferenceError: MessageSquare is not defined↵    at Settings…", componentStack: "↵    at Settings…", timestamp: "2025-10-01T21:23:40.243Z", url: "https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/admin/configuracoes"}
+
+MessageSquare is not defined
+MessageSquare is not defined
+The above error occurred in the <Settings> component:
+
+    at Settings (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/src/pages/admin/Settings.tsx:37:21)
+    at Route (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/node_modules/.vite/deps/wouter.js?v=e33a0f9e:183:16)
+    at Switch (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/node_modules/.vite/deps/wouter.js?v=e33a0f9e:223:17)
+    at div
+    at main
+    at div
+    at div
+    at Layout (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/src/components/admin/Layout.tsx:23:19)
+    at AuthGuard (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/src/components/admin/AuthGuard.tsx:164:37)
+    at QueryClientProvider (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/node_modules/.vite/deps/chunk-H52AMIMM.js?v=e33a0f9e:3081:3)
+    at Router (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/node_modules/.vite/deps/wouter.js?v=e33a0f9e:144:3)
+    at AdminRouter
+    at Route (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/node_modules/.vite/deps/wouter.js?v=e33a0f9e:183:16)
+    at Switch (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/node_modules/.vite/deps/wouter.js?v=e33a0f9e:223:17)
+    at Router
+    at Provider (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/node_modules/.vite/deps/chunk-FWJQSFS4.js?v=e33a0f9e:38:15)
+    at TooltipProvider (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=e33a0f9e:58:5)
+    at QueryClientProvider (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/node_modules/.vite/deps/chunk-H52AMIMM.js?v=e33a0f9e:3081:3)
+    at ErrorBoundary (https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/src/components/error-boundary.tsx:10:5)
+    at App
+
+React will try to recreate this component tree from scratch using the error boundary you provided, ErrorBoundary.
+ErrorBoundary caught an error: 
+ReferenceError {}
+ 
+Object {componentStack: "↵    at Settings…"}
+
+🚨 Detalhes do erro: 
+Object {message: "MessageSquare is not defined", stack: "ReferenceError: MessageSquare is not defined↵    at Settings…", componentStack: "↵    at Settings…", timestamp: "2025-10-01T21:23:40.269Z", url: "https://66e5eee1-2429-4940-9437-6901b7dd61eb-00-2cxy9jttl8wp0.riker.replit.dev/admin/configuracoes"}

@@ -651,7 +651,7 @@ export default function Settings() {
             <Card className="border-[#eaeaea] bg-white shadow-sm">
               <CardHeader>
                 <CardTitle className="text-foreground flex items-center space-x-2">
-                  <MessageSquare className="h-5 w-5" />
+                  <MessageCircle className="h-5 w-5" />
                   <span>Configurações do Chat</span>
                 </CardTitle>
               </CardHeader>

@@ -1,0 +1,42 @@
+{
+  "steps": [
+    {
+      "step": 3,
+      "name": "Revenue by Plan Section",
+      "status": "success"
+    },
+    {
+      "step": 5,
+      "name": "Chat Tab",
+      "status": "success"
+    },
+    {
+      "step": 6,
+      "name": "Chat Form Fields",
+      "status": "partial",
+      "details": {
+        "Título do Chat": false,
+        "Mensagem de Boas-vindas": false,
+        "Texto do Placeholder": false,
+        "Ícone do Botão": false,
+        "Posição do Chat": false,
+        "Tamanho do Chat": false,
+        "Chat Ativo": false
+      }
+    },
+    {
+      "step": 7,
+      "name": "Save Functionality",
+      "status": "success"
+    }
+  ],
+  "screenshots": [
+    "01-admin-login.png",
+    "02-dashboard.png",
+    "03-settings-page.png",
+    "04-chat-settings.png",
+    "05-form-filled.png",
+    "06-after-save.png"
+  ],
+  "errors": []
+}

@@ -1,0 +1,29 @@
+{
+  "tests": [
+    {
+      "name": "Admin Login API",
+      "status": "success"
+    },
+    {
+      "name": "Dashboard Data",
+      "status": "failed",
+      "error": "Request failed with status code 401"
+    },
+    {
+      "name": "Chat Settings GET",
+      "status": "failed",
+      "error": "Request failed with status code 401"
+    },
+    {
+      "name": "Chat Settings UPDATE",
+      "status": "failed",
+      "error": "Request failed with status code 401"
+    }
+  ],
+  "screenshots": [
+    "test-01-login-page.png"
+  ],
+  "errors": [
+    "page.waitForTimeout is not a function"
+  ]
+}
