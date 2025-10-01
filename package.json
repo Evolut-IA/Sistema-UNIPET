@@ -121,6 +121,7 @@
     "pdfmake": "^0.2.20",
     "pg": "^8.11.3",
     "postgres": "^3.4.7",
+    "puppeteer": "^24.22.3",
     "react-aria-components": "^1.12.2",
     "react-hook-form": "^7.48.2",
     "react-icons": "^4.12.0",
