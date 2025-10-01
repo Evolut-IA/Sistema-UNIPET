@@ -109,6 +109,9 @@ export default function Administration() {
     },
   });
 
+  // Watch permissions to ensure checkboxes update properly
+  const watchedPermissions = form.watch("permissions", []);
+
   const credentialForm = useForm({
     resolver: zodResolver(
       z.object({
@@ -355,9 +358,9 @@ export default function Administration() {
   const handlePermissionChange = (permission: string, checked: boolean) => {
     const currentPermissions = (form.getValues("permissions") || []) as string[];
     if (checked) {
-      form.setValue("permissions", [...currentPermissions, permission]);
+      form.setValue("permissions", [...currentPermissions, permission], { shouldValidate: true });
     } else {
-      form.setValue("permissions", currentPermissions.filter(p => p !== permission));
+      form.setValue("permissions", currentPermissions.filter(p => p !== permission), { shouldValidate: true });
     }
   };
 
@@ -513,7 +516,7 @@ export default function Administration() {
                       <div key={permission.id} className="flex items-start space-x-3">
                         <Checkbox
                           id={`permission-${permission.id}`}
-                          checked={(form.getValues("permissions") || []).includes(permission.id)}
+                          checked={(watchedPermissions || []).includes(permission.id)}
                           onCheckedChange={(checked: boolean) => handlePermissionChange(permission.id, checked)}
                           data-testid={`checkbox-permission-${permission.id}`}
                         />
