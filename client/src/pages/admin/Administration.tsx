@@ -544,7 +544,18 @@ export default function Administration() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => setDialogOpen(false)}
+                    onClick={() => {
+                      setDialogOpen(false);
+                      setEditingUser(null);
+                      form.reset({
+                        username: "",
+                        email: "",
+                        password: "",
+                        role: "view",
+                        permissions: [],
+                        isActive: true,
+                      });
+                    }}
                     data-testid="button-cancel"
                   >
                     Cancelar
