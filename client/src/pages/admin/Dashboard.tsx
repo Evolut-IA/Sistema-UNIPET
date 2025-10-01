@@ -292,86 +292,74 @@ export default function Dashboard() {
               const maxValue = Math.max(...chartData.map(d => d.quantidade), 1);
               
               return (
-                <div className="w-full">
-                  {/* Container principal com grid lines e escala */}
-                  <div className="relative h-[320px]">
-                    {/* Grid Lines horizontais com valores de escala */}
-                    <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
-                      {[100, 75, 50, 25, 0].map((percent) => {
-                        const value = Math.round((maxValue * percent) / 100);
-                        return (
-                          <div key={percent} className="relative w-full">
-                            <div 
-                              className="absolute left-0 right-0 border-t border-gray-200"
-                              style={{ opacity: percent === 0 ? 0.5 : 0.3 }}
-                            />
-                            <span className="absolute -left-8 -top-2 text-[10px] text-gray-500 font-medium">
-                              {value}
-                            </span>
-                          </div>
-                        );
-                      })}
+                <div className="w-full py-4">
+                  {/* Container do gráfico com escala e grid */}
+                  <div className="flex">
+                    {/* Eixo Y com valores */}
+                    <div className="flex flex-col justify-between h-[240px] pr-2 text-[10px] text-gray-500 font-medium">
+                      {[163, 122, 81, 40, 0].map((value) => (
+                        <div key={value} className="text-right">
+                          {value}
+                        </div>
+                      ))}
                     </div>
                     
-                    {/* Container das barras */}
-                    <div className="relative h-full flex items-end justify-around gap-2 px-10">
-                      {chartData.map((item, index) => {
-                        const heightPercent = (item.quantidade / maxValue) * 100;
-                        
-                        return (
+                    {/* Área do gráfico */}
+                    <div className="flex-1 relative h-[240px]">
+                      {/* Grid lines horizontais */}
+                      <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
+                        {[0, 1, 2, 3, 4].map((i) => (
                           <div 
-                            key={item.name} 
-                            className="group relative flex flex-col items-center flex-1 max-w-[80px] cursor-pointer"
-                            style={{ 
-                              animation: `slideUp ${0.5 + index * 0.1}s ease-out`
-                            }}
-                          >
-                            {/* Container da barra */}
-                            <div className="w-full h-full flex flex-col justify-end items-center relative">
-                              {/* Tooltip on hover */}
-                              <div className="absolute -top-12 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-gray-900 text-white text-xs px-2 py-1 rounded whitespace-nowrap pointer-events-none z-10">
-                                <div className="font-bold">{item.name}</div>
-                                <div className="text-center">{item.quantidade.toLocaleString('pt-BR')} unidades</div>
-                                <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
-                              </div>
-                              
-                              {/* Valor no topo da barra */}
-                              <div className="absolute -top-6 text-sm font-bold text-gray-900 transition-all duration-200 group-hover:text-[#277677]">
-                                {item.quantidade.toLocaleString('pt-BR')}
-                              </div>
-                              
-                              {/* Barra com gradiente e sombra */}
-                              <div 
-                                className="w-full rounded-t-md transition-all duration-300 relative overflow-hidden hover:shadow-lg"
-                                style={{ 
-                                  height: `${Math.max(heightPercent, item.quantidade > 0 ? 2 : 0)}%`,
-                                  background: `linear-gradient(to top, #1e5758, #277677)`,
-                                  minHeight: item.quantidade > 0 ? '8px' : '0px',
-                                  boxShadow: '0 -2px 10px rgba(39, 118, 119, 0.2)',
-                                  transform: 'scaleY(1)',
-                                  transformOrigin: 'bottom'
-                                }}
-                              >
-                                {/* Efeito de brilho interno */}
-                                <div 
-                                  className="absolute inset-0 opacity-30"
-                                  style={{
-                                    background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.3) 50%, transparent)'
-                                  }}
-                                />
+                            key={i} 
+                            className="border-t border-gray-100"
+                            style={{ opacity: i === 4 ? 0.5 : 0.2 }}
+                          />
+                        ))}
+                      </div>
+                      
+                      {/* Container das barras */}
+                      <div className="relative h-full flex items-end justify-around gap-2 px-2">
+                        {chartData.map((item, index) => {
+                          // Calcular altura proporcional
+                          const heightPercent = (item.quantidade / maxValue) * 100;
+                          
+                          return (
+                            <div 
+                              key={item.name} 
+                              className="group relative flex flex-col items-center flex-1 max-w-[70px]"
+                            >
+                              {/* Container da barra */}
+                              <div className="w-full flex flex-col items-center">
+                                {/* Valor no topo */}
+                                <div className="text-xs font-bold text-gray-700 mb-1">
+                                  {item.quantidade}
+                                </div>
+                                
+                                {/* Área de altura da barra */}
+                                <div className="relative w-full h-[200px] flex items-end">
+                                  {/* Barra com altura proporcional */}
+                                  <div 
+                                    className="w-full bg-gradient-to-t from-[#1e5758] to-[#277677] rounded-t-sm transition-all duration-700 hover:opacity-90 cursor-pointer"
+                                    style={{ 
+                                      height: `${Math.max(heightPercent, item.quantidade > 0 ? 2 : 0)}%`,
+                                      minHeight: item.quantidade > 0 ? '4px' : '0px',
+                                      animation: `slideUp ${0.5 + index * 0.1}s ease-out`
+                                    }}
+                                    title={`${item.name}: ${item.quantidade} unidades`}
+                                  />
+                                </div>
+                                
+                                {/* Label embaixo */}
+                                <div className="mt-2 text-[10px] font-medium text-gray-600 text-center">
+                                  {item.name}
+                                </div>
                               </div>
                             </div>
-                            
-                            {/* Label embaixo */}
-                            <div className="mt-3 text-[11px] font-semibold text-gray-600 text-center w-full transition-colors duration-200 group-hover:text-[#277677]">
-                              {item.name}
-                            </div>
-                          </div>
-                        );
-                      })}
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
-                  
                 </div>
               );
             })()}
