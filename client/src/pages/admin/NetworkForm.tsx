@@ -433,16 +433,6 @@ export default function NetworkForm() {
                   Selecione pelo menos um serviço
                 </p>
               )}
-              {selectedServices.length > 0 && (
-                <div className="mt-4 p-3 bg-accent border border-accent-foreground/20 rounded-lg">
-                  <p className="text-sm font-medium text-accent-foreground mb-1">
-                    Procedimentos selecionados ({selectedServices.length}):
-                  </p>
-                  <p className="text-sm text-accent-foreground/80">
-                    {selectedServices.join(", ")}
-                  </p>
-                </div>
-              )}
             </CardContent>
           </Card>
 
