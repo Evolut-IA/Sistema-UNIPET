@@ -5318,7 +5318,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 if (client && pet && plan) {
                   const receiptData = {
                     contractId: contract.id,
-                    cieloPaymentId: payment.paymentId,
+                    cieloPaymentId: paymentId,
                     clientName: client.fullName,
                     clientEmail: client.email,
                     clientCPF: client.cpf,
@@ -5327,8 +5327,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
                       name: pet.name || 'Pet',
                       species: pet.species || 'Cão',
                       breed: pet.breed,
-                      age: pet.age,
-                      weight: pet.weight,
+                      age: typeof pet.age === 'string' ? parseFloat(pet.age) || 0 : pet.age,
+                      weight: typeof pet.weight === 'string' ? parseFloat(pet.weight) || 0 : pet.weight,
                       sex: pet.sex,
                       planName: plan.name || 'BASIC',
                       planType: plan.planType || 'BASIC',
@@ -5344,7 +5344,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                   };
                   
                   console.log(`📄 [PIX-RENEWAL-RECEIPT] Gerando comprovante de renovação para contrato ${contract.contractNumber}`);
-                  const receiptResult = await receiptService.generatePaymentReceipt(receiptData, `renewal_pix_${payment.paymentId}`);
+                  const receiptResult = await receiptService.generatePaymentReceipt(receiptData, `renewal_pix_${paymentId}`);
                   
                   if (receiptResult.success) {
                     console.log("✅ [PIX-RENEWAL-RECEIPT] Comprovante de renovação gerado com sucesso:", {
