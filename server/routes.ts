@@ -154,16 +154,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const loginData = adminLoginSchema.parse(req.body);
 
-      // Check credentials against environment variables
+      // First, check if user exists in database
+      let user = await storage.getUserByEmail(loginData.login);
+      if (!user) {
+        // Try to find by username if email not found
+        user = await storage.getUserByUsername(loginData.login);
+      }
+
+      if (user) {
+        // User found in database, verify password
+        const isValidPassword = await bcrypt.compare(loginData.password, user.password);
+        
+        if (isValidPassword && user.isActive) {
+          // Set admin session with user info
+          req.session.admin = { 
+            login: user.email || user.username, 
+            authenticated: true,
+            userId: user.id,
+            role: user.role,
+            permissions: user.permissions
+          };
+          
+          console.log("✅ [ADMIN-LOGIN] Database user authenticated successfully:", user.email || user.username);
+          res.json({ success: true, message: "Login realizado com sucesso" });
+          return;
+        } else if (!user.isActive) {
+          console.log("❌ [ADMIN-LOGIN] User account is inactive:", user.email || user.username);
+          res.status(401).json({ error: "Conta de usuário inativa" });
+          return;
+        }
+      }
+
+      // If not found in database or password incorrect, check environment variables as fallback
       const adminLogin = process.env.LOGIN;
       const adminPassword = process.env.SENHA;
 
       if (!adminLogin || !adminPassword) {
-        console.error("❌ [ADMIN-LOGIN] Missing environment variables LOGIN or SENHA");
-        return res.status(500).json({ error: "Configuração do servidor incorreta" });
+        console.log("❌ [ADMIN-LOGIN] Invalid credentials and no env variables configured");
+        res.status(401).json({ error: "Credenciais inválidas" });
+        return;
       }
 
-      // Secure password comparison
+      // Secure password comparison for environment variables
       const isValidLogin = loginData.login === adminLogin;
       let isValidPassword = false;
 
@@ -178,10 +210,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       if (isValidLogin && isValidPassword) {
-        // Set admin session
-        req.session.admin = { login: adminLogin, authenticated: true };
+        // Set admin session for environment variable admin
+        req.session.admin = { 
+          login: adminLogin, 
+          authenticated: true,
+          role: 'superadmin' // Environment variable admin has full access
+        };
         
-        console.log("✅ [ADMIN-LOGIN] Admin authenticated successfully");
+        console.log("✅ [ADMIN-LOGIN] Environment admin authenticated successfully");
         res.json({ success: true, message: "Login realizado com sucesso" });
       } else {
         console.log("❌ [ADMIN-LOGIN] Invalid credentials provided");
