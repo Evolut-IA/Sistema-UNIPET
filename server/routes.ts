@@ -2514,6 +2514,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 clientCPF: client.cpf,
                 clientPhone: client.phone,
                 pets: petsForReceipt,
+                planName: selectedPlan.name,
                 paymentMethod: 'credit_card',
                 installments: paymentData.payment?.installments || 1,
                 installmentValue: correctAmountInCents,
@@ -2747,6 +2748,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               clientCPF: client.cpf,
               clientPhone: client.phone,
               pets: petsForReceipt,
+              planName: selectedPlan.name,
               paymentMethod: 'pix',
               totalDiscount: 0,
               finalAmount: correctAmountInCents
