@@ -37,6 +37,13 @@ export default function Settings() {
     staleTime: 5 * 60 * 1000, // 5 minutos
   });
 
+  const { data: chatSettings, isLoading: chatLoading, error: chatError } = useQuery({
+    queryKey: ["/admin/api/settings/chat"],
+    queryFn: () => apiRequest("GET", "/admin/api/settings/chat"),
+    retry: 3,
+    retryDelay: 1000,
+    staleTime: 5 * 60 * 1000, // 5 minutos
+  });
 
 
   const siteForm = useForm({
@@ -65,6 +72,19 @@ export default function Settings() {
     resolver: zodResolver(insertRulesSettingsSchema),
     defaultValues: {
       fixedPercentage: 0,
+    },
+  });
+
+  const chatForm = useForm({
+    resolver: zodResolver(insertChatSettingsSchema),
+    defaultValues: {
+      welcomeMessage: "",
+      placeholderText: "",
+      chatTitle: "",
+      buttonIcon: "MessageCircle",
+      chatPosition: "bottom-right",
+      chatSize: "md",
+      isEnabled: true,
     },
   });
 
@@ -112,6 +132,27 @@ export default function Settings() {
     },
   });
 
+  const saveChatMutation = useMutation({
+    mutationFn: async (data: any) => {
+      await apiRequest("PUT", "/admin/api/settings/chat", data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/admin/api/settings/chat"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/chat/settings"] });
+      toast({
+        title: "Configurações do chat salvas",
+        description: "Configurações do chat foram salvas com sucesso.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Erro",
+        description: "Falha ao salvar configurações do chat.",
+        variant: "destructive",
+      });
+    },
+  });
+
 
   // Initialize form ONCE on first load only - never reset after that to preserve user changes
   useEffect(() => {
@@ -150,6 +191,22 @@ export default function Settings() {
     }
   }, [rulesSettings, rulesLoading, rulesError, rulesForm]);
 
+  useEffect(() => {
+    if (chatSettings && typeof chatSettings === 'object' && !chatLoading) {
+      const mergedChatSettings = {
+        welcomeMessage: (chatSettings as any).welcomeMessage || "",
+        placeholderText: (chatSettings as any).placeholderText || "",
+        chatTitle: (chatSettings as any).chatTitle || "",
+        buttonIcon: (chatSettings as any).buttonIcon || "MessageCircle",
+        chatPosition: (chatSettings as any).chatPosition || "bottom-right",
+        chatSize: (chatSettings as any).chatSize || "md",
+        isEnabled: (chatSettings as any).isEnabled ?? true,
+      };
+      
+      chatForm.reset(mergedChatSettings);
+    }
+  }, [chatSettings, chatLoading, chatError, chatForm]);
+
 
   const onSubmitSite = (data: any) => {
     console.log('💾 [FORM] onSubmitSite called with data:', data);
@@ -178,6 +235,10 @@ export default function Settings() {
     saveRulesMutation.mutate(data);
   };
 
+  const onSubmitChat = (data: any) => {
+    saveChatMutation.mutate(data);
+  };
+
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -191,7 +252,7 @@ export default function Settings() {
 
       <Tabs defaultValue="site" className="space-y-4 sm:space-y-6">
         <TabsList 
-          className="grid w-full grid-cols-2 gap-1 border border-[#eaeaea] bg-white shadow-sm rounded-md"
+          className="grid w-full grid-cols-3 gap-1 border border-[#eaeaea] bg-white shadow-sm rounded-md"
         >
           <TabsTrigger 
             value="site" 
@@ -199,6 +260,13 @@ export default function Settings() {
           >
             <Globe className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
             <span className="truncate">Geral</span>
+          </TabsTrigger>
+          <TabsTrigger 
+            value="chat" 
+            className="flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+          >
+            <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+            <span className="truncate">Chat</span>
           </TabsTrigger>
           <TabsTrigger 
             value="rules" 
