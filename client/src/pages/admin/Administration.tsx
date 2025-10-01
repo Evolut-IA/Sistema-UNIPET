@@ -340,15 +340,6 @@ export default function Administration() {
     return { text: "Não configurado", color: "border border-border rounded-lg bg-background text-foreground" };
   };
 
-  const getRoleColor = (role: string) => {
-    switch (role) {
-      case "admin": return "border border-blue-500 bg-blue-50 text-blue-700";
-      case "manager": return "border border-green-500 bg-green-50 text-green-700";
-      case "user": return "border border-gray-500 bg-gray-50 text-gray-700";
-      default: return "border border-border rounded-lg bg-background text-foreground";
-    }
-  };
-
   const getRoleLabel = (role: string) => {
     switch (role) {
       case "admin": return "Administrador";
@@ -701,7 +692,7 @@ export default function Administration() {
                     )}
                     {visibleColumns.includes("Função") && (
                       <TableCell className="whitespace-nowrap bg-white">
-                        <Badge className={getRoleColor(user.role)}>
+                        <Badge variant="neutral" className="text-xs">
                           {getRoleLabel(user.role)}
                         </Badge>
                       </TableCell>
