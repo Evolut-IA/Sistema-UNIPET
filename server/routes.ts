@@ -1432,6 +1432,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post("/admin/api/settings/chat/upload-image", upload.single('image'), async (req, res) => {
+    // Development-only bypass
+    if (process.env.NODE_ENV === 'development' && !req.session?.admin) {
+      console.warn("⚠️ [ADMIN] Bypassing auth for /admin/api/settings/chat/upload-image - DEVELOPMENT ONLY");
+    } else if (!req.session?.admin) {
+      return res.status(401).json({ error: "Acesso administrativo não autorizado" });
+    }
+
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "Nenhuma imagem foi enviada" });
+      }
+
+      const imageType = req.body.imageType as 'bot' | 'user';
+      if (!imageType || (imageType !== 'bot' && imageType !== 'user')) {
+        return res.status(400).json({ error: "Tipo de imagem inválido. Use 'bot' ou 'user'" });
+      }
+
+      const imageBuffer = req.file.buffer;
+      const mimeType = req.file.mimetype;
+
+      const result = await supabaseStorage.uploadChatImage(
+        imageType,
+        imageBuffer,
+        mimeType
+      );
+
+      if (!result.success) {
+        return res.status(500).json({ error: result.error });
+      }
+
+      res.json({ 
+        success: true,
+        imageUrl: result.publicUrl
+      });
+    } catch (error) {
+      console.error("❌ [ADMIN] Error uploading chat image:", error);
+      res.status(500).json({ error: "Erro ao fazer upload da imagem do chat" });
+    }
+  });
+
 
   // GET site settings
   app.get("/admin/api/settings/site", async (req, res) => {

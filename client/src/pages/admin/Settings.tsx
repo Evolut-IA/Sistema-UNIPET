@@ -15,6 +15,7 @@ import { insertSiteSettingsSchema, insertRulesSettingsSchema, insertChatSettings
 import { Globe, Save, FileText, Share, Image, MessageSquare } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { SiteSettingsImageUpload } from "@/components/admin/ui/site-settings-image-upload";
+import { ChatImageUpload } from "@/components/admin/ui/chat-image-upload";
 import { Switch } from "@/components/admin/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/admin/ui/select";
 
@@ -84,6 +85,8 @@ export default function Settings() {
       placeholderText: "",
       chatTitle: "",
       buttonIcon: "MessageCircle",
+      botIconUrl: "",
+      userIconUrl: "",
       chatPosition: "bottom-right",
       chatSize: "md",
       isEnabled: true,
@@ -200,6 +203,8 @@ export default function Settings() {
         placeholderText: (chatSettings as any).placeholderText || "",
         chatTitle: (chatSettings as any).chatTitle || "",
         buttonIcon: (chatSettings as any).buttonIcon || "MessageCircle",
+        botIconUrl: (chatSettings as any).botIconUrl || "",
+        userIconUrl: (chatSettings as any).userIconUrl || "",
         chatPosition: (chatSettings as any).chatPosition || "bottom-right",
         chatSize: (chatSettings as any).chatSize || "md",
         isEnabled: (chatSettings as any).isEnabled ?? true,
@@ -780,6 +785,50 @@ export default function Settings() {
                           </FormItem>
                         )}
                       />
+                    </div>
+
+                    {/* Image Upload Section */}
+                    <div className="space-y-4">
+                      <h3 className="text-sm font-semibold text-foreground">Avatares do Chat</h3>
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <FormField
+                          control={chatForm.control}
+                          name="botIconUrl"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Imagem do Bot</FormLabel>
+                              <FormControl>
+                                <ChatImageUpload 
+                                  value={field.value} 
+                                  onChange={field.onChange}
+                                  imageType="bot"
+                                  placeholder="Selecione a imagem do bot"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={chatForm.control}
+                          name="userIconUrl"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Imagem do Usuário</FormLabel>
+                              <FormControl>
+                                <ChatImageUpload 
+                                  value={field.value} 
+                                  onChange={field.onChange}
+                                  imageType="user"
+                                  placeholder="Selecione a imagem do usuário"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
                     </div>
 
                     <div className="flex justify-end pt-6">

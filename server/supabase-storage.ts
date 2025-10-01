@@ -858,6 +858,101 @@ class SupabaseStorageService {
       };
     }
   }
+
+  async uploadChatImage(
+    imageType: 'bot' | 'user', 
+    imageBuffer: Buffer, 
+    mimeType: string,
+    options: ImageProcessingOptions = {}
+  ): Promise<UploadResult> {
+    try {
+      if (!this.supabase) {
+        return {
+          success: false,
+          error: 'Supabase Storage não está configurado'
+        };
+      }
+
+      console.log(`📦 [SUPABASE] Fazendo upload de imagem do chat: ${imageType}`);
+
+      const {
+        maxWidth = 800,
+        maxHeight = 800,
+        quality = 90
+      } = options;
+
+      let processedBuffer: Buffer;
+      
+      if (mimeType.includes('image/')) {
+        processedBuffer = await sharp(imageBuffer)
+          .resize(maxWidth, maxHeight, {
+            fit: 'inside',
+            withoutEnlargement: true
+          })
+          .jpeg({ quality })
+          .toBuffer();
+      } else {
+        processedBuffer = imageBuffer;
+      }
+
+      const timestamp = Date.now();
+      const fileName = `chat-${imageType}-${timestamp}.jpg`;
+      const filePath = `chat-avatars/${fileName}`;
+
+      console.log(`📤 Fazendo upload da imagem do chat: ${filePath}`);
+      const { data, error } = await this.supabase.storage
+        .from(this.bucketName)
+        .upload(filePath, processedBuffer, {
+          contentType: 'image/jpeg',
+          upsert: true
+        });
+
+      if (error) {
+        console.error('❌ Erro no upload:', error);
+        
+        if (error.message.includes('Bucket not found') || error.message.includes('bucket does not exist')) {
+          return {
+            success: false,
+            error: `Bucket '${this.bucketName}' não encontrado. Crie o bucket no painel do Supabase em Storage > Buckets.`
+          };
+        }
+        
+        return {
+          success: false,
+          error: `Erro no upload: ${error.message}`
+        };
+      }
+
+      const { data: urlData } = this.supabase.storage
+        .from(this.bucketName)
+        .getPublicUrl(filePath);
+
+      const publicUrl = urlData?.publicUrl;
+
+      if (!publicUrl) {
+        return {
+          success: false,
+          error: 'Não foi possível gerar URL pública'
+        };
+      }
+
+      console.log(`✅ Upload de imagem do chat concluído: ${publicUrl}`);
+
+      return {
+        success: true,
+        publicUrl,
+        fileName
+      };
+
+    } catch (error) {
+      console.error('❌ Erro no upload da imagem do chat:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Erro desconhecido'
+      };
+    }
+  }
+
   isConfigured(): boolean {
     return !!this.supabase;
   }
