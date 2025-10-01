@@ -8,6 +8,14 @@ import { InputMasked } from "@/components/admin/ui/input-masked";
 import { Switch } from "@/components/admin/ui/switch";
 import { Badge } from "@/components/admin/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/admin/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/admin/ui/alert-dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/admin/ui/form";
 import { CustomCheckbox } from "@/components/admin/ui/custom-checkbox";
 import { Select, SelectContent, SelectItem, SelectSeparator, SelectTrigger, SelectValue } from "@/components/admin/ui/select";
@@ -108,6 +116,10 @@ export default function Procedures() {
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Procedure | null>(null);
   const [viewingItem, setViewingItem] = useState<Procedure | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<string>("");
+  const [deletePassword, setDeletePassword] = useState("");
+  const [deletePasswordError, setDeletePasswordError] = useState("");
   const { visibleColumns, toggleColumn } = useColumnPreferences('procedures.columns', allColumns);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
@@ -723,7 +735,33 @@ export default function Procedures() {
   };
 
   const handleDelete = (id: string) => {
-    deleteMutation.mutate(id);
+    setItemToDelete(id);
+    setDeletePassword("");
+    setDeletePasswordError("");
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      // Verificar senha
+      const response = await apiRequest("POST", "/admin/api/admin/verify-password", {
+        password: deletePassword,
+      });
+      
+      if (!response) {
+        setDeletePasswordError("Senha incorreta");
+        return;
+      }
+
+      // Deletar procedimento
+      deleteMutation.mutate(itemToDelete);
+      setDeleteDialogOpen(false);
+      setDeletePassword("");
+      setDeletePasswordError("");
+      setItemToDelete("");
+    } catch (error) {
+      setDeletePasswordError("Senha incorreta");
+    }
   };
 
   const handleToggleStatus = (id: string, currentStatus: boolean) => {
@@ -1494,6 +1532,62 @@ export default function Procedures() {
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar Exclusão</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta ação não pode ser desfeita. Isso excluirá permanentemente o 
+              procedimento selecionado e todas as suas configurações de planos.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label htmlFor="delete-password" className="text-sm font-medium">
+                Digite sua senha para confirmar
+              </label>
+              <Input
+                id="delete-password"
+                type="password"
+                value={deletePassword}
+                onChange={(e) => {
+                  setDeletePassword(e.target.value);
+                  setDeletePasswordError("");
+                }}
+                placeholder="Senha de administrador"
+                className={deletePasswordError ? "border-red-500" : ""}
+              />
+              {deletePasswordError && (
+                <p className="text-sm text-red-600">{deletePasswordError}</p>
+              )}
+            </div>
+          </div>
+
+          <AlertDialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setDeleteDialogOpen(false);
+                setDeletePassword("");
+                setDeletePasswordError("");
+                setItemToDelete("");
+              }}
+            >
+              Cancelar
+            </Button>
+            <Button
+              onClick={confirmDelete}
+              disabled={!deletePassword || deleteMutation.isPending}
+            >
+              {deleteMutation.isPending ? "Excluindo..." : "Excluir Procedimento"}
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
     </div>
   );
 }
