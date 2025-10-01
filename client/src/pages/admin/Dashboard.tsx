@@ -4,13 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/admin/ui/
 import { Skeleton } from "@/components/admin/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/admin/ui/alert";
 import { DateFilterComponent } from "@/components/admin/DateFilterComponent";
-import type { Client, Guide, NetworkUnit, ContactSubmission } from "../../../../shared/schema";
+import type { Client, Guide, ContactSubmission } from "../../../../shared/schema";
 import {
   User,
   DollarSign,
   Users
 } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip } from "recharts";
 import { CalendarDate } from "@internationalized/date";
 import { getDateRangeParams } from "@/lib/admin/date-utils";
 import { createCacheManager } from "@/lib/admin/cacheUtils";
@@ -109,7 +108,6 @@ export default function Dashboard() {
     registeredPets?: number;
   };
   const allGuides = (dashboardData as any)?.guides || [] as Guide[];
-  const networkUnits = (dashboardData as any)?.networkUnits || [] as NetworkUnit[];
   const clients = (dashboardData as any)?.clients || [] as Client[];
   const contactSubmissions = (dashboardData as any)?.contactSubmissions || [] as ContactSubmission[];
   const planDistribution = ((dashboardData as any)?.planDistribution || []) as PlanDistribution[];
@@ -283,38 +281,48 @@ export default function Dashboard() {
                 <Skeleton className="h-full w-full" />
               </div>
             ) : (
-              <div className="w-full" style={{ height: '400px' }}>
-                {(() => {
-                  const chartData = [
-                    { name: 'Formulários', quantidade: contactSubmissions?.length || 0 },
-                    { name: 'Guias', quantidade: allGuides?.length || 0 },
-                    { name: 'Clientes', quantidade: clients?.length || 0 },
-                    { name: 'Pets', quantidade: stats?.registeredPets || 0 },
-                    { name: 'Planos', quantidade: (dashboardData as any)?.plans?.length || 0 },
-                    { name: 'Procedimentos', quantidade: Array.isArray(procedures) ? procedures.length : 0 },
-                  ];
-                  console.log('📊 Chart data:', chartData);
+              <div className="space-y-4 py-4">
+                {[
+                  { name: 'Formulários', quantidade: contactSubmissions?.length || 0 },
+                  { name: 'Guias', quantidade: allGuides?.length || 0 },
+                  { name: 'Clientes', quantidade: clients?.length || 0 },
+                  { name: 'Pets', quantidade: stats?.registeredPets || 0 },
+                  { name: 'Planos', quantidade: (dashboardData as any)?.plans?.length || 0 },
+                  { name: 'Procedimentos', quantidade: Array.isArray(procedures) ? procedures.length : 0 },
+                ].map((item) => {
+                  const maxValue = Math.max(
+                    contactSubmissions?.length || 0,
+                    allGuides?.length || 0,
+                    clients?.length || 0,
+                    stats?.registeredPets || 0,
+                    (dashboardData as any)?.plans?.length || 0,
+                    Array.isArray(procedures) ? procedures.length : 0,
+                    1
+                  );
+                  const widthPercent = (item.quantidade / maxValue) * 100;
                   
                   return (
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart 
-                        data={chartData}
-                        margin={{ top: 20, right: 30, left: 20, bottom: 80 }}
-                      >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis 
-                          dataKey="name" 
-                          angle={-45}
-                          textAnchor="end"
-                          interval={0}
-                        />
-                        <YAxis />
-                        <Tooltip />
-                        <Bar dataKey="quantidade" fill="#0088FE" />
-                      </BarChart>
-                    </ResponsiveContainer>
+                    <div key={item.name} className="space-y-1">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium text-gray-700">{item.name}</span>
+                        <span className="text-sm font-bold text-gray-900">{item.quantidade}</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-8 relative overflow-hidden">
+                        <div 
+                          className="h-full rounded-full transition-all duration-500 flex items-center justify-end pr-2"
+                          style={{ 
+                            width: `${Math.max(widthPercent, item.quantidade > 0 ? 10 : 0)}%`,
+                            backgroundColor: '#277677'
+                          }}
+                        >
+                          {item.quantidade > 0 && (
+                            <span className="text-xs font-semibold text-white">{item.quantidade}</span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   );
-                })()}
+                })}
               </div>
             )}
           </CardContent>
