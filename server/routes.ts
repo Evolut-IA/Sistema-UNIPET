@@ -153,7 +153,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/admin/api/login", adminLoginLimiter, async (req, res) => {
     try {
       const loginData = adminLoginSchema.parse(req.body);
-      console.log("🔐 [ADMIN-LOGIN] Login attempt for:", loginData.login);
 
       // First, check if user exists in database
       let user = await storage.getUserByEmail(loginData.login);
@@ -162,12 +161,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         user = await storage.getUserByUsername(loginData.login);
       }
 
-      console.log("👤 [ADMIN-LOGIN] Database user found:", user ? `${user.email || user.username} (Active: ${user.isActive})` : "None");
-
       if (user) {
         // User found in database, verify password
         const isValidPassword = await bcrypt.compare(loginData.password, user.password);
-        console.log("🔑 [ADMIN-LOGIN] Password validation result:", isValidPassword);
         
         if (isValidPassword && user.isActive) {
           // Set admin session with user info
