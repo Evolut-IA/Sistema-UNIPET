@@ -15,6 +15,8 @@ import { insertSiteSettingsSchema, insertRulesSettingsSchema, insertChatSettings
 import { Globe, Save, FileText, Share, Image, MessageSquare } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { SiteSettingsImageUpload } from "@/components/admin/ui/site-settings-image-upload";
+import { Switch } from "@/components/admin/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/admin/ui/select";
 
 export default function Settings() {
   const { toast } = useToast();
@@ -703,33 +705,26 @@ export default function Settings() {
 
                       <FormField
                         control={chatForm.control}
-                        name="buttonIcon"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Ícone do Botão</FormLabel>
-                            <FormControl>
-                              <Input {...field} placeholder="MessageCircle" />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={chatForm.control}
                         name="chatPosition"
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Posição do Chat</FormLabel>
-                            <FormControl>
-                              <select 
-                                {...field}
-                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                              >
-                                <option value="bottom-right">Inferior Direito</option>
-                                <option value="bottom-left">Inferior Esquerdo</option>
-                              </select>
-                            </FormControl>
+                            <Select onValueChange={field.onChange} value={field.value}>
+                              <FormControl>
+                                <SelectTrigger 
+                                  style={{
+                                    borderColor: 'var(--border-gray)',
+                                    background: 'white'
+                                  }}
+                                >
+                                  <SelectValue placeholder="Selecione a posição" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="bottom-right">Inferior Direito</SelectItem>
+                                <SelectItem value="bottom-left">Inferior Esquerdo</SelectItem>
+                              </SelectContent>
+                            </Select>
                             <FormMessage />
                           </FormItem>
                         )}
@@ -741,18 +736,25 @@ export default function Settings() {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Tamanho do Chat</FormLabel>
-                            <FormControl>
-                              <select 
-                                {...field}
-                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                              >
-                                <option value="sm">Pequeno</option>
-                                <option value="md">Médio</option>
-                                <option value="lg">Grande</option>
-                                <option value="xl">Extra Grande</option>
-                                <option value="full">Tela Cheia</option>
-                              </select>
-                            </FormControl>
+                            <Select onValueChange={field.onChange} value={field.value}>
+                              <FormControl>
+                                <SelectTrigger 
+                                  style={{
+                                    borderColor: 'var(--border-gray)',
+                                    background: 'white'
+                                  }}
+                                >
+                                  <SelectValue placeholder="Selecione o tamanho" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="sm">Pequeno</SelectItem>
+                                <SelectItem value="md">Médio</SelectItem>
+                                <SelectItem value="lg">Grande</SelectItem>
+                                <SelectItem value="xl">Extra Grande</SelectItem>
+                                <SelectItem value="full">Tela Cheia</SelectItem>
+                              </SelectContent>
+                            </Select>
                             <FormMessage />
                           </FormItem>
                         )}
@@ -762,17 +764,19 @@ export default function Settings() {
                         control={chatForm.control}
                         name="isEnabled"
                         render={({ field }) => (
-                          <FormItem className="flex items-center space-x-2">
+                          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                            <div className="space-y-0.5">
+                              <FormLabel className="text-base">Chat Ativo</FormLabel>
+                              <p className="text-sm text-muted-foreground">
+                                Ativar ou desativar o chat no site
+                              </p>
+                            </div>
                             <FormControl>
-                              <input
-                                type="checkbox"
+                              <Switch
                                 checked={field.value}
-                                onChange={field.onChange}
-                                className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                                onCheckedChange={field.onChange}
                               />
                             </FormControl>
-                            <FormLabel className="!mt-0">Chat Ativo</FormLabel>
-                            <FormMessage />
                           </FormItem>
                         )}
                       />
