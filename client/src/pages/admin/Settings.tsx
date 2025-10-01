@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/admin/queryClient";
 import { insertSiteSettingsSchema, insertRulesSettingsSchema, insertChatSettingsSchema } from "@shared/schema";
-import { Globe, Save, FileText, Share, Image, MessageSquare } from "lucide-react";
+import { Globe, Save, FileText, Share, Image, MessageCircle } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { SiteSettingsImageUpload } from "@/components/admin/ui/site-settings-image-upload";
 
@@ -21,7 +21,7 @@ export default function Settings() {
   const queryClient = useQueryClient();
   const hasInitializedRef = useRef(false);
 
-  const { data: siteSettings, isLoading: siteLoading, error: siteError } = useQuery({
+  const { data: siteSettings, isLoading: siteLoading } = useQuery({
     queryKey: ["/admin/api/settings/site"],
     queryFn: () => apiRequest("GET", "/admin/api/settings/site"),
     retry: 3,
@@ -29,7 +29,7 @@ export default function Settings() {
     staleTime: 5 * 60 * 1000, // 5 minutos
   });
 
-  const { data: rulesSettings, isLoading: rulesLoading, error: rulesError } = useQuery({
+  const { data: rulesSettings, isLoading: rulesLoading } = useQuery({
     queryKey: ["/admin/api/settings/rules"],
     queryFn: () => apiRequest("GET", "/admin/api/settings/rules"),
     retry: 3,
@@ -37,7 +37,7 @@ export default function Settings() {
     staleTime: 5 * 60 * 1000, // 5 minutos
   });
 
-  const { data: chatSettings, isLoading: chatLoading, error: chatError } = useQuery({
+  const { data: chatSettings, isLoading: chatLoading } = useQuery({
     queryKey: ["/admin/api/settings/chat"],
     queryFn: () => apiRequest("GET", "/admin/api/settings/chat"),
     retry: 3,
@@ -189,7 +189,7 @@ export default function Settings() {
       
       rulesForm.reset(mergedRulesSettings);
     }
-  }, [rulesSettings, rulesLoading, rulesError, rulesForm]);
+  }, [rulesSettings, rulesLoading, rulesForm]);
 
   useEffect(() => {
     if (chatSettings && typeof chatSettings === 'object' && !chatLoading) {
@@ -205,7 +205,7 @@ export default function Settings() {
       
       chatForm.reset(mergedChatSettings);
     }
-  }, [chatSettings, chatLoading, chatError, chatForm]);
+  }, [chatSettings, chatLoading, chatForm]);
 
 
   const onSubmitSite = (data: any) => {
@@ -223,9 +223,9 @@ export default function Settings() {
     
     console.log('💾 [FORM] Clean data to be sent:', cleanData);
     console.log('💾 [FORM] Image URLs in clean data:', {
-      mainImageUrl: cleanData.mainImageUrl,
-      networkImageUrl: cleanData.networkImageUrl,
-      aboutImageUrl: cleanData.aboutImageUrl
+      mainImageUrl: cleanData["mainImageUrl"],
+      networkImageUrl: cleanData["networkImageUrl"],
+      aboutImageUrl: cleanData["aboutImageUrl"]
     });
     
     saveSiteMutation.mutate(cleanData);
@@ -265,7 +265,7 @@ export default function Settings() {
             value="chat" 
             className="flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
           >
-            <MessageSquare className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+            <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
             <span className="truncate">Chat</span>
           </TabsTrigger>
           <TabsTrigger 
