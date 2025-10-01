@@ -92,6 +92,14 @@ export default function Dashboard() {
     queryKey: ["/admin/api/dashboard/all", dateParams],
     // No custom queryFn needed - using the enhanced getQueryFn that supports [path, params] format
   });
+  
+  // Query to fetch procedures count
+  const { 
+    data: procedures,
+    isLoading: isLoadingProcedures
+  } = useQuery({
+    queryKey: ["/admin/api/procedures"],
+  });
 
   // Extract data from the aggregated response
   const stats = (dashboardData as any)?.stats || {} as {
@@ -130,9 +138,9 @@ export default function Dashboard() {
   // Memoize loading states
   const isAnyLoading = useMemo(() =>
     statsLoading || guidesLoading || distributionLoading || clientsLoading ||
-    submissionsLoading || plansLoading || networkLoading || revenueLoading,
+    submissionsLoading || plansLoading || networkLoading || revenueLoading || isLoadingProcedures,
     [statsLoading, guidesLoading, distributionLoading, clientsLoading,
-      submissionsLoading, plansLoading, networkLoading, revenueLoading]
+      submissionsLoading, plansLoading, networkLoading, revenueLoading, isLoadingProcedures]
   );
 
   // Memoize error states
@@ -269,30 +277,44 @@ export default function Dashboard() {
             <CardTitle className="text-foreground min-w-0">Visão Geral em Gráficos</CardTitle>
             <p className="text-sm text-muted-foreground">Distribuição visual dos dados do sistema</p>
           </CardHeader>
-          <CardContent className="flex justify-center">
+          <CardContent>
             {isAnyLoading ? (
               <div className="flex items-center justify-center h-64 w-full">
                 <Skeleton className="h-full w-full" />
               </div>
-            ) : planRevenue && planRevenue.length > 0 ? (
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart
-                  data={planRevenue.map(plan => ({
-                    name: plan.planName,
-                    receita: plan.totalRevenue / 100,
-                  }))}
-                  margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="receita" fill="#0088FE" />
-                </BarChart>
-              </ResponsiveContainer>
             ) : (
-              <div className="flex items-center justify-center h-64 w-full">
-                <p className="text-sm text-muted-foreground">Nenhum dado de receita disponível</p>
+              <div className="w-full" style={{ height: '400px' }}>
+                {(() => {
+                  const chartData = [
+                    { name: 'Formulários', quantidade: contactSubmissions?.length || 0 },
+                    { name: 'Guias', quantidade: allGuides?.length || 0 },
+                    { name: 'Clientes', quantidade: clients?.length || 0 },
+                    { name: 'Pets', quantidade: stats?.registeredPets || 0 },
+                    { name: 'Planos', quantidade: (dashboardData as any)?.plans?.length || 0 },
+                    { name: 'Procedimentos', quantidade: Array.isArray(procedures) ? procedures.length : 0 },
+                  ];
+                  console.log('📊 Chart data:', chartData);
+                  
+                  return (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart 
+                        data={chartData}
+                        margin={{ top: 20, right: 30, left: 20, bottom: 80 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis 
+                          dataKey="name" 
+                          angle={-45}
+                          textAnchor="end"
+                          interval={0}
+                        />
+                        <YAxis />
+                        <Tooltip />
+                        <Bar dataKey="quantidade" fill="#0088FE" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  );
+                })()}
               </div>
             )}
           </CardContent>

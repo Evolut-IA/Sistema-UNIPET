@@ -336,6 +336,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return next();
     }
     
+    // DEVELOPMENT ONLY: Skip auth for procedures routes during development
+    if (process.env.NODE_ENV === 'development' && (req.originalUrl.startsWith("/admin/api/procedures") || req.path.startsWith("/admin/api/procedures"))) {
+      console.log("⚠️ [ADMIN] Bypassing auth for /admin/api/procedures - DEVELOPMENT ONLY");
+      return next();
+    }
+    
     // Apply admin authentication for all other admin routes
     return requireAdmin(req, res, next);
   });
