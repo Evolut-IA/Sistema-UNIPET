@@ -374,15 +374,6 @@ export default function Dashboard() {
           <CardContent>
             {distributionLoading ? (
               <div className="space-y-4">
-                {/* Loading do resumo total */}
-                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                  <Skeleton className="h-4 w-40" />
-                  <div className="text-right space-y-1">
-                    <Skeleton className="h-6 w-8" />
-                    <Skeleton className="h-3 w-12" />
-                  </div>
-                </div>
-
                 {/* Loading dos planos */}
                 {[...Array(4)].map((_, i) => (
                   <div key={i} className="space-y-2">
@@ -408,28 +399,6 @@ export default function Dashboard() {
               </Alert>
             ) : planDistribution?.length && planDistribution.some(plan => plan.petCount > 0) ? (
               <div className="space-y-4">
-                {/* Resumo total */}
-                <div className="flex items-center justify-between p-3 border border-border rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-foreground">Total de Pets com Planos</span>
-                    {planDistribution.some(plan => plan.petCount > 0) && (
-                      <div 
-                        className="w-2 h-2 rounded-full" 
-                        style={{ backgroundColor: 'var(--chart-4)' }}
-                        title="Dados atualizados"
-                      ></div>
-                    )}
-                  </div>
-                  <div className="text-right">
-                    <span className="text-xl font-bold text-foreground">
-                      {planDistribution.reduce((sum, plan) => sum + plan.petCount, 0)}
-                    </span>
-                    <div className="text-xs text-foreground">
-                      {planDistribution.reduce((sum, plan) => sum + plan.percentage, 0)}% total
-                    </div>
-                  </div>
-                </div>
-
                 {/* Distribuição por plano */}
                 {planDistribution.map((plan) => {
                   // Cores uniformes usando cor principal para todos os planos
