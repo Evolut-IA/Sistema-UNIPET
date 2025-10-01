@@ -70,6 +70,10 @@ externalPort = 3002
 localPort = 43575
 externalPort = 3001
 
+[[ports]]
+localPort = 44695
+externalPort = 4200
+
 [deployment]
 deploymentTarget = "gce"
 run = ["npm", "start"]
