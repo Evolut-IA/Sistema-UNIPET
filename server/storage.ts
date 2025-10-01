@@ -84,6 +84,7 @@ export interface IStorage {
   getAllNetworkUnits(): Promise<NetworkUnit[]>;
   getAllActiveNetworkUnits(): Promise<NetworkUnit[]>; // For public API
   getNetworkUnit(id: string): Promise<NetworkUnit | undefined>;
+  getNetworkUnitBySlug(slug: string): Promise<NetworkUnit | undefined>;
   createNetworkUnit(unit: InsertNetworkUnit): Promise<NetworkUnit>;
   updateNetworkUnit(id: string, unit: Partial<InsertNetworkUnit>): Promise<NetworkUnit | undefined>;
   deleteNetworkUnit(id: string): Promise<boolean>;
