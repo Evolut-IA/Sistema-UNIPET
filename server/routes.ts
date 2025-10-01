@@ -13,6 +13,7 @@ import {
   clientLoginSchema,
   adminLoginSchema,
   insertUserSchema,
+  updateUserSchema,
   insertPetSchema,
   updatePetSchema,
   type InsertNetworkUnit,
