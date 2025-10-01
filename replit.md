@@ -57,13 +57,16 @@ Preferred communication style: Simple, everyday language.
 -   **Process Management**: Health checks, graceful shutdown.
 
 ### Feature Specifications
--   **FAQ Management**: Admin interface for creating, updating, deleting, and toggling status of FAQ items. Public pages only display active FAQs.
+-   **FAQ Management**: Admin interface for creating, updating, deleting, and toggling status of FAQ items. Public pages only display active FAQs. Deletion requires password confirmation.
 -   **Site Settings Management**: Admin configuration for site-wide settings, including image uploads (main, network, about) handled by Supabase Storage. Form uses one-time initialization pattern to preserve user uploads - the form is initialized ONCE on page load and never auto-resets, preventing uploaded image URLs from being overwritten by cache invalidations. Changes reflect on public pages after save and page refresh.
--   **Network Unit Management**: Admin interface for creating, editing, and toggling status of network units. Supports image uploads to Supabase Storage and includes a 'cidade' (city) field.
+-   **Network Unit Management**: Admin interface for creating, editing, and toggling status of network units. Supports image uploads to Supabase Storage and includes a 'cidade' (city) field. Deletion requires password confirmation.
+-   **Procedures Management**: Admin interface for managing procedures with password-protected deletion.
+-   **Client Management**: Admin interface for creating and editing clients. In the 'Editar Cliente' page, pets can be added and edited but not deleted from the client view - pet management (including deletion) is handled separately through dedicated pet management pages.
 -   **Brazilian Phone Formatting**: Consistent display formatting for all phone numbers across the admin interface (e.g., +55 (XX) XXXXX-XXXX).
 -   **Responsive Layouts**: Dynamic grid adjustments for plan displays and content sections, ensuring consistent card sizing and proper centering.
 -   **Image Conditional Rendering**: Public pages (hero, features, about) only display images when configured in admin settings - no hardcoded fallback images.
 -   **Copy to Clipboard**: Detail popups (Payments, Contracts, Network Units) include a "Copiar" button to copy formatted information to clipboard with visual feedback (idle → copying → copied states).
+-   **Password-Protected Deletions**: All admin deletion operations (FAQ, Procedures, Network Units, Administration users) require password verification via backend endpoint before execution.
 
 ## External Dependencies
 
