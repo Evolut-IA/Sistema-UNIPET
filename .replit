@@ -67,14 +67,10 @@ localPort = 38073
 externalPort = 3002
 
 [[ports]]
-localPort = 39371
-externalPort = 4200
-
-[[ports]]
 localPort = 43575
 externalPort = 3001
 
 [deployment]
-deploymentTarget = "autoscale"
+deploymentTarget = "gce"
 run = ["npm", "start"]
 build = ["npm", "run", "build"]
