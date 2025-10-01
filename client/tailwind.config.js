@@ -78,6 +78,7 @@ module.exports = {
         '3xl': '1920px'
       },
       animation: {
+        'spin': 'spin 1s linear infinite',
         'fade-in': 'fadeIn 0.5s ease-in-out',
         'fade-out': 'fadeOut 0.5s ease-in-out',
         'slide-in': 'slideIn 0.3s ease-out',

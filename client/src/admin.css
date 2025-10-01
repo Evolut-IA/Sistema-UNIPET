@@ -4,6 +4,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import animações customizadas */
+@import './styles/animations.css';
+
 /* ========================================
    APLICAÇÃO DO MODO ADMIN
    Aplica as cores específicas do admin definidas em cores.css
