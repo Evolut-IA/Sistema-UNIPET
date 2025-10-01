@@ -1,7 +1,7 @@
 import { Button } from "@/components/admin/ui/button";
 import { Input } from "@/components/ui/input";
 import { useChatImageUpload } from "@/hooks/use-chat-image-upload";
-import { ImagePlus, Upload, Loader2, X } from "lucide-react";
+import { ImagePlus, Upload, Loader2 } from "lucide-react";
 import { useCallback, useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -95,7 +95,7 @@ export function ChatImageUpload({
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
           className={cn(
-            "flex h-32 w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border bg-muted/50 transition-colors",
+            "flex h-48 w-48 cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border bg-muted/50 transition-colors",
             isDragging && "border-primary/50 bg-primary/5",
             isUploading && "opacity-50 cursor-not-allowed"
           )}
@@ -109,7 +109,7 @@ export function ChatImageUpload({
           </div>
           <div className="text-center">
             <p className="text-xs font-medium text-foreground">
-              {isUploading ? "Fazendo upload..." : placeholder}
+              {isUploading ? "Fazendo upload..." : "Clique para selecionar"}
             </p>
             <p className="text-xs text-muted-foreground">
               JPG, PNG, GIF (máx. 5MB)
@@ -118,7 +118,7 @@ export function ChatImageUpload({
         </div>
       ) : (
         <div className="relative">
-          <div className="group relative h-32 w-full overflow-hidden rounded-lg border border-border">
+          <div className="group relative h-48 w-48 overflow-hidden rounded-lg border border-border">
             <img
               src={displayUrl}
               alt={`${imageType === 'bot' ? 'Bot' : 'Usuário'} Avatar`}
@@ -130,32 +130,15 @@ export function ChatImageUpload({
                 size="sm"
                 variant="secondary"
                 onClick={handleThumbnailClick}
-                className="h-9"
+                className="h-9 w-9 p-0"
                 disabled={isUploading}
                 type="button"
               >
                 {isUploading ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
-                  <>
-                    <Upload className="h-4 w-4 mr-2" />
-                    Alterar
-                  </>
+                  <Upload className="h-4 w-4" />
                 )}
-              </Button>
-              <Button
-                size="sm"
-                variant="destructive"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleRemove();
-                  onChange?.('');
-                }}
-                className="h-9"
-                disabled={isUploading}
-                type="button"
-              >
-                <X className="h-4 w-4" />
               </Button>
             </div>
           </div>
