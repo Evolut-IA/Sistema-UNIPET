@@ -280,51 +280,50 @@ export default function Dashboard() {
               <div className="flex items-center justify-center h-64 w-full">
                 <Skeleton className="h-full w-full" />
               </div>
-            ) : (
-              <div className="space-y-4 py-4">
-                {[
-                  { name: 'Formulários', quantidade: contactSubmissions?.length || 0 },
-                  { name: 'Guias', quantidade: allGuides?.length || 0 },
-                  { name: 'Clientes', quantidade: clients?.length || 0 },
-                  { name: 'Pets', quantidade: stats?.registeredPets || 0 },
-                  { name: 'Planos', quantidade: (dashboardData as any)?.plans?.length || 0 },
-                  { name: 'Procedimentos', quantidade: Array.isArray(procedures) ? procedures.length : 0 },
-                ].map((item) => {
-                  const maxValue = Math.max(
-                    contactSubmissions?.length || 0,
-                    allGuides?.length || 0,
-                    clients?.length || 0,
-                    stats?.registeredPets || 0,
-                    (dashboardData as any)?.plans?.length || 0,
-                    Array.isArray(procedures) ? procedures.length : 0,
-                    1
-                  );
-                  const widthPercent = (item.quantidade / maxValue) * 100;
-                  
-                  return (
-                    <div key={item.name} className="space-y-1">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium text-gray-700">{item.name}</span>
-                        <span className="text-sm font-bold text-gray-900">{item.quantidade}</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-8 relative overflow-hidden">
-                        <div 
-                          className="h-full rounded-full transition-all duration-500 flex items-center justify-end pr-2"
-                          style={{ 
-                            width: `${Math.max(widthPercent, item.quantidade > 0 ? 10 : 0)}%`,
-                            backgroundColor: '#277677'
-                          }}
-                        >
-                          {item.quantidade > 0 && (
-                            <span className="text-xs font-semibold text-white">{item.quantidade}</span>
-                          )}
+            ) : (() => {
+              const chartData = [
+                { name: 'Formulários', quantidade: contactSubmissions?.length || 0 },
+                { name: 'Guias', quantidade: allGuides?.length || 0 },
+                { name: 'Clientes', quantidade: clients?.length || 0 },
+                { name: 'Pets', quantidade: stats?.registeredPets || 0 },
+                { name: 'Planos', quantidade: (dashboardData as any)?.plans?.length || 0 },
+                { name: 'Procedimentos', quantidade: Array.isArray(procedures) ? procedures.length : 0 },
+              ];
+              const maxValue = Math.max(...chartData.map(d => d.quantidade), 1);
+              
+              return (
+                <div className="w-full py-4">
+                  <div className="h-[320px] flex items-end justify-around gap-3 px-4 pb-12 relative">
+                    {chartData.map((item) => {
+                      const heightPercent = (item.quantidade / maxValue) * 100;
+                      
+                      return (
+                        <div key={item.name} className="flex flex-col items-center flex-1 max-w-[120px]">
+                          <div className="w-full flex flex-col items-center" style={{ height: '100%' }}>
+                            <div className="w-full h-full flex flex-col justify-end items-center">
+                              <div className="text-sm font-bold text-gray-900 mb-2">
+                                {item.quantidade}
+                              </div>
+                              <div 
+                                className="w-full rounded-t-md transition-all duration-500"
+                                style={{ 
+                                  height: `${Math.max(heightPercent, item.quantidade > 0 ? 5 : 0)}%`,
+                                  backgroundColor: '#277677',
+                                  minHeight: item.quantidade > 0 ? '30px' : '0px'
+                                }}
+                              />
+                            </div>
+                          </div>
+                          <div className="mt-3 text-xs font-medium text-gray-700 text-center w-full">
+                            {item.name}
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })()}
           </CardContent>
         </Card>
 
