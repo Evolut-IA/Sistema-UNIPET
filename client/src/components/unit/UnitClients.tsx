@@ -1,36 +1,33 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Plus, Edit, User, Heart, Calendar } from "lucide-react";
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
-
-interface Pet {
-  id: string;
-  name: string;
-  species: string;
-  breed: string;
-  birthDate: string;
-  clientId: string;
-}
+import { Search, Eye } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface Client {
   id: string;
   name: string;
   cpf: string;
-  phone: string;
   email: string;
-  address: string;
-  pets: Pet[];
+  phone: string;
+  petCount: number;
+  planName: string;
+  status: string;
 }
 
 export default function UnitClients({ unitSlug }: { unitSlug: string }) {
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState('clients');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [planFilter, setPlanFilter] = useState('all');
+  const itemsPerPage = 10;
 
   useEffect(() => {
     fetchClients();
@@ -56,145 +53,175 @@ export default function UnitClients({ unitSlug }: { unitSlug: string }) {
     }
   };
 
-  const filteredClients = clients.filter(client =>
-    client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    client.cpf.includes(searchTerm) ||
-    client.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredClients = clients.filter(client => {
+    const matchesSearch = client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         client.cpf.includes(searchTerm) ||
+                         client.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesPlan = planFilter === 'all' || client.planName === planFilter;
+    return matchesSearch && matchesPlan;
+  });
 
-  const allPets = clients.flatMap(client => 
-    client.pets.map(pet => ({ ...pet, clientName: client.name }))
+  const paginatedClients = filteredClients.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
   );
-
-  const filteredPets = allPets.filter(pet =>
-    pet.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (pet as any).clientName.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  
+  const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
 
   if (loading) {
     return (
-      <div className="p-6">
+      <div className="bg-white rounded-lg shadow-sm p-6">
         <div className="flex justify-center items-center py-12">
-          <div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-8 h-8 border-3 border-[#0e7074] border-t-transparent rounded-full animate-spin"></div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="p-6">
+    <div className="bg-white rounded-lg shadow-sm">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Clientes & Pets</h2>
-        <Button className="flex items-center space-x-2">
-          <Plus className="w-4 h-4" />
-          <span>Novo Cliente</span>
-        </Button>
+      <div className="p-6 border-b border-gray-200">
+        <h2 className="text-xl font-bold text-gray-900">Clientes & Pets</h2>
+        <p className="text-sm text-gray-500 mt-1">Gerencie os clientes e seus pets cadastrados</p>
       </div>
 
-      {/* Search */}
-      <div className="mb-6">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-          <Input
-            type="text"
-            placeholder="Buscar por nome, CPF ou email..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
-          />
+      {/* Filters */}
+      <div className="p-6 border-b border-gray-200">
+        <div className="flex flex-col lg:flex-row gap-4">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input
+              type="text"
+              placeholder="Buscar por nome, CPF ou email..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-9"
+            />
+          </div>
+          
+          <Select value={planFilter} onValueChange={setPlanFilter}>
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder="Todos os planos" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos os planos</SelectItem>
+              <SelectItem value="basic">Plano Básico</SelectItem>
+              <SelectItem value="complete">Plano Completo</SelectItem>
+              <SelectItem value="premium">Plano Premium</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
-      {/* Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="mb-4">
-          <TabsTrigger value="clients" className="flex items-center space-x-2">
-            <User className="w-4 h-4" />
-            <span>Clientes ({filteredClients.length})</span>
-          </TabsTrigger>
-          <TabsTrigger value="pets" className="flex items-center space-x-2">
-            <Heart className="w-4 h-4" />
-            <span>Pets ({filteredPets.length})</span>
-          </TabsTrigger>
-        </TabsList>
+      {/* Table */}
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead className="bg-gray-50 border-b border-gray-200">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Cliente
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                CPF
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Email
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Telefone
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Pets
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Plano
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Status
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Ações
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200">
+            {paginatedClients.length === 0 ? (
+              <tr>
+                <td colSpan={8} className="px-6 py-12 text-center text-gray-500">
+                  Nenhum cliente encontrado
+                </td>
+              </tr>
+            ) : (
+              paginatedClients.map((client, index) => (
+                <tr key={client.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {client.name}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {client.cpf}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {client.email}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {client.phone}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {client.petCount}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {client.planName}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                      client.status === 'active'
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-gray-100 text-gray-600'
+                    }`}>
+                      {client.status === 'active' ? 'Ativo' : 'Inativo'}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    <Button variant="ghost" size="sm">
+                      <Eye className="w-4 h-4" />
+                    </Button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
 
-        {/* Clients Tab */}
-        <TabsContent value="clients">
-          {filteredClients.length === 0 ? (
-            <div className="text-center py-12">
-              <User className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600">Nenhum cliente encontrado</p>
-            </div>
-          ) : (
-            <div className="grid gap-4">
-              {filteredClients.map((client) => (
-                <Card key={client.id} className="hover:shadow-lg transition-shadow">
-                  <CardContent className="p-4">
-                    <div className="flex flex-col sm:flex-row justify-between">
-                      <div className="space-y-2">
-                        <div className="flex items-center space-x-2">
-                          <User className="w-5 h-5 text-primary" />
-                          <span className="font-semibold text-lg">{client.name}</span>
-                        </div>
-                        <div className="text-sm text-gray-600 space-y-1">
-                          <p><strong>CPF:</strong> {client.cpf}</p>
-                          <p><strong>Telefone:</strong> {client.phone}</p>
-                          <p><strong>Email:</strong> {client.email}</p>
-                          <p><strong>Pets:</strong> {client.pets.length} {client.pets.length === 1 ? 'pet' : 'pets'}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-2 mt-4 sm:mt-0">
-                        <Button variant="outline" size="sm">
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
-        </TabsContent>
-
-        {/* Pets Tab */}
-        <TabsContent value="pets">
-          {filteredPets.length === 0 ? (
-            <div className="text-center py-12">
-              <Heart className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600">Nenhum pet encontrado</p>
-            </div>
-          ) : (
-            <div className="grid gap-4">
-              {filteredPets.map((pet) => (
-                <Card key={pet.id} className="hover:shadow-lg transition-shadow">
-                  <CardContent className="p-4">
-                    <div className="flex flex-col sm:flex-row justify-between">
-                      <div className="space-y-2">
-                        <div className="flex items-center space-x-2">
-                          <Heart className="w-5 h-5 text-primary" />
-                          <span className="font-semibold text-lg">{pet.name}</span>
-                        </div>
-                        <div className="text-sm text-gray-600 space-y-1">
-                          <p><strong>Tutor:</strong> {(pet as any).clientName}</p>
-                          <p><strong>Espécie:</strong> {pet.species}</p>
-                          <p><strong>Raça:</strong> {pet.breed}</p>
-                          <p><strong>Data de Nascimento:</strong> {format(new Date(pet.birthDate), 'dd/MM/yyyy', { locale: ptBR })}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-2 mt-4 sm:mt-0">
-                        <Button variant="outline" size="sm">
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
-        </TabsContent>
-      </Tabs>
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+          <div className="text-sm text-gray-700">
+            Mostrando {((currentPage - 1) * itemsPerPage) + 1} até{' '}
+            {Math.min(currentPage * itemsPerPage, filteredClients.length)} de{' '}
+            {filteredClients.length} resultados
+          </div>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Anterior
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Próxima
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
