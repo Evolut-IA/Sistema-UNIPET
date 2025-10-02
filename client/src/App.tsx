@@ -11,7 +11,8 @@ import About from "@/pages/about";
 import Contact from "@/pages/contact";
 import FAQ from "@/pages/faq";
 import Network from "@/pages/network";
-import UnitPage from "@/pages/unit-page";
+import UnitLoginPage from "@/pages/unit-login";
+import UnitDashboard from "@/pages/unit-dashboard";
 import PrivacyPolicy from "@/pages/privacy-policy";
 import TermsOfUse from "@/pages/terms-of-use";
 import CheckoutPage from "@/pages/checkout";
@@ -160,6 +161,10 @@ function Router() {
         <Route path="/customer/renewal-checkout" component={RenewalCheckout} />
         <Route path="/customer/telemedicine" component={TelemedicinePage} />
         
+        {/* Unit Routes (standalone) */}
+        <Route path="/unit/:slug/dashboard" component={UnitDashboard} />
+        <Route path="/:slug" component={UnitLoginPage} />
+        
         {/* Public Routes with Layout */}
         <Route>
           <PageLayout>
@@ -175,8 +180,6 @@ function Router() {
                   <Route path="/faq" component={FAQ} />
                   <Route path="/rede-credenciada" component={Network} />
                   <Route path="/rede" component={Network} />
-                  <Route path="/unidade/:slug" component={UnitPage} />
-                  <Route path="/:slug" component={UnitPage} />
                   <Route path="/politica-privacidade" component={PrivacyPolicy} />
                   <Route path="/termos-uso" component={TermsOfUse} />
                   <Route component={NotFound} />

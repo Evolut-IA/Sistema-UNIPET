@@ -45,6 +45,7 @@ import express from "express";
 import chatRoutes from "./routes/chat.js";
 import rateLimit from "express-rate-limit";
 import { z } from "zod";
+import { setupUnitRoutes } from "./unit-routes.js";
 import multer from "multer";
 
 // Extend express-session types
@@ -139,6 +140,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Setup authentication
   setupAuth(app);
+  
+  // Setup unit routes (authentication & management)
+  setupUnitRoutes(app, storage);
 
   // Rate limiting for admin login endpoint
   const adminLoginLimiter = rateLimit({
