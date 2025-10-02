@@ -1,28 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useLocation } from 'wouter';
 import UnitLayout from '@/components/unit/UnitLayout';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileText, Users, ClipboardList } from "lucide-react";
-import UnitGuides from "@/components/unit/UnitGuides";
-import UnitClients from "@/components/unit/UnitClients";
-import UnitProcedures from "@/components/unit/UnitProcedures";
+import { FileText, Users, ClipboardList, Activity } from "lucide-react";
 
 export default function UnitDashboard() {
   const { slug } = useParams();
   const [, setLocation] = useLocation();
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('guides');
 
   useEffect(() => {
     checkAuthentication();
-    
-    // Handle hash changes for navigation
-    const hash = window.location.hash.replace('#', '');
-    if (hash && ['guias', 'clientes', 'procedimentos'].includes(hash)) {
-      if (hash === 'guias') setActiveTab('guides');
-      else if (hash === 'clientes') setActiveTab('clients');
-      else if (hash === 'procedimentos') setActiveTab('procedures');
-    }
   }, [slug]);
 
   const checkAuthentication = async () => {
@@ -53,42 +40,103 @@ export default function UnitDashboard() {
       <div className="space-y-6">
         {/* Page Header */}
         <div className="bg-white rounded-lg shadow-sm p-6">
-          <h1 className="text-2xl font-bold text-gray-900">Portal da Unidade</h1>
-          <p className="text-gray-500 mt-1">Visualize todas as guias geradas pelas unidades da rede</p>
+          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+          <p className="text-gray-500 mt-1">Visão geral da unidade</p>
         </div>
 
-        {/* Content Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="bg-white shadow-sm rounded-lg p-1">
-            <TabsTrigger value="guides" className="flex items-center gap-2">
-              <FileText className="h-4 w-4" />
-              Guias de Atendimento
-            </TabsTrigger>
-            <TabsTrigger value="clients" className="flex items-center gap-2">
-              <Users className="h-4 w-4" />
-              Clientes & Pets
-            </TabsTrigger>
-            <TabsTrigger value="procedures" className="flex items-center gap-2">
-              <ClipboardList className="h-4 w-4" />
-              Procedimentos
-            </TabsTrigger>
-          </TabsList>
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Guias Ativas</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">12</p>
+              </div>
+              <div className="p-3 bg-blue-50 rounded-lg">
+                <FileText className="h-6 w-6 text-blue-600" />
+              </div>
+            </div>
+            <p className="text-xs text-gray-500 mt-3">+15% desde o último mês</p>
+          </div>
 
-          {/* Guides Tab */}
-          <TabsContent value="guides" className="mt-0">
-            <UnitGuides unitSlug={slug || ''} />
-          </TabsContent>
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Clientes Ativos</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">48</p>
+              </div>
+              <div className="p-3 bg-green-50 rounded-lg">
+                <Users className="h-6 w-6 text-green-600" />
+              </div>
+            </div>
+            <p className="text-xs text-gray-500 mt-3">+5 novos este mês</p>
+          </div>
 
-          {/* Clients Tab */}
-          <TabsContent value="clients" className="mt-0">
-            <UnitClients unitSlug={slug || ''} />
-          </TabsContent>
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Procedimentos</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">156</p>
+              </div>
+              <div className="p-3 bg-purple-50 rounded-lg">
+                <ClipboardList className="h-6 w-6 text-purple-600" />
+              </div>
+            </div>
+            <p className="text-xs text-gray-500 mt-3">Total este mês</p>
+          </div>
+        </div>
 
-          {/* Procedures Tab */}
-          <TabsContent value="procedures" className="mt-0">
-            <UnitProcedures unitSlug={slug || ''} />
-          </TabsContent>
-        </Tabs>
+        {/* Recent Activity */}
+        <div className="bg-white rounded-lg shadow-sm">
+          <div className="p-6 border-b border-gray-200">
+            <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+              <Activity className="h-5 w-5" />
+              Atividade Recente
+            </h2>
+          </div>
+          <div className="p-6">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between py-3 border-b border-gray-100">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-blue-50 rounded">
+                    <FileText className="h-4 w-4 text-blue-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">Nova guia #2025001 criada</p>
+                    <p className="text-xs text-gray-500">Cliente: João Silva - Pet: Max</p>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-500">há 2 horas</p>
+              </div>
+              
+              <div className="flex items-center justify-between py-3 border-b border-gray-100">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-green-50 rounded">
+                    <Users className="h-4 w-4 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">Novo cliente cadastrado</p>
+                    <p className="text-xs text-gray-500">Maria Santos - 2 pets</p>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-500">há 5 horas</p>
+              </div>
+
+              <div className="flex items-center justify-between py-3">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-purple-50 rounded">
+                    <ClipboardList className="h-4 w-4 text-purple-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">Procedimento realizado</p>
+                    <p className="text-xs text-gray-500">Consulta Geral - Pet: Luna</p>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-500">há 1 dia</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </UnitLayout>
   );

@@ -13,6 +13,9 @@ import FAQ from "@/pages/faq";
 import Network from "@/pages/network";
 import UnitLoginPage from "@/pages/unit-login";
 import UnitDashboard from "@/pages/unit-dashboard";
+import GuiasPage from "@/pages/unit/GuiasPage";
+import ClientesPage from "@/pages/unit/ClientesPage";
+import ProcedimentosPage from "@/pages/unit/ProcedimentosPage";
 import PrivacyPolicy from "@/pages/privacy-policy";
 import TermsOfUse from "@/pages/terms-of-use";
 import CheckoutPage from "@/pages/checkout";
@@ -163,6 +166,9 @@ function Router() {
         
         {/* Unit Routes (standalone) */}
         <Route path="/unit/:slug/dashboard" component={UnitDashboard} />
+        <Route path="/unit/:slug/guias" component={GuiasPage} />
+        <Route path="/unit/:slug/clientes" component={ClientesPage} />
+        <Route path="/unit/:slug/procedimentos" component={ProcedimentosPage} />
         <Route path="/:slug" component={UnitLoginPage} />
         
         {/* Public Routes with Layout */}
