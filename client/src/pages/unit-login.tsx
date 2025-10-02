@@ -1,11 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'wouter';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { AlertCircle, Building2 } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { motion } from "framer-motion";
+import { Lock, User } from "lucide-react";
 
 export default function UnitLoginPage() {
   const { slug } = useParams();
@@ -70,93 +66,129 @@ export default function UnitLoginPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary to-teal-dark">
+      <div className="min-h-screen bg-muted flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-gold border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gold">Carregando...</p>
+          <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Carregando...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary to-teal-dark p-4">
-      <Card className="w-full max-w-md shadow-2xl">
-        <CardHeader className="text-center space-y-4">
-          <div className="flex justify-center">
-            <div className="w-20 h-20 bg-gradient-to-br from-primary to-teal-dark rounded-full flex items-center justify-center shadow-lg">
-              <Building2 className="w-10 h-10 text-white" />
-            </div>
-          </div>
-          <CardTitle className="text-2xl font-bold text-primary">
-            Portal da Unidade
-          </CardTitle>
-          {unitName && (
-            <p className="text-sm text-muted-foreground">
-              {unitName}
-            </p>
-          )}
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <Alert variant="destructive">
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
+    <div className="min-h-screen bg-muted">
+      <div className="flex items-center justify-center min-h-screen px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-md w-full"
+        >
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold mb-2 text-foreground">Portal da Unidade</h1>
+            {unitName && (
+              <p className="text-muted-foreground">{unitName}</p>
             )}
+          </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="login">Login</Label>
-              <Input
-                id="login"
-                type="text"
-                value={login}
-                onChange={(e) => setLogin(e.target.value)}
-                placeholder="Digite seu login"
-                required
-                disabled={isSubmitting}
-                autoComplete="username"
-              />
-            </div>
+          {/* Login Form */}
+          <div className="rounded-xl shadow-lg p-8 bg-background">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Login Field */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">
+                  Login
+                </label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <input
+                    type="text"
+                    value={login}
+                    onChange={(e) => setLogin(e.target.value)}
+                    className="w-full pl-10 p-3 rounded-lg border text-sm"
+                    style={{
+                      borderColor: 'var(--border-gray)',
+                      backgroundColor: '#FFFFFF',
+                      paddingLeft: '2.5rem'
+                    }}
+                    placeholder="Digite seu login"
+                    required
+                    disabled={isSubmitting}
+                  />
+                </div>
+              </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="password">Senha</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Digite sua senha"
-                required
-                disabled={isSubmitting}
-                autoComplete="current-password"
-              />
-            </div>
+              {/* Password Field */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">
+                  Senha
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full pl-10 p-3 rounded-lg border text-sm"
+                    style={{
+                      borderColor: 'var(--border-gray)',
+                      backgroundColor: '#FFFFFF',
+                      paddingLeft: '2.5rem'
+                    }}
+                    placeholder="Digite sua senha"
+                    required
+                    disabled={isSubmitting}
+                  />
+                </div>
+              </div>
 
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                  Entrando...
-                </>
-              ) : (
-                'Entrar'
+              {/* Submit Error Message */}
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="p-3 rounded-lg text-sm"
+                  style={{background: 'var(--bg-cream-lighter)', border: '1px solid rgb(var(--destructive))', color: 'rgb(var(--destructive))'}}
+                >
+                  {error}
+                </motion.div>
               )}
-            </Button>
-          </form>
 
-          <div className="mt-6 pt-6 border-t text-center">
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full flex items-center justify-center space-x-2 py-3 px-4 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-transform duration-300 hover:scale-95"
+                style={{
+                  background: 'var(--btn-ver-planos-bg)',
+                  color: 'var(--btn-ver-planos-text)'
+                }}
+              >
+                {isSubmitting ? (
+                  <>
+                    <div className="w-5 h-5 border-2 rounded-full animate-spin" 
+                      style={{borderColor: 'var(--text-light)', borderTopColor: 'transparent'}}></div>
+                    <span>Entrando...</span>
+                  </>
+                ) : (
+                  <span className="flex items-center space-x-2">
+                    <Lock className="w-5 h-5" />
+                    <span>Entrar</span>
+                  </span>
+                )}
+              </button>
+
+            </form>
+          </div>
+
+          {/* Additional Info */}
+          <div className="text-center mt-6">
             <p className="text-sm text-muted-foreground">
               Acesso restrito para unidades credenciadas
             </p>
           </div>
-        </CardContent>
-      </Card>
+        </motion.div>
+      </div>
     </div>
   );
 }
