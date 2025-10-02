@@ -1919,6 +1919,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get specific network unit by slug (public route)
+  app.get("/api/network-units/:slug", async (req, res) => {
+    try {
+      const { slug } = req.params;
+      const unit = await storage.getNetworkUnitBySlug(slug);
+      
+      if (!unit) {
+        return res.status(404).json({ error: "Unidade não encontrada" });
+      }
+      
+      // Remove sensitive data before sending
+      const publicUnit = {
+        id: unit.id,
+        name: unit.name,
+        address: unit.address,
+        cidade: unit.cidade,
+        phone: unit.phone,
+        services: unit.services,
+        imageUrl: unit.imageUrl,
+        whatsapp: unit.whatsapp,
+        googleMapsUrl: unit.googleMapsUrl,
+        urlSlug: unit.urlSlug
+      };
+      
+      res.json(publicUnit);
+    } catch (error) {
+      console.error("Erro ao buscar unidade:", error);
+      res.status(500).json({ error: "Erro ao buscar unidade" });
+    }
+  });
+
   app.get("/api/faq", async (req, res) => {
     try {
       const items = await storage.getFaqItems();

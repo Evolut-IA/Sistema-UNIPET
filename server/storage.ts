@@ -452,6 +452,10 @@ export class InMemoryStorage implements IStorage {
     return false;
   }
 
+  async getNetworkUnitBySlug(slug: string): Promise<NetworkUnit | undefined> {
+    return this.networkUnits.find(u => u.urlSlug === slug);
+  }
+
   async getFaqItems(): Promise<FaqItem[]> {
     return this.faqItems.filter(f => f.isActive);
   }
@@ -1130,6 +1134,11 @@ export class DatabaseStorage implements IStorage {
     return unit || undefined;
   }
 
+
+  async getNetworkUnitBySlug(slug: string): Promise<NetworkUnit | undefined> {
+    const [unit] = await db.select().from(networkUnits).where(eq(networkUnits.urlSlug, slug));
+    return unit || undefined;
+  }
   async deleteNetworkUnit(id: string): Promise<boolean> {
     const result = await db.delete(networkUnits).where(eq(networkUnits.id, id));
     return (result.rowCount || 0) > 0;
